@@ -1,62 +1,72 @@
 # Funnel Content — Cat Royal Portrait
 
-AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it into a royal/regal portrait painting (King/Queen style). 12-screen flow, modeled on the reference funnel (hook → personalization quiz → generation → social proof → paywall → payment → success).
+AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it into a royal/regal portrait painting (King/Queen style). 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall).
 
 ---
 
-## 1. Welcome Hook A
+## 1. Ob1 — Welcome Hook A
 **Purpose:** Grab attention with an emotional "before" state and introduce the promise.
 **Headline:** Turn your cat into a royal portrait in seconds
 **Body:** Your favorite cat photo, painted like royalty — majestic, funny, shareable.
 **Visual:** Background collage of cat photos next to painted royal portraits.
 **CTA:** Continue
 
-## 2. Welcome Hook B
+## 2. Ob2 — Welcome Hook B
 **Purpose:** Reinforce the promise with social framing (relatable use case).
 **Headline:** Follow the steps, and it's ready
 **Body:** Upload a photo, answer a few quick questions, and get your cat's royal portrait.
 **Visual:** Two overlapping cat photos, one edited into a painting.
 **CTA:** Continue
 
-## 3. Welcome Hook C
+## 3. Ob3 — Welcome Hook C
 **Purpose:** Set expectation for time savings / ease.
 **Headline:** Crown your cat, and enjoy it forever
 **Body:** In just a minute, turn a simple photo into a masterpiece.
 **Visual:** Single cat photo, ornate gold frame overlay.
 **CTA:** Continue
 
-## 4. Q1 — Occasion / Goal
-**Purpose:** Segment intent, increase investment before the ask.
-**Headline:** What's the occasion?
-**Options:**
-- 🎉 Cat's birthday
-- 🐱 Just for fun
-- 🎁 Gift for a cat lover
-- 📱 Post on social media
-**CTA:** Continue
-
-## 5. Q2 — Cat's Name
+## 4. Input Name
 **Purpose:** Personalize the rest of the funnel with the cat's name.
 **Headline:** What's your cat's name?
+**Body:** We'll use it on the portrait.
 **Field:** Text input, placeholder "Enter name"
+**Visual:** Dark background, plain white input field, minimal chrome.
 **CTA:** Continue
 
-## 6. Q3 — Royal Style
+## 5. Choose Style
 **Purpose:** Let user pick the royal style used in generation (personalization + perceived control).
-**Headline:** What kind of royal would {{cat_name}} be?
+**Headline:** Pick a royal style
+**Body:** This sets {{cat_name}}'s royal look.
 **Options:**
 - 👑 Majestic King
 - 💎 Elegant Queen
 - ⚔️ Noble Warrior
 - 🎶 Surprise me
+- ✏️ Other
+**Visual:** Dark background, stacked purple gradient pill buttons, emoji + label each.
 **CTA:** Continue
 
-## 7. Portrait Generation (Loading)
-**Purpose:** Build anticipation while AI "works," reduce perceived wait.
-**Headline:** Painting {{cat_name}}'s royal portrait...
-**Body:** Analyzing photo → applying royal style → rendering portrait
-**Visual:** Animated grid of cat photos morphing into paintings, progress bar.
-**CTA:** (auto-advances)
+## 6. Copy of Choose Style — Occasion / Goal
+**Purpose:** Segment intent, increase investment before the ask.
+**Headline:** What's the occasion?
+**Body:** We'll match the mood to it.
+**Options:**
+- 🎉 Cat's birthday
+- 🐱 Just for fun
+- 🎁 Gift idea
+- 📱 Social media
+- ✏️ Other
+**Visual:** Dark background, stacked purple gradient pill buttons, emoji + label each.
+**CTA:** Continue
+
+## 7. Upload Photo
+**Purpose:** Ask for the only real input last, once the user is already invested in the result.
+**Headline:** Add {{cat_name}}'s photo
+**Body:** One clear photo is all we need.
+**Field:** Tall dashed box, "+ UPLOAD YOUR PHOTO"
+**Value line:** Not just one look — 50 royal styles included 📷
+**Visual:** Dark background, tall dashed upload box centered, solid purple CREATE NOW button below, small value line under it, arc collage of finished royal portraits fanned across the bottom edge.
+**CTA:** Create now
 
 ## 8. Testimonial / Social Proof
 **Purpose:** Build trust right before the reveal/paywall.
@@ -65,28 +75,38 @@ AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it i
 **Visual:** Download counter + press logos (placeholder: Forbes, TechCrunch, The Dodo).
 **CTA:** Continue
 
-## 9. Landing Hug (Emotional Preview)
-**Purpose:** Show a blurred/teaser preview of the result to trigger desire before the paywall.
-**Headline:** {{cat_name}}'s portrait is ready!
-**Body:** Sign up to view and download it.
-**Visual:** Blurred portrait thumbnail of the cat, dark overlay.
-**CTA:** Continue
+## 9. Portrait Generation (Loading)
+**Purpose:** Build anticipation while AI "works," reduce perceived wait.
+**Headline:** Painting {{cat_name}}'s royal portrait...
+**Steps:** (4 progress rows, each with % counter, checkmark and progress bar)
+- Analyzing your photos with care...
+- Matching a regal portrait style...
+- Preparing {{cat_name}}'s royal portrait...
+- Almost ready — your first preview awaits
+**Visual:** Hero image of the finished royal portrait filling the top half, gold glowing ring animating over it; four progress rows beneath, each with label, % counter, checkmark and purple progress bar.
+**CTA:** (auto-advances)
 
-## 10. Registration
+## 10. Lucky Wheel
+**Purpose:** Gamified spin right before the paywall — winning a bonus makes the price feel earned, not asked for.
+**Headline:** Spin your lucky wheel
+**Body:** One free spin before you unlock.
+**Prize:** Bonus styles, extra royal portrait, or a discount on the plan
+**Visual:** Colorful segmented wheel centered on black, purple pointer at the top, glow behind the wheel, single CTA pinned below.
+**CTA:** Spin now
+
+## 11. Registration
 **Purpose:** Hard gate — capture email before showing the result.
-**Headline:** Create your account to continue
+**Headline:** Create your account
+**Body:** Create an account to see it.
 **Fields:** Email, Password
+**Visual:** Dark background, plain white email/password input fields, minimal chrome.
 **CTA:** Continue
 
-## 11. Payment
+## 12. Paywall / Payment
 **Purpose:** Convert to paid plan to unlock the portrait/download.
 **Headline:** Unlock {{cat_name}}'s royal portrait
 **Body:** Choose your plan
 **Plans:** Weekly / Annual (highlight savings on annual)
+**Visual:** Two plan cards side by side (Weekly vs Annual), Apple Pay button prominent below.
 **CTA:** Continue with Apple Pay / Continue
 
-## 12. Success / Download
-**Purpose:** Deliver the payoff, drive sharing (viral loop).
-**Headline:** Your portrait is ready!
-**Body:** Download or share {{cat_name}}'s royal portrait.
-**CTA:** Download portrait / Share

@@ -1,0 +1,26 @@
+{
+  "_comment": "Copy to providers.json and adjust. API keys never live here - they are read from the environment variable named by apiKeyEnvVar. Changing model/size/seconds is a config edit; adding a vendor that is not behind the LiteLLM gateway needs a new adapter in scripts/Providers.ps1.",
+
+  "image": {
+    "provider": "ikame",
+    "apiKeyEnvVar": "IKAME_AI_KEY",
+    "baseUrl": "https://core-ai-platform.ikameglobal.com",
+    "model": "gpt-image-1",
+    "size": "1024x1536",
+    "timeoutSeconds": 300,
+    "_notes": "gpt-image-1 honours size (verified 1024x1536 vertical). gemini/gemini-2.5-flash-image ignores size and always returns 1024x1024. gemini/imagen-* returns 404 on this gateway."
+  },
+
+  "video": {
+    "provider": "ikame",
+    "apiKeyEnvVar": "IKAME_AI_KEY",
+    "baseUrl": "https://core-ai-platform.ikameglobal.com",
+    "model": "sora-2",
+    "size": "720x1280",
+    "seconds": 8,
+    "timeoutSeconds": 300,
+    "pollIntervalSeconds": 10,
+    "maxPollAttempts": 90,
+    "_notes": "sora-2 at 720x1280 verified end to end. Render time varies widely - observed 70s to 400s for the same 4s clip, and a job can sit at 99% for minutes - hence the 15 minute poll ceiling. The still frame is auto-resized to match size. sora-2-pro and gemini/veo-3.1-* are offered by the gateway but untested here. Billing is per generated second, so seconds is the main cost lever."
+  }
+}
