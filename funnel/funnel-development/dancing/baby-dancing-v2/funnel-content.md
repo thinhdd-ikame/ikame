@@ -1,3 +1,21 @@
+---
+niche: baby-dancing-v2
+display_name: Baby Dancing (V2)
+archetype: ai-transformation
+subject: baby
+input: a photo of their baby
+output: a fun dancing video
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  an energetic, funny dance with big rhythmic body movements
+---
+
 # Funnel Content — Baby Dancing (V2)
 
 AI video generator funnel: parent uploads a photo of their baby, AI turns it into a fun dancing video. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy variant of `baby-dancing` for A/B testing — same structure, fresh copy angle (action-first instead of emotional-before).

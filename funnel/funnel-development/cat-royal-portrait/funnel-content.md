@@ -1,3 +1,21 @@
+---
+niche: cat-royal-portrait
+display_name: Cat Royal Portrait
+archetype: ai-transformation
+subject: cat
+input: a photo of their cat
+output: a royal/regal portrait painting (King/Queen style)
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  a regal transformation - settling into a royal pose as a crown, robes and candlelight catch the fabric
+---
+
 # Funnel Content — Cat Royal Portrait
 
 AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it into a royal/regal portrait painting (King/Queen style). 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall).

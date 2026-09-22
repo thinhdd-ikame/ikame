@@ -1,3 +1,21 @@
+---
+niche: cat-photo-bw
+display_name: Cat Photo B&W
+archetype: ai-transformation
+subject: cat
+input: a photo of their cat
+output: a timeless black and white portrait
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  a slow cinematic portrait moment - a subtle head turn, a blink, hair and light shifting - in rich high-contrast black and white
+---
+
 # Funnel Content — Cat Photo B&W
 
 AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it into a timeless black & white portrait. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.

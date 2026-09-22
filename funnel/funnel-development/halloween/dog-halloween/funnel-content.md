@@ -1,3 +1,21 @@
+---
+niche: dog-halloween
+display_name: Dog Halloween
+archetype: ai-transformation
+subject: dog
+input: a photo of their dog
+output: a Halloween costume video
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  a playful Halloween costume performance, spooky and fun, with clear movement
+---
+
 # Funnel Content — Dog Halloween
 
 AI video generator funnel: dog owner uploads a photo of their dog, AI turns it into a Halloween costume video. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.

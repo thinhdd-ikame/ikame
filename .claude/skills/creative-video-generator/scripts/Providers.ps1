@@ -128,13 +128,25 @@ function Invoke-IkameImage {
         size   = $Settings.size
     } | ConvertTo-Json -Depth 5
 
-    try {
-        $response = Invoke-RestMethod -Uri $uri -Method Post -Headers @{
-            "Authorization" = "Bearer $ApiKey"
-            "Content-Type"  = "application/json"
-        } -Body $body -TimeoutSec $Settings.timeoutSeconds
+    # The gateway drops connections occasionally ("Unable to read data from the transport
+    # connection"), which is fatal to a long batch if it is not retried.
+    $tries = if ($Settings.transientRetries) { [int]$Settings.transientRetries + 1 } else { 3 }
+    $response = $null
+    for ($try = 1; $try -le $tries; $try++) {
+        try {
+            $response = Invoke-RestMethod -Uri $uri -Method Post -Headers @{
+                "Authorization" = "Bearer $ApiKey"
+                "Content-Type"  = "application/json"
+            } -Body $body -TimeoutSec $Settings.timeoutSeconds
+            break
+        }
+        catch {
+            $detail = Get-HttpErrorDetail $_
+            if ($try -ge $tries) { throw "Image generation failed ($($Settings.model)) after $tries tries: $detail" }
+            Write-Host "    image call failed on try $try ($detail) - retrying in 5s"
+            Start-Sleep -Seconds 5
+        }
     }
-    catch { throw "Image generation failed ($($Settings.model)): $(Get-HttpErrorDetail $_)" }
 
     $b64 = $response.data[0].b64_json
     if (-not $b64) { throw "Image response had no b64_json - raw: $($response | ConvertTo-Json -Depth 5 -Compress)" }
@@ -158,45 +170,65 @@ function Invoke-IkameVideo {
         seconds = "$($Settings.seconds)"
         size    = $Settings.size
     }
-    $boundary = [System.Guid]::NewGuid().ToString()
-    $body = New-MultipartBody -Fields $fields -FileBytes $refBytes -FileField "input_reference" -FileName "frame.png" -Boundary $boundary
+    # sora's moderation verdict is NOT deterministic: the identical still and prompt came back
+    # moderation_blocked twice and then completed on a later attempt. Treat a block as transient
+    # and retry, instead of writing the screen off. A blocked job yields no video to be billed for.
+    $maxTries = if ($Settings.moderationRetries) { [int]$Settings.moderationRetries + 1 } else { 3 }
 
-    try {
-        $job = Invoke-MultipartPost -Uri "$($Settings.baseUrl)/v1/videos" -ApiKey $ApiKey `
-            -Body $body -Boundary $boundary -TimeoutSeconds $Settings.timeoutSeconds
-    }
-    catch { throw "Video submit failed ($($Settings.model)): $_" }
+    for ($try = 1; $try -le $maxTries; $try++) {
+        $boundary = [System.Guid]::NewGuid().ToString()
+        $body = New-MultipartBody -Fields $fields -FileBytes $refBytes -FileField "input_reference" -FileName "frame.png" -Boundary $boundary
 
-    if (-not $job.id) { throw "Video submit returned no job id - raw: $($job | ConvertTo-Json -Depth 5 -Compress)" }
-
-    $attempt = 0
-    do {
-        Start-Sleep -Seconds $Settings.pollIntervalSeconds
-        $attempt++
         try {
-            $status = Invoke-RestMethod -Uri "$($Settings.baseUrl)/v1/videos/$($job.id)" -Method Get `
-                -Headers @{ "Authorization" = "Bearer $ApiKey" } -TimeoutSec 60
+            $job = Invoke-MultipartPost -Uri "$($Settings.baseUrl)/v1/videos" -ApiKey $ApiKey `
+                -Body $body -Boundary $boundary -TimeoutSeconds $Settings.timeoutSeconds
         }
-        catch { throw "Video poll failed: $(Get-HttpErrorDetail $_)" }
+        catch { throw "Video submit failed ($($Settings.model)): $_" }
 
-        Write-Host "    [$attempt] $($status.status) $($status.progress)%"
-        if ($attempt -ge $Settings.maxPollAttempts) {
-            throw "Video job $($job.id) still $($status.status) after $($Settings.maxPollAttempts * $Settings.pollIntervalSeconds)s"
+        if (-not $job.id) { throw "Video submit returned no job id - raw: $($job | ConvertTo-Json -Depth 5 -Compress)" }
+
+        $attempt = 0
+        do {
+            Start-Sleep -Seconds $Settings.pollIntervalSeconds
+            $attempt++
+            # Cap checked here, before the request: a `continue` below would otherwise skip it
+            # and spin forever whenever polling keeps failing.
+            if ($attempt -gt $Settings.maxPollAttempts) {
+                throw "Video job $($job.id) unfinished after $($Settings.maxPollAttempts * $Settings.pollIntervalSeconds)s (last status: $($status.status))"
+            }
+
+            # A dropped poll must not abandon a job that is still rendering and already paid for.
+            try {
+                $status = Invoke-RestMethod -Uri "$($Settings.baseUrl)/v1/videos/$($job.id)" -Method Get `
+                    -Headers @{ "Authorization" = "Bearer $ApiKey" } -TimeoutSec 60
+            }
+            catch {
+                Write-Host "    poll $attempt failed ($(Get-HttpErrorDetail $_)) - will poll again"
+                continue
+            }
+
+            Write-Host "    [try $try/$maxTries, poll $attempt] $($status.status) $($status.progress)%"
+        } while ($status.status -notin @("completed", "succeeded", "failed", "error"))
+
+        if ($status.status -in @("completed", "succeeded")) {
+            $tempFile = [System.IO.Path]::GetTempFileName()
+            try {
+                Invoke-WebRequest -Uri "$($Settings.baseUrl)/v1/videos/$($job.id)/content" `
+                    -Headers @{ "Authorization" = "Bearer $ApiKey" } -OutFile $tempFile -TimeoutSec 300
+                return [System.IO.File]::ReadAllBytes($tempFile)
+            }
+            catch { throw "Video download failed: $(Get-HttpErrorDetail $_)" }
+            finally { Remove-Item $tempFile -Force -ErrorAction SilentlyContinue }
         }
-    } while ($status.status -notin @("completed", "succeeded", "failed", "error"))
 
-    if ($status.status -notin @("completed", "succeeded")) {
-        throw "Video job $($job.id) ended as '$($status.status)': $($status.error | ConvertTo-Json -Depth 4 -Compress)"
+        $errText = $status.error | ConvertTo-Json -Depth 4 -Compress
+        $isModeration = $errText -match 'moderation'
+        if ($isModeration -and $try -lt $maxTries) {
+            Write-Host "    moderation block on try $try - retrying (it is intermittent)"
+            continue
+        }
+        throw "Video job $($job.id) ended as '$($status.status)' after $try tr$(if ($try -eq 1) { 'y' } else { 'ies' }): $errText"
     }
-
-    $tempFile = [System.IO.Path]::GetTempFileName()
-    try {
-        Invoke-WebRequest -Uri "$($Settings.baseUrl)/v1/videos/$($job.id)/content" `
-            -Headers @{ "Authorization" = "Bearer $ApiKey" } -OutFile $tempFile -TimeoutSec 300
-        return [System.IO.File]::ReadAllBytes($tempFile)
-    }
-    catch { throw "Video download failed: $(Get-HttpErrorDetail $_)" }
-    finally { Remove-Item $tempFile -Force -ErrorAction SilentlyContinue }
 }
 
 $ImageProviders = @{

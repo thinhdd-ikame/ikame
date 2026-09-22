@@ -1,3 +1,21 @@
+---
+niche: self-dancing
+display_name: Self Dancing
+archetype: ai-transformation
+subject: person
+input: a selfie of themselves
+output: a fun dancing video
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  an energetic, funny dance with big rhythmic body movements
+---
+
 # Funnel Content — Self Dancing
 
 AI video generator funnel: user uploads a selfie of themselves, AI turns it into a fun dancing video. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.

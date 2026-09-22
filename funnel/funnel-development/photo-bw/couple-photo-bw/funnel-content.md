@@ -1,3 +1,21 @@
+---
+niche: couple-photo-bw
+display_name: Couple Photo B&W
+archetype: ai-transformation
+subject: partner
+input: a photo of their partner
+output: a timeless black and white portrait
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  a slow cinematic portrait moment - a subtle head turn, a blink, hair and light shifting - in rich high-contrast black and white
+---
+
 # Funnel Content — Couple Photo B&W
 
 AI photo generator funnel: user uploads a photo of their partner, AI turns it into a timeless black & white portrait. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.

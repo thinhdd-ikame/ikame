@@ -1,3 +1,21 @@
+---
+niche: self-halloween
+display_name: Self Halloween
+archetype: ai-transformation
+subject: person
+input: a selfie of themselves
+output: a Halloween costume video
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  a playful Halloween costume performance, spooky and fun, with clear movement
+---
+
 # Funnel Content — Self Halloween
 
 AI video generator funnel: user uploads a selfie of themselves, AI turns it into a Halloween costume video. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.

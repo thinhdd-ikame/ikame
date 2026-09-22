@@ -3,11 +3,12 @@
   Generate AI video ad creatives for the ad-worthy screens of an existing funnel-content.md.
 
 .DESCRIPTION
-  Reads a funnel-content.md (written by the funnel-content-writer skill), takes the
-  Welcome Hook A/B/C and Generation screens (the ones with ad-creative value, matched
-  by title), generates a clean still of the subject per screen and then an
-  image-to-video clip, and writes everything under
-  funnel/creative-development/<same-niche-path>/.
+  Reads a funnel-content.md (written by the funnel-content-writer skill) of ANY shape,
+  takes the screens it declares as ad-creative candidates in its "creative_screens:"
+  frontmatter (slug -> screen number; legacy files without frontmatter fall back to
+  matching the 12-screen template's Welcome Hook A/B/C and Generation titles), generates
+  a clean still of the subject per screen and then an image-to-video clip, and writes
+  everything under funnel/creative-development/<same-niche-path>/.
 
   The stills deliberately carry no app UI and no copy: the headline belongs on top as
   an overlay in the edit. creative-brief.md records which copy pairs with which clip.
@@ -24,7 +25,9 @@
   Key into $VideoProviders (Providers.ps1). Same default resolution as -ImageProvider.
 
 .PARAMETER OnlyScreens
-  Run just these slugs (hook-a, hook-b, hook-c, generation) instead of all of them.
+  Run just these slugs instead of all of them. The valid slugs are whatever the funnel's
+  creative_screens frontmatter declares (conventionally hook-a, hook-b, hook-c, reveal;
+  legacy template funnels use hook-a, hook-b, hook-c, generation).
   A partial run leaves creative-brief.md alone, since it would otherwise drop the
   screens it didn't run.
 
@@ -98,22 +101,63 @@ $FunnelContentPath = (Resolve-Path $FunnelContentPath).Path
 # default read decodes them with the ANSI codepage, which would send mojibake to the image API.
 $content = Get-Content -Raw $FunnelContentPath -Encoding UTF8
 
+# Frontmatter is the machine-readable contract (see funnel-content-writer/references/file-format.md).
+# Funnels come in any shape now - 12-screen photo funnels, 24-screen quiz funnels - so the ad-worthy
+# screens are declared by the funnel itself instead of guessed from titles. Parsed with a hand-rolled
+# reader (no YAML module on PS 5.1): flat "key: value", a nested "creative_screens:" slug -> number
+# map, and folded ">" continuations.
+$frontmatter = @{}
+$creativeScreens = @()
+$fmMatch = [regex]::Match($content, '(?s)\A﻿?---\r?\n(?<fm>.*?)\r?\n---\r?\n')
+if ($fmMatch.Success) {
+    $currentKey = $null
+    foreach ($line in ($fmMatch.Groups['fm'].Value -split "\r?\n")) {
+        if ($line -match '^\s*#' -or $line -match '^\s*$') { continue }
+        if ($line -match '^(?<key>[A-Za-z0-9_]+):\s*(?<val>.*)$') {
+            $currentKey = $Matches['key']
+            $val = $Matches['val'] -replace '\s{2,}#.*$', ''
+            $val = $val.Trim().Trim('"').Trim("'")
+            if ($val -eq '>' -or $val -eq '|') { $val = '' }
+            $frontmatter[$currentKey] = $val
+        }
+        elseif ($currentKey -eq 'creative_screens' -and $line -match '^\s+(?<k>[A-Za-z0-9_-]+):\s*(?<v>\d+)') {
+            $creativeScreens += [PSCustomObject]@{ Slug = $Matches['k']; Number = [int]$Matches['v'] }
+        }
+        elseif ($currentKey -and $line -match '^\s+(?<cont>\S.*)$') {
+            $frontmatter[$currentKey] = ("$($frontmatter[$currentKey]) $($Matches['cont'])").Trim()
+        }
+    }
+}
+
 # The title separator is matched as "any punctuation char" instead of a literal em-dash:
 # PS 5.1 parses this BOM-less .ps1 with the ANSI codepage, so a non-ASCII character in the
 # source would be corrupted at parse time and the match would silently fail.
 $nicheMatch = [regex]::Match($content, '(?m)^#\s*Funnel Content\s*[^\w\s]\s*(?<name>.+?)\s*$')
-if (-not $nicheMatch.Success) {
-    throw "Could not find '# Funnel Content - NICHE' title in $FunnelContentPath"
+if ($frontmatter['display_name']) {
+    $nicheDisplayName = $frontmatter['display_name']
 }
-$nicheDisplayName = $nicheMatch.Groups['name'].Value
+elseif ($nicheMatch.Success) {
+    $nicheDisplayName = $nicheMatch.Groups['name'].Value
+}
+else {
+    throw "Could not find '# Funnel Content - NICHE' title or a display_name in frontmatter: $FunnelContentPath"
+}
 
 $transformMatch = [regex]::Match($content, '(?m)^AI .*?generator funnel:\s*(?<desc>.+?)\.\s*\d+-screen')
-$transformDesc = if ($transformMatch.Success) { $transformMatch.Groups['desc'].Value } else { $nicheDisplayName }
+$transformDesc = if ($frontmatter['input'] -and $frontmatter['output']) {
+    "uploads $($frontmatter['input']), gets $($frontmatter['output'])"
+} elseif ($transformMatch.Success) {
+    $transformMatch.Groups['desc'].Value
+} else {
+    $nicheDisplayName
+}
 
-$subjectWord = "subject"
-foreach ($p in @('(?i)photo of (?:their|the)\s+(?<subject>\w+)', '(?i)(?<subject>\w+)\s+owner\s+uploads')) {
-    $m = [regex]::Match($transformDesc, $p)
-    if ($m.Success) { $subjectWord = $m.Groups['subject'].Value; break }
+$subjectWord = if ($frontmatter['subject']) { $frontmatter['subject'] } else { "subject" }
+if ($subjectWord -eq "subject") {
+    foreach ($p in @('(?i)photo of (?:their|the)\s+(?<subject>\w+)', '(?i)(?<subject>\w+)\s+owner\s+uploads')) {
+        $m = [regex]::Match($transformDesc, $p)
+        if ($m.Success) { $subjectWord = $m.Groups['subject'].Value; break }
+    }
 }
 
 # funnel-content.md personalizes with {{cat_name}} / {{baby_name}} / {{user_name}} tokens.
@@ -127,19 +171,21 @@ function Resolve-Placeholders([string]$text, [string]$fallbackSubject) {
     return $text -replace '\{\{\w+\}\}', "your $fallbackSubject"
 }
 
-# What the subject should actually be seen doing. Derived from the funnel's own transformation
-# sentence, because a generic "turn this into a video" motion prompt produces near-static clips.
-$transformAction = switch -Regex ($transformDesc) {
+# What the subject should actually be seen doing. Taken from the funnel's own "motion:" frontmatter
+# when it has one - the niche knows its own motion better than any keyword table - and otherwise
+# derived from the transformation sentence, because a generic "turn this into a video" motion prompt
+# produces near-static clips.
+$transformAction = if ($frontmatter['motion']) { $frontmatter['motion'] } else { switch -Regex ($transformDesc) {
     'danc'                  { "an energetic, funny dance with big rhythmic body movements"; break }
     'black *& *white|b&w'   { "a slow cinematic portrait moment - a subtle head turn, a blink, hair and light shifting - in rich high-contrast black and white"; break }
     'halloween|costume'     { "a playful Halloween costume performance, spooky and fun, with clear movement"; break }
     default                 { "the transformation described above, with clear visible movement" }
-}
+} }
 
-# The screens worth turning into ad creative, matched by TITLE not by number: the funnel
-# template has already been renumbered once (screens gained an "ObN - " prefix, Upload Photo
-# and Lucky Wheel were inserted, Landing Hug was dropped), and number-based mapping silently
-# attached the wrong ad angle to the wrong screen. Titles have stayed stable across that change.
+# Ad-angle profiles per slug. Which screen each slug points at comes from the funnel's
+# "creative_screens:" frontmatter; legacy funnels (written before that contract existed) fall back
+# to matching by TITLE, never by number - the 12-screen template was renumbered once and number-based
+# mapping silently attached the wrong ad angle to the wrong screen.
 # An ordered array, so no hashtable key/index ambiguity.
 $TargetScreens = @(
     @{ Slug = "hook-a"; TitlePattern = 'Welcome Hook A'; Angle = "opening hook, establish the promise"
@@ -154,15 +200,27 @@ $TargetScreens = @(
     @{ Slug = "generation"; TitlePattern = 'Generation \(Loading\)'; Angle = "the AI transformation actually happening"
        Staging = "posed like a plain still snapshot, neutral background"
        Action = "visibly comes to life out of the frozen snapshot and turns into $transformAction, a magical photo-to-motion transformation" }
+    # No TitlePattern: "reveal" is the shape-neutral name for the transformation/result screen and
+    # only ever arrives through frontmatter, so it takes no part in legacy title matching.
+    @{ Slug = "reveal"; TitlePattern = $null; Angle = "the payoff the funnel is selling"
+       Staging = "posed like a plain still snapshot, neutral background"
+       Action = "visibly comes to life out of the frozen snapshot and turns into $transformAction, a magical transformation" }
 )
 
-$screenPattern = '(?ms)^## (?<num>\d+)\.\s*(?<title>.+?)\r?\n(?<body>.*?)(?=^## \d+\.|\z)'
+# Any slug a funnel declares that has no profile above still gets a usable pair of prompts.
+$DefaultAngle = @{ Angle = "the product moment worth advertising"
+                   Staging = "looking straight into the camera in a warmly lit everyday setting"
+                   Action = "moves into $transformAction, clearly and continuously" }
+
+# Screen headers are "## N." in flat funnels and "### N." in staged ones - accept both.
+$screenPattern = '(?ms)^#{2,3}\s*(?<num>\d+)\.\s*(?<title>.+?)\r?\n(?<body>.*?)(?=^#{2,3}\s*\d+\.|\z)'
 $screenMatches = [regex]::Matches($content, $screenPattern)
 
 $parsedScreens = @()
 foreach ($m in $screenMatches) {
     $body = $m.Groups['body'].Value
-    $headline = [regex]::Match($body, '(?m)^\*\*Headline:\*\*\s*(.+?)\s*$')
+    # "Headline:" in single-variant funnels, "Headline A:" in A/B-ready ones - A is always the control.
+    $headline = [regex]::Match($body, '(?m)^\*\*Headline(?:\s+A)?:\*\*\s*(.+?)\s*$')
     # funnel-content.md uses {{cat_name}}-style placeholders for personalization;
     # there's no live user session here, so swap in a generic stand-in.
     $headlineText = if ($headline.Success) { $headline.Groups[1].Value } else { "" }
@@ -176,15 +234,31 @@ foreach ($m in $screenMatches) {
     }
 }
 
-# Bind each ad angle to the screen whose title matches, and fail loudly rather than
-# silently producing a creative for the wrong screen.
+# Bind each ad angle to a screen, and fail loudly rather than silently producing a creative for the
+# wrong one. Frontmatter wins when present (works for any funnel shape); otherwise fall back to the
+# legacy title patterns, which only know the 12-screen photo/video template.
 $plan = @()
-foreach ($t in $TargetScreens) {
-    $screen = $parsedScreens | Where-Object { $_.Title -match $t.TitlePattern } | Select-Object -First 1
-    if (-not $screen) {
-        throw "No screen matching '$($t.TitlePattern)' in $FunnelContentPath - the funnel template may have changed again. Screens found: $(($parsedScreens | ForEach-Object { "$($_.Number). $($_.Title)" }) -join ' | ')"
+if ($creativeScreens.Count -gt 0) {
+    foreach ($entry in $creativeScreens) {
+        $screen = $parsedScreens | Where-Object { $_.Number -eq $entry.Number } | Select-Object -First 1
+        if (-not $screen) {
+            throw "frontmatter creative_screens maps '$($entry.Slug)' to screen $($entry.Number), which is not in $FunnelContentPath. Screens found: $(($parsedScreens | ForEach-Object { "$($_.Number). $($_.Title)" }) -join ' | ')"
+        }
+        $angle = $TargetScreens | Where-Object { $_.Slug -eq $entry.Slug } | Select-Object -First 1
+        if (-not $angle) {
+            $angle = @{ Slug = $entry.Slug; Angle = $DefaultAngle.Angle; Staging = $DefaultAngle.Staging; Action = $DefaultAngle.Action }
+        }
+        $plan += [PSCustomObject]@{ Target = $angle; Screen = $screen }
     }
-    $plan += [PSCustomObject]@{ Target = $t; Screen = $screen }
+}
+else {
+    foreach ($t in $TargetScreens | Where-Object { $_.TitlePattern }) {
+        $screen = $parsedScreens | Where-Object { $_.Title -match $t.TitlePattern } | Select-Object -First 1
+        if (-not $screen) {
+            throw "No screen matching '$($t.TitlePattern)' in $FunnelContentPath, and no creative_screens frontmatter to go by. Add a creative_screens block (see funnel-content-writer/references/file-format.md). Screens found: $(($parsedScreens | ForEach-Object { "$($_.Number). $($_.Title)" }) -join ' | ')"
+        }
+        $plan += [PSCustomObject]@{ Target = $t; Screen = $screen }
+    }
 }
 
 # --- Resolve output paths ------------------------------------------------
@@ -217,7 +291,12 @@ $subjectPhrase = switch ($subjectWord) {
     "dog"     { "A real dog" }
     "baby"    { "A real baby" }
     "partner" { "A real young couple together" }
-    default   { "A real person" }
+    "couple"  { "A real young couple together" }
+    "person"  { "A real person" }
+    "subject" { "A real person" }
+    # Frontmatter can name any subject (pet, plant, car, room...), so build a phrase from it
+    # rather than silently falling back to a person and generating footage of the wrong thing.
+    default   { "A real $subjectWord" }
 }
 
 # --- Generate ------------------------------------------------------------
@@ -229,7 +308,7 @@ $videoKey = if (-not $DryRun) { Get-ApiKey $videoSettings } else { $null }
 
 $planToRun = if ($OnlyScreens) { $plan | Where-Object { $OnlyScreens -contains $_.Target.Slug } } else { $plan }
 if ($OnlyScreens -and -not $planToRun) {
-    throw "-OnlyScreens '$($OnlyScreens -join ", ")' matched nothing. Valid slugs: $(($TargetScreens | ForEach-Object { $_.Slug }) -join ', ')"
+    throw "-OnlyScreens '$($OnlyScreens -join ", ")' matched nothing. Slugs in this funnel: $(($plan | ForEach-Object { $_.Target.Slug }) -join ', ')"
 }
 
 foreach ($item in $planToRun) {

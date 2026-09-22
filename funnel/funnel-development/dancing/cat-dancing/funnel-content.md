@@ -1,3 +1,21 @@
+---
+niche: cat-dancing
+display_name: Cat Dancing
+archetype: ai-transformation
+subject: cat
+input: a photo of their cat
+output: a fun dancing video
+screens: 12
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  hook-c: 3
+  generation: 9
+motion: >
+  an energetic, funny dance with big rhythmic body movements
+---
+
 # Funnel Content — Cat Dancing
 
 AI video generator funnel: cat owner uploads a photo of their cat, AI turns it into a fun dancing video. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.
