@@ -1,11 +1,11 @@
 ---
 name: funnel-content-writer
-description: Write the screen-by-screen onboarding + paywall content brief (funnel-content.md) for a mobile app funnel in ANY category — AI photo/video generators, astrology & personality quizzes, fitness, mental health, chat/companion, utility, subscription content, marketplace. Picks the funnel shape that fits the app instead of forcing one template: classifies the product archetype, assembles the flow from a screen-block library, and writes to funnel/funnel-development/<path>/funnel-content.md. Use whenever the user asks to write funnel content, viết content funnel, tạo funnel mới cho <app/ngách>, draft onboarding/paywall copy, or just names a niche and says "làm funnel cho X" / "content cho ngách X".
+description: Write the screen-by-screen onboarding + paywall content brief (funnel-content.md) for a mobile app funnel in ANY category — AI photo/video generators, astrology & personality quizzes, fitness, mental health, chat/companion, utility, subscription content, marketplace. Picks the funnel shape that fits the app instead of forcing one template: classifies the product archetype, assembles the flow from a screen-block library, and writes to funnel/funnel-development/<path>/funnel-content.md. On request it also builds a clickable single-file HTML prototype (demo.html) of the funnel. Use whenever the user asks to write funnel content, "code demo" / "cho xem demo" of a funnel, viết content funnel, tạo funnel mới cho <app/ngách>, draft onboarding/paywall copy, or just names a niche and says "làm funnel cho X" / "content cho ngách X".
 ---
 
 # Funnel Content Writer
 
-Produce the content brief for a mobile app's onboarding → paywall funnel: every screen, its job, its copy, its visual note. Markdown only — never code.
+Produce the content brief for a mobile app's onboarding → paywall funnel: every screen, its job, its copy, its visual note. The brief is Markdown. A clickable HTML prototype of it is an optional follow-up step (§7), built only when the user asks for a demo.
 
 **This skill is deliberately open-ended.** There is no single house template. Different app categories monetize through genuinely different flows (a photo app sells one transformation; an astrology app sells a personalized reading built from a 9-screen data quiz; a fitness app sells a plan). Screen count and sequence follow the niche's own funnel psychology. What stays fixed across every funnel this skill writes is only:
 
@@ -22,6 +22,7 @@ Everything else — how many screens, which blocks, in what order — is a per-a
 3. **Assemble** — build the screen sequence from the block library (§3).
 4. **Write** — per `references/file-format.md` plus the copy rules in §5.
 5. **Register** — record the archetype so the next funnel reuses it (§6).
+6. **Demo (on request)** — build a clickable prototype from the brief (§7, `references/prototype.md`).
 
 ---
 
@@ -33,6 +34,8 @@ If it isn't already clear from the conversation, ask once, briefly, in a single 
 2. **What the user gets, and what they give to get it** — e.g. "uploads a cat selfie → gets a royal portrait", "answers birth date/time/place → gets a personalized reading", "logs weight + goal → gets a workout plan". This one answer usually decides the archetype.
 3. **Monetization** — subscription paywall only, or paywall plus upsell / consumable / marketplace? If unknown, assume a hard subscription paywall and say so.
 4. Optional: real pricing, a real competitor to model on, brand/visual constraints.
+
+**If the app already has a design file** (a `.pen` via the pencil MCP, a Figma link), read it before writing anything. It gives you the real screen inventory (what onboarding already exists), the real prices, the brand voice and the design tokens. Starlyn is the example: its `.pen` showed guest mode, a dismissible paywall and the store promise "No timers. No per-minute billing", and each of those changed the funnel shape. Reference existing screens by their ids in `Visual:` and list which screens are new in the Notes.
 
 Don't over-ask. If the answers are obvious from context, proceed and state your reading of them in the intro paragraph of the output file.
 
@@ -101,10 +104,21 @@ After writing the funnel:
 
 This is what keeps the skill dynamic — the library grows with each new app category instead of calcifying around the first one.
 
+## 7. Demo prototype (only when asked)
+
+When the user asks to see it working ("code demo", "cho xem demo", "làm prototype"), build a single-file clickable prototype next to the brief:
+
+`funnel/funnel-development/<path>/demo.html`
+
+It must follow the brief exactly: the same screens, numbering, A/B copy and branching. Publish it as an Artifact and give the user the link. Follow `references/prototype.md` for the page structure, the state model, what to fake and what never to fake, and the motion rules. The reference implementation is `funnel/funnel-development/starlyn/demo.html`. Start from it rather than from scratch.
+
+If the brief changes later, update the demo in the same turn, so the two never drift apart.
+
 ## What NOT to do
 
 - **Don't copy a previous funnel's screen list into a different app category.** Reskinning copy over a flow designed for another product shape is the exact failure mode this skill exists to prevent.
 - Don't invent pricing numbers unless the user supplies them — describe the plan structure instead (tiers, decoy, which one is pre-selected).
-- Don't write code (React/HTML/…). This skill produces the Markdown content brief only.
+- Don't write app code (React Native, Swift, …). The brief is Markdown. The only code this skill produces is the optional HTML prototype in §7, and only when asked.
+- Don't add urgency mechanics (countdowns, "offer expires" timers) when the app's own positioning promises the opposite. Read the store screenshots and the paywall copy first.
 - Don't reuse stat numbers or press-logo placeholders verbatim across niches — "The Dodo" fits pets, not fitness.
 - Don't skip the frontmatter. Downstream skills (`creative-video-generator`) parse it; a file without it falls back to fragile title matching.
