@@ -6,8 +6,10 @@ An archetype is a *product shape*, not a template. Apps with the same shape mone
 |---|---|---|---|
 | **ai-transformation** | User gives one asset → AI returns a transformed version of it | "upload a photo/video/voice", novelty/entertainment, one-shot output, impulse purchase | [ai-transformation.md](ai-transformation.md) |
 | **personalization-quiz** | User answers a long data quiz → AI returns a personalized reading/plan; the quiz *is* the demo | astrology, personality, fitness plan, diet, mental health; accuracy depends on real inputs; often two revenue layers | [personalization-quiz.md](personalization-quiz.md) |
+| **companion-chat** | User is matched with an AI character → ongoing chat that builds memory/intimacy → subscription removes the daily message limit | character/roleplay/AI girlfriend chat, messages-per-day meter, intimacy levels unlocking photos, usually 18+ | [companion-chat.md](companion-chat.md) |
+| **diagnostic-utility** | User answers a short self-assessment → computed risk/health score → each problem mapped to a utility feature → subscription (often web checkout) | authenticator/2FA, VPN, password manager, cleaner, backup; value invisible until something breaks; 3-5 question quiz | [diagnostic-utility.md](diagnostic-utility.md) |
 
-Not yet registered, expect to meet them (derive from teardown, then add the file): companion/character chat, habit & streak trackers, utility/scanner tools, learning apps, marketplaces.
+Not yet registered, expect to meet them (derive from teardown, then add the file): habit & streak trackers, utility/scanner tools, learning apps, marketplaces.
 
 ## How to pick
 
@@ -16,7 +18,7 @@ Ask what the user must give before the product can deliver:
 - **one asset** → ai-transformation
 - **many answers about themselves** → personalization-quiz
 - **nothing; value is immediate on use** → utility shape: short hook, no quiz, gate late or not at all, paywall on the second use or on a premium feature
-- **their attention over time** (chat, streaks, content) → relationship shape: hook → short preference quiz → first taste of the loop → gate → paywall, and retention blocks (notifications, streak) matter more than the reveal
+- **their attention over time** (chat, streaks, content) → relationship shape: hook → short preference quiz → first taste of the loop → gate → paywall, and retention blocks (notifications, streak) matter more than the reveal. For character chat specifically → companion-chat
 
 When two archetypes both half-fit, follow the one that matches the **monetization** shape, not the content topic — the paywall is what the flow is built around.
 
