@@ -52,3 +52,12 @@ Keep the slug `generation` (not `reveal`) for funnels in this archetype — the 
 - `cat-royal-portrait` — same 12 screens, portrait-styling wording.
 - `baby-dancing-v2` — iteration on copy only, structure unchanged.
 - Any funnel needing a payoff/download screen adds it after the paywall as screen 13 — the validated flow ends at the paywall because the app takes over there.
+- `ai-photo-video/ai-video-generator` (16 screens) — **multi-template catalog variant**, for apps selling many effects (dance, trends, pet, baby, concert) rather than one niche. Changes:
+  - A "Who's the star?" subject pick comes first in Investment, and it drives the name token, style options and art.
+  - Name capture moves after that pick.
+  - A 2-second watermarked preview-tease sits before the wheel.
+  - The wheel prize is bonus coins (real consumable) instead of a discount.
+  - The paywall is weekly-only (no annual IAP exists).
+  - A coin-pack screen is added as a second revenue layer after purchase.
+
+  Use it whenever the app's store listing shows a template catalog plus coins.

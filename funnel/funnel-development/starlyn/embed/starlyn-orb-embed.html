@@ -1,0 +1,145 @@
+<!--
+  Starlyn 3D chart wheel - embed for FunnelFox (Custom HTML / Code element)
+  Paste this whole file into the element. No external requests, transparent background.
+
+  Options (attributes on the div):
+    data-mode   float  : tilted, slow spin, gentle sway (hooks, gate screens)
+                spin   : tilted deep + fast spin, planets appear one by one (loading screen)
+                land   : rotates in from flat, then settles (reveal screen)
+                static : slow spin, fixed tilt
+    data-size   max width in px (default 260). Shrinks to fit the container.
+    data-lit    big  : Sun, Moon, Rising planets glow gold (default)
+                sun  : only the Sun glows
+                none : no planet glows
+    data-flatten-after  (spin mode only) ms before the wheel straightens up, e.g. 5000.
+                        Or call window.StarlynOrb.flatten(el) from your own code.
+  Several wheels on one page are fine. Wheels added later (page change) mount themselves.
+-->
+<div class="slo-orb" data-mode="float" data-size="260" data-lit="big"></div>
+
+<style>
+.slo-orb{position:relative;perspective:900px;perspective-origin:50% 38%;margin:0 auto;max-width:100%;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+.slo-orb *{box-sizing:border-box}
+.slo-scene{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.slo-scene>*{position:absolute;left:50%;top:50%}
+.slo-l{border-radius:50%}
+.slo-disc{background:radial-gradient(circle,#2A2350d9 0%,#17142Ab3 58%,#0B0A1880 71%,transparent 72%);box-shadow:inset 0 0 50px #6B4FD833}
+.slo-ring{border:1px solid #322C52}
+.slo-outer{border-color:#4A4275;box-shadow:0 0 28px #6B4FD82e}
+.slo-faint{border:1px dashed #4A427599}
+.slo-gold{border:1.5px solid #E9C26B;box-shadow:0 0 20px #E9C26B66,inset 0 0 20px #E9C26B33}
+.slo-gold2{border:1px solid #E9C26B;opacity:.35}
+.slo-floor{border-radius:50%;background:radial-gradient(circle,#000000a6,transparent 64%);filter:blur(6px)}
+.slo-ticks,.slo-motes{width:0;height:0;transform-style:preserve-3d}
+.slo-ticks i{position:absolute;left:0;top:0;width:1px;background:#5A5288}
+.slo-sh{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#000000b3,transparent 70%)}
+.slo-st{width:1.5px;transform-origin:50% 100%;background:linear-gradient(to top,#ADA5C700,#ADA5C780)}
+.slo-beam{width:2px;background:linear-gradient(to top,#E9C26B00,#E9C26Bdd)}
+.slo-p{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#3A3360,#1B1733);border:1px solid #4A4275;color:#7A7296;box-shadow:0 6px 14px #0009}
+.slo-p.slo-lit{border-color:#E9C26B;color:#E9C26B;background:radial-gradient(circle at 35% 30%,#51462E,#221B30);box-shadow:0 0 18px #E9C26B70,0 6px 14px #0009}
+.slo-p svg{display:block}
+.slo-dot{width:6px;height:6px;border-radius:50%;border:1.5px solid currentColor}
+.slo-core{filter:drop-shadow(0 0 14px #E9C26Bcc)}
+.slo-core svg{display:block;animation:slo-pulse 2.4s ease-in-out infinite}
+.slo-motes b{position:absolute;left:-1.5px;top:-1.5px;width:3px;height:3px;border-radius:50%;background:#FFE7A8;box-shadow:0 0 6px #E9C26B;animation:slo-mote 14s linear infinite}
+@keyframes slo-pulse{50%{opacity:.55}}
+@keyframes slo-mote{from{transform:rotate(var(--a)) translateY(var(--d))}to{transform:rotate(calc(var(--a) + 360deg)) translateY(var(--d))}}
+@media (prefers-reduced-motion:reduce){.slo-core svg,.slo-motes b{animation:none}}
+</style>
+
+<script>
+(function(){
+  if(window.StarlynOrb){window.StarlynOrb.scan();return}
+  var RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ICON={
+    sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    rise:'<path d="M12 2v8M4.93 10.93l1.41 1.41M2 18h2M20 18h2M19.07 10.93l-1.41 1.41M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/>'
+  };
+  var icon=function(n){return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[n]+'</svg>'};
+  var PLANETS=[['sun',0],['moon',140],['rise',250],['',45],['',95],['',190],['',300],['',330]];
+  var orbs=[],running=false,last=0;
+  var ease=function(t){return 1-Math.pow(1-t,3)};
+
+  function mount(el){
+    if(el.__slo)return;
+    var max=parseFloat(el.getAttribute('data-size'))||260;
+    var avail=el.parentElement?el.parentElement.clientWidth:max;
+    var size=Math.max(140,Math.min(max,avail||max));
+    var mode=el.getAttribute('data-mode')||'float',lit=el.getAttribute('data-lit')||'big',R=size/2;
+    var layer=function(cls,d,z){return '<div class="slo-l '+cls+'" style="width:'+d+'px;height:'+d+'px;transform:translate(-50%,-50%) translateZ('+z+'px)"></div>'};
+    var ticks='',i;
+    for(i=0;i<24;i++)ticks+='<i style="transform:translate(-50%,-50%) rotate('+(i*15)+'deg) translateY('+(-R*.93)+'px);height:'+(i%2?4:8)+'px"></i>';
+    var pl='',sh='';
+    PLANETS.forEach(function(p,i){
+      var on=lit==='big'?i<3:lit==='sun'?i===0:false;
+      var pr=R*.74,rad=Math.PI*(p[1]-90)/180,x=pr*Math.cos(rad),y=pr*Math.sin(rad),z=22+(i%3)*9;
+      pl+='<div class="slo-p'+(on?' slo-lit':'')+'" data-x="'+x+'" data-y="'+y+'" data-z="'+z+'" data-i="'+i+'">'+(p[0]?icon(p[0]):'<i class="slo-dot"></i>')+'</div>';
+      sh+='<div class="slo-sh" style="transform:translate(-50%,-50%) translate3d('+x+'px,'+y+'px,1px)"></div><div class="slo-st" style="height:'+z+'px;margin:'+(-z)+'px 0 0 -.75px;transform:translate3d('+x+'px,'+y+'px,0) rotateX(-90deg)"></div>';
+    });
+    var motes='';for(i=0;i<10;i++)motes+='<b style="--a:'+(i*36)+'deg;--d:'+(R*(.46+(i%3)*.06))+'px"></b>';
+    var core=Math.round(size*.15);
+    el.innerHTML='<div class="slo-scene">'+
+      '<div class="slo-floor" style="width:'+(size*1.15)+'px;height:'+(size*1.15)+'px;transform:translate(-50%,-50%) translateZ(-38px)"></div>'+
+      layer('slo-disc',size*.98,-2)+layer('slo-ring slo-outer',size*.98,0)+
+      '<div class="slo-ticks" style="transform:translateZ(1px)">'+ticks+'</div>'+
+      layer('slo-ring',size*.74,6)+layer('slo-faint',size*.6,12)+sh+
+      layer('slo-gold',size*.4,30)+layer('slo-gold2',size*.4,18)+
+      '<div class="slo-motes" style="transform:translateZ(30px)">'+motes+'</div>'+
+      '<div class="slo-st slo-beam" style="height:44px;margin:-44px 0 0 -1px;transform:rotateX(-90deg)"></div>'+pl+
+      '<div class="slo-core" data-z="46"><svg viewBox="0 0 40 40" width="'+core+'" height="'+core+'"><path d="M20 2l4.5 13.5L38 20l-13.5 4.5L20 38l-4.5-13.5L2 20l13.5-4.5z" fill="#E9C26B"/></svg></div>'+
+    '</div>';
+    el.style.width=size+'px';el.style.height=size+'px';
+    el.setAttribute('aria-hidden','true');
+    var o={el:el,mode:mode,scene:el.firstChild,bills:[].slice.call(el.querySelectorAll('.slo-p,.slo-core')),t0:performance.now(),spin:Math.random()*360,px:0,py:0,tx:0,ty:0,flatT:null};
+    if(mode==='spin')o.bills.forEach(function(b){if(b.hasAttribute('data-i'))b.style.opacity=0});
+    var fa=parseFloat(el.getAttribute('data-flatten-after'));
+    if(mode==='spin'&&fa>0)setTimeout(function(){o.flatT=performance.now()},fa);
+    el.addEventListener('pointermove',function(e){var r=el.getBoundingClientRect();o.tx=(e.clientX-r.left)/r.width-.5;o.ty=(e.clientY-r.top)/r.height-.5});
+    el.addEventListener('pointerleave',function(){o.tx=0;o.ty=0});
+    el.__slo=o;orbs.push(o);
+    draw(o,performance.now(),0);
+    if(!RM&&!running){running=true;last=performance.now();requestAnimationFrame(frame)}
+  }
+
+  function draw(o,now,dt){
+    var t=(now-o.t0)/1000,tilt,spd,scale=1,yaw=0;
+    o.px+=(o.tx-o.px)*.08;o.py+=(o.ty-o.py)*.08;
+    if(o.mode==='spin'){
+      tilt=66;spd=34;
+      if(o.flatT!==null){var k=ease(Math.min(1,(now-o.flatT)/1300));tilt=66-44*k;spd=34-26*k}
+      o.bills.forEach(function(b){var i=b.getAttribute('data-i');if(i!==null)b.style.opacity=RM?1:Math.min(1,Math.max(0,(t-.4-i*.45)/.5))});
+    }else if(o.mode==='land'){
+      var k2=RM?1:ease(Math.min(1,t/1.8));
+      tilt=84-(84-(40+Math.sin(t*.6)*6))*k2;spd=8+90*(1-k2);scale=.55+.45*k2;
+      o.el.style.opacity=RM?1:Math.min(1,t/.5);
+    }else if(o.mode==='static'){tilt=42;spd=4}
+    else{tilt=50+Math.sin(t*.55)*9;spd=9;yaw=Math.sin(t*.4)*6}
+    o.spin+=spd*dt/1000;
+    tilt+=o.py*-28;yaw+=o.px*34;
+    o.scene.style.transform='scale('+scale+') rotateX('+tilt+'deg) rotateY('+yaw+'deg) rotateZ('+o.spin+'deg)';
+    var inv='rotateZ('+(-o.spin)+'deg) rotateY('+(-yaw)+'deg) rotateX('+(-tilt)+'deg)';
+    for(var j=0;j<o.bills.length;j++){
+      var b=o.bills[j],x=+b.getAttribute('data-x')||0,y=+b.getAttribute('data-y')||0,z=+b.getAttribute('data-z')||0,i=b.getAttribute('data-i');
+      var bob=RM?0:(i!==null?Math.sin(t*1.4+(+i))*3:Math.sin(t*1.2)*2);
+      b.style.transform='translate(-50%,-50%) translate3d('+x+'px,'+y+'px,'+(z+bob)+'px) '+inv;
+    }
+  }
+
+  function frame(now){
+    var dt=Math.min(50,now-last);last=now;
+    orbs=orbs.filter(function(o){return o.el.isConnected});
+    orbs.forEach(function(o){draw(o,now,dt)});
+    if(orbs.length)requestAnimationFrame(frame);else running=false;
+  }
+
+  function scan(root){[].forEach.call((root||document).querySelectorAll('.slo-orb'),mount)}
+  window.StarlynOrb={
+    scan:scan,
+    mount:mount,
+    flatten:function(el){if(el&&el.__slo)el.__slo.flatT=performance.now()}
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){scan()});else scan();
+  if(window.MutationObserver)new MutationObserver(function(){scan()}).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
