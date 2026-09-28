@@ -69,6 +69,21 @@ Audio is stripped by default: these clips are silent footage, so the track is pu
 
 Useful flags: `-Only hook-a,generation` for a subset, `-SkipMp4` when the page only serves WebP, `-SkipWebp` for the reverse, `-Force` to re-encode finished outputs, `-NoInstall` to fail instead of auto-downloading ffmpeg.
 
+## WebP stops paying off past a few seconds
+
+The MP4 path has a bitrate budget; the WebP path has nothing equivalent — libwebp takes a quality number and produces whatever size it produces. WebP is also just less efficient than H.264, and the gap widens with duration. On four 12.1s clips at the default 480px/15fps/q60, two came out **larger than their own source MP4** (8.19 MB in, 9.43 MB out).
+
+The script warns when that happens (`webp larger than source`), but it cannot fix it — only the caller can. Rough guide by clip length, measured on the worst of those four:
+
+| Clip length | Setting that stays sane |
+| --- | --- |
+| under ~5s | defaults (480 / 15 / q60) |
+| ~8s | 480 / 15 / q60, expect 1.5–3.5 MB |
+| ~12s | 360 / 10 / q45 → 1.1–3.2 MB (480/15/q60 gave 2.8–9.4 MB) |
+| over ~15s | don't use WebP; ship the MP4 |
+
+Sizes at 12.1s on one clip: 480/12/q50 = 6.58 MB, 400/12/q45 = 4.59 MB, **360/10/q45 = 3.17 MB**, 320/10/q40 = 2.37 MB.
+
 ## Check for an audio track before applying the defaults
 
 The defaults assume a sora funnel clip: vertical, a few seconds, silent. A finished ad video is none of those, and the defaults will quietly wreck it — `-Duration 8` cuts 33 seconds down to 8, `-AudioKbps 0` throws the voiceover away, and WebP has no audio track at all, so a WebP of a narrated ad is silent by construction.

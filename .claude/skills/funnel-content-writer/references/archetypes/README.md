@@ -8,8 +8,11 @@ An archetype is a *product shape*, not a template. Apps with the same shape mone
 | **personalization-quiz** | User answers a long data quiz → AI returns a personalized reading/plan; the quiz *is* the demo | astrology, personality, fitness plan, diet, mental health; accuracy depends on real inputs; often two revenue layers | [personalization-quiz.md](personalization-quiz.md) |
 | **companion-chat** | User is matched with an AI character → ongoing chat that builds memory/intimacy → subscription removes the daily message limit | character/roleplay/AI girlfriend chat, messages-per-day meter, intimacy levels unlocking photos, usually 18+ | [companion-chat.md](companion-chat.md) |
 | **diagnostic-utility** | User answers a short self-assessment → computed risk/health score → each problem mapped to a utility feature → subscription (often web checkout) | authenticator/2FA, VPN, password manager, cleaner, backup; value invisible until something breaks; 3-5 question quiz | [diagnostic-utility.md](diagnostic-utility.md) |
+| **scanner-identifier** | User photographs a real object → AI identifies it; identity free, value/grade/diagnosis + unlimited scans + collection behind a soft subscription paywall | coin/plant/rock/mushroom/insect/antique identifiers, "is it rare/valuable", camera-first, repeat scans, accuracy = retention | [scanner-identifier.md](scanner-identifier.md) |
+| **assessment-unlock** | User takes a real graded or scored test for free → computed result is revealed only after payment → one-time report or test-library subscription | IQ/EQ/personality/career test sites, "discover your X score", long free test then paid report, certificate, multi-test library | [assessment-unlock.md](assessment-unlock.md) |
+| **learning-plan** | User answers a goal/level/pace quiz + short skill check → measured level, dated multi-week plan and one real micro-lesson → period subscription (often web checkout, app login by email) | micro-learning, AI upskilling, languages, general knowledge, Quran/faith study, certificates; "X min a day", streaks, level test, plan graph | [learning-plan.md](learning-plan.md) |
 
-Not yet registered, expect to meet them (derive from teardown, then add the file): habit & streak trackers, utility/scanner tools, learning apps, marketplaces.
+Not yet registered, expect to meet them (derive from teardown, then add the file): habit & streak trackers, marketplaces.
 
 ## How to pick
 

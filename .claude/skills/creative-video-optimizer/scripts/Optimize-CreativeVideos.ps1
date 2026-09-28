@@ -320,6 +320,16 @@ foreach ($video in $videos) {
         Write-Host "$slug - webp..."
         Invoke-WebpEncode -Ffmpeg $ffmpeg -Source $video.FullName -Target $webpPath `
             -TrimSeconds $trim -Width $WebpWidth -Fps $WebpFps -Quality $WebpQuality
+
+        # WebP is markedly less efficient than H.264 once a clip runs past a few
+        # seconds, so the defaults can produce a file heavier than the source.
+        # There is no bitrate control to clamp here - only the caller can fix it.
+        $webpSize = (Get-Item $webpPath).Length
+        if ($webpSize -gt $video.Length) {
+            $note = "webp larger than source"
+            Write-Warning ("{0}: webp is {1:N2} MB vs {2:N2} MB source - lower -WebpWidth/-WebpFps/-WebpQuality, or keep the mp4" -f `
+                $slug, ($webpSize / 1MB), ($video.Length / 1MB))
+        }
     }
 
     if (-not $mp4Done) {
