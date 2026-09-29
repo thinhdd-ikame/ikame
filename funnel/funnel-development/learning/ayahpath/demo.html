@@ -149,17 +149,25 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus
 .qstrip{margin:0;padding:12px 14px;border-left:2px solid var(--gold);background:#0A2C2166;border-radius:0 12px 12px 0;font:500 14px/1.45 var(--serif);color:var(--t1)}
 .qstrip cite{display:block;font:500 12px var(--sans);color:var(--gold-2);font-style:normal;margin-top:6px}
 
+/* photo backgrounds (AI-generated stills, no people or script) */
+.bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg img{display:block;width:100%;height:100%;object-fit:cover}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0A2C21d9 0%,#0F3D2Ea6 38%,#0F3D2Eb3 62%,#0A2C21f2 100%)}
+.bg.hook img{object-position:50% 0%}
+.bg.hook::after{background:linear-gradient(180deg,#0A2C2199 0%,#0F3D2E8c 30%,#0A2C21cc 62%,#0A2C21f5 100%)}
+.bg.soft::after{background:linear-gradient(180deg,#0A2C21e6 0%,#0F3D2Ecc 40%,#0A2C21e0 100%)}
+.bg.pay img{object-position:50% 40%}
+.bg.pay::after{background:linear-gradient(180deg,#0A2C2166 0%,#0A2C2140 30%,#0A2C21b3 55%,#0A2C21f2 80%)}
+.view>.scr{z-index:1}
+
 /* hook 3 stones */
-.stones{display:grid;place-items:center;margin-top:auto}
-.stones svg{width:300px;max-width:100%;height:auto;overflow:visible}
-.stones .st{opacity:0;animation:fi .6s ease forwards}
-.lglow{animation:breathe 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
-@keyframes breathe{50%{opacity:.6}}
+.stones{display:flex;justify-content:center;margin:auto 0 0;flex:none}
+.stones img{display:block;width:100%;max-width:330px;aspect-ratio:1/1;height:auto;object-fit:cover;border-radius:28px;
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000 45%,transparent 100%);mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000 45%,transparent 100%)}
 
 .ghostl{position:absolute;right:-6px;top:-24px;font-size:54px;color:var(--gold);opacity:.14;pointer-events:none;line-height:1.6;z-index:0}
 .hwrap{position:relative;display:flex;flex-direction:column;gap:10px}
 .hwrap>*{position:relative}
-.mat{position:absolute;right:-24px;bottom:-20px;width:150px;opacity:.12;pointer-events:none;z-index:0}
 
 /* quiz */
 .quiz{display:flex;flex-direction:column;gap:12px;padding:14px}
@@ -205,7 +213,8 @@ figcaption{font:500 11.5px var(--sans);color:var(--ink-2);margin-top:8px;letter-
 
 /* sky strip */
 .skystrip{position:relative;height:56px;border-radius:18px;flex:none;margin-top:2px;
-  background:linear-gradient(90deg,#3B3A66 0%,#E8A77A 9%,#F4D79B 22%,#A9D3E6 42%,#BFE0EC 55%,#F0B27A 73%,#B0617A 82%,#3A3764 90%,#142038 100%);
+  background:linear-gradient(90deg,#3B3A66 0%,#E8A77A 9%,#F4D79B 22%,#A9D3E6 42%,#BFE0EC 55%,#F0B27A 73%,#B0617A 82%,#3A3764 90%,#142038 100%),url("img/sky-desert.jpg") 50% 78%/cover no-repeat;
+  background-blend-mode:soft-light,normal;
   box-shadow:inset 0 0 0 1px #ffffff26}
 .smark{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--gold);border:3px solid #FFF6DE;box-shadow:0 0 0 4px #C9A55C55,0 4px 10px #0006;transition:left .5s cubic-bezier(.3,.8,.3,1),opacity .3s}
 .skyic{position:absolute;bottom:-20px;font-size:12px;transform:translateX(-50%);opacity:.8}
@@ -270,7 +279,10 @@ figcaption{font:500 11.5px var(--sans);color:var(--ink-2);margin-top:8px;letter-
 .lhead{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 
 /* reminder */
-.lockscr{border-radius:30px;padding:22px 16px 18px;background:linear-gradient(170deg,#1E5E49,#0A2C21 70%);border:1px solid var(--em-line);box-shadow:inset 0 0 0 5px #0A2C2155;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
+.lockscr>.lwall{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.lockscr::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,#0A2C21b3,#0A2C2199 45%,#0A2C21cc)}
+.lockscr>*:not(.lwall){position:relative;z-index:1}
+.lockscr{flex:none;border-radius:30px;padding:22px 16px 18px;background:linear-gradient(170deg,#1E5E49,#0A2C21 70%);border:1px solid var(--em-line);box-shadow:inset 0 0 0 5px #0A2C2155;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
 .ltime{font:300 58px/1 var(--sans);letter-spacing:-.02em;color:var(--t1);font-variant-numeric:tabular-nums}
 .ldate{font-size:13px;color:var(--t2);margin-bottom:12px}
 .push{display:flex;gap:10px;padding:12px;border-radius:18px;background:#F6EFDDe6;color:var(--ink);width:100%;text-align:left;font-size:14px;line-height:1.35;animation:up .6s cubic-bezier(.2,.8,.2,1) .3s both}
@@ -288,7 +300,9 @@ figcaption{font:500 11.5px var(--sans);color:var(--ink-2);margin-top:8px;letter-
 @keyframes glowonce{0%{box-shadow:0 0 0 0 #E4CB8Eff,inset 0 0 0 3px var(--gold)}100%{box-shadow:0 0 0 26px #E4CB8E00,inset 0 0 0 3px var(--gold)}}
 .pen{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:1px solid #C9A55C88;background:#FFFBF0;color:var(--ink-2);display:grid;place-items:center}
 .icard textarea{width:100%;border:none;background:transparent;font:600 18px/1.45 var(--serif);color:var(--ink);resize:none;outline:none;text-align:center}
-.lantern{display:grid;place-items:center}
+.lantern{display:grid;place-items:center;flex:none}
+.lantern img{display:block;width:176px;margin:-24px 0 -30px;aspect-ratio:1/1;height:auto;object-fit:cover;border-radius:50%;
+  -webkit-mask-image:radial-gradient(circle,#000 48%,transparent 70%);mask-image:radial-gradient(circle,#000 42%,transparent 68%)}
 
 /* gate */
 .sbtn{height:54px;border-radius:999px;border:1.5px solid #D8C697;background:var(--cream);color:var(--ink);font:600 15.5px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
@@ -554,23 +568,14 @@ function pathRows(){
   if(S.journey==='back')r[0].sub='Starts with review';
   return r;
 }
-function stonesSVG(){
-  const P=[[150,236,36],[108,204,31],[150,174,27],[192,148,23],[160,122,20],[124,101,17],[150,82,14]];
-  return `<svg viewBox="0 0 300 260" aria-hidden="true"><defs><radialGradient id="lg"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".75"/><stop offset="1" stop-color="#E4CB8E" stop-opacity="0"/></radialGradient></defs>
-  <path d="M150 236 Q108 222 108 204 T150 174 T192 148 T160 122 T124 101 T150 82 L150 58" fill="none" stroke="#C9A55C" stroke-width="1.2" stroke-dasharray="3 5" opacity=".6"/>
-  ${P.map(([x,y,r],i)=>`<g class="st" style="animation-delay:${.2+i*.16}s"><ellipse cx="${x}" cy="${y+3}" rx="${r}" ry="${r*.4}" fill="#00000055"/><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*.42}" fill="#F6EFDD" stroke="#C9A55C" stroke-width="1.2"/></g>`).join('')}
-  <g transform="translate(150,36)"><circle class="lglow" r="36" fill="url(#lg)"/>
-  <path d="M0 -26v5M-4 -26h8" stroke="#C9A55C" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M-9 -21h18l-3 6h-12z" fill="#C9A55C"/><path d="M-11 -15h22l-3 25h-16z" fill="#F8EBC8" stroke="#C9A55C" stroke-width="1.4"/>
-  <path d="M0 -8c3.5 4 3.5 9 0 11.5c-3.5-2.5-3.5-7.5 0-11.5z" fill="#E09B3D"/><path d="M-8 10h16l-2 5h-12z" fill="#C9A55C"/></g></svg>`;
-}
-const lanternSVG=s=>`<svg width="${s}" height="${s*1.25}" viewBox="-30 -36 60 75" aria-hidden="true"><defs><radialGradient id="lg2"><stop offset="0" stop-color="#FFE6A8" stop-opacity=".7"/><stop offset="1" stop-color="#E4CB8E" stop-opacity="0"/></radialGradient></defs><circle class="lglow" r="30" fill="url(#lg2)"/><path d="M0 -30v6M-4 -30h8" stroke="#C9A55C" stroke-width="1.8" stroke-linecap="round"/><path d="M-10 -24h20l-3 7h-14z" fill="#C9A55C"/><path d="M-12 -17h24l-3 28h-18z" fill="#F8EBC8" stroke="#C9A55C" stroke-width="1.5"/><path d="M0 -9c4 4.5 4 10 0 13c-4-3-4-8.5 0-13z" fill="#E09B3D"/><path d="M-9 11h18l-2 6h-14z" fill="#C9A55C"/></svg>`;
-const matSVG=`<svg class="mat" viewBox="0 0 120 170" aria-hidden="true"><g fill="none" stroke="#E4CB8E" stroke-width="2"><rect x="4" y="4" width="112" height="162" rx="6"/><path d="M18 166V74a42 42 0 0 1 84 0v92"/><path d="M30 166V78a30 30 0 0 1 60 0v88"/><path d="M60 22l6 6-6 6-6-6z"/><path d="M12 150h96M12 158h96"/></g></svg>`;
+/* real photo stills (AI-generated; no people, faces or script). First screen loads eagerly, the rest lazily. */
+const photo=(name,alt,w,h,eager)=>`<img src="img/${name}.jpg" alt="${alt}" width="${w}" height="${h}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async">`;
+const bg=(name,alt,cls='',eager=false)=>`<div class="bg ${cls}">${photo(name,alt,720,1080,eager)}</div>`;
 const arc=f=>`<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="13" fill="none" stroke="#D8C697" stroke-width="3"/><circle cx="17" cy="17" r="13" fill="none" stroke="#0F3D2E" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(81.68*f).toFixed(1)} 81.68" transform="rotate(-90 17 17)"/></svg>`;
 const pickScreen=(key,list,sel,h,b,extra='')=>`<div class="scr">${h}<p class="lead">${b}</p><div class="opts">${list.map(([k,e,l])=>opt(key,k,e,l,sel===k)).join('')}</div>${extra}</div><div class="foot"></div>`;
 
 const V={
-1:()=>`<div class="scr center">
+1:()=>`${bg('hook-dawn-window','Dawn light through a carved arched window in a quiet mosque','hook',true)}<div class="scr center">
   <h1 class="display">${t('You recite it 17 times daily','Understand every word you pray')}</h1>
   <p class="lead" style="margin-top:-6px">${t("Learn the meaning of Al-Fatihah, the surah in every rak'ah.",'Short daily lessons turn recitation into understanding.')}</p>
   <div class="parch ayahcard"><div class="ar ayah" dir="rtl" lang="ar">${HAMD_FULL.split(' ').map((w,i)=>`<span class="aw" style="--d:${.5+i*.75}s">${w}</span>`).join(' ')}</div>
@@ -586,7 +591,7 @@ const V={
 3:()=>`<div class="scr">
   <h1 class="display">${t('Start wherever you are','Built for every level')}</h1>
   <p class="lead" style="margin-top:-6px">${t('New to Arabic or returning after years, your path adapts.','A few questions shape a path made for you.')}</p>
-  <div class="stones">${stonesSVG()}</div></div>
+  <div class="stones">${photo('stones-lantern','Stepping-stones rising toward a glowing lantern at dusk',720,720)}</div></div>
   <div class="foot">${cta('Build my path')}<div class="note">About 1 minute · No Arabic needed to begin</div></div>`,
 4:()=>`<div class="scr"><h1 class="display">${t('What brings you here?',"What's your main goal?")}</h1>
   <p class="lead">${t('Pick one; it sets your first lessons.',"We'll start your path from here.")}</p>
@@ -603,7 +608,7 @@ const V={
   <p class="lead">${t("Not yet is fine; we'll teach the letters.",'This decides if we add reading lessons.')}</p></div>
   <div class="opts">${ARABIC.map(([k,e,l])=>opt('arabic',k,e,l,S.arabic===k)).join('')}</div>
   <p class="hint c">Every ayah also comes with transliteration and translation.</p></div><div class="foot"></div>`,
-8:()=>`<div class="scr">${matSVG}<div class="hwrap"><h1 class="display">${t('Know what you recite in salah?','Your salah, word by word?')}</h1>
+8:()=>`${bg('prayer-mat','Prayer beads resting on an emerald prayer mat','soft')}<div class="scr"><div class="hwrap"><h1 class="display">${t('Know what you recite in salah?','Your salah, word by word?')}</h1>
   <p class="lead">${t('Most of us learned the words before the meaning.','This helps us pick your first surahs.')}</p></div>
   <div class="opts" style="position:relative">${SALAH.map(([k,e,l])=>opt('salah',k,e,l,S.salah===k)).join('')}</div></div><div class="foot"></div>`,
 9:()=>{const a=S.quiz;
@@ -620,7 +625,7 @@ const V={
   <div class="quotes">${REVIEW_PH('shift')}${REVIEW_PH('off')}</div></div>
   <div class="foot">${cta('Continue')}</div>`,
 11:()=>pickScreen('barrier',BARRIER,S.barrier,`<h1 class="display">${t('What usually gets in the way?','What makes consistency hard?')}</h1>`,t('Your path will be built around this.','Everyone has something; pick what fits most.')),
-12:()=>`<div class="scr center">
+12:()=>`${bg('fajr-tea','A glass of tea on a windowsill at Fajr')}<div class="scr center">
   <h1 class="display c">${t('Small and steady is beloved','Consistency beats intensity')}</h1>
   <p class="lead c" style="margin-top:-6px">${t("That's why your lessons take minutes, not hours.",hasName()?`${nm()}, a few minutes daily is how this works.`:'A few minutes daily is how this works.')}</p>
   <figure class="parch hadith"><span class="rule"></span><blockquote>"The most beloved deeds to Allah are those done consistently, even if they are small."</blockquote>
@@ -670,11 +675,11 @@ const V={
 19:()=>`<div class="scr center">
   <h1 class="display c">${t('Your daily ayah, on time',`A gentle reminder ${afterP()}`)}</h1>
   <p class="lead c" style="margin-top:-6px">${t('One reminder a day, at the time you chose.','Keep your streak without having to remember.')}</p>
-  <div class="lockscr" aria-hidden="true"><div class="ltime" id="lt">${fmtT(S.remTime)}</div><div class="ldate">Lock screen preview</div>
+  <div class="lockscr" aria-hidden="true"><img class="lwall" src="img/lock-tiles.jpg" alt="" width="720" height="1080" loading="lazy" decoding="async"><div class="ltime" id="lt">${fmtT(S.remTime)}</div><div class="ldate">Lock screen preview</div>
   <div class="push"><span class="app">${octagram(20)}</span><div><small>${tok('app_name')} · now</small>📖 ${hasName()?`${nm()}, today's`:"Today's"} ayah is ready: 5 minutes ${afterP()}.</div></div></div>
   <label class="timepill">${ic('bell',16)}<input type="time" data-f="remTime" value="${S.remTime}" aria-label="Reminder time"><span>${anchorLabel()}</span></label></div>
   <div class="foot">${cta('Turn on reminders',true,'notif')}<button class="link" data-a="nonotif">Not now</button></div>`,
-20:()=>`<div class="scr center"><div class="lantern">${lanternSVG(46)}</div>
+20:()=>`<div class="scr center"><div class="lantern">${photo('lantern-dusk','A brass lantern glowing at dusk',720,720)}</div>
   <h1 class="display c">${t('Set your intention','Make your niyyah')}</h1>
   <p class="lead c" style="margin-top:-6px">${t('A quiet intention to keep learning, one ayah daily.',"Tap to set it; you can change it anytime.")}</p>
   ${S.intentEdit?`<div class="parch icard"><button class="pen" data-a="iedit" aria-label="Done editing">${ic('check',15,'currentColor',2.4)}</button><textarea id="itext" data-f="intentText" rows="3" maxlength="160" aria-label="Your intention">${esc(intentText())}</textarea></div>`
@@ -709,7 +714,7 @@ const V={
   </div></div>
   <div class="foot" style="padding-top:8px"><div class="rennote">${line}</div>${cta(tr&&y?'Start free trial':'Start my path',true,'buy')}
   <div class="trust">Billed by ${tok('store_name')} · Cancel anytime in your subscriptions · <button class="linkin" data-a="restore">Restore purchase</button></div></div>${sheet}`},
-23:()=>`<div class="scr center c">${med(160,'float','one')}
+23:()=>`${bg('payoff-sunrise','Sunrise over desert dunes through a stone arch','pay')}<div class="scr center c">${med(160,'float','one')}
   <h1 class="display">${t('Your path begins today',hasName()?`Day 1 complete, ${nm()}`:'Day 1 complete')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Next up: "Al-ḥamdu lillāh", with audio and a quick quiz.',`Your streak starts now; see you ${afterP()}.`)}</p>
   ${miniPath('next')}

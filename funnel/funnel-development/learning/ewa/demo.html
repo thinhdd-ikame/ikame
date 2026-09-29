@@ -146,7 +146,11 @@ svg.flag{border-radius:4px;display:block;box-shadow:0 0 0 1px #0000001a}
 .fan .book::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:#00000026}
 .fan .book i{position:absolute;left:14px;right:10px;height:5px;border-radius:3px;background:#ffffffaa}
 .still{position:absolute;border-radius:18px;overflow:hidden;background:#222;box-shadow:0 18px 30px -16px #3b1e0a88,0 0 0 4px #fff}
-.still svg.sv{display:block;width:100%;height:100%}
+img.sv{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#0000 45%,#00000059 72%,#000000a6)}
+img.cov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.fan .book img.cov{z-index:0}.fan .book::before{z-index:1}
+.subbars,.subtl{z-index:2}
 .subtl{position:absolute;left:0;right:0;bottom:12px;text-align:center;padding:0 10px}
 .subtl span{display:inline;background:#000000b3;color:#fff;font:800 15px/1.65 var(--sans);padding:3px 6px;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .subtl b{background:var(--hl);color:#2B2119;border-radius:5px;padding:1px 4px;box-shadow:0 0 16px #FFD54Dcc}
@@ -176,7 +180,8 @@ svg.flag{border-radius:4px;display:block;box-shadow:0 0 0 1px #0000001a}
 
 /* name */
 .tutor{display:flex;align-items:flex-end;gap:10px;margin-top:6px}
-.tutor .face{width:62px;height:62px;border-radius:50%;background:var(--ac-s);display:grid;place-items:center;flex:none}
+.tutor .face{width:62px;height:62px;border-radius:50%;background:var(--ac-s);display:grid;place-items:center;flex:none;overflow:hidden;box-shadow:0 0 0 2px #fff,0 6px 14px -6px #8a3a1466}
+.tutor .face img{width:100%;height:100%;object-fit:cover;display:block}
 .bubble{background:var(--card);border:1.5px solid var(--bd);border-radius:20px 20px 20px 6px;padding:12px 16px;font:800 18px/1.2 var(--sans);min-width:92px;min-height:48px;color:var(--t1)}
 .bubble.empty{color:var(--t3)}
 .react{display:flex;gap:10px;align-items:flex-start;background:var(--hl-s);border-radius:18px;padding:12px 14px;font-weight:700;font-size:14.5px;color:#5A4200}
@@ -217,7 +222,8 @@ svg.flag{border-radius:4px;display:block;box-shadow:0 0 0 1px #0000001a}
 /* first scene */
 .scene{position:relative;height:330px;border-radius:26px;overflow:visible;margin-top:2px;flex:none}
 .scene .frame{position:absolute;inset:0;border-radius:26px;overflow:hidden;background:#1C1422;box-shadow:0 18px 34px -18px #3b1e0a99}
-.scene .frame svg{display:block;width:100%;height:100%}
+.scene .frame img.sv{object-position:50% 35%}
+.scene .frame .scrim{background:linear-gradient(180deg,#0000 40%,#00000066 70%,#000000b3)}
 .scene .sbar{position:absolute;left:10px;right:10px;bottom:16px;text-align:center;line-height:2.1;z-index:2}
 .scene .sbar button{background:#000000b8;color:#fff;border:none;font:800 19px/1 var(--sans);padding:6px 5px;margin:0 -1px;border-radius:7px;transition:background .15s,color .15s,box-shadow .2s}
 .scene .sbar button:hover{background:#000000e0}
@@ -286,8 +292,8 @@ svg.flag{border-radius:4px;display:block;box-shadow:0 0 0 1px #0000001a}
 .hsat.book::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#00000026}
 .hsat.book i{position:absolute;left:9px;right:7px;height:4px;border-radius:2px;background:#ffffffaa}
 .hsat.clip{width:62px;height:40px;background:#1C1422}
-.hsat.clip svg{display:block;width:100%;height:100%}
-.hsat.clip b{position:absolute;inset:0;display:grid;place-items:center;color:#fff}
+.hsat.clip b{position:absolute;inset:0;display:grid;place-items:center;color:#fff;z-index:1}
+.hsat.book::before{z-index:1}
 
 /* email */
 .preview{position:relative;border-radius:24px;overflow:hidden;flex:none}
@@ -428,7 +434,7 @@ svg.flag{border-radius:4px;display:block;box-shadow:0 0 0 1px #0000001a}
     </div>
     <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div>
     <div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div>
-    <p class="foot-note"><b>Faked for the demo:</b> the movie clip is a drawn still frame (no video), audio uses the browser's speech voice if one exists, and the word lists, subtitle lines and translations are demo content (English, Spanish, French, German only; other target languages fall back to English content). The vocabulary estimate is computed from your taps with the brief's rubric (made-up words count against you). The plan length uses the brief's anchor (Beginner: about 4 weeks at 10 min, about 7 at 5 min); other levels use demo values. Apple/Google sign-in, the reminder, purchases and the trial are simulated, and no charge is made. An email containing "taken" shows the "already has a plan" error. The funnel UI doesn't switch into the native language. FAQ answers on the paywall reuse the brief's own lines. <b>Placeholders, not faked:</b> the app name (<code>{{app_name}}</code>) and every price (<code>{{price_3m}}</code>…) stay as tokens. So do the rating, user count and content counts (<code>{{app_rating}}</code>, <code>{{rating_count}}</code>, <code>{{user_count}}</code>, <code>{{clip_count}}</code>…), and reviews are dashed "real review goes here" cards. The brief cites EWA's real figures (4.7★ / 196K ratings, 70M learners, 10,000+ clips and books, 40,000+ flashcards, and the Maria and Anutel quotes). They belong to EWA and are shown here only as reference.</p>
+    <p class="foot-note"><b>Faked for the demo:</b> the movie clip is a still frame (no video; stills, book covers, the format photo and the fox tutor are AI-generated stand-ins, not licensed content), audio uses the browser's speech voice if one exists, and the word lists, subtitle lines and translations are demo content (English, Spanish, French, German only; other target languages fall back to English content). The vocabulary estimate is computed from your taps with the brief's rubric (made-up words count against you). The plan length uses the brief's anchor (Beginner: about 4 weeks at 10 min, about 7 at 5 min); other levels use demo values. Apple/Google sign-in, the reminder, purchases and the trial are simulated, and no charge is made. An email containing "taken" shows the "already has a plan" error. The funnel UI doesn't switch into the native language. FAQ answers on the paywall reuse the brief's own lines. <b>Placeholders, not faked:</b> the app name (<code>{{app_name}}</code>) and every price (<code>{{price_3m}}</code>…) stay as tokens. So do the rating, user count and content counts (<code>{{app_rating}}</code>, <code>{{rating_count}}</code>, <code>{{user_count}}</code>, <code>{{clip_count}}</code>…), and reviews are dashed "real review goes here" cards. The brief cites EWA's real figures (4.7★ / 196K ratings, 70M learners, 10,000+ clips and books, 40,000+ flashcards, and the Maria and Anutel quotes). They belong to EWA and are shown here only as reference.</p>
   </aside>
 </div>
 
@@ -634,46 +640,27 @@ const tok=n=>`<span class="tok">{{${n}}}</span>`;
 const isAndroid=/android/i.test(navigator.userAgent);
 const storeBtn=()=>isAndroid?`<button class="store" data-a="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></button>`:`<button class="store" data-a="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></button>`;
 const phReview=()=>`<div class="rev ph"><div class="who"><span class="av" style="background:var(--bd2)">?</span>First name<span class="stars" style="color:var(--bd2)">${stars(5,13)}</span></div><p>“Real review goes here, ideally one about tap-to-translate. Use ${tok('app_name')}'s own store reviews only.”</p></div>`;
-const book=(c,l=3)=>`<div class="book" style="background:${c}">${Array.from({length:l},(_,i)=>`<i style="top:${18+i*10}px;${i===l-1?'right:26px':''}"></i>`).join('')}</div>`;
+const book=(c,n,eager)=>`<div class="book" style="background:${c}">${coverImg(n,eager)}</div>`;
 
-/* drawn movie stills (no video/image files) */
-function still(kind){
-  if(kind==='cafe')return `<svg class="sv" viewBox="0 0 360 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs><linearGradient id="cf1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6B3F2A"/><stop offset="1" stop-color="#2A1911"/></linearGradient><radialGradient id="cf2" cx=".3" cy=".3" r=".6"><stop offset="0" stop-color="#FFD08A" stop-opacity=".75"/><stop offset="1" stop-color="#FFD08A" stop-opacity="0"/></radialGradient></defs>
-    <rect width="360" height="240" fill="url(#cf1)"/><rect x="20" y="24" width="150" height="110" rx="4" fill="#F4B26B" opacity=".55"/><path d="M95 24v110M20 79h150" stroke="#3A2217" stroke-width="5"/>
-    ${[[40,40,9],[70,60,6],[130,44,11],[150,96,7],[48,104,8]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#FFF3D6" opacity=".7"/>`).join('')}
-    <rect width="360" height="240" fill="url(#cf2)"/><rect x="0" y="176" width="360" height="64" fill="#1E120C"/><rect x="150" y="164" width="200" height="14" rx="4" fill="#4A2C1D"/>
-    <circle cx="258" cy="92" r="26" fill="#1A0F0A"/><path d="M212 176c2-40 20-60 46-60s44 20 46 60z" fill="#1A0F0A"/>
-    <path d="M0 240V150c30-18 70-22 92-6 16 12 20 50 20 96z" fill="#120A07"/><circle cx="48" cy="112" r="32" fill="#120A07"/>
-    <rect x="236" y="150" width="16" height="20" rx="3" fill="#E9E0D2"/></svg>`;
-  if(kind==='dusk')return `<svg class="sv" viewBox="0 0 360 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs><linearGradient id="dk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3F3A7A"/><stop offset=".55" stop-color="#E8806A"/><stop offset="1" stop-color="#FFC27A"/></linearGradient></defs>
-    <rect width="360" height="240" fill="url(#dk1)"/><circle cx="250" cy="150" r="34" fill="#FFE3A3" opacity=".9"/>
-    ${[[0,120,40],[36,96,30],[64,140,44],[106,86,26],[130,120,40],[168,104,30],[196,132,38],[232,90,28],[258,126,40],[296,100,30],[324,130,36]].map(([x,y,w])=>`<rect x="${x}" y="${y}" width="${w}" height="${240-y}" fill="#2B2340"/>`).join('')}
-    ${Array.from({length:26},(_,i)=>`<rect x="${(i*53)%350+6}" y="${150+(i*37)%70}" width="4" height="5" fill="#FFD27A" opacity=".85"/>`).join('')}
-    <path d="M120 240c4-44 20-64 44-64s40 20 44 64z" fill="#161020"/><circle cx="164" cy="152" r="22" fill="#161020"/></svg>`;
-  return `<svg class="sv" viewBox="0 0 360 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs><linearGradient id="dr1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#433049"/><stop offset="1" stop-color="#1D1422"/></linearGradient><radialGradient id="dr2" cx=".7" cy=".5" r=".55"><stop offset="0" stop-color="#FFC977" stop-opacity=".85"/><stop offset="1" stop-color="#FFC977" stop-opacity="0"/></radialGradient></defs>
-    <rect width="360" height="240" fill="url(#dr1)"/><rect x="26" y="40" width="112" height="84" rx="4" fill="#23345E"/>
-    ${Array.from({length:14},(_,i)=>`<rect x="${34+(i*23)%98}" y="${70+(i*13)%46}" width="5" height="6" fill="#FFD98E" opacity=".8"/>`).join('')}
-    <path d="M26 82h112M82 40v84" stroke="#2E2233" stroke-width="5"/>
-    <rect x="212" y="30" width="86" height="190" fill="#FFD9A0"/><rect width="360" height="240" fill="url(#dr2)"/>
-    <circle cx="255" cy="92" r="17" fill="#150E17"/><path d="M226 220c0-66 10-104 29-104s29 38 29 104z" fill="#150E17"/>
-    <rect x="0" y="206" width="360" height="34" fill="#140D16"/>
-    <path d="M0 240V160c22-20 60-26 84-10 18 12 24 46 24 90z" fill="#0E0910"/><circle cx="46" cy="122" r="30" fill="#0E0910"/></svg>`;
+/* movie stills: AI-generated film stills in img/ (original scenes, no real films/actors) */
+const STILL_ALT={door:'Film still: two friends talking at an apartment doorway at night',cafe:'Film still: two friends laughing over coffee in a warm cafe',dusk:'Film still: a woman on a city rooftop watching the sunset'};
+function still(kind,eager){if(!STILL_ALT[kind])kind='door';
+  return `<img class="sv" src="img/still-${kind}.jpg" alt="${STILL_ALT[kind]}" ${eager?'':'loading="lazy" '}decoding="async"><span class="scrim" aria-hidden="true"></span>`;
 }
+const COVER=['img/book-1.jpg','img/book-2.jpg','img/book-3.jpg'];
+const coverImg=(i,eager)=>`<img class="cov" src="${COVER[i%3]}" alt="" ${eager?'':'loading="lazy" '}decoding="async">`;
 
 /* ---------- screens ---------- */
 const V={
 1:()=>{const hl=HOOKLINE[S.target]||HOOKLINE.en;
   return `<div class="scr" style="padding-top:8px">
   <div class="fan" aria-hidden="true">
-    <div style="position:absolute;left:30px;top:0;transform:rotate(-14deg)">${book('#7F6BD8')}</div>
-    <div style="position:absolute;left:138px;top:-12px;transform:rotate(3deg)">${book('#2E9D69')}</div>
-    <div style="position:absolute;right:30px;top:0;transform:rotate(14deg)">${book('#F5A623')}</div>
-    <div class="still" style="left:6px;top:70px;width:200px;height:132px;transform:rotate(-8deg)">${still('dusk')}<div class="subbars"><i></i></div></div>
-    <div class="still" style="right:6px;top:74px;width:200px;height:132px;transform:rotate(8deg)">${still('cafe')}<div class="subbars"><i></i></div></div>
-    <div class="still" style="left:50%;top:96px;width:280px;height:184px;margin-left:-140px">${still('door')}
+    <div style="position:absolute;left:30px;top:0;transform:rotate(-14deg)">${book('#7F6BD8',0,1)}</div>
+    <div style="position:absolute;left:138px;top:-12px;transform:rotate(3deg)">${book('#2E9D69',1,1)}</div>
+    <div style="position:absolute;right:30px;top:0;width:74px;transform:rotate(14deg)">${book('#F5A623',2,1)}</div>
+    <div class="still" style="left:6px;top:70px;width:200px;height:132px;transform:rotate(-8deg)">${still('dusk',1)}<div class="subbars"><i></i></div></div>
+    <div class="still" style="right:6px;top:74px;width:200px;height:132px;transform:rotate(8deg)">${still('cafe',1)}<div class="subbars"><i></i></div></div>
+    <div class="still" style="left:50%;top:96px;width:280px;height:184px;margin-left:-140px">${still('door',1)}
       <div class="subtl"><span>${esc(hl[0])}<b>${esc(hl[1])}</b>${esc(hl[2])}</span></div></div>
     <div class="tbub" style="left:50%;top:228px;transform:translate(-8%,-100%)"><span><small>${esc(nativeName(S.native))}</small>${esc(TOMORROW[S.native]||'…')}</span></div>
   </div>
@@ -710,7 +697,7 @@ const V={
   <div class="foot">${S.goals.length?'':'<div class="note">Pick at least one to continue</div>'}${cta('Continue',S.goals.length>0)}</div>`,
 6:()=>`<div class="scr"><h1 class="display">${t('What should we call you?','What\'s your first name?')}</h1>
   <p class="lead">${t('Your tutor will greet you by name.','We\'ll put it on your learning plan.')}</p>
-  <div class="tutor"><span class="face"><svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="#E04A1F"/><circle cx="16" cy="19" r="2.6" fill="#fff"/><circle cx="28" cy="19" r="2.6" fill="#fff"/><path d="M15 27c4 4 10 4 14 0" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span>
+  <div class="tutor"><span class="face"><img src="img/tutor.jpg" alt="Your AI tutor, a friendly fox" loading="lazy" decoding="async"></span>
   <div class="bubble ${S.name.trim()?'':'empty'}" id="hi">${S.name.trim()?`Hi, ${esc(S.name.trim())}!`:'…'}</div></div>
   <div class="field"><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
   <div class="foot">${cta('Continue',true,'name')}</div>`,
@@ -739,8 +726,8 @@ const V={
   <div class="foot">${cta('Continue')}</div>`},
 10:()=>{const th={
     clips:`<div style="position:absolute;inset:0">${still('dusk')}</div><div class="subbars" style="bottom:8px"><i style="height:6px"></i></div>`,
-    books:`<div style="position:absolute;inset:0;display:flex;gap:6px;align-items:center;justify-content:center;background:#FFF1C2">${['#7F6BD8','#2E9D69','#E04A1F'].map((c,i)=>`<div style="position:relative;width:38px;height:56px;border-radius:3px 6px 6px 3px;background:${c};transform:rotate(${(i-1)*6}deg);box-shadow:0 6px 10px -6px #0006"></div>`).join('')}</div>`,
-    tutor:`<div style="position:absolute;inset:0;background:#E3F1FF;padding:10px;display:flex;flex-direction:column;gap:6px"><span style="align-self:flex-start;background:#fff;border-radius:10px 10px 10px 3px;padding:5px 8px;font-size:11px;font-weight:800">Hi! Ready to talk?</span><span style="align-self:flex-end;background:var(--ac);color:#fff;border-radius:10px 10px 3px 10px;padding:5px 8px;font-size:11px;font-weight:800">Yes!</span></div>`,
+    books:`<img class="sv" src="img/fmt-books.jpg" alt="An open book with headphones and a cup of tea" loading="lazy" decoding="async">`,
+    tutor:`<div style="position:absolute;inset:0;background:#E3F1FF;padding:10px;display:flex;flex-direction:column;gap:6px"><span style="align-self:flex-start;display:flex;align-items:flex-end;gap:5px"><img src="img/tutor.jpg" alt="" loading="lazy" decoding="async" style="width:24px;height:24px;border-radius:50%;flex:none;object-fit:cover"><span style="background:#fff;border-radius:10px 10px 10px 3px;padding:5px 8px;font-size:11px;font-weight:800">Hi! Ready to talk?</span></span><span style="align-self:flex-end;background:var(--ac);color:#fff;border-radius:10px 10px 3px 10px;padding:5px 8px;font-size:11px;font-weight:800">Yes!</span></div>`,
     games:`<div style="position:absolute;inset:0;background:#E6F6EE;display:grid;place-items:center"><div style="display:flex;gap:4px">${'WORD'.split('').map((c,i)=>`<span style="width:26px;height:30px;border-radius:7px;background:${i===2?'var(--ac)':'#fff'};color:${i===2?'#fff':'var(--t1)'};display:grid;place-items:center;font:800 15px var(--display);box-shadow:0 3px 0 #0000001a">${c}</span>`).join('')}</div></div>`};
   return `<div class="scr"><h1 class="display">${t('How do you like learning?','Pick your favorite ways to learn')}</h1>
   <p class="lead">${t('We\'ll fill your plan with these.','Mix and match — change anytime.')}</p>
@@ -911,7 +898,7 @@ function mountHero(el){
   const slab=(cls,i)=>`<div class="hslab ${cls}" style="width:${W}px;height:${H}px;transform:translate(-50%,-50%) translate3d(${i*3}px,${i*4}px,${-i*7}px) rotateZ(${i%2?2.5:-2}deg)"></div>`;
   let satHTML='';
   if(sats){const cols=['#7F6BD8','#2E9D69','#F5A623'];const kinds=['dusk','cafe','door'];
-    for(let i=0;i<6;i++)satHTML+=i%2?`<div class="hsat clip" data-s="${i}" style="opacity:0">${still(kinds[(i>>1)%3])}<b>${ic('play',14)}</b></div>`:`<div class="hsat book" data-s="${i}" style="background:${cols[(i>>1)%3]};opacity:0"><i style="top:12px"></i><i style="top:20px"></i><i style="top:28px;right:16px"></i></div>`}
+    for(let i=0;i<6;i++)satHTML+=i%2?`<div class="hsat clip" data-s="${i}" style="opacity:0">${still(kinds[(i>>1)%3])}<b>${ic('play',14)}</b></div>`:`<div class="hsat book" data-s="${i}" style="background:${cols[(i>>1)%3]};opacity:0">${coverImg(i>>1)}</div>`}
   el.innerHTML=`<div class="hscene">
     <div class="hfloor" style="width:${W*1.3}px;height:${W*.42}px;transform:translate(-50%,-50%) translate3d(0,${H*.5+30}px,-10px) rotateX(90deg)"></div>
     ${slab('c',3)}${slab('b',2)}${slab('a',1)}

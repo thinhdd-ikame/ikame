@@ -123,6 +123,9 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .tile .badge{position:absolute;top:9px;right:9px;width:20px;height:20px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center}
 .utile{min-height:118px;justify-content:space-between;background:linear-gradient(160deg,#F7F8FD,#EFF1FA)}
 .utile .tools{display:flex;gap:4px;flex-wrap:wrap}
+.utile{overflow:hidden;padding-top:0}
+.utile .uimg{display:block;width:calc(100% + 24px);max-width:none;margin:0 -12px;aspect-ratio:16/10;height:auto;object-fit:cover;background:#E7E6FB}
+.utile .badge{z-index:1;box-shadow:0 0 0 2px #fff}
 .otherin{margin-top:-2px}
 
 .field{display:flex;flex-direction:column;gap:7px}
@@ -149,9 +152,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .wcard:hover{border-color:var(--line-2)}
 .wcard.on{border-color:var(--pri)}
 .wcard .art{height:240px;display:grid;place-items:center;position:relative;overflow:hidden}
-.wcard .art .big{font-size:64px;line-height:1;position:relative;z-index:1}
-.wcard .art .desk{position:absolute;left:14%;right:14%;bottom:30px;height:8px;border-radius:4px;background:#00000014}
-.wcard .art .win{position:absolute;top:18px;width:46px;height:56px;border-radius:6px;background:#ffffff99;border:2px solid #ffffffcc}
+.wcard .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
 .wcard .cap{padding:12px 12px 14px;font:700 15px/1.25 var(--head);display:flex;gap:6px;align-items:flex-start}
 .legalline{font-size:11.5px;color:var(--t3);text-align:center;text-wrap:balance}
 .legalline button{display:inline;background:none;border:none;padding:0;color:var(--t2);text-decoration:underline;font-size:inherit}
@@ -575,8 +576,8 @@ const V={
   <span class="pill">🏅 28-Day AI Certificate Program</span>
   ${qhead(t('Your 28-day AI skills plan','Get fluent in AI, fast'),t('15 minutes a day. Start by telling us about work.','Pick one to start your personal plan.'))}
   <div class="wcards">
-    <button class="wcard ${S.work==='company'?'on':''}" data-a="work" data-v="company"><span class="art" style="background:linear-gradient(170deg,#E5E8FF,#C9D0FA)"><span class="win" style="left:18px"></span><span class="win" style="left:72px"></span><span class="desk"></span><span class="big">👩🏽‍💼</span></span><span class="cap"><span>🏢</span><span>I work for a company</span></span></button>
-    <button class="wcard ${S.work==='self'?'on':''}" data-a="work" data-v="self"><span class="art" style="background:linear-gradient(170deg,#E3F6EA,#C6EBD3)"><span class="win" style="right:20px;border-radius:50% 50% 6px 6px"></span><span class="desk"></span><span class="big">🧑🏻‍💻</span></span><span class="cap"><span>🧑‍💻</span><span>I work for myself</span></span></button>
+    <button class="wcard ${S.work==='company'?'on':''}" data-a="work" data-v="company"><span class="art" style="background:linear-gradient(170deg,#E5E8FF,#C9D0FA)"><img src="img/work-company.jpg" width="600" height="900" alt="Woman in a blazer working on a laptop in a bright office" fetchpriority="high"></span><span class="cap"><span>🏢</span><span>I work for a company</span></span></button>
+    <button class="wcard ${S.work==='self'?'on':''}" data-a="work" data-v="self"><span class="art" style="background:linear-gradient(170deg,#E3F6EA,#C6EBD3)"><img src="img/work-self.jpg" width="600" height="900" alt="Man in a sweater working on a laptop at a home desk" fetchpriority="high"></span><span class="cap"><span>🧑‍💻</span><span>I work for myself</span></span></button>
   </div></div>
   <div class="foot"><div class="legalline">By continuing, you agree to our <button data-a="legal">Terms</button>, <button data-a="legal">Privacy</button> and <button data-a="legal">Subscription Terms</button></div></div>`,
 
@@ -626,7 +627,7 @@ const V={
   <div class="foot">${cta('Continue',ok(8))}</div>`,
 
 9:()=>`<div class="scr">${qhead(t('What should AI help first?','Where do you start?'),t('Your first week focuses here. Pick up to two.',"Choose up to two. We'll lead with these."))}
-  <div class="grid2">${USES.slice(0,4).map(([k,e,l,tl])=>{const on=S.uses.includes(k);return `<button class="tile utile ${on?'on':''}" data-a="use" data-v="${k}" aria-pressed="${on}">${on?`<span class="badge">${ic('check',12,'currentColor',3)}</span>`:''}<span class="em" style="font-size:26px">${e}</span><span class="lbl">${l}</span><span class="tools">${tl.map(x=>tool(x,true)).join('')}</span></button>`}).join('')}</div>
+  <div class="grid2">${USES.slice(0,4).map(([k,e,l,tl])=>{const on=S.uses.includes(k);return `<button class="tile utile ${on?'on':''}" data-a="use" data-v="${k}" aria-pressed="${on}">${on?`<span class="badge">${ic('check',12,'currentColor',3)}</span>`:''}<img class="uimg" src="img/use-${k}.jpg" width="480" height="300" alt="" loading="lazy"><span class="lbl">${e} ${l}</span><span class="tools">${tl.map(x=>tool(x,true)).join('')}</span></button>`}).join('')}</div>
   <div class="opts">${opt('use','other','✏️','Other',S.uses.includes('other'),true)}
   ${S.uses.includes('other')?otherBox('useOther',S.useOther):''}</div>
   ${S.err?`<div class="err">${S.err}</div>`:''}</div>

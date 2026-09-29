@@ -153,6 +153,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .cv-eye{font:800 10px/1 var(--disp);letter-spacing:.1em;text-transform:uppercase;opacity:.7;position:relative}
 .cv-title{font:800 19px/1.15 var(--disp);position:relative;text-wrap:balance}
 .cv-meta{font-size:12px;font-weight:600;opacity:.75;position:relative}
+.cover.pic{padding:12px 14px;justify-content:flex-end}
+.cover .cv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.cover.pic.course{gap:4px}
+.cover.pic.course .cv-img{position:relative;inset:auto;flex:1;min-height:0;width:calc(100% + 28px);height:auto;margin:-12px -14px 4px;object-position:50% 40%}
+.pimg{display:block;width:100%;object-fit:cover}
 .cv-chip{align-self:flex-start;position:relative;font:800 12px/1 var(--disp);padding:7px 10px;border-radius:999px;background:#fff;color:var(--vio)}
 .fl{padding:7px 11px;border-radius:999px;background:#fff;color:var(--ink);font:800 13px/1 var(--disp);white-space:nowrap;box-shadow:0 6px 16px -6px #1E1B3955;border:1px solid var(--line)}
 .fl.v{background:var(--grad);color:#fff;border-color:transparent}
@@ -379,27 +384,27 @@ const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h}
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const SUBJ={
- hist:{l:'History',ad:'history',e:'🏛️',bg:'#FCE8CC',art:['🤴','👸','🧔'],course:'Events That Shaped the World',
+ hist:{l:'History',ad:'history',e:'🏛️',bg:'#FCE8CC',img:'img/cover-hist.jpg',alt:'Illustration of a Greek temple, an amphora, a scroll and a globe',art:['🤴','👸','🧔'],course:'Events That Shaped the World',
   ints:[['⚔️','War & peace'],['👑','Great leaders'],['🏺','Ancient worlds'],['🔭','Big discoveries']],
-  q:[{q:'When did the Berlin Wall fall?',o:['1961','1989','1999'],a:1,f:'Nov 9, 1989: a fumbled press briefing opened the border.',art:'wall'},
-     {q:'Who said "I know nothing"?',o:['Pythagoras','Aristotle','Socrates'],a:2,f:'Socrates, via his student Plato: wisdom starts with doubt.',art:['🏛️','🧔','📜'],quote:'"I know nothing."'}]},
- bio:{l:'Biology',ad:'biology',e:'🧬',bg:'#D6F2E4',art:['🔬','🧬','🌿'],course:'Discover the Science of Life and Yourself',
+  q:[{q:'When did the Berlin Wall fall?',o:['1961','1989','1999'],a:1,f:'Nov 9, 1989: a fumbled press briefing opened the border.',art:'wall',img:'img/kc-wall.jpg',alt:'Illustration of a crowd celebrating on top of a graffiti-covered wall at night'},
+     {q:'Who said "I know nothing"?',o:['Pythagoras','Aristotle','Socrates'],a:2,f:'Socrates, via his student Plato: wisdom starts with doubt.',art:['🏛️','🧔','📜'],img:'img/kc-bust.jpg',alt:'Illustration of an ancient Greek marble bust beside a scroll',quote:'"I know nothing."'}]},
+ bio:{l:'Biology',ad:'biology',e:'🧬',bg:'#D6F2E4',img:'img/cover-bio.jpg',alt:'Illustration of a DNA helix growing from leaves beside a microscope',art:['🔬','🧬','🌿'],course:'Discover the Science of Life and Yourself',
   ints:[['🧬','DNA & cells'],['🫀','How bodies work'],['🦠','Microbes'],['🌍','Ecosystems']],
   q:[{q:'How many cells make you?',o:['37 million','37 billion','37 trillion'],a:2,f:'About 37 trillion, and most are red blood cells.',art:['🔬','🩸','🧫']},
      {q:'Which organ can regrow itself?',o:['Heart','Liver','Brain'],a:1,f:'Your liver regrows even after surgeons remove over half.',art:['🩺','🫀','🔄']}]},
- psy:{l:'Psychology & habits',ad:'psychology',e:'🧠',bg:'#E6E1FB',art:['🔁','🧠','💭'],course:null,
+ psy:{l:'Psychology & habits',ad:'psychology',e:'🧠',bg:'#E6E1FB',img:'img/cover-psy.jpg',alt:'Illustration of a head silhouette with a sprout and looping habit arrows',art:['🔁','🧠','💭'],course:null,
   ints:[['🔁','Building habits'],['😤','Emotions & stress'],['🧲','How we decide'],['💞','Relationships']],
   q:[{q:'How long to form a habit?',o:['21 days','66 days','1 year'],a:1,f:'One study found 66 days on average, not 21.',art:['📅','🔁','✅']},
      {q:'Why do unfinished tasks nag?',o:['Zeigarnik effect','Placebo effect','Halo effect'],a:0,f:'Unfinished tasks tend to stick in memory: the Zeigarnik effect.',art:['📝','⏳','🧠']}]},
- comm:{l:'Communication',ad:'communication',e:'💬',bg:'#D8EAFF',art:['🗣️','💬','👂'],course:'Say the Right Thing at the Right Time',
+ comm:{l:'Communication',ad:'communication',e:'💬',bg:'#D8EAFF',img:'img/cover-comm.jpg',alt:'Illustration of two speech bubbles and a listening ear',art:['🗣️','💬','👂'],course:'Say the Right Thing at the Right Time',
   ints:[['🙋','Body language'],['👂','Active listening'],['🎯','Persuasion'],['📖','Storytelling']],
   q:[{q:"Is 93% of talk nonverbal?",o:['✅ True','❌ Myth'],a:1,f:'Myth: that study measured feelings, not everyday speech.',art:['🗣️','🤷','📊']},
      {q:"Best way to show you're listening?",o:['Nod a lot','Say it back','Give advice'],a:1,f:'Paraphrasing shows you understood, so people feel heard.',art:['👂','💬','🙂']}]},
- math:{l:'Everyday math',ad:'math',e:'➗',bg:'#FFE3CF',art:['🧮','➗','💵'],course:'Boost Your Brain, Handle Your Bills',
+ math:{l:'Everyday math',ad:'math',e:'➗',bg:'#FFE3CF',img:'img/cover-math.jpg',alt:'Illustration of a calculator, a receipt and a stack of coins',art:['🧮','➗','💵'],course:'Boost Your Brain, Handle Your Bills',
   ints:[['💵','Money & bills'],['🧩','Logic puzzles'],['📊','Stats in news'],['🧠','Mental math']],
   q:[{q:"What's a 15% tip on $40?",o:['$4','$6','$8'],a:1,f:'Take 10% ($4), then add half of it ($2).',art:['🍽️','🧾','💵']},
      {q:'Double 1¢ daily for 30 days?',o:['About $10','About $5,000','Over $5 million'],a:2,f:"Day 30 alone pays $5.37 million: that's compounding.",art:['🪙','📈','💰']}]},
- art:{l:'Art',ad:'art',e:'🎨',bg:'#FCDFEC',art:['🖌️','🎨','🖼️'],course:'See the World Through a Different Lens',
+ art:{l:'Art',ad:'art',e:'🎨',bg:'#FCDFEC',img:'img/cover-art.jpg',alt:'Illustration of an easel, a paint palette and brushes',art:['🖌️','🎨','🖼️'],course:'See the World Through a Different Lens',
   ints:[['🖼️','Famous masterpieces'],['🎨','Color psychology'],['🖌️',"Artists' lives"],['🏛️','Art movements']],
   q:[{q:'Who painted The Starry Night?',o:['Monet','Van Gogh','Picasso'],a:1,f:'Painted in 1889 from his window at Saint-Rémy.',art:['🌌','🌙','🖌️']},
      {q:'How big is the Mona Lisa?',o:['Poster-size','Door-size','Wall-size'],a:0,f:'Just 77 × 53 cm, smaller than most visitors expect.',art:['🖼️','📏','👀']}]}
@@ -504,15 +509,21 @@ const otherIn=(k,ph)=>S[k].includes('other')?`<div class="box fadein"><input id=
 const multiList=(k,items,ph)=>`<div class="pills">${items.map(([v,em,l])=>pill('multi',v,em,l,S[k].includes(v),true,'',k)).join('')}${pill('multi','other','✏️','Other',S[k].includes('other'),true,'',k)}${otherIn(k,ph)}</div>`;
 
 /* course cover (the flat face of the 3D hero) */
-function coverHTML(kind){
+function coverHTML(kind,w=999){
   const s=coverSubj();
   const blobs=`<i class="blob" style="width:120px;height:120px;right:-30px;top:-30px"></i><i class="blob" style="width:70px;height:70px;left:-20px;bottom:40px"></i>`;
+  if(s.img){
+    if(kind==='hook'||w<200)return `<div class="cover pic" style="background:${s.bg}"><img class="cv-img" src="${s.img}" alt="${esc(s.alt)}" loading="${kind==='hook'?'eager':'lazy'}" decoding="async">${kind==='hook'?`<span class="cv-chip">${s.e} ${s.l}</span>`:''}</div>`;
+    return `<div class="cover pic course" style="background:${s.bg};--cbg:${s.bg}"><img class="cv-img" src="${s.img}" alt="${esc(s.alt)}" loading="lazy" decoding="async"><div class="cv-eye">Course · ${subjL()}</div><div class="cv-title">${courseT()}</div><div class="cv-meta"><span class="tok">{{lesson_count}}</span> lessons</div></div>`;
+  }
   if(kind==='hook')return `<div class="cover" style="background:${s.bg}">${blobs}<div class="cv-art">${s.art.map(e=>`<span>${e}</span>`).join('')}</div><span class="cv-chip">${s.e} ${s.l}</span></div>`;
   return `<div class="cover" style="background:${s.bg}">${blobs}<div class="cv-art">${s.art.map(e=>`<span>${e}</span>`).join('')}</div><div class="cv-eye">Course · ${subjL()}</div><div class="cv-title">${courseT()}</div><div class="cv-meta"><span class="tok">{{lesson_count}}</span> lessons</div></div>`;
 }
 const deck=(kind,mode,w,h)=>`<div class="deck" data-kind="${kind}" data-mode="${mode}" data-w="${w}" data-h="${h}"></div>`;
 
+const thumb=(s,style='')=>`<img class="pimg" src="${s.img}" alt="" loading="lazy" decoding="async" style="${style}">`;
 function kcArt(Q,s){
+  if(Q.img)return `<div class="kcart" style="background:${s.bg}"><img class="pimg" src="${Q.img}" alt="${esc(Q.alt)}" loading="lazy" decoding="async" style="position:absolute;inset:0;height:100%;aspect-ratio:3/2"></div>`;
   if(Q.art==='wall')return `<div class="kcart" style="background:linear-gradient(180deg,#DCE7FF,#F3F0FF)"><div class="crowd">🧍🙌🧍‍♀️🎉🧍🙌🧍‍♂️</div><div class="wall"></div><span style="position:absolute;top:22px;right:26px;font-size:34px">🌙</span></div>`;
   return `<div class="kcart" style="background:${s.bg}">${Q.art.map((e,i)=>`<span style="${i===1?'font-size:66px':''}">${e}</span>`).join('')}</div>`;
 }
@@ -561,7 +572,7 @@ const V={
   <p class="lead" style="margin-top:-6px">${t('Learn in 15 minutes a day, anywhere.','Bite-sized lessons you can read or hear.')}</p></div>
   <div class="foot">${cta('Start my quiz')}</div>`},
 2:()=>{const s=coverSubj();return `<div class="scr"><div class="lav" style="padding:20px 18px 16px"><div class="mini">
-   <div class="ms s1"><span class="tag">Lesson · 5 min</span><div class="art" style="background:${s.bg}">${s.e}</div><div class="sk" style="width:80%"></div><div class="sk"></div><div class="sk" style="width:60%"></div></div>
+   <div class="ms s1"><span class="tag">Lesson · 5 min</span><div class="art" style="background:${s.bg};overflow:hidden">${thumb(s,'height:100%;aspect-ratio:1')}</div><div class="sk" style="width:80%"></div><div class="sk"></div><div class="sk" style="width:60%"></div></div>
    <div class="ms s2"><span class="tag">Listen</span><div class="art" style="background:var(--lav)">🎧</div><div class="wave">${[14,26,38,22,32,18,40,24,30,16,28,20].map(h=>`<i style="height:${h}px"></i>`).join('')}</div><span class="playb">▶</span></div>
    <div class="ms s3"><span class="tag">True or False</span><div class="art" style="background:${s.bg}">❓</div><div class="sk"></div><div class="sk" style="width:70%"></div><div class="tfb"><span style="background:var(--green-bg);color:#0C6B3F">True</span><span style="background:var(--amber-bg);color:#7A5200">False</span></div></div>
   </div><p class="hint" style="text-align:center;margin:10px 0 0">Placeholder loop: swap in real app screen recordings</p></div>
@@ -574,7 +585,7 @@ const V={
   <div class="foot"><div class="note">Tap one to continue</div></div>`,
 4:()=>`<div class="scr"><h1 class="h1">${t('What do you want to learn?','Pick your first subject')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Start with one, switch subjects anytime.','Your plan starts here; change it whenever.')}</p>
-  <div class="grid2">${SKEYS.map(k=>{const s=SUBJ[k],on=S.subject===k;return `<button class="scard ${on?'on':''}" data-a="subj" data-v="${k}" aria-pressed="${on}"><span class="sem" style="background:${s.bg}">${s.e}</span><span class="sl">${s.l}</span>${on?'<span class="sck">✓</span>':''}</button>`}).join('')}</div>
+  <div class="grid2">${SKEYS.map(k=>{const s=SUBJ[k],on=S.subject===k;return `<button class="scard ${on?'on':''}" data-a="subj" data-v="${k}" aria-pressed="${on}"><span class="sem" style="background:${s.bg};overflow:hidden">${thumb(s,'height:100%;aspect-ratio:1')}</span><span class="sl">${s.l}</span>${on?'<span class="sck">✓</span>':''}</button>`}).join('')}</div>
   ${pill('subj','other','✏️','Other',S.subject==='other',true)}
   ${S.subject==='other'?`<div class="box fadein" style="margin-top:-6px"><input id="oin" data-f="subjO" maxlength="40" placeholder="e.g. Space, economics" value="${esc(S.subjO)}"></div>`:''}</div>
   <div class="foot">${cta('Continue',OKF[4]())}</div>`,
@@ -597,7 +608,7 @@ const V={
   <div class="field"><div class="box"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
   <div class="foot">${cta('Continue',true,'name')}</div>`,
 8:()=>{const s=sk()?SUBJ[sk()]:null,items=(s?s.ints:MIXED).map(([e,l])=>[l,e,l]);
-  return `<div class="scr" style="padding-top:8px"><span class="subjbadge" style="background:${(s||SUBJ[S.adSubj]).bg}">${s?s.e:'✨'}</span>
+  return `<div class="scr" style="padding-top:8px"><span class="subjbadge" style="background:${(s||SUBJ[S.adSubj]).bg};overflow:hidden">${s?thumb(s,'height:100%;aspect-ratio:1'):'✨'}</span>
   <h1 class="h1" style="padding-right:56px">${t(nm()+', what grabs you most?','Which topics sound fun?')}</h1>
   <p class="lead" style="margin-top:-6px">${t("We'll open your plan with these.",'Pick all that spark your curiosity.')}</p>
   ${multiList('ints',items,'Another topic')}</div>
@@ -659,7 +670,7 @@ const V={
   <h1 class="h1" style="margin-top:-8px">${t('This course fits you best',nm()+', meet your first course')}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Picked from your answers about ${subjL()}.`,`Chosen for your goals and ${mins()}-minute days.`)}</p>
   <div class="blurlist"><div class="rows">${[1,2,3,4].map(n=>`<div><span class="chip" style="padding:4px 8px">${n}</span><span style="flex:1">Lesson ${n}<i class="sk" style="display:block;width:${[80,64,72,56][n-1]}%;margin-top:6px"></i></span></div>`).join('')}</div><span class="lk">🔒</span></div>
-  <div><div class="hint" style="margin-bottom:8px;font-weight:600">You might also like</div><div class="also">${others.map(k=>`<div style="background:${SUBJ[k].bg}"><span>${SUBJ[k].e}</span>${SUBJ[k].course}</div>`).join('')}</div></div></div>
+  <div><div class="hint" style="margin-bottom:8px;font-weight:600">You might also like</div><div class="also">${others.map(k=>`<div style="background:${SUBJ[k].bg}"><span style="width:44px;height:44px;border-radius:12px;overflow:hidden;display:block">${thumb(SUBJ[k],'height:100%;aspect-ratio:1')}</span>${SUBJ[k].course}</div>`).join('')}</div></div></div>
   <div class="foot">${cta('Get my plan')}</div>`},
 21:()=>`<div class="gatebg">${chartSVG(false)}</div><div class="scr" style="padding:0;gap:0"><div class="gsheet">
   <h1 class="h1">${t('Where should we send it?','Save your plan, '+nm())}</h1>
@@ -679,7 +690,7 @@ const V={
   <div class="foot">${cta('Start my plan')}</div>`,
 23:()=>{const P=PLANS[S.plan],s=coverSubj();
   return `<button class="closex" data-a="close" aria-label="Close">✕</button><div class="scr" style="padding-top:52px">
-  <div class="pwtop"><span class="thumb" style="background:${s.bg}">${sk()?SUBJ[sk()].e:'✨'}</span><div><div class="eyebrow">Your course</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${courseT()}</div></div></div>
+  <div class="pwtop"><span class="thumb" style="background:${s.bg};overflow:hidden">${sk()?thumb(SUBJ[sk()],'height:100%;aspect-ratio:1'):'✨'}</span><div><div class="eyebrow">Your course</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${courseT()}</div></div></div>
   <h1 class="h1">${t(`Start ${nm()}'s plan today`,`Your ${subjL()} plan is ready`)}</h1>
   <p class="lead" style="margin-top:-6px">${t('Every price and renewal shown before you pay.','Lessons, audio, quizzes and games, all included.')}</p>
   <div class="pills" style="gap:12px">${Object.entries(PLANS).map(([k,p])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="badge">${p.badge}</span>`:''}<span class="radio"></span><span style="flex:1"><span class="pn">${p.n}</span><span class="pl" style="display:block;margin-top:4px">${money(p.intro)} first ${p.per}</span><span class="pl" style="display:block">then ${money(p.ren)} / ${p.per}</span><span class="pd">${perDay(p.intro,p.days)}/day, then ${perDay(p.ren,p.days)}/day</span></span></button>`).join('')}</div>
@@ -713,7 +724,7 @@ const V={
   <div class="nsteps"><div><b>1</b>Download</div><div><b>2</b>Tap the sign-in link we emailed</div><div><b>3</b>Start lesson 1</div></div>
   ${stores()}
   <div class="qrrow">${qrSVG('app'+S.email)}<span class="hint">On a computer? Scan with your phone. (QR placeholder)</span></div>
-  <div class="mock"><span class="eyebrow">Lesson 1</span><div style="font:800 13px/1.2 var(--disp)">${courseT()}</div><div class="ms" style="position:static;opacity:1;animation:none;padding:0"><div class="art" style="background:${coverSubj().bg};height:64px;font-size:30px">${coverSubj().e}</div><div class="sk"></div><div class="sk" style="width:70%"></div></div></div>
+  <div class="mock"><span class="eyebrow">Lesson 1</span><div style="font:800 13px/1.2 var(--disp)">${courseT()}</div><div class="ms" style="position:static;opacity:1;animation:none;padding:0"><div class="art" style="background:${coverSubj().bg};height:64px;overflow:hidden">${thumb(coverSubj(),'height:100%')}</div><div class="sk"></div><div class="sk" style="width:70%"></div></div></div>
   <div class="micro"><span>Receipt sent to ${esc(S.email||'your email')}</span><span>Manage or cancel anytime: <span class="tok">{{portal_link}}</span></span><span>Your ${esc(remT())} reminder turns on in the app.</span><span>Can't sign in? ${TK("support_email")}</span></div></div>
   <div class="foot">${cta('Open '+TK('app_name'),true,'open')}</div>`
 };
@@ -762,7 +773,7 @@ function mountDeck(el){
   let s=`<div class="dscene"><div class="dfloor" style="width:${w*1.1}px;height:${h*1.05}px"></div>`;
   backs.forEach(([z,rz,x,y],i)=>s+=`<div class="dk back b${i}" data-z="${z}" data-rz="${rz}" data-x="${x}" data-y="${y}" data-i="${i}" style="width:${w}px;height:${h}px"></div>`);
   for(let k=5;k>=1;k--)s+=`<div class="dk edge" style="width:${w}px;height:${h}px;transform:translate(-50%,-50%) translateZ(${-k}px)"></div>`;
-  s+=`<div class="dk top" style="width:${w}px;height:${h}px;transform:translate(-50%,-50%)">${coverHTML(kind)}</div>`;
+  s+=`<div class="dk top" style="width:${w}px;height:${h}px;transform:translate(-50%,-50%)">${coverHTML(kind,w)}</div>`;
   fl.forEach(([l,c,fx,fy,z])=>s+=`<div class="fsh" style="transform:translate(-50%,-50%) translate3d(${fx*w}px,${fy*h}px,1px)"></div>`);
   fl.forEach(([l,c,fx,fy,z],i)=>s+=`<div class="fl ${c}" data-x="${fx*w}" data-y="${fy*h}" data-z="${z}" data-i="${i}">${l}</div>`);
   el.innerHTML=s+'</div>';

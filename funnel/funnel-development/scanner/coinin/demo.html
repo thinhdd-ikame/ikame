@@ -99,6 +99,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pill{display:flex;align-items:center;gap:12px;min-height:54px;padding:10px 16px;border-radius:999px;background:var(--surface);border:1px solid var(--gold-line);text-align:left;width:100%;transition:background .15s,color .15s,border-color .15s}
 .pill:hover{border-color:var(--accent)}
 .pill .em{font-size:20px;width:28px;display:grid;place-items:center;flex:none}
+.pill .em .tph{display:block;border-radius:50%;overflow:hidden;box-shadow:0 1px 4px #0008}
 .pill .lbl{flex:1;font-weight:500;font-size:16px}
 .pill .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gold-line);display:grid;place-items:center;flex:none}
 .pill.on{background:var(--accent);color:var(--btn-text);border-color:var(--accent)}
@@ -122,6 +123,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .cl{box-shadow:inset 0 0 0 1px #00000040}
 .cf{backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
 .cf svg{display:block;width:100%;height:100%}
+/* generated macro photos cropped to the coin circle (source has a thin black margin, so zoom slightly) */
+img.face{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.1);-webkit-user-drag:none;user-select:none}
 .csheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:linear-gradient(var(--sa,115deg),transparent 28%,#FFE9C83d 47%,transparent 64%)}
 .cshadow{position:absolute;left:12%;right:12%;bottom:-16%;height:18%;border-radius:50%;background:radial-gradient(closest-side,#000000b0,transparent);filter:blur(4px)}
 .cring{position:absolute;inset:-9%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 62%,#C9A45C55 80%,#FFE3A0 97%,transparent 100%);-webkit-mask:radial-gradient(closest-side,transparent 86%,#000 88%,#000 96%,transparent 98%);mask:radial-gradient(closest-side,transparent 86%,#000 88%,#000 96%,transparent 98%)}
@@ -132,6 +135,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .brand{font:700 22px/1 var(--serif);letter-spacing:.02em}
 .jar{position:relative;height:300px;flex:none;margin:0 -20px}
 .jar svg{position:absolute;inset:0;width:100%;height:100%}
+.jar>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.jar::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,var(--bg) 0%,transparent 18%,transparent 70%,var(--bg) 100%)}
+.jar .jarcoin{z-index:1}
 .jarcoin{position:absolute;right:38px;bottom:26px;width:118px;height:118px}
 
 /* hook 2 mock */
@@ -188,6 +194,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* camera primer */
 .cloth{position:relative;height:210px;border-radius:26px;flex:none;background:radial-gradient(ellipse at 50% 40%,#2E2B27,#161513 75%),#161513;overflow:hidden;display:grid;place-items:center}
 .cloth::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,#ffffff06 0 2px,transparent 2px 5px),repeating-linear-gradient(-45deg,#00000014 0 2px,transparent 2px 5px)}
+.cloth>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cloth.photo::before{display:none}
+.cloth.photo{place-items:end start}
+.cloth.photo .coin{position:absolute;left:44px;top:88px}
 .tips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .tip{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font-size:12px;text-align:center;color:var(--t2);line-height:1.2}
 .tip svg{color:var(--accent)}
@@ -195,6 +205,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* viewfinder (faked camera) */
 .cam{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 55% at 50% 48%,#3A3630 0%,#1E1C19 55%,#0D0C0B 100%)}
 .cam::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,#ffffff07 0 2px,transparent 2px 5px),repeating-linear-gradient(-45deg,#0000001c 0 2px,transparent 2px 5px)}
+.cam>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam.photo::before,.cam.lit::after{z-index:1}
+.coin2 .face{border-radius:50%;box-shadow:0 10px 24px #000b}
+.coin2{border-radius:50%;overflow:hidden}
+.cam.photo::before{background:radial-gradient(ellipse 80% 55% at 50% 48%,transparent 0%,#0000004d 60%,#000000a6 100%)}
 .cam.lit::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#FFF1D433,transparent 60%)}
 .vcoin{position:absolute;left:50%;top:392px;z-index:1;transform:translate(-50%,-50%);transition:transform .8s cubic-bezier(.3,.8,.3,1)}
 .vf[data-phase="far"] .vcoin{transform:translate(-50%,-50%) translate(30px,38px) scale(.52)}
@@ -407,9 +422,10 @@ button{font:inherit;color:inherit;cursor:pointer}
       <dl class="data" id="data"></dl>
     </div>
     <div class="foot-note">
-      <span><b>Faked:</b> the camera. The viewfinder is drawn and every capture uses a drawn 1955 Lincoln cent. No camera is opened. The ID result, match confidence, alternatives, grade, error check and history lines are sample outputs, and the loading steps are timed.</span>
+      <span><b>Faked:</b> the camera. The viewfinder is a still photo and every capture uses the same 1955 Lincoln cent. No camera is opened. The ID result, match confidence, alternatives, grade, error check and history lines are sample outputs, and the loading steps are timed.</span>
       <span><b>Placeholders:</b> the brief sets no prices, value figures, trial length or review text, so those show as <code>{{tokens}}</code> or dashed cards. The app name, store rating, rating count and coin-database size are tokens too. The brief quotes Coinin's own listing (4.7★, 101K ratings, 270,000+ coins), and this demo must not reuse a competitor's brand or stats.</span>
-      <span><b>Not built:</b> the screen-8 coins are drawings standing in for licensed reference photos. World and ancient swaps, the optional monthly plan and the hand on screen 10 are not included. Sign-in, permissions and purchases only show a toast. No charge is made and no data leaves the page.</span>
+      <span><b>Images:</b> the jar, cloth, camera surface, coin faces and coin-type thumbnails are AI-generated illustrative photos, not real reference shots. The other-match coins (1955-D, 1955-S, 1956) are still drawings.</span>
+      <span><b>Not built:</b> the screen-8 coins are drawings standing in for licensed reference photos, because the image model could not render doubled letters. World and ancient swaps and the optional monthly plan are not included. Sign-in, permissions and purchases only show a toast. No charge is made and no data leaves the page.</span>
     </div>
   </aside>
 </div>
@@ -448,8 +464,11 @@ const tok=n=>`<span class="tok">{{${n}}}</span>`;
 /* ---------- coin art (drawn stand-ins for real macro photos) ---------- */
 const TXT='font-family="Cormorant Garamond,Georgia,serif" font-weight="700"';
 const BUST='M70 178C66 160 72 146 84 138C78 128 74 112 76 96C76 70 92 52 112 54C128 55 136 66 136 80C137 86 140 90 142 96L146 104C144 107 141 108 140 110C141 114 139 118 138 120C140 128 138 136 132 142C126 148 118 150 112 150C116 156 126 160 138 168C142 171 144 175 144 178Z';
+/* photo faces: AI-generated illustrative macro shots of a 1955 (Philadelphia) cent; other years/mints keep the drawing */
+const faceImg=(src,alt)=>`<img class="face" src="${src}" alt="${alt}" draggable="false" decoding="async">`;
 function obverse(c){
   const y=(c&&c.year)||'1955',m=(c&&c.mintL)||'';
+  if(y==='1955'&&!m)return faceImg('img/obv.jpg','Front of a 1955 Lincoln wheat cent (illustrative photo)');
   return `<svg viewBox="0 0 200 200" aria-hidden="true">
   <circle cx="100" cy="100" r="100" fill="url(#cuRim)"/><circle cx="100" cy="100" r="91" fill="url(#cuField)"/>
   <circle cx="100" cy="100" r="91" fill="none" stroke="#5E2F17" stroke-opacity=".6" stroke-width="1.6"/>
@@ -473,6 +492,9 @@ function wheat(){
 }
 const WHEAT=wheat();
 function reverse(){
+  return faceImg('img/rev.jpg','Back of a Lincoln wheat cent, ONE CENT between two wheat ears (illustrative photo)');
+}
+function reverseSVG(){
   return `<svg viewBox="0 0 200 200" aria-hidden="true">
   <circle cx="100" cy="100" r="100" fill="url(#cuRim)"/><circle cx="100" cy="100" r="91" fill="url(#cuField)"/>
   <circle cx="100" cy="100" r="91" fill="none" stroke="#5E2F17" stroke-opacity=".6" stroke-width="1.6"/>
@@ -499,6 +521,8 @@ function crop(doubled,circled){
 }
 function thumb(kind,s=30){
   const w=`width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"`;
+  const PH={cent:['obv','Lincoln cent'],euro:['world','Bimetallic world coin'],denarius:['ancient','Ancient silver coin'],eagle:['bullion','Silver bullion round']}[kind];
+  if(PH)return `<span class="tph" style="width:${s}px;height:${s}px"><img class="face" src="img/${PH[0]}.jpg" alt="${PH[1]} (illustrative photo)" width="${s}" height="${s}" loading="lazy" decoding="async"></span>`;
   if(kind==='cent')return `<svg ${w}><circle cx="20" cy="20" r="19" fill="url(#cuRim)"/><circle cx="20" cy="20" r="16" fill="url(#cuField)"/><path d="M15 34c-1-4 1-6 3-7-2-3-2-8 1-11 3-2 7-1 8 2l1 3-1 2c0 3-1 5-3 6 2 1 4 3 4 5z" fill="url(#cuBust)" opacity=".9"/></svg>`;
   if(kind==='euro')return `<svg ${w}><circle cx="20" cy="20" r="19" fill="url(#auF)"/><circle cx="20" cy="20" r="12" fill="url(#agF)"/><text x="20" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="#6b6a64" font-family="Georgia">1</text></svg>`;
   if(kind==='denarius')return `<svg ${w}><path d="M20 2c8 0 17 6 17 16s-6 19-17 19S3 30 3 20 11 2 20 2z" fill="url(#agF)"/><path d="M14 30c0-5 2-7 4-8-2-3-1-8 3-9 4 0 6 3 5 7l-2 3c1 2 3 4 3 7z" fill="#8E8D87" opacity=".7"/></svg>`;
@@ -614,7 +638,7 @@ function features(){const o=[];S.want.forEach(w=>(FEAT_BY[w]||[]).forEach(f=>{if
 /* ---------- screens ---------- */
 const V={
 1:()=>`<div class="spot"></div><div class="topbar"><span class="brand">${tok('app_name')}</span><span class="badge">${tok('app_rating')}★ App Store</span></div>
-  <div class="scr z" style="padding-top:0;gap:14px"><div class="jar">${jarSVG()}<div class="jarcoin"><span class="goldring"></span>${coin3d(118,'spin')}</div></div>
+  <div class="scr z" style="padding-top:0;gap:14px"><div class="jar"><img src="img/jar.jpg" alt="A glass jar tipped over, old copper and silver coins spilling onto dark linen" fetchpriority="high" decoding="async"><div class="jarcoin"><span class="goldring"></span>${coin3d(118,'spin')}</div></div>
   <h1 class="display xl">${t("What's in your coin jar?",'That old coin might matter')}</h1>
   <p class="lead">${t('Snap a photo and know it in seconds.','Identify any coin and see its estimated value.')}</p></div>
   <div class="foot">${cta('Get started')}<div class="note">By continuing you agree to our Terms · Privacy</div></div>`,
@@ -661,7 +685,7 @@ const V={
   <div class="quote" style="text-align:left"><div class="stars" style="justify-content:flex-start">${[0,0,0,0,0].map(()=>starF(13)).join('')}</div><p>“Verbatim App Store review goes here, about ease or identification.”</p><small>App Store user · picked by the team, never about a coin's dollar value</small></div>
   <div class="hint" style="font-size:12px">App Store, US · ${tok('rating_date')}</div></div>
   <div class="foot">${cta('Continue')}</div>`,
-10:()=>`<div class="scr"><div class="cloth">${coin3d(128,'float')}</div>
+10:()=>`<div class="scr"><div class="cloth photo"><img src="img/cloth.jpg" alt="A hand reaching down to place a coin on plain dark cloth" loading="lazy" decoding="async">${coin3d(104,'float')}</div>
   <h1 class="display">${t("Let's scan your first coin",'Grab a coin nearby')}</h1>
   <p class="lead">${t('Allow camera access so we can see it.','Any coin works — even one from your pocket.')}</p>
   <div class="tips">${[['one','One coin'],['sun','Good light'],['flat','Flat surface'],['fill','Fill the circle']].map(([i,l])=>`<div class="tip">${ic(i,20)}<span>${l}</span></div>`).join('')}</div></div>
@@ -749,9 +773,9 @@ function revealHTML(){
 }
 function camView(step){
   const front=step===1;
-  return `<div class="vf" data-phase="${front?'far':'steady'}"><div class="cam ${S.flash?'lit':''}"></div>
+  return `<div class="vf" data-phase="${front?'far':'steady'}"><div class="cam photo ${S.flash?'lit':''}"><img src="img/cam.jpg" alt="Camera view of a plain dark cloth surface" loading="lazy" decoding="async"></div>
   <div class="vcoin">${coin3d(196,front?'view':'flip',front?'front':'back')}</div>
-  <div class="coin2">${`<svg viewBox="0 0 200 200" width="120" height="120" aria-hidden="true"><circle cx="100" cy="100" r="100" fill="url(#agF)"/><circle cx="100" cy="100" r="88" fill="none" stroke="#77766F" stroke-width="2"/></svg>`}</div>
+  <div class="coin2"><img class="face" src="img/bullion.jpg" alt="A second coin in the frame (silver round)" loading="lazy" decoding="async"></div>
   <div class="shade"></div><div class="blurov"></div><div class="vmask"></div><div class="vring"><i></i><i></i><i></i><i></i></div><div class="flashfx"></div>
   <div class="qchip" id="qchip"><span class="dot"></span><span>Finding the coin…</span></div>
   ${front?'':`<button class="thumb" data-a="retake" aria-label="Retake front photo"><span class="tc">${obverse(S.coin)}</span><span>${ic('refresh',11)} Retake</span></button>`}

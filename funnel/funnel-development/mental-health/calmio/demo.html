@@ -282,6 +282,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .fscene .fc2{border-radius:50%;background:radial-gradient(circle at 40% 35%,#F7DFA0,#D9B266)}
 .flsh{position:absolute;left:50%;bottom:2%;border-radius:50%;background:radial-gradient(closest-side,#4B5E5033,transparent);transform:translateX(-50%);pointer-events:none}
 
+/* photo slots (AI-generated stand-ins, img/) */
+.bgph{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgph.top{bottom:auto;height:62%}
+.bgph img{width:100%;height:100%;object-fit:cover;display:block}
+.bgph::after{content:"";position:absolute;inset:0;background:var(--scrim)}
+.cimg{display:block;width:calc(100% + 36px);margin:-18px -18px 0;height:132px;object-fit:cover;border-radius:23px 23px 0 0;background:var(--c-sage-soft)}
+.card.c3 .cimg{margin:-18px -16px 0;width:calc(100% + 32px)}
+.opt .em.th{width:34px;height:34px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1.5px #fff}
+.opt .em.th img{width:100%;height:100%;object-fit:cover;display:block}
+.hdrimg{display:block;width:100%;height:118px;object-fit:cover;border-radius:22px;flex:none;background:var(--c-sage-soft)}
+
 /* toast */
 .toast{position:absolute;left:50%;top:100px;transform:translateX(-50%);z-index:60;background:var(--c-ink);color:#fff;font-size:13px;font-weight:700;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.8s ease forwards}
 @keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,82%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
@@ -341,7 +352,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
     <p class="tip">Safety checks: "Need help now?" is on every screen. Tap "Really low" on #9. Type a crisis phrase (e.g. "end it all") in any "Other" field or in the #18 chat.</p>
     <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div>
     <div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div>
-    <p class="foot-note"><b>Faked in this demo:</b> the programme and all lesson titles (the brief only gives Grief and Alcohol week titles; the rest are placeholders), the companion's replies (a scripted 2-exchange chat seeded from topic and tone), reply ideas outside Grief, the loading steps, sign-in, reminders and purchases (toasts only, no charge made). Crisis detection is a simple keyword list, not a classifier. Helpline numbers are shown as text; in the app they open the dialer or browser. <b>Not faked:</b> prices are the brief's US App Store list (2026-09-28). Inside the phone the app name is the placeholder {{app_name}} (SKUs: {{app_name}} Grief etc.), and rating, rating count and review cards stay placeholders. The brief's figures (Calmio: App Store 4.7 from 1.1K, Trustpilot 4.6 from 451, as of 2026-09-28) are the reference app's, not this app's. "Other" on #5 falls back to the Calm mind path, which the brief doesn't define. Demo email errors: <code>taken@example.com</code>, <code>fail@example.com</code>.</p>
+    <p class="foot-note"><b>Faked in this demo:</b> the programme and all lesson titles (the brief only gives Grief and Alcohol week titles; the rest are placeholders), the companion's replies (a scripted 2-exchange chat seeded from topic and tone), reply ideas outside Grief, the loading steps, sign-in, reminders and purchases (toasts only, no charge made). Crisis detection is a simple keyword list, not a classifier. Helpline numbers are shown as text; in the app they open the dialer or browser. <b>Not faked:</b> prices are the brief's US App Store list (2026-09-28). Inside the phone the app name is the placeholder {{app_name}} (SKUs: {{app_name}} Grief etc.), and rating, rating count and review cards stay placeholders. The brief's figures (Calmio: App Store 4.7 from 1.1K, Trustpilot 4.6 from 451, as of 2026-09-28) are the reference app's, not this app's. "Other" on #5 falls back to the Calm mind path, which the brief doesn't define. Demo email errors: <code>taken@example.com</code>, <code>fail@example.com</code>. Photos (<code>img/</code>) are AI-generated mood stand-ins with no people or faces; they are never used as reviews or social proof.</p>
   </aside>
 </div>
 
@@ -411,6 +422,14 @@ const PATHS={
     replies:['Evenings are quiet','I have no one to tell','I feel unseen'],
     open:'Loneliness is more common than it feels. How has today been?'}
 };
+/* one gentle, non-literal photo per topic (img/topic-*.jpg) */
+const TIMG={grief:['topic-grief','A single wildflower in a small glass bottle on a sunny windowsill'],
+  breakup:['topic-breakup','An open road leading toward a soft sunrise'],
+  drinking:['topic-drinking','A glass of sparkling water with lemon and mint'],
+  smoking:['topic-smoking','A green hilltop under a wide open morning sky'],
+  stress:['topic-stress','A still, misty lake at early morning'],
+  lonely:['topic-lonely','Two mugs side by side on a sunny table']};
+const bgph=(name,alt,scrim,eager,cls='')=>`<div class="bgph ${cls}" style="--scrim:${scrim}"><img src="img/${name}.jpg" alt="${alt}" ${eager?'fetchpriority="high"':'loading="lazy"'}></div>`;
 const PATH_ORDER=['grief','breakup','drinking','smoking','stress','lonely'];
 /* week-1 lesson per #8 pick (demo placeholders) */
 const LESSON={waves:'When the waves come',sleep:'Winding down at night',numb:'When you feel nothing',guilt:'Loosening guilt',
@@ -553,14 +572,14 @@ function week1(){
 
 /* ---------- screens ---------- */
 const V={
-1:()=>`<div class="scr center" style="align-items:center;text-align:center;gap:14px">
+1:()=>`${bgph('hook-window','Soft morning light on a windowsill with a small green plant','linear-gradient(180deg,#F7F4EE14 0%,#F7F4EE26 42%,#F7F4EEb3 62%,#F7F4EEeb 84%)',true)}<div class="scr center" style="align-items:center;text-align:center;gap:14px">
   ${flower('breathe',190)}
   <div class="bubble ai fadein" style="align-self:center;animation-delay:.6s">I’m here. What’s on your mind?</div>
   <h1 class="display" style="font-size:31px;margin-top:8px">${t('Breathe. You’re not alone.','Heavy day? Let’s talk.')}</h1>
   <p class="lead">${t('A calm companion to talk things through, anytime.','Share what’s on your mind, at your own pace.')}</p></div>
   <div class="foot">${cta('Get started')}<div class="note">18+ · {{app_name}} is AI and not a substitute for professional care</div></div>`,
 2:()=>`<div class="scr center">
-  <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:18px"><span class="chip lav">${ic('msg',13)} AI companion</span>
+  <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:18px"><img class="cimg" src="img/hook-mug.jpg" alt="Hands holding a warm mug of tea by a window" loading="lazy"><span class="chip lav">${ic('msg',13)} AI companion</span>
   <div class="thread seq"><div class="bubble me" style="animation-delay:.3s">I can’t switch my head off.</div>
   <div class="bubble ai" style="animation-delay:1.3s">That sounds exhausting. What’s looping most?</div>
   <div class="bubble me" style="animation-delay:2.3s"><span class="typing"><i></i><i></i><i></i></span></div></div></div>
@@ -568,7 +587,7 @@ const V={
   <p class="lead">${t('{{app_name}} listens, asks gentle questions, and helps you reflect.','A private space to say what’s hard to say.')}</p></div>
   <div class="foot">${cta('Continue')}</div>`,
 3:()=>`<div class="scr center">
-  <div class="card" style="padding:18px 16px 12px;display:flex;flex-direction:column;gap:12px">
+  <div class="card c3" style="padding:18px 16px 12px;display:flex;flex-direction:column;gap:12px"><img class="cimg" src="img/hook-meadow.jpg" alt="A meadow path through wildflowers at dawn" loading="lazy">
    <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Your garden</span><span class="chip">${ic('clock',13)} 15 min</span></div>
    <div class="garden" style="border:none;background:none;padding:4px 0 10px">${f2(true,52,.5)}${f2(true,52,1.7)}${f2(false,52)}${f2(false,52)}${f2(false,52)}</div></div>
   <h1 class="display">${t('Fifteen minutes a day.','Small steps, every day.')}</h1>
@@ -591,8 +610,8 @@ const V={
 5:()=>`<div class="scr"><div style="margin:-6px auto -14px">${flower('float',86,0.04)}</div>
   <h1 class="display">${t('What are you carrying right now?','What brings you to {{app_name}}?')}</h1>
   <p class="lead">${t('Pick the one that weighs most today.','This shapes your daily programme.')}</p>
-  <div class="opts">${PATH_ORDER.map(k=>opt('path',k,PATHS[k].e,PATHS[k].l,S.path===k&&!S.pOther)).join('')}
-  ${opt('path','other','✏️','Other',S.pOther)}${S.pOther?otherIn('pathOther',S.pathOther):''}</div></div>
+  <div class="opts">${PATH_ORDER.map(k=>opt('path',k,`<img src="img/${TIMG[k][0]}.jpg" alt="" loading="lazy">`,PATHS[k].l,S.path===k&&!S.pOther).replace('class="em"','class="em th"')).join('')}
+  ${opt('path','other','✏️','Other',S.pOther).replace('class="em"','class="em" style="width:34px"')}${S.pOther?otherIn('pathOther',S.pathOther):''}</div></div>
   <div class="foot">${S.pOther?cta('Continue',!!S.pathOther.trim(),'pathother'):'<div class="note">Tap one to continue</div>'}</div>`,
 6:()=>`<div class="scr center">
   <h1 class="display">${t('A companion, not a therapist','Before we begin, one promise')}</h1>
@@ -678,7 +697,8 @@ const V={
   <div class="ph" style="font-size:13px;padding:10px 14px">“Real path-matched store review goes here — never invented.”</div></div>
   <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
 17:()=>{const p=P();const w1=week1();const md=moodOf(S.mood)||MOODS[2];
-  return `<div class="scr" style="gap:14px"><h1 class="display">${t(`${nm()}’s ${esc(p.label)} programme`,'Your first four weeks')}</h1>
+  const ti=TIMG[pk()];
+  return `<div class="scr" style="gap:14px"><img class="hdrimg" src="img/${ti[0]}.jpg" alt="${ti[1]}" loading="lazy"><h1 class="display">${t(`${nm()}’s ${esc(p.label)} programme`,'Your first four weeks')}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Built from your answers. Starts ${qt()}.`,'Fifteen minutes a day, at your own pace.')}</p>
   <div class="moodstrip"><span>Mood</span><span class="m" style="background:${md[3]}">${md[1]}</span><span style="color:var(--c-ink)">Day 1</span><span style="flex:1"></span>${'<span class="d"></span>'.repeat(5)}</div>
   <div class="weeks">
@@ -724,7 +744,7 @@ const V={
    <p class="renew2" style="color:var(--c-sage);font-weight:700">Crisis resources are always free.</p>
    <button class="link" data-a="notnow" style="padding:2px">Not now</button></div>`},
 22:()=>{const free=S.premium===false||S.premium===null;
-  return `<div class="scr" style="align-items:center;text-align:center;gap:12px;padding-top:0">${flower('reveal',168)}
+  return `${bgph('payoff-sea','A calm sea at sunrise','linear-gradient(180deg,#F7F4EE00 0%,#F7F4EE00 38%,#F7F4EEa6 62%,#F7F4EE 94%)',false,'top')}<div class="scr" style="align-items:center;text-align:center;gap:12px;padding-top:0">${flower('reveal',168)}
   <h1 class="display">${t('Your first flower bloomed',`Welcome in, ${nm()}.`)}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Week one opens at ${qt()}. Or start now.`,'Come back anytime. {{app_name}} is here.')}</p>
   <div class="garden" style="width:100%">${f2(true,46,.3)}${f2(false,42)}${f2(false,42)}${f2(false,42)}${f2(false,42)}</div>

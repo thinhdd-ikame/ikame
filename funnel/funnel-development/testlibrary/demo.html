@@ -92,7 +92,11 @@ code{font-size:.92em;overflow-wrap:anywhere}
 
 .wm{display:flex;align-items:center;gap:8px;font:700 17px/1 var(--sans);color:var(--ink);letter-spacing:-.01em}
 .wm i{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 11px/1 var(--sans);font-style:normal}
-.hero1{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:150px}
+.hero1{position:relative;height:172px;border-radius:20px;overflow:hidden;background:#F6F4EF;border:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.hero1>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:18% 45%}
+.hero1 .bell3d{margin:0;z-index:1}
+.banner{display:block;width:100%;height:150px;object-fit:cover;border-radius:18px;background:#F6F4EF;border:1px solid var(--line)}
+.banner.pw{height:118px;object-position:50% 52%}
 .tpop{transform-box:fill-box;transform-origin:center;animation:tpop .4s cubic-bezier(.3,1.4,.5,1) both}
 @keyframes tpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 
@@ -286,6 +290,7 @@ code{font-size:.92em;overflow-wrap:anywhere}
 .lib{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:2px 20px 8px;scroll-snap-type:x mandatory}
 .lcard{flex:none;width:170px;scroll-snap-align:start;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;text-align:left}
 .lcard .ei{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;font-size:20px}
+.lcard .lt{display:block;width:100%;height:96px;object-fit:cover;border-radius:12px;background:#F6F4EF}
 .lcard b{font-size:15px}
 .lcard span{font-size:12px;color:var(--t3)}
 
@@ -358,6 +363,7 @@ code{font-size:.92em;overflow-wrap:anywhere}
       <p><b>Faked:</b> the 8 test items are written for the demo. The score is a fixed lookup from right answers (0–8 right → 68–125) placed on a mean-100 / SD-15 curve. There are no real norms and no age adjustment. The loading steps, Google/Apple sign-in, checkout, PDF download and share buttons are simulated, and no charge is made.</p>
       <p><b>Real:</b> prices are the brief's (testlibrary.com/pricing, 2026-09-28). The app name, domain, review quote and review platform are placeholders, so the phone never shows the real brand or its Trustpilot data. The brief's sample quote is from the real site and is not used here.</p>
       <p><b>Placeholders</b> (dashed in the phone): tests taken, review rating, reviewer name, minutes, norm group, refund window and library question counts. Fill these from real data only.</p>
+      <p><b>Images</b> (<code>img/</code>) are AI-generated still lifes: lander, screen 2, paywall header and the next-test cards. The test items stay as SVG.</p>
       <p>Test order is Patterns → Numbers → Shapes → Words, following the checkpoint tips. Screen 2 lists the chips in the brief's order.</p>
     </div>
   </aside>
@@ -453,7 +459,7 @@ const AGES=[['18-24','🌱'],['25-34','🚀'],['35-44','🧭'],['45-59','🌿'],
 const GOALS=[['curious','🤔','Pure curiosity'],['prep','🎓','School or job prep'],['sharp','🧠','Keep my mind sharp'],['friends','👥','Compare with friends'],['other','✏️','Other']];
 const goalLabel=()=>{const g=GOALS.find(x=>x[0]===S.goal);return S.goal==='other'?(S.goalOther.trim()||'Other'):g?g[2]:'Pure curiosity'};
 const GTIPS={curious:['Puzzles you enjoy already count as practice.','Pair this with a personality test next.'],prep:['Time yourself on a few number sequences.','Do one short set of analogies a day.'],sharp:['Mix a new kind of puzzle in each week.','Read something outside your usual field.'],friends:['Share your card and compare sections.','Take it together under the same rules.']};
-const LIB={prep:[['💼','Career Test'],['💪','Strengths Finder'],['🧩','DISC']],curious:[['🌊','Big Five'],['🔤','16 Personalities'],['🔷','Enneagram']],sharp:[['💛','EQ Test'],['🕰️','Mental Age']],friends:[['💞','Love Style'],['🔗','Attachment Style'],['🦊','Spirit Animal']]};
+const LIB={prep:[['💼','Career Test','career','Paper blocks rising like stairs to a small flag'],['💪','Strengths Finder','strengths','Block arch with an amber keystone'],['🧩','DISC','disc','A disc split into four quadrants']],curious:[['🌊','Big Five','bigfive','Five spheres of growing size'],['🔤','16 Personalities','16p','A four by four grid of tiles'],['🔷','Enneagram','enneagram','Nine tokens in a circle joined by thread']],sharp:[['💛','EQ Test','eq','Two overlapping discs, amber and navy'],['🕰️','Mental Age','mentalage','An hourglass with amber sand']],friends:[['💞','Love Style','lovestyle','Two paper hearts leaning together'],['🔗','Attachment Style','attachment','Two interlocked rings'],['🦊','Spirit Animal','spiritanimal','An origami fox']]};
 const PLANS={
   one:{n:'One-time report',today:'$57.00',then:'Nothing renews',d:'This test’s full report. No subscription.'},
   t7:{n:'7-day Full Access',today:'$1.95',then:'$39.95 every 4 weeks',badge:'ALL 27 TESTS'},
@@ -596,14 +602,14 @@ const dashQuote=()=>`<div class="quote dash"><q>“Real, current review goes her
 const V={
 1:()=>`<div class="scr" style="gap:14px">
   <div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>${ph('app_name')}</div>
-  <div class="hero1">${matrix((r,c)=>r===2&&c===2?null:shp(TR[(r+c)%3],25,25,12,'wgn'[r]),{pop:!RM,size:148})}${bell3d('float',176)}</div>
+  <div class="hero1"><img src="img/hero.jpg" alt="Navy and amber tangram pieces and a pencil on a sheet of paper" width="720" height="480" fetchpriority="high">${bell3d('float',176)}</div>
   <h1 class="display">${t('Discover your IQ score','How sharp is your mind?')}</h1>
   <p class="lead" style="margin-top:-6px">${t('38 reasoning puzzles, compared with people your age.','Patterns, numbers, words and shapes — pick your age to start.')}</p>
   <div class="pills" role="group" aria-label="Your age">${AGES.map(([a,e])=>`<button class="pill ${S.age===a?'on':''}" data-a="age" data-v="${a}" aria-pressed="${S.age===a}"><span class="em">${e}</span>${a}</button>`).join('')}</div>
   <p class="disc"><b>Free to take · Full report is a paid unlock</b></p>
   ${S.under?`<div class="err" style="text-align:center">You must be 18 or older to take this test.</div>`:`<button class="link" data-a="under" style="font-size:13px">I’m under 18</button>`}
   <div class="flinks"><span>Cancel subscription</span><span>Subscription policy</span><span>FAQ</span><span>Terms</span><span>Privacy</span></div></div>`,
-2:()=>`<div class="scr"><h1 class="display">${t('Before you begin','Here’s how it works')}</h1>
+2:()=>`<div class="scr"><img class="banner" src="img/howto.jpg" alt="Puzzle pieces laid out in a row: a tile grid, counters, a paper curve and shapes" width="720" height="480" loading="lazy"><h1 class="display">${t('Before you begin','Here’s how it works')}</h1>
   <p class="lead">${t('One correct answer per question, no trick questions.','Find a quiet spot — your progress saves as you go.')}</p>
   <div class="rows">
     <div class="irow"><span class="em">🧩</span>38 questions · 4 sections</div>
@@ -664,7 +670,8 @@ const V={
   <div class="foot">${cta('Unlock my report')}</div>`,
 11:()=>{const hb=S.goal==='prep'?'Your prep report is ready':S.goal==='friends'?'Get your shareable certificate':`${nm()}, see your score`;const p=S.plan,rd=renewal(p);
   return `<button class="closex" data-a="exit" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:6px">
-  <div class="pstrip"><svg viewBox="0 0 280 150" width="64" height="34" aria-hidden="true"><path d="${areaD}" fill="#15233F" fill-opacity=".08"/><path d="${curveD}" fill="none" stroke="#15233F" stroke-width="6"/></svg><div><b>${nm()}’s IQ report</b><span class="hint">IQ <span class="blurv" style="display:inline-block">000</span> · 4 sections · certificate</span></div></div>
+  <img class="banner pw" src="img/report.jpg" alt="A sealed report folder with an amber seal" width="720" height="480" loading="lazy">
+  <div class="pstrip" style="margin-right:0"><svg viewBox="0 0 280 150" width="64" height="34" aria-hidden="true"><path d="${areaD}" fill="#15233F" fill-opacity=".08"/><path d="${curveD}" fill="none" stroke="#15233F" stroke-width="6"/></svg><div><b>${nm()}’s IQ report</b><span class="hint">IQ <span class="blurv" style="display:inline-block">000</span> · 4 sections · certificate</span></div></div>
   <h1 class="display sm">${t('Unlock your full report',hb)}</h1>
   <p class="lead" style="margin-top:-6px">${t('One report, or every test in the library.','Choose one report or full library access.')}</p>
   <div class="stack" role="radiogroup" aria-label="Plans">${['one','t7','t28'].map(k=>{const P=PLANS[k];return `<button class="plan ${p===k?'on':''}" data-a="plan" data-v="${k}" role="radio" aria-checked="${p===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${P.n}${P.badge?`<span class="badge">${P.badge}</span>`:''}</span><span class="pl"><span>Today</span><b style="font-weight:600">${P.today}</b><span>Then</span><b style="font-weight:600">${P.then}</b></span>${P.d?`<span class="pd" style="display:block">${P.d}</span>`:''}</span></button>`}).join('')}</div>
@@ -716,7 +723,7 @@ const V={
 15:()=>{const one=(S.paidPlan||S.plan)==='one',list=LIB[S.goal]||LIB.curious,rd=renewal(S.paidPlan||S.plan);
   return `<div class="scr"><h1 class="display" style="margin-top:4px">${t(`What’s next, ${nm()}?`,'Your mind, from new angles')}</h1>
   <p class="lead" style="margin-top:-6px">${one&&S.v==='A'?'Pair your IQ with how you feel and relate.':t('Your plan includes every test below — start any.','Pair your IQ with how you feel and relate.')}</p>
-  <div class="lib">${list.map(([e,n])=>`<div class="lcard"><span class="ei">${e}</span><b>${n}</b><span>${ph('questions')} Qs · ${ph('minutes')} min</span></div>`).join('')}</div>
+  <div class="lib">${list.map(([e,n,f,al])=>`<div class="lcard"><img class="lt" src="img/lib-${f}.jpg" alt="${al}" width="400" height="267" loading="lazy"><b>${n}</b><span>${ph('questions')} Qs · ${ph('minutes')} min</span></div>`).join('')}</div>
   ${one?`<div class="tip">Unlock all tests — $1.95 for 7 days, then $39.95 every 4 weeks.</div>`:`<div class="sum"><div class="r"><span>Included until ${rd}</span><b style="text-decoration:underline;text-underline-offset:3px">Manage plan</b></div></div>`}
   <p class="small">Log in anytime with ${esc(S.email||'your email')}. Your report stays in your dashboard.</p></div>
   <div class="foot">${cta('Start next test',true,'nexttest')}</div>`}
