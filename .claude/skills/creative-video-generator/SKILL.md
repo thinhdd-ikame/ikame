@@ -19,15 +19,15 @@ This is a two-stage AI pipeline (text→image, then image→video) run entirely 
 1. Locate the source file: `funnel/funnel-development/<niche-path>/funnel-content.md`.
 2. First run a dry run to sanity check parsing (no API calls, no cost):
    ```powershell
-   .claude/skills/creative-video-generator/scripts/Generate-CreativeVideos.ps1 -FunnelContentPath "funnel/funnel-development/dancing/cat-dancing/funnel-content.md" -DryRun
+   .claude/skills/creative-video-generator/scripts/Generate-CreativeVideos.ps1 -FunnelContentPath "funnel/funnel-development/ai-photo-video/dancing/cat-dancing/funnel-content.md" -DryRun
    ```
    Confirm every declared target screen resolved to the screen you expect, and that the prompts read sensibly.
 3. Make sure `IKAME_AI_KEY` is set in the shell (the key for ikame's internal LiteLLM gateway at `core-ai-platform.ikameglobal.com`, which fronts both stages). If it isn't set, ask the user to run `$env:IKAME_AI_KEY = "..."` in their PowerShell session — never hardcode a key into a file in this repo. Note that env vars do not survive between separate PowerShell invocations, so set it in the same command that runs the script.
 4. Run for real (no `-DryRun`):
    ```powershell
-   .claude/skills/creative-video-generator/scripts/Generate-CreativeVideos.ps1 -FunnelContentPath "funnel/funnel-development/dancing/cat-dancing/funnel-content.md"
+   .claude/skills/creative-video-generator/scripts/Generate-CreativeVideos.ps1 -FunnelContentPath "funnel/funnel-development/ai-photo-video/dancing/cat-dancing/funnel-content.md"
    ```
-5. Report back the output folder (`funnel/creative-development/dancing/cat-dancing/`) with `images/`, `videos/`, and `creative-brief.md`.
+5. Report back the output folder (`funnel/creative-development/ai-photo-video/dancing/cat-dancing/`) with `images/`, `videos/`, and `creative-brief.md`.
 
 To run the whole matrix (every theme x character line) in one go, loop over the funnels instead of calling the script once per niche — scope the `Get-ChildItem` to a theme folder to do just one theme:
 

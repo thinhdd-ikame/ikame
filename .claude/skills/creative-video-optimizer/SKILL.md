@@ -12,7 +12,7 @@ Source clips are never touched. Everything is reversible by deleting `web/` and 
 ## Output shape
 
 ```
-funnel/creative-development/dancing/cat-dancing/
+funnel/creative-development/ai-photo-video/dancing/cat-dancing/
   images/
     hook-a.png
   videos/

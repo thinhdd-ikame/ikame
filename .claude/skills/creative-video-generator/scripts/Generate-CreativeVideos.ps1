@@ -15,7 +15,7 @@
 
 .PARAMETER FunnelContentPath
   Path to the source funnel-content.md, e.g.
-  funnel/funnel-development/dancing/cat-dancing/funnel-content.md
+  funnel/funnel-development/ai-photo-video/dancing/cat-dancing/funnel-content.md
 
 .PARAMETER ImageProvider
   Key into $ImageProviders (Providers.ps1). Defaults to config/providers.json (or
@@ -41,11 +41,11 @@
   API credits.
 
 .EXAMPLE
-  ./Generate-CreativeVideos.ps1 -FunnelContentPath funnel/funnel-development/dancing/cat-dancing/funnel-content.md -DryRun
+  ./Generate-CreativeVideos.ps1 -FunnelContentPath funnel/funnel-development/ai-photo-video/dancing/cat-dancing/funnel-content.md -DryRun
 
 .EXAMPLE
   $env:IKAME_AI_KEY = "..."
-  ./Generate-CreativeVideos.ps1 -FunnelContentPath funnel/funnel-development/dancing/cat-dancing/funnel-content.md -OnlyScreens hook-a
+  ./Generate-CreativeVideos.ps1 -FunnelContentPath funnel/funnel-development/ai-photo-video/dancing/cat-dancing/funnel-content.md -OnlyScreens hook-a
 #>
 
 param(
