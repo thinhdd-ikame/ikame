@@ -88,5 +88,28 @@ class LintTest(unittest.TestCase):
         errs = lint(good)
         self.assertEqual(errs, [])
 
+    def test_hyphenated_word(self):
+        """Test that hyphenated words count as 1 word."""
+        # "well-known" should be 1 word, not 2
+        text = GOOD.replace("Meet your {{name}} chart", "Meet your well-known chart friend")
+        errs = lint(text)
+        # "Meet your well-known chart friend" = 5 words, should not exceed limit
+        self.assertFalse(any(e.startswith("Headline A has") for e in errs))
+
+    def test_standalone_punctuation(self):
+        """Test that standalone punctuation is not counted as words."""
+        # "— Two minutes, five questions, one reading." = 7 words with standalone —
+        # But should count as 6 words (—, is standalone)
+        text = GOOD.replace("Two minutes, five questions, one honest reading.", "— Two minutes, five questions, one reading.")
+        errs = lint(text)
+        # Should have 6 words (— not counted)
+        self.assertFalse(any(e.startswith("Body A has") for e in errs))
+
+    def test_crlf_frontmatter(self):
+        """Test that CRLF line endings in frontmatter are accepted."""
+        crlf_text = "---\r\nniche: demo\r\ndisplay_name: Demo\r\narchetype: personalization-quiz\r\nsubject: person\r\ninput: birth date\r\noutput: reading\r\nscreens: 3\r\nmonetization: web paywall\r\ncreative_screens:\r\n  hook-a: 1\r\nmotion: stars drift\r\n---\r\n# Funnel Content — Demo\r\n\r\n### 1. Hook A — Welcome\r\n**Headline A:** Meet your {{name}} chart\r\n**Body A:** Two minutes, five questions, one honest reading.\r\n### 2. Paywall\r\n**Headline A:** Your reading is ready\r\n### 3. Last-chance offer\r\n**Headline A:** One smaller option\r\n"
+        errs = lint(crlf_text)
+        self.assertEqual(errs, [])
+
 if __name__ == "__main__":
     unittest.main()

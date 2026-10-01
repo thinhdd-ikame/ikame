@@ -28,6 +28,9 @@ try {
   await page.goto('file://' + path.resolve(file));
   await page.waitForTimeout(500);
 
+  // Capture baseline text before first go() call
+  lastText = await page.evaluate(() => document.body.innerText.trim());
+
   // Check if window.go is exposed
   const hasGo = await page.evaluate(() => typeof window.go === 'function');
   if (!hasGo) {
@@ -52,7 +55,7 @@ try {
       if (info.text.includes('{{')) {
         // Check if there are any non-pricing tokens
         const allTokens = info.text.match(/\{\{[^}]+\}\}/g) || [];
-        const hasOtherTokens = allTokens.some(t => !/^\{\{(price|renew|trial|plan|week|annual|offer|refund|rating|reviewer|country|app_|legal|real)/i.test(t));
+        const hasOtherTokens = allTokens.some(t => !/^\{\{(price|renew|trial|plan|week|annual|offer|refund|rating|reviewer|country|app_|legal|real|badge|review)/i.test(t));
         if (!allowPriceTokens || hasOtherTokens) {
           raw.push(i);
         }

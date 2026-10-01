@@ -27,10 +27,11 @@ def lint(text):
 
     for label, limit in LIMITS:
         for var, val in re.findall(rf"^\*\*{label} ([AB]):\*\*\s*(.+)$", text, re.M):
-            # Replace tokens and standalone punctuation, then count words
+            # Replace tokens with placeholder, then count words
             cleaned = re.sub(r"\{\{[^}]+\}\}", "X", val)
-            cleaned = re.sub(r"[—\-/|]", " ", cleaned)
-            words = [w for w in cleaned.split() if w]
+            # Split on whitespace and filter out standalone punctuation tokens
+            tokens = cleaned.split()
+            words = [w for w in tokens if w and not re.fullmatch(r"[—\-/|&+]+", w)]
             n = len(words)
             if n > limit:
                 errs.append(f"{label} {var} has {n} words (>{limit}): {val.strip()}")
