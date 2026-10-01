@@ -497,6 +497,8 @@ const PLANS={
 };
 const CONFIG={
   funnel:'testlibrary-adhd',
+  /* non-empty URL per plan key (one, t1, t4) = checkout_click leaves the demo for that hosted checkout (?funnel=&plan= appended) */
+  checkoutUrls:{one:'',t1:'',t4:''},
   /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
   reminder:true,
   /* Unverified blocks: hidden while unset. proof = real review text; refundDays = the refund window that really exists. */
@@ -540,7 +542,23 @@ function go(n,push=true){clearTimers();const dir=n<S.i?'b':'f';if(push&&S.i!==n)
 let backing=false;
 function back(){clearTimers();let p=S.hist.pop();if(p===12&&S.offerSeen)p=S.hist.pop();if(p===12&&S.offerSeen)p=11;if(p){S.i=p;S.err='';S.errKind='';backing=true;try{render('b')}finally{backing=false}}}
 const EVENTS=window.__ikfEvents=[];
-function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p)}
+/* ---------- tracking (never the email, typed text or card fields) ---------- */
+function snapshot(){let ans=null;try{ans=typeof answered==='function'?answered():null}catch(e){}
+  return {screen:S.i,screenName:(SCREENS[S.i-1]||{}).l||null,variant:S.v,age:S.age||null,reason:S.goal||S.reason||S.gender||null,answered:ans,email_provided:!!(S.email&&S.email.trim()),name_provided:!!(S.name&&S.name.trim()),plan:S.plan,paid:!!S.paid,paidPlan:S.paidPlan||null}}
+function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p);
+  let data={};try{data=snapshot()}catch(x){}
+  const d=Object.assign({},p,{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+e,{detail:d}))}catch(x){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:e,detail:d},'*')}catch(x){}
+  try{window.dataLayer&&window.dataLayer.push&&window.dataLayer.push(Object.assign({event:'ikf_'+e,funnel:CONFIG.funnel},data,p))}catch(x){}
+  const f=Object.assign({funnel:CONFIG.funnel},data,p);
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',e,f)}catch(x){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(e,f)}catch(x){}
+}
+function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
+/* a plan with a non-empty checkout URL leaves the demo; empty = demo behaviour */
+function planCheckoutUrl(pl){const u=(CONFIG.checkoutUrls&&CONFIG.checkoutUrls[pl])||(PLANS[pl]&&PLANS[pl].checkoutUrl)||'';return typeof u==='string'?u.trim():''}
+function leaveToCheckout(u,pl){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan',pl);navTop(x.toString());return true}catch(e){return false}}
 function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
 function startTest(){if(S.t0===null)S.t0=Date.now();if(S.ans.every(a=>a===null))S.q=0;go(4)}
 
@@ -772,6 +790,7 @@ function render(dir){
   }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
   else{if(dir)old.scrollTop=0;old.innerHTML=html}
   const v=cur();
+  if(window.__ikfLast!==n){window.__ikfLast=n;emit('screen_view',{screen:n,name:(SCREENS[n-1]||{}).l||null});if(n===11)emit('paywall_view',{plan:S.plan})}
   if(n===7)runLoading();
   if(n===12&&dir&&!backing)runOffer();
   const f=v.querySelector('#em,#nm,#go');
@@ -802,6 +821,8 @@ function renderPanel(){
 phone.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
   const a=b.dataset.a,v=b.dataset.v;
+  if(a==='age'||a==='goal'||a==='reason'||a==='gender')emit('answer',{key:a,value:v});
+  else if(a==='ans')emit('answer',{key:'q'+(S.q+1),value:+v});
   switch(a){
     case 'next':go(S.i+1);break;
     case 'back':if(S.i===11)exitPaywall();else back();break;
@@ -817,21 +838,21 @@ phone.addEventListener('click',e=>{
     case 'tback':clearTimeout(pend);if(S.q===0)back();else{S.q--;render('b')}break;
     case 'fill':S.ans=S.ans.map((x,i)=>x===null?PRE[i]:x);S.dur=Date.now()-(S.t0||Date.now());go(6,false);break;
     case 'nextsec':S.q=CPS[S.cp];go(4,false);break;
-    case 'sso':S.email=`${v} account (demo)`;toast(`Signed in with ${v} (demo)`);go(9);break;
-    case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;go(9)}break}
+    case 'sso':S.email=`${v} account (demo)`;emit('lead',{email_provided:true,method:v});toast(`Signed in with ${v} (demo)`);go(9);break;
+    case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;emit('lead',{email_provided:true,method:'email'});go(9)}break}
     case 'name':{const x=S.name.trim();if(!x||!/^[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ \-]*$/.test(x)){S.err='Please enter your first name.';render();document.getElementById('nm')?.focus()}else{S.name=x;go(10)}break}
     case 'skipname':S.name='';go(10);break;
-    case 'plan':{const sc=cur().querySelector('.scr'),y=sc?sc.scrollTop:0;S.plan=v;S.consent=false;render();const n2=cur().querySelector('.scr');if(n2)n2.scrollTop=y;break}
-    case 'checkout':emit('checkout_click',{plan:S.plan});go(13);break;
+    case 'plan':{const sc=cur().querySelector('.scr'),y=sc?sc.scrollTop:0;S.plan=v;S.consent=false;emit('plan_select',{plan:v});render();const n2=cur().querySelector('.scr');if(n2)n2.scrollTop=y;break}
+    case 'checkout':{const u=planCheckoutUrl(S.plan);emit('checkout_click',{plan:S.plan,url:u||null});if(u&&leaveToCheckout(u,S.plan))break;go(13);break}
     case 'exit':exitPaywall();break;
     case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
-      if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
       else{S.plan='offer';S.consent=false;go(13)}break}
     case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
     case 'pay':S.pay=v;render();break;
     case 'decline':S.err='Card declined. Try another card or PayPal.';S.errKind='card';render();break;
     case 'paynow':if(recurring(S.plan)&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
-      S.paid=true;S.paidPlan=S.plan;toast('Demo only — no charge made');{const dest=S.upsell?16:14;S.upsell=false;go(dest)}break;
+      S.paid=true;S.paidPlan=S.plan;emit('purchase_complete',{plan:S.plan,demo:true});toast('Demo only — no charge made');{const dest=S.upsell?16:14;S.upsell=false;go(dest)}break;
     case 'help':{const sh=document.createElement('div');sh.className='sheet';sh.id='sheet';sh.innerHTML=`<div class="sc" role="dialog" aria-label="Support">${SUPPORT}<button class="btn" data-a="helpclose">Close</button></div>`;phone.appendChild(sh);break}
     case 'to16':go(16);break;
     case 'helpclose':phone.querySelector('#sheet')?.remove();break;
@@ -877,6 +898,13 @@ fit();addEventListener('resize',fit);
 
 {const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){const n=+m[1];fillTo(n);S.i=n}
  const vb=location.hash.match(/v=?([AB])/);if(vb){S.v=vb[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
+/* host API (FunnelFox / parent page) */
+const PLAN_ALIAS={'4w':'t4','4week':'t4','4-week':'t4','1w':'t1','1week':'t1','1-week':'t1','trial':'t1'};
+function applyPaid(plan){const k=PLAN_ALIAS[plan]||plan;if(PLANS[k])S.plan=k;S.consent=true;S.paid=true;S.paidPlan=S.plan;return S.plan}
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
+  completePurchase:plan=>{clearTimers();applyPaid(plan);fillTo(14);emit('purchase_complete',{plan:S.plan});go(14)}});
+{const pq=new URLSearchParams(location.search).get('paid');if(pq){applyPaid(pq);fillTo(14);S.i=14}}
 render();
+emit('funnel_start',{variant:S.v});
 </script>
 </body></html>
