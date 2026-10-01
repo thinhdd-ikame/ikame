@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0A0911">
@@ -338,6 +339,7 @@ svg .lg{fill:url(#cgrad-logo)}
 .chead small{display:block}
 </style>
 
+</head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cgrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient><linearGradient id="cgrad-logo" gradientUnits="userSpaceOnUse" x1="3" y1="4" x2="37" y2="36"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient></defs></svg>
 <main class="phone" id="phone" aria-live="polite"></main>
@@ -362,7 +364,7 @@ const CONFIG={
   /* Last-chance offer, shown ONCE per session when a paywall is declined (close X, "Continue free",
      closing the paywall opened from the daily-limit card). compareAt = the plan it undercuts (its configured
      price is shown struck). expiresMin: null = no timer; a number = a real deadline. TODO: replace every {{...}}. */
-  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'w1',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'Message pass',price:'{{offer_price}}',badge:'{{offer_badge}}',messages:50,checkoutUrl:'',expiresMin:null},
   app:{deepLink:'',iosUrl:'https://apps.apple.com/app/idTODO',androidUrl:'https://play.google.com/store/apps/details?id=TODO'},
   legal:{termsUrl:'',privacyUrl:''},
   rating:'{{rating}}',
@@ -437,7 +439,7 @@ const CHARS={
 const CK=CHARS[QS.get('char')]?QS.get('char'):'leo';
 const C=CHARS[CK];
 const FREE=CONFIG.freeMessagesPerDay;
-const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',r:{},name:'',skipName:false,i1:'',i1o:'',i2:'',i2o:'',email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,typing:false,shown:{},msgs:7,sent:0,free:[],sheet:null,other:false,otherTxt:'',blocked:false,vplay:false,completed:false,offerSeen:false});
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',month:'',blocked:(()=>{try{return !!sessionStorage.getItem('ikf_age_block')}catch(e){return false}})(),r:{},name:'',skipName:false,i1:'',i1o:'',i2:'',i2o:'',email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,typing:false,shown:{},msgs:7,sent:0,free:[],sheet:null,other:false,otherTxt:'',vplay:false,completed:false,offerSeen:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const SCREENS={1:'hook_character',2:'age_check',3:'chat_reply_1',4:'chat_reply_2',5:'chat_reply_3',6:'your_name',7:'interest_love',8:'interest_unwind',9:'they_remember',10:'voice_note',11:'writing_back',12:'email_gate',13:'paywall',14:'last_chance_offer',15:'back_in_chat',16:'daily_limit'};
@@ -458,7 +460,7 @@ const rep=k=>S.r[k]||C.r[k-3][0];
 const strip=s=>s.replace(/^[^\w*"'‘“]+\s/u,'');
 
 /* ---------- tracking (no free text) ---------- */
-function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,character:CK,ageOk:!!S.year&&!S.blocked,interest1:S.i1||null,interest2:S.i2||null,hasName:!!S.name.trim(),hasEmail:!!S.email,plan:S.plan,premium:S.premium,messagesSent:S.sent}}
+function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,character:CK,ageOk:!!S.year&&!!S.month&&!S.blocked,interest1:S.i1||null,interest2:S.i2||null,hasName:!!S.name.trim(),hasEmail:!!S.email,plan:S.plan,premium:S.premium,messagesSent:S.sent}}
 function emit(name,detail){
   let data={};try{data=snapshot()}catch(e){}
   const d=Object.assign({},detail||{},{data});
@@ -489,7 +491,7 @@ function viewed(){
 }
 function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.sheet=null;S.other=false;S.otherTxt='';S.emailErr='';render(true);viewed()}
 const next=()=>go(S.i+1);
-function back(){clearT();const p=S.hist.pop();if(p){S.i=p;S.other=false;S.otherTxt='';render(true);viewed()}}
+function back(){if(S.blocked)return;clearT();const p=S.hist.pop();if(p){S.i=p;S.other=false;S.otherTxt='';render(true);viewed()}}
 function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
 const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
 const cur=()=>phone.querySelector('.view');
@@ -584,7 +586,8 @@ function pwHTML(mode){
   <div class="sec planblk" id="plans1" style="padding-top:18px">${planInner()}</div>
   <div class="sec"><h2 class="h2">What's <span class="gt">inside</span></h2><div class="toc">${inside.map(([i,a,b,o])=>`<div class="it ${o?'open':'lk'}"><span class="gw">${ic(o?i:'lock',17,'#fff')}</span><div><b>${esc(a)}</b><small>${esc(b)}</small></div></div>`).join('')}</div></div>
   <div class="sec"><h2 class="h2">How it <span class="gt">works</span></h2><div class="steps3">${[['Choose a plan','Secure checkout in your browser.'],['Open the Chai app','Sign in with the same email.'],[`Continue with ${C.name}`,'Your chat and memories are waiting.']].map(([a,b],j)=>`<div class="s"><span class="n">${j+1}</span><div><b>${esc(a)}</b><small>${esc(b)}</small></div></div>`).join('')}</div></div>
-  ${CONFIG.reviews?`<div class="sec"><h2 class="h2">What users <span class="gt">say</span></h2><div class="rate"><b>${ph(CONFIG.rating)}</b><span class="st" style="color:var(--amber);letter-spacing:2px">★★★★★</span><span>App store rating</span></div><div class="stats">${CONFIG.reviews.map(([n,c,x])=>`<div class="rev"><div class="who"><i>?</i><div><b>${ph(n)}</b><div style="font-size:11.5px;color:var(--t3)">${ph(c)}</div></div><span class="st">★★★★★</span></div>${ph(x)}</div>`).join('')}</div></div>`:''}
+  ${(()=>{const real=v=>!/\{\{/.test(v),rt=real(CONFIG.rating),rv=(CONFIG.reviews||[]).filter(([n,c,x])=>real(n)&&real(x));
+   return rt||rv.length?`<div class="sec"><h2 class="h2">What users <span class="gt">say</span></h2>${rt?`<div class="rate"><b>${esc(CONFIG.rating)}</b><span>App store rating</span></div>`:''}${rv.length?`<div class="stats">${rv.map(([n,c,x])=>`<div class="rev"><div class="who"><i>${esc(n.slice(0,1).toUpperCase())}</i><div><b>${esc(n)}</b>${real(c)?`<div style="font-size:11.5px;color:var(--t3)">${esc(c)}</div>`:''}</div></div>${esc(x)}</div>`).join('')}</div>`:''}</div>`:''})()}
   ${realRefund?`<div class="guar"><b>${CONFIG.refundDays}-day money-back guarantee</b>Not for you? Ask within ${CONFIG.refundDays} days for a refund.</div>`:''}
   <div class="sec"><h2 class="h2">Good to <span class="gt">know</span></h2><div class="faq">${faq.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div></div>
   <div class="sec planblk" id="plans2">${planInner()}</div>
@@ -604,6 +607,8 @@ function pwSetup(){
 function syncPlan(){document.querySelectorAll('.planblk').forEach(el=>{el.innerHTML=planInner()});const l=document.getElementById('stickl');if(l)l.innerHTML=`${esc(PLANS[S.plan].label)} · due today ${ph(PLANS[S.plan].price)}`}
 
 /* ---------- screens ---------- */
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const monthOpts=()=>'<option value="" disabled hidden '+(S.month?'':'selected')+'>Month</option>'+MONTHS.map((m,j)=>`<option value="${j+1}" ${S.month==j+1?'selected':''}>${m}</option>`).join('');
 const yearsOpts=()=>{let o='<option value="" disabled hidden '+(S.year?'':'selected')+'>Birth year</option>';for(let y=new Date().getFullYear();y>=1930;y--)o+=`<option value="${y}" ${S.year==y?'selected':''}>${y}</option>`;return o};
 const loaderSteps=['Reading what you told them…','Choosing the right words…','Saving your chat…','Typing a reply…'];
 const V={
@@ -617,8 +622,8 @@ const V={
   <div class="nav"><div class="row"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button></div></div>
   <div class="scr" style="justify-content:flex-end;padding-bottom:max(18px,env(safe-area-inset-bottom,0px))"><div class="gate">
    <h1 class="q">${t('First, how old are you?','Quick age check.')}</h1><p class="sub">${t(`Chai is for adults. ${esc(C.name)} is waiting.`,'Pick your birth year to continue.')}</p>
-   <select class="yr" id="yr" aria-label="Birth year">${yearsOpts()}</select>
-   ${cta("I'm 18+ · Continue",!!S.year,'age')}<p class="legal">18+ · AI character · Fictional and SFW by default</p></div></div>`,
+   <div style="display:flex;gap:10px"><select class="yr" id="mo" aria-label="Birth month">${monthOpts()}</select><select class="yr" id="yr" aria-label="Birth year">${yearsOpts()}</select></div>
+   ${cta("I'm 18+ · Continue",!!(S.year&&S.month),'age')}<p class="legal">18+ · AI character · Fictional and SFW by default</p></div></div>`,
 11:()=>`<div class="scr" style="padding-top:18px;gap:16px"><h1 class="q" style="font-size:24px">${t(`<span class="gt">${esc(C.name)}</span> is writing back…`,'Almost there…')}</h1>
   <div class="ldimg" id="ldimg"><span class="ph" style="background:${C.fb}"></span>${im('img/'+CK+'.jpg')}</div>
   <div class="steps">${loaderSteps.map((l,j)=>`<div class="step" id="st${j}"><div class="top"><span>${l}</span><b>0%</b></div><div class="bar"><span></span></div></div>`).join('')}</div><div style="height:8px"></div></div>`,
@@ -663,19 +668,21 @@ function offerTimer(){const o=CONFIG.offer;clearInterval(window.__oiv);if(!o.exp
     if(ms<=0){clearInterval(window.__oiv);emit('offer_expired');offerLeave();return}
     el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
   tick();window.__oiv=setInterval(tick,1000)}
-V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,was=(CONFIG.plans[o.compareAt]||{}).price||'';
+V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer;
+  const yes=[`${o.messages} more messages with ${esc(C.name)}`,'This voice note, and the reply waiting','Your chat saved to your email'],no=['Unlimited chat','Other characters','Memory beyond this chat','More voice notes'];
   return `<div class="pw ofr" role="dialog" aria-label="One-time offer">
   <div class="obar"><div class="logo">${logo(22)} Chai</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time offer · shown once</span>
-   <h1 class="h2" style="margin:14px 0 8px">${t(`Keep chatting with <span class="gt">${esc(C.name)}</span>.`,'One lower first price.')}</h1>
-   <p class="olead">${t('Your chat is saved. One-time offer, shown once.',`Chat with ${esc(C.name)} for less today.`)}</p>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time pass · shown once</span>
+   <h1 class="h2" style="margin:14px 0 8px">${t(`Keep talking with <span class="gt">${esc(C.name)}</span>.`,'A smaller pass, <span class="gt">paid once</span>')}</h1>
+   <p class="olead">${t(`${o.messages} messages and this voice note, paid once.`,'No subscription. No renewal. Paid once.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="sec"><div class="ocard">${o.badge?`<span class="obadge">${otok(o.badge)}</span>`:''}
-   <div class="orow"><span class="oth">${av(58)}</span><div style="flex:1;min-width:0"><b>${otok(o.name)}</b><div class="osub">With ${esc(C.name)} · your chat is saved</div></div></div>
-   <div class="oprice">${was?`<s>${otok(was)}</s>`:''}<b>${otok(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${[`Unlimited chat with ${esc(C.name)}`,'Every voice note','Good-morning texts, every day'].map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim offer',true,'offerbuy')}
-   <p class="ofine">${otok(o.price)} today, then ${otok(o.renews)} until you cancel. Cancel anytime in account or store settings.</p></div></div>
+   <div class="orow"><span class="oth">${av(58)}</span><div style="flex:1;min-width:0"><b>${esc(o.name)} · ${esc(C.name)}</b><div class="osub">One-time purchase</div></div></div>
+   <div class="oprice"><b>${otok(o.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${yes.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   <div style="font-size:12.5px;color:var(--t3);line-height:1.6"><b style="color:var(--t2)">Not included:</b> ${no.join(' · ')}</div>
+   ${cta('Get the pass',true,'offerbuy')}
+   <p class="ofine">${otok(o.price)} once. No renewal, nothing to cancel. Unlimited chat needs Chai Plus.</p></div></div>
   <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="offerno">No thanks, continue free · ${FREE} messages a day</button>
    <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
    <p class="odis" style="margin-top:10px">${esc(aiLine())}</p></div></div>`};
@@ -707,8 +714,8 @@ phone.addEventListener('click',e=>{
   switch(a){
     case 'next':next();break;
     case 'back':back();break;
-    case 'age':{const y=+S.year,ok=y&&y<=new Date().getFullYear()-18;
-      if(!ok){S.blocked=true;emit('age_block');render();break}
+    case 'age':{const now=new Date(),age=now.getFullYear()-(+S.year)-((now.getMonth()+1)<(+S.month)?1:0);
+      if(!(age>=18)){S.blocked=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render();break}
       emit('age_confirm',{method:'birth_year'});next();break}
     case 'rep':S.r[S.i]=C.r[S.i-3][+v];answer('reply_'+(S.i-2),+v);b.classList.add('on');later(next,RM?0:260);break;
     case 'repother':S.other=!S.other;S.otherTxt='';render();cur().querySelector('#oth')?.focus();break;
@@ -745,7 +752,7 @@ phone.addEventListener('input',e=>{
   else if(id==='intOther'){const f=S.i===7?'i1o':'i2o';S[f]=e.target.value;const s=cur().querySelector('[data-a="intnext"]');if(s)s.disabled=!e.target.value.trim()}
   else if(id==='email'){S.email=e.target.value}
 });
-phone.addEventListener('change',e=>{if(e.target.id==='yr'){S.year=e.target.value;const s=cur().querySelector('[data-a="age"]');if(s)s.disabled=!S.year}});
+phone.addEventListener('change',e=>{if(e.target.id==='yr'||e.target.id==='mo'){if(e.target.id==='yr')S.year=e.target.value;else S.month=e.target.value;const s=cur().querySelector('[data-a="age"]');if(s)s.disabled=!(S.year&&S.month)}});
 phone.addEventListener('keydown',e=>{
   if(e.key!=='Enter')return;
   const id=e.target.id;

@@ -29,7 +29,7 @@ Chai is ikame's AI character-chat app. This brief is one **funnel template, run 
 **Deliberately changed vs. Candy / Honey:**
 - **SFW by construction.** Every Candy capture is adult. Here the characters are story archetypes (bookshop owner, starship captain, rival chef), the 18+ gate is an age check only, and there is no sexual input or content in funnel or ads.
 - **The character remembers.** The name and the two interests the user gives are used by the character in the funnel, on the paywall and in the app. Candy's gap is Chai's selling point.
-- **No countdowns, no struck-through fake prices, no "50 million users" claims.** Renewal price sits beside every intro price. Proof blocks are placeholders until real.
+- **No countdowns, no struck-through fake prices, no "50 million users" claims.** Renewal price sits beside every intro price. Proof blocks (rating, reviews) are hidden until real; no hard-coded stars.
 - **The paywall is the app talking, never the character.** No "don't leave", "I miss you" or "pay so we can keep talking", in the paywall, offer, limit card or pushes.
 - The 31-screen video-episode preamble is replaced by three chat turns the character opens.
 
@@ -54,10 +54,10 @@ Visual: the Chai system as in `chai-ai-boyfriend` and `chai-dream-girl` (near-bl
 **Headline A:** First, how old are you?
 **Headline B:** Quick age check.
 **Body A:** Chai is for adults. {{char_name}} is waiting.
-**Body B:** Pick your birth year to continue.
-**Field:** Birth-year wheel, no default selection. CTA stays disabled until a year is picked.
+**Body B:** Pick your birth month and year.
+**Field:** Birth month + birth year pickers, no default selection. Age is computed from month and year. CTA stays disabled until both are picked.
 **Visual:** The portrait blurred and dimmed behind a rounded surface card holding the year wheel and the CTA.
-**Error state:** Under 18 → blocking screen: "Sorry, Chai is for adults" / "You must be 18 or older to continue." No back button.
+**Error state:** Under 18 → blocking screen: "Sorry, Chai is for adults" / "You must be 18 or older to continue." No back button. The block is persisted for the session (`sessionStorage` key `ikf_age_block`), so reloading or going back does not let the user retry with another date.
 **Microcopy:** "18+ · AI character · Fictional and SFW by default"
 **CTA:** I'm 18+ · Continue
 
@@ -210,15 +210,15 @@ Visual: the Chai system as in `chai-ai-boyfriend` and `chai-dream-girl` (near-bl
 **CTA:** Continue
 
 ### 14. Last-chance offer (on close)
-**Purpose:** Second chance for users who close the paywall or tap "Continue free", or close the paywall opened from the limit card. Shown once per session (`sessionStorage` key `ikf_offer_chai-named-character`), then never again.
-**Headline A:** Keep chatting with {{char_name}}.
-**Headline B:** One lower first price.
-**Body A:** Your chat is saved. One-time offer, shown once.
-**Body B:** Chat with {{char_name}} for less today.
-**Plans:** One offer card: {{offer_name}}. {{offer_price}} today, regular 1-week price struck (the real configured price of the plan it undercuts), then {{offer_renews}} until cancelled. Optional {{offer_badge}}.
-**Visual:** Same web look as the paywall: bar with logo and close, eyebrow "One-time offer · shown once", headline, one glowing offer card with the character avatar, offer name, price row, three checks, CTA and renewal line. AI disclosure under the card. Plain decline link and legal links at the bottom.
-**Microcopy:** No timer unless `CONFIG.offer.expiresMin` is a real deadline (default `null`). Renewal line: "{{offer_price}} today, then {{offer_renews}} until you cancel." Decline link: "No thanks, continue free · 10 messages a day". Events: `offer_view`, `offer_accept` + `checkout_click`, `offer_decline`, `offer_expired`.
-**CTA:** Claim offer
+**Purpose:** Second chance for users who close the paywall or tap "Continue free", or close the paywall opened from the limit card. It is a genuinely smaller one-time pass, not a discounted subscription. Shown once per session (`sessionStorage` key `ikf_offer_chai-named-character`), then never again.
+**Headline A:** Keep talking with {{char_name}}.
+**Headline B:** A smaller pass, paid once.
+**Body A:** 50 messages and this voice note, paid once.
+**Body B:** No subscription. No renewal. Paid once.
+**Plans:** One card: "Message pass · {{char_name}}", {{offer_price}} paid once, no renewal, no struck-through price. Includes: 50 more messages with {{char_name}} · this voice note and the reply waiting · your chat saved to your email. **Not included:** unlimited chat · other characters · memory beyond this chat · more voice notes. Optional {{offer_badge}}. Pass size (50) and price are placeholders until Chai confirms real terms.
+**Visual:** Same web look as the paywall: bar with logo and close, eyebrow "One-time pass · shown once", headline, one glowing card with the character avatar, pass name, price row ("paid once"), three checks, a "Not included" line, CTA and a "once, no renewal" line. AI disclosure under the card. Plain decline link and legal links at the bottom.
+**Microcopy:** No timer unless `CONFIG.offer.expiresMin` is a real deadline (default `null`). Line under CTA: "{{offer_price}} once. No renewal, nothing to cancel. Unlimited chat needs Chai Plus." Decline link: "No thanks, continue free · 10 messages a day". Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`.
+**CTA:** Get the pass
 
 ---
 
@@ -259,11 +259,14 @@ Visual: the Chai system as in `chai-ai-boyfriend` and `chai-dream-girl` (near-bl
 | Voice | Dry, warm | Calm, commanding | Quick, teasing |
 
 - **SFW by construction.** Characters are story archetypes, painted and clothed. No sexual descriptors, no sexual input, no adult-performer names, no taboo family framing (all present in Candy's captures). The age gate is an age check only. The 18+ content setting stays opt-in in the app profile, never in the funnel or ads.
-- **Compliance.** The age gate comes first. The AI banner stays on every chat screen (#3-#10, #15, #16). No monetization in the character's voice. The fair-use cap is disclosed. Renewal price on every plan. No countdown, wheel or ticker. Proof blocks and guarantee are placeholders or hidden until real.
+- **Compliance.** The age gate comes first. The AI banner stays on every chat screen (#3-#10, #15, #16). No monetization in the character's voice. The fair-use cap is disclosed. Renewal price on every plan. No countdown, wheel or ticker. Proof blocks and guarantee are hidden until real.
 - **Memory carries into the app.** The character's memory (`name`, `interest_1`, `interest_2`, the three replies) must be handed to the app at web2app (`ikfunnel` data, same as `chai-ai-boyfriend`). If the handoff is not built, drop the promise on #9 and the paywall hero. Do not ship the claim without it.
 - **Unverified.** Candy's flow is a video-episode funnel (31 screens, no quiz, no email before paywall). This chat-first adaptation is our own design, not a copy of any captured funnel. The Candy paywall plan structure was captured, but the 1-week/4-week/12-week structure here is Chai's standard subscription, not Candy's. No Chai-specific conversion data yet.
+- **Unverified numbers.** The 10 free messages a day and the 300 fair-use cap are carried from the other Chai funnels, not confirmed for Chai. The 50-message pass size is a proposal. Confirm all three before launch.
 - **Drop-off risk:** #2 (age wheel), #6 (name, so the skip link), #12 (email before the reply, test removing it), #13. Keep the loader (#11) under 8 s.
 - **Monetization:** one subscription with two triggers, measured separately (#13 onboarding CVR, #16 limit CVR). Offer CVR (#14) is a third metric. Voice notes drive message volume, not revenue.
 - **A/B first:** (1) Hook A "Meet {{char_name}}." vs. B "{{char_name}} wants a word." (2) Which character in the ad (one funnel per character). (3) #12 email before vs. after the paywall. (4) Voice note before vs. after the paywall.
 - **Content ops:** per character, about 12 scripted lines plus one portrait and one scene. Launch with the three samples (Leo, Mara, Kai), then clone from Candy's most-run series themes, minus the adult and taboo ones.
 - **Demo (Artifact, private):** https://claude.ai/artifact/UEfDa91NsrfRpWeQcKsFwT (default Leo, `?char=mara` or `?char=kai` to switch). Images are CSS-drawn placeholders until `gen_images.py` runs with `IKAME_AI_KEY`.
+
+- **Review fixes (2026-10-01):** age gate checks birth month + year and persists the block in sessionStorage; rating and reviews render only when real (no hard-coded stars); the offer is a smaller one-time message pass with a "Not included" list; demo has `<head>`.
