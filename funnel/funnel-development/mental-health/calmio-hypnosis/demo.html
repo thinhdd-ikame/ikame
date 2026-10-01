@@ -576,12 +576,12 @@ const BR={
   {trig:1,other:1,items:[['cof','☕','Coffee or breaks','routine'],['str','😮‍💨','Stress','stress'],['soc','🥂','Social moments','social'],['bor','🥱','Boredom','auto']],h:['What sets it off?','Which moments pull you?'],b:['Pick the closest one.','Pick the closest one.']}]},
  eat:{q:[
   {trig:1,other:1,items:[['late','🌙','Late at night','routine'],['str','😮‍💨','When stressed','stress'],['bor','🥱','When bored','auto'],['dis','📺','While distracted','auto']],h:['When does it happen?','What sets it off?'],b:['Pick the closest one.','No judgment here.']},
-  {other:1,items:[['sweet','🍫','Sweets'],['salty','🍟','Salty snacks'],['big','🍕','Big meals'],['any','🥤','Anything nearby']],h:['What are you reaching for?','No judgment here.'],b:['A rough guess is fine.','Pick the closest one.']},
+  {other:1,items:[['sweet','🍫','Sweets'],['salty','🍟','Salty snacks'],['any','🥤','Anything nearby']],h:['What are you reaching for?','No judgment here.'],b:['A rough guess is fine.','Pick the closest one.']},
   {items:[['fine','🙂','Fine'],['guilt','😕','A bit guilty'],['out','😣','Out of control'],['numb','😶','Numb']],h:['How do you feel after?','Pick the closest one.'],b:['Pick the closest one.','Pick the closest one.']}]},
  other:{q:[
   {trig:1,other:1,items:[['str','😮‍💨','When stressed','stress'],['bor','🥱','When bored','auto'],['eve','🛋️','Evenings','routine'],['oth','🥂','With others','social']],h:['When does it happen most?','What sets it off?'],b:['Pick the closest one.','No judgment here.']},
   {items:[['wk','📆','Weekly'],['most','🔁','Most days'],['many','⏰','Many times a day'],['var','🌊','It varies']],h:['How often does it happen?','Be honest. It stays private.'],b:['A rough guess is fine.','No right answer. Just yours.']},
-  {items:[['lit','🪶','A little'],['som','🪨','Some'],['lot','🏔️','A lot']],h:['How much does it weigh?','Pick the closest one.'],b:['Pick the closest one.','Pick the closest one.']}]}
+  {items:[['lit','🪶','A little'],['som','🪨','Some'],['lot','🏔️','A lot']],h:['How strong is the pull?','Pick the closest one.'],b:['Pick the closest one.','Pick the closest one.']}]}
 };
 const Q={
  5:{k:'goal',items:GOALS,other:true,h:['What do you want to change?','Pick your focus'],b:['Choose the one that matters most.','You can add more later.']},
@@ -626,6 +626,7 @@ const CONFIG={funnel:'calmio-hypnosis',brand:'Calmio',
      Paid once, 7 days, NO renewal, not the auto-renewing 1-week tier. compareAt stays null (no same-length plan to strike).
      expiresMin stays null: no timer. Never shown after a safety event (crisis sheet, care check). */
   offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  deletion:false,  /* true only when in-app data deletion really exists */
   refundDays:'{{refund_days}}',refundTerms:'{{refund_terms}}',company:'{{legal_entity}}',
   termsUrl:'',privacyUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -685,7 +686,9 @@ const CARE={
   drink:{h:['Talk to a professional first','A doctor can help safely'],b:['Cutting back suddenly can be unsafe. Please check with a doctor.','A doctor can help you change this safely.'],note:'You said drinking is frequent or you feel unwell when you cut back. Please talk to a doctor before changing how much you drink.'},
   eat:{h:['Talk to a professional first','A doctor can help safely'],b:['Feeling out of control around food deserves real support.','A professional can help you feel steadier.'],note:'Please talk to a doctor or licensed professional about how eating feels. Calmio is not a substitute for care.'}
 };
-const careNote=()=>{const k=careKind();return k?`<div class="carebox"><span class="w">${ic('life',18)}</span><div><b>Talk to a professional</b><p>${CARE[k].note}</p></div></div>`:''};
+const softEat=()=>G()==='eat'&&['guilt','numb'].includes(sv('b8'));
+const SOFT='Feeling guilty or numb after eating is common. If it keeps happening, a doctor or licensed professional can help. Calmio is not a substitute for care.';
+const careNote=()=>{const k=careKind();if(!k&&softEat())return `<div class="carebox"><span class="w">${ic('life',18)}</span><div><b>A gentle note</b><p>${SOFT}</p></div></div>`;return k?`<div class="carebox"><span class="w">${ic('life',18)}</span><div><b>Talk to a professional</b><p>${CARE[k].note}</p></div></div>`:''};
 
 const FLOW=[
  ['A · Hook',[[1,'Change a habit'],[2,'How a session works']]],
@@ -815,6 +818,7 @@ function updatePlan(){
   c.querySelectorAll('[data-today]').forEach(e=>e.innerHTML=todayLine());
   c.querySelectorAll('[data-renew]').forEach(e=>e.innerHTML=renewLine());
   const sl=c.querySelector('#sumline');if(sl)sl.innerHTML=todayLine();
+  c.querySelectorAll('[data-planlen]').forEach(e=>e.textContent=CONFIG.plans[S.plan].name);
   const sn=c.querySelector('#sumname');if(sn)sn.textContent=CONFIG.plans[S.plan].name;
 }
 function setupSticky(){
@@ -902,12 +906,12 @@ const V={
 14:()=>{const RV=reviewsReal();
   return `<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
   <h1 class="display" style="text-align:center">${t('Private. Judgment-free. Yours.','What you share stays yours.')}</h1>
-  <p class="lead" style="text-align:center">${t('Your answers stay private. Nothing is ever public.','No judging. No streak guilt.')}</p>
+  <p class="lead" style="text-align:center">${t('Your answers stay private. Sharing is always your choice.','No judging. No streak guilt.')}</p>
   ${ratingReal()?`<div class="rate"><div class="sc">${esc(CONFIG.rating.score)}★</div><div><div class="stars2">★★★★★</div><div class="hint">${esc(CONFIG.rating.count)} ratings on the store</div></div></div>${RV.slice(0,1).map(r=>`<div class="rev">${esc(r.text)}<small>${esc(r.name)} · ${esc(r.meta)}</small></div>`).join('')}`:''}
   <div class="card" style="padding:4px 16px"><div class="rows">
    <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your answers stay private</span></div>
-   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Nothing is ever public</span></div>
-   <div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your data anytime <span class="hint">(ships only if in-app deletion exists)</span></span></div></div></div></div>
+   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Sharing is always your choice</span></div>
+   ${CONFIG.deletion?`<div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your data anytime</span></div>`:''}</div></div></div>
   <div class="foot">${cta('Continue')}</div>`},
 15:()=>{const rows=['Reading what you shared…','Matching a session to your goal…','Setting your listening time…','Almost ready, your plan awaits…'];
   const chips=[goalLabel(),trigLabel(),listenLabel(),whyFirst()].filter(Boolean).slice(0,4);
@@ -963,7 +967,7 @@ const V={
   <div class="wsec tight"><span class="eyebrow">${nameOK()?nm()+', your':'Your'} plan is ready</span><h1 class="display" style="font-size:29px">${t('Your calm plan is ready',nameOK()?`${nm()}, start your first week`:'Start your first week')}</h1>
    <p class="lead">${t('Guided sessions and check-ins, built for you.','Price shown upfront. We remind you before renewing.')}</p>
    <div class="pcard" style="padding:14px 16px"><span class="pill">Your habit profile</span><h2 style="font-size:26px">${esc(P.label)}</h2></div>
-   <div class="facts"><div class="fact">Focus<b>${esc(goalLabel())}</b></div><div class="fact">Listens<b>${esc(listenLabel())}</b></div><div class="fact">Best time<b>${nudge()}</b></div><div class="fact">Plan<b>4 weeks</b></div></div>${careKind()?`<div style="margin-top:12px">${careNote()}</div>`:''}</div>
+   <div class="facts"><div class="fact">Focus<b>${esc(goalLabel())}</b></div><div class="fact">Listens<b>${esc(listenLabel())}</b></div><div class="fact">Best time<b>${nudge()}</b></div><div class="fact">Plan<b data-planlen>${esc(CONFIG.plans[S.plan].name)}</b></div></div>${careNote()?`<div style="margin-top:12px">${careNote()}</div>`:''}</div>
   <div class="wsec" id="plans1">${planBlock('a')}</div>
   <div class="wsec"><span class="eyebrow">Inside your plan</span><h2 class="wh2">Everything for your first weeks</h2><p class="lead">Week 1 opens today.</p>
    <div class="toc">${toc.map(([l,i],n)=>`<div><span class="n">${n+1}</span><span>${esc(l)}</span><span class="l">${ic(i,16)}</span></div>`).join('')}</div></div>

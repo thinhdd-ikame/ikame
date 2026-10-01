@@ -111,7 +111,7 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Branch headlines (A / B):** drink: "How often do you drink?" / "Be honest. It stays private." · smoke: "How much per day?" / "A rough guess is fine." · eat: "What are you reaching for?" / "No judgment here." · other: "How often does it happen?" / "Be honest. It stays private."
 **Body A:** A rough guess is fine.
 **Body B:** No right answer. Just yours.
-**Options:** drink: 🗓️ A few times a month · 📆 Weekly · 🔁 Most days · 🌙 Every day. smoke: 🌱 1-5 · 🌿 6-10 · 🌳 11-20 · 🏔️ 20 or more. eat: 🍫 Sweets · 🍟 Salty snacks · 🍕 Big meals · 🥤 Anything nearby · ✏️ Other. other: 📆 Weekly · 🔁 Most days · ⏰ Many times a day · 🌊 It varies.
+**Options:** drink: 🗓️ A few times a month · 📆 Weekly · 🔁 Most days · 🌙 Every day. smoke: 🌱 1-5 · 🌿 6-10 · 🌳 11-20 · 🏔️ 20 or more. eat: 🍫 Sweets · 🍟 Salty snacks · 🥤 Anything nearby · ✏️ Other. other: 📆 Weekly · 🔁 Most days · ⏰ Many times a day · 🌊 It varies.
 **Field:** Single select, auto-advances (the eat list has an "Other" input, crisis-checked). No amounts, units or targets are shown back to the user.
 **Visual:** Stacked pills with a small growing bar beside the frequency rows.
 **CTA:** (auto-advances on tap)
@@ -120,7 +120,7 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Purpose:** The third branch question, which doubles as the safety gate. For drinking it asks about feeling unwell when cutting back; for eating it asks how they feel afterwards. A safety answer shows the care check before the funnel continues.
 **Headline A:** How do you feel after?
 **Headline B:** One question for your safety
-**Branch headlines (A / B):** drink: "Unwell when you cut back?" / "One question for your safety" · smoke: "What sets it off?" / "Which moments pull you?" · eat: "How do you feel after?" / "Pick the closest one." · other: "How much does it weigh?" / "Pick the closest one."
+**Branch headlines (A / B):** drink: "Unwell when you cut back?" / "One question for your safety" · smoke: "What sets it off?" / "Which moments pull you?" · eat: "How do you feel after?" / "Pick the closest one." · other: "How strong is the pull?" / "Pick the closest one."
 **Body A:** Pick the closest one.
 **Body B:** Pick the closest one.
 **Branch bodies:** drink (A): "Shaky, sweaty or anxious? We ask for safety."; all others "Pick the closest one."
@@ -133,6 +133,7 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
  - Rows: "Talk to your doctor or a licensed professional" · "Substance use support (US): 1-800-662-4357, free, 24/7" (drink only) · "findahelpline.com for other countries" · "In danger now? Call your local emergency number."
  - Footer: "Calmio sessions support relaxation. They are not treatment, and they don't replace medical care."
  - **CTA:** Continue with Calmio. Secondary: Back to my answers. It is a recommendation, not a block: the user may continue.
+**Soft note (eat only):** "A bit guilty" or "Numb" at #8 does not open the care check or suppress the offer; it adds a gentle "A gentle note" card on #16 and #19: "Feeling guilty or numb after eating is common. If it keeps happening, a doctor or licensed professional can help. Calmio is not a substitute for care."
 **Microcopy:** Once the care check has fired, the profile (#16), the paywall (#19) and its FAQ carry the same "talk to a professional" note, and the one-time offer (#19 close) is not shown. Never "you are dependent", never a score or a meter.
 **Visual:** Stacked pills; the care check is a calm white card with a lifebuoy icon, sage and lavender only, no red alert colours.
 **CTA:** (auto-advances on tap; the care check has its own button)
@@ -215,9 +216,9 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Purpose:** The trust beat after the investment stage and before the reveal. Answers about drinking, smoking and eating are sensitive; proof must be real. The rating block ships only when real store data exists.
 **Headline A:** Private. Judgment-free. Yours.
 **Headline B:** What you share stays yours.
-**Body A:** Your answers stay private. Nothing is ever public.
+**Body A:** Your answers stay private. Sharing is always your choice.
 **Body B:** No judging. No streak guilt.
-**Visual:** Three lucide rows (lock, eye-off, trash) on a white card. The row "delete" ships only if in-app deletion exists. When `{{app_rating}}` and `{{rating_count}}` are real, a rating card with a real store review appears above the rows; while they are tokens the card is hidden.
+**Visual:** Rows (lock, eye-off) on a white card: "Your answers stay private" and "Sharing is always your choice". A third row (trash) "Delete your data anytime" renders only when `CONFIG.deletion` is true (default off); no developer notes appear in the UI. When `{{app_rating}}` and `{{rating_count}}` are real, a rating card with a real store review appears above the rows; while they are tokens the card is hidden.
 **Microcopy:** Pull rating and count live from this app's own store listing, never hardcode, never in the headline. Review cards are real store reviews only. No press logos, no "doctor" or "hypnotherapist" photos unless each is a real, named, credentialed person.
 **CTA:** Continue
 
@@ -265,7 +266,7 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Headline B:** Hear it before you decide
 **Body A:** Use headphones. Never while driving.
 **Body B:** A short sample. Pause anytime.
-**Visual:** Soft card with the calm photo, a big round play button, a waveform that moves while playing, a 0:00 / 1:00 progress line and a breathing circle that reads "Breathe in…" and "Let go…". Labeled "Sample session". "Need help now?" stays visible. No claim on the screen about what the user will feel.
+**Visual:** (Prototype: the sample is a mock, a silent progress bar. A real recorded 60-second audio clip is required before launch.) Soft card with the calm photo, a big round play button, a waveform that moves while playing, a 0:00 / 1:00 progress line and a breathing circle that reads "Breathe in…" and "Let go…". Labeled "Sample session". "Need help now?" stays visible. No claim on the screen about what the user will feel.
 **Microcopy:** Safety line under the player: "Stop any time. Never listen while driving or using machinery." After the sample ends: "That was a taste. Full sessions run about 15 minutes." No "you should feel calmer already" claim.
 **Skip link:** Skip the sample
 **CTA:** Continue
@@ -321,6 +322,8 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 - **No outcome promise.** Nowhere does the funnel promise to quit, cut down or lose weight. Plan weeks are labeled goals derived from answers. The unverified claim "hypnosis helps with habits" is not made; copy says guided relaxation audio and "support".
 - **Plans are placeholders.** The structure (1-week / 4-week pre-selected / 12-week anchor) mirrors the competitor layout. All prices are `{{price_*}}` / `{{renewal_*}}` tokens. The real Calmio store lists 1-month and 3-month SKUs (see `mental-health/calmio`); align SKUs before launch. The offer's one-time SKU `{{offer_price}}` must exist as a non-renewing product at checkout. Renewal is shown beside every price and a pre-renewal email is promised, so it must be built.
 - **Unverified.** Calmio's real hypnosis content (session library, length, voice), the free-tier scope (the demo assumes the 60-second sample stays free), the app-store rating, the refund window and the review texts were not viewable; rating, reviews and refund blocks are token-gated and hidden until real values exist. Competitor flows are verified from AdSpyLab captures, not live. The branch questions are our own design from the research summary (unverified against Hypnozio's exact order). The profile mapping (trigger -> style) is our own and needs clinical review.
+- **Sample is a mock.** The #18 demo plays no sound. A real recorded and reviewed 60-second audio clip is required before launch.
+- **Clinical review flags.** The eating branch (#6-#8) has no "Big meals" trigger option and routes "A bit guilty"/"Numb" to a soft professional note; the soft-note rule and the full care-check rule need clinical review before launch.
 - **Images:** `gen_images.py` is ready, but no `IKAME_AI_KEY` was available when this demo was built, so `img/` holds calm stand-in photos copied from `mental-health/calmio-sleep` under the new names. Run `IKAME_AI_KEY=... python3 gen_images.py --force` to replace them.
 - **Drop-off risk:** #3 age gate · #5-#8 branch questions (one tap each) · #8 care check (a recommendation, not a block) · #17 email · #19 paywall. Keep #15 at 6-8 s.
 - **Measure separately:** paywall CVR at #19 · offer CVR at #20 (apart from #19) · care-check shown rate and continue rate · free-mode to subscribe later · D1/D7 return at the nudge time · refund and chargeback rate (the honesty metric).
