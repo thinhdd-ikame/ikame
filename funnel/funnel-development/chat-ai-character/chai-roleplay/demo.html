@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0A0911">
@@ -307,6 +308,7 @@ svg .lg{fill:url(#cgrad-logo)}
 .pwhero.cv{height:auto;padding:0 16px}
 .blocked{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;text-align:center}
 </style>
+</head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cgrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient><linearGradient id="cgrad-logo" gradientUnits="userSpaceOnUse" x1="3" y1="4" x2="37" y2="36"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient></defs></svg>
 <main class="phone" id="phone" aria-live="polite"></main>
@@ -329,7 +331,7 @@ const CONFIG={
   checkoutUrl:{w1:'',w4:'',w12:''},
   /* Last-chance offer, shown ONCE per session when a paywall is declined. Real terms only.
      expiresMin: null = no timer; a number = a real deadline. */
-  offer:{enabled:true,name:'Chai Plus - 1 week',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'w1',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'Story pass',price:'{{offer_price}}',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
   app:{deepLink:'',iosUrl:'https://apps.apple.com/app/idTODO',androidUrl:'https://play.google.com/store/apps/details?id=TODO'},
   legal:{termsUrl:'',privacyUrl:''},
   /* Proof blocks: must be real, sourced numbers/reviews before launch. */
@@ -431,7 +433,7 @@ const FREE=CONFIG.freeMessagesPerDay;
 const MORE=['I hear you. Tell me more.','Hm. Go on, I am listening.','Interesting. And then?'];
 const THIS_YEAR=new Date().getFullYear();
 
-const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',blocked:false,genre:'',gOther:'',role:'',roleOther:'',set:'',comp:'',tone:'',name:'',mem:true,picks:[],chat:[],typing:false,turn:0,msgs:FREE,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,offerSeen:false,offerRet:19,flip:false});
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',month:'',blocked:(()=>{try{return !!sessionStorage.getItem('ikf_age_block')}catch(e){return false}})(),genre:'',gOther:'',role:'',roleOther:'',set:'',comp:'',tone:'',name:'',mem:true,picks:[],chat:[],typing:false,turn:0,msgs:FREE,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,offerSeen:false,offerRet:19,flip:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const SCREENS={1:'hook',2:'age_gate',3:'genre',4:'role',5:'setting',6:'companion',7:'tone',8:'character_name',9:'trust',10:'loader',11:'story_reveal',12:'scene_turn_1',13:'scene_turn_2',14:'scene_turn_3',15:'cliffhanger',16:'save_story',17:'paywall',18:'last_chance_offer',19:'back_in_scene'};
@@ -541,8 +543,8 @@ function pwHTML(mode){
   <div class="sec" id="plans1">${plansHTML()}<div style="height:12px"></div>${legalFine()}</div>
   <div class="sec"><h2 class="h2">Everything in<br><span class="gt">Chai Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
   <div class="sec"><h2 class="h2">How it <span class="gt">works</span></h2><div class="how">${how.map(([a,b],j)=>`<div><span class="nn">${j+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</div></div>
-  ${CONFIG.stats?`<div class="sec"><h2 class="h2">Loved by <span class="gt">players</span></h2><div class="stats">${CONFIG.stats.map(([n,l])=>`<div class="stat"><span class="n gt">${ph(n)}</span><span>${esc(l)}</span></div>`).join('')}</div>
-   ${CONFIG.reviews?`<div class="stats" style="margin-top:10px">${CONFIG.reviews.map(([n,cn,x])=>`<div class="rev"><div class="who"><i>${/\{\{/.test(n)?'?':esc(n.slice(0,2).toUpperCase())}</i><div><b>${ph(n)}</b><div style="font-size:11.5px;color:var(--t3)">${ph(cn)}</div></div><span class="st">★★★★★</span></div>${ph(x)}</div>`).join('')}</div>`:''}</div>`:''}
+  ${(()=>{const real=v=>!/^\{\{/.test(v),st=(CONFIG.stats||[]).filter(([n])=>real(n)),rv=(CONFIG.reviews||[]).filter(([n,cn,x])=>real(n)&&real(x));
+   return st.length||rv.length?`<div class="sec"><h2 class="h2">Loved by <span class="gt">players</span></h2>${st.length?`<div class="stats">${st.map(([n,l])=>`<div class="stat"><span class="n gt">${esc(n)}</span><span>${esc(l)}</span></div>`).join('')}</div>`:''}${rv.length?`<div class="stats" style="margin-top:10px">${rv.map(([n,cn,x])=>`<div class="rev"><div class="who"><i>${esc(n.slice(0,2).toUpperCase())}</i><div><b>${esc(n)}</b>${real(cn)?`<div style="font-size:11.5px;color:var(--t3)">${esc(cn)}</div>`:''}</div></div>${esc(x)}</div>`).join('')}</div>`:''}</div>`:''})()}
   ${realRefund()?`<div class="guar"><b>${CONFIG.refundDays}-day money-back guarantee</b>${esc(CONFIG.refundText)}</div>`:''}
   <div class="sec faq"><h2 class="h2">Questions</h2>${faq.map(([a,b])=>`<details><summary>${a}</summary><p>${esc(b)}</p></details>`).join('')}</div>
   <div class="sec">${plansHTML()}<div style="height:12px"></div>${legalFine()}</div>
@@ -589,7 +591,9 @@ function say(text,idx){
 }
 
 /* ---------- screens ---------- */
-const years=()=>{let o='<option value="">Birth year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const months=()=>'<option value="">Month</option>'+MONTHS.map((m,i)=>`<option value="${i+1}" ${String(i+1)===String(S.month)?'selected':''}>${m}</option>`).join('');
+const years=()=>{let o='<option value="">Year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
 const otherRow=(on)=>`<button class="opt ${on?'on':''}" data-a="pick" data-f="role" data-v="other" aria-pressed="${on}"><span class="em">✏️</span><span class="lbl">Other</span></button>`;
 const V={
 1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} Chai</div>
@@ -598,9 +602,9 @@ const V={
   <div class="fan">${GORDER.map((k,j)=>`<div class="fc" style="--gbg:${GENRES[k].bg};background:var(--gbg);border-color:${GENRES[k].acc}66;transform:translateX(${(j-2)*54}px) rotate(${(j-2)*11}deg);z-index:${5-Math.abs(j-2)}"><span>${GENRES[k].e}</span>${gimg(k)}</div>`).join('')}</div></div>
   <div class="foot">${cta('Start my story')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
 2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Adults only. Quick check.','When were you born?'),t('Chai roleplay is for people 18 and older.','We only use this to confirm your age.'))}
-  <select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select>
+  <div style="display:flex;gap:10px"><select class="sel" id="month" data-f="month" aria-label="Birth month">${months()}</select><select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select></div>
   <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div>
-  <div class="foot">${cta('Continue',!!S.year,'age')}</div>`,
+  <div class="foot">${cta('Continue',!!(S.year&&S.month),'age')}</div>`,
 3:()=>`<div class="scr">${q(t('Pick your genre.','What kind of story?'),t('It sets the world, the cast, the stakes.','You can switch genres anytime later.'))}
   <div class="cards">${GORDER.map(k=>{const g=GENRES[k],on=S.genre===k;return `<button class="card gen ${on?'on':''}" data-a="pick" data-f="genre" data-v="${k}" aria-pressed="${on}" style="--gbg:${g.bg}"><span class="gc">${g.e}</span>${gimg(k)}<span class="lb" style="border-top:2px solid ${g.acc}">${g.l}</span></button>`}).join('')}
    <button class="card gen dash ${S.genre==='other'?'on':''}" data-a="pick" data-f="genre" data-v="other" aria-pressed="${S.genre==='other'}"><span class="gc">✏️</span><span class="lb">Other</span></button></div>
@@ -683,19 +687,21 @@ function offerTimer(){const o=CONFIG.offer;clearInterval(window.__oiv);if(!o.exp
     if(ms<=0){clearInterval(window.__oiv);emit('offer_expired');offerLeave();return}
     el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
   tick();window.__oiv=setInterval(tick,1000)}
-V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,was=(CONFIG.plans[o.compareAt]||{}).price||'',c=compI();
+V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,c=compI();
+  const yes=['Finish this scene to its end','Chapter 2 of this story','Your story saved to your email'],no=['Unlimited chat','Other genres and stories','Companion memory beyond this story','Voice notes'];
   return `<div class="pw ofr" role="dialog" aria-label="One-time offer" style="${accStyle()}">
   <div class="obar"><div class="logo">${logo(22)} Chai</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time offer · shown once</span>
-   <h1 class="h2" style="margin:14px 0 8px">${t('Keep the scene going, <span class="gt">for less</span>','One offer <span class="gt">before you go</span>')}</h1>
-   <p class="olead">${t(esc(c[0])+' is mid-sentence. Here’s a lower first price, once.','Same plan, lower first price. Shown once only.')}</p>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time pass · shown once</span>
+   <h1 class="h2" style="margin:14px 0 8px">${t('Finish this story, <span class="gt">once</span>','A smaller pass, <span class="gt">paid once</span>')}</h1>
+   <p class="olead">${t(esc(c[0])+' is mid-sentence. Finish this scene and chapter 2.','No subscription. No renewal. Paid once.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="sec"><div class="ocard">${o.badge?`<span class="obadge">${otok(o.badge)}</span>`:''}
-   <div class="orow"><span class="oth" style="display:grid;place-items:center;font-size:26px;background:var(--gbg)">${c[1]}</span><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><div class="osub">With ${esc(c[0])} · ${esc(G().title)}</div></div></div>
-   <div class="oprice">${was?`<s>${otok(was)}</s>`:''}<b>${otok(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${[`Unlimited chat with ${esc(c[0])}`,'Every genre and scene','Companion memory'].map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
-   <p class="ofine">${otok(o.price)} today, then ${otok(o.renews)} until you cancel. Cancel anytime in account or store settings.</p></div></div>
+   <div class="orow"><span class="oth" style="display:grid;place-items:center;font-size:26px;background:var(--gbg)">${c[1]}</span><div style="flex:1;min-width:0"><b>${esc(o.name)} · ${esc(G().title)}</b><div class="osub">With ${esc(c[0])}</div></div></div>
+   <div class="oprice"><b>${otok(o.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${yes.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   <div style="font-size:12.5px;color:var(--t3);line-height:1.6"><b style="color:var(--t2)">Not included:</b> ${no.join(' · ')}</div>
+   ${cta('Get the story pass',true,'offerbuy')}
+   <p class="ofine">${otok(o.price)} once. No renewal, nothing to cancel. Unlimited chat needs Chai Plus.</p></div></div>
   <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="offerno">No thanks, continue free · ${FREE} messages a day</button>
    <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
    <p class="odis" style="margin-top:10px">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</p></div></div>`};
@@ -719,7 +725,7 @@ phone.addEventListener('click',e=>{
       if(S.i===8){answer('name_set',!!S.name.trim());S.name=S.name.trim()}
       next();break;
     case 'back':back();break;
-    case 'age':{const age=THIS_YEAR-(+S.year);if(age<18){S.blocked=true;emit('age_block');render();break}emit('age_confirm',{method:'year'});next();break}
+    case 'age':{const now=new Date(),age=THIS_YEAR-(+S.year)-((now.getMonth()+1)<(+S.month)?1:0);if(age<18){S.blocked=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render();break}emit('age_confirm',{method:'year'});next();break}
     case 'pick':{
       S[f]=v;
       if(f==='genre'&&v==='other'){render();cur().querySelector('input[data-f="gOther"]')?.focus();break}
@@ -755,11 +761,11 @@ phone.addEventListener('input',e=>{
   const f=e.target.dataset.f;
   if(e.target.id==='msg'){const s=document.getElementById('sendb');if(s)s.disabled=!e.target.value.trim();return}
   if(!f)return;
-  if(f==='year'){S.year=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.year;return}
+  if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month);return}
   S[f]=e.target.value;
   if(['gOther','roleOther','name'].includes(f)){const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S[f].trim()}
 });
-phone.addEventListener('change',e=>{if(e.target.id==='year'){S.year=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.year}});
+phone.addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month)}});
 phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='msg')cur().querySelector('[data-a="send"]')?.click()});
 
 /* Host API: the page embedding this funnel can complete a purchase or read the picks. */

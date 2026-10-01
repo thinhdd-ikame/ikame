@@ -64,7 +64,7 @@ Visual: the Chai system (near-black, magenta-violet gradient primary, Plus Jakar
 **Headline B:** When were you born?
 **Body A:** Chai roleplay is for people 18 and older.
 **Body B:** We only use this to confirm your age.
-**Field:** Birth-year select, no default. CTA stays disabled until a year is picked.
+**Field:** Birth month + year selects, no default. CTA stays disabled until both are picked. A failed check is persisted for the session (`sessionStorage`), so a reload does not clear the block.
 **Visual:** Dimmed storybook cover behind a rounded `surface` box holding the year select. Pink CTA pinned at the bottom.
 **Microcopy:** "AI-generated stories · All characters are fictional and 18+" · Footer: Terms of Service · Privacy Policy
 **Error state:** Under 18 gives a blocking screen: "Sorry, Chai is for adults" / "You must be 18 or older to continue." No back button, no way in.
@@ -285,19 +285,19 @@ Renewal price shows on every card and on the sticky CTA. No struck-through price
 **Visual:** Long-scroll web page. (1) Brand bar with logo, close X from the first frame and Restore. (2) Personal hero: the story cover with `{{story_title}}`, the companion portrait, the user's role, setting and tone chips. (3) Plan block with the 4-week pre-selected. (4) "What's inside": unlimited chat (fair-use cap), every genre and scene, companion memory, voice notes, switch role and tone anytime. (5) "How it works": three steps (pick, play, it remembers). (6) Proof: store rating, user count and review cards as `{{rating}}`, `{{review_*}}` config placeholders, hidden until real. (7) Guarantee: shown only when `{{refund_days}}` is a real number, hidden otherwise. (8) FAQ: "Is it free to start?", "What does unlimited mean?", "Is this safe and private?", "How do I cancel?", "Is it explicit?" (No, SFW). (9) Plan block repeated with the same selection. (10) Sticky bottom CTA with plan, price and renewal line. Close button visible throughout.
 **Microcopy:** Sticky CTA line: "{{price_4w}} today, renews at {{renew_4w}} every 4 weeks" · Fair-use: "Unlimited means normal use, capped at 300 messages a day." · Legal: "Auto-renews at the price shown until cancelled. Cancel anytime in account or store settings." · Free tier: "Free: this scene + 10 messages a day." · Disclosure: "{{comp}} is an AI character."
 **Skip link:** Continue free, 10 messages a day
-**Fallback offer:** #18 last-chance offer, shown once per session (also after closing the #19 limit paywall). Declining it drops the user back into the live scene (#19).
+**Fallback offer:** #18 last-chance offer (a smaller one-time story pass, not a discounted tier), shown once per session (also after closing the #19 limit paywall). Declining it drops the user back into the live scene (#19).
 **CTA:** Continue with 4 weeks
 
 ### 18. Last-chance offer (on close)
-**Purpose:** One honest second chance for users who close the paywall without paying. Shown once per session (`sessionStorage` key `ikf_offer_chai-roleplay`), then never again; a second close goes straight to the free path.
-**Headline A:** Keep the scene going, for less
-**Headline B:** One offer before you go
-**Body A:** {{comp}} is mid-sentence. Here's a lower first price, once.
-**Body B:** Same plan, lower first price. Shown once only.
-**Plans:** One offer card: {{offer_name}}, {{offer_price}} today, then {{offer_renews}} until cancelled. Optional {{offer_badge}}. The regular 1-week price ({{price_1w}}) is struck only if it is the real configured price of that plan. Placeholders until Chai confirms terms.
-**Visual:** Same web look as the paywall: top bar with logo and close X, eyebrow "One-time offer", headline and body, one pink-bordered glowing card with the story cover thumbnail, the price row, three checks (unlimited chat with {{comp}}, every genre, companion memory), the CTA and the renewal line. Under it: "{{comp}} is an AI character. Fictional, and depicted as an adult." Plain decline link and legal links below.
-**Microcopy:** No timer unless `CONFIG.offer.expiresMin` holds a real deadline (null here). Renewal line: "{{offer_price}} today, then {{offer_renews}} until you cancel." Decline link: "No thanks, continue free · 10 messages a day". The offer is the app talking, never the companion. Events: `offer_view`, `offer_accept`, `offer_decline`. Measure offer CVR apart from paywall CVR.
-**CTA:** Claim my offer
+**Purpose:** One honest second chance for users who close the paywall without paying: a smaller product, not a discount on a paywall tier. Shown once per session (`sessionStorage` key `ikf_offer_chai-roleplay`), then never again; a second close goes straight to the free path.
+**Headline A:** Finish this story, once.
+**Headline B:** A smaller pass, paid once.
+**Body A:** {{comp}} is mid-sentence. Finish this scene and chapter 2.
+**Body B:** No subscription. No renewal. Paid once.
+**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (story pass), {{offer_price}} paid once, no renewal, no strike-through price. Includes this scene to its end, chapter 2 of this story and the story saved to the email. Not included (stated on the card): unlimited chat, other genres and stories, companion memory beyond this story, voice notes. Optional {{offer_badge}}.
+**Visual:** Same web look as the paywall: top bar with logo and close X, eyebrow "One-time pass", headline and body, one pink-bordered card with the companion avatar, the pass name, the price row ("paid once"), a "Included" list (finish this scene, chapter 2, story saved) and a muted "Not included" list, the CTA and the "Paid once. No renewal." line. Under it: "{{comp}} is an AI character. Fictional, and depicted as an adult." Plain decline link and legal links below.
+**Microcopy:** No timer unless `CONFIG.offer.expiresMin` holds a real deadline (null here). Line under CTA: "{{offer_price}} once. No renewal. Cancel nothing." Decline link: "No thanks, continue free · 10 messages a day". The offer is the app talking, never the companion. Events: `offer_view`, `offer_accept`, `offer_decline`. Measure offer CVR apart from paywall CVR.
+**CTA:** Get the story pass
 
 ---
 
