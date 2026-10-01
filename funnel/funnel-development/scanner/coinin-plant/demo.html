@@ -285,7 +285,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .ed .who{font:600 11px var(--sans);color:var(--acc);letter-spacing:.05em;display:block;margin-bottom:2px}
 .chipd{display:inline-flex;align-items:center;gap:6px;font:500 11.5px/1 var(--sans);padding:6px 10px;border-radius:999px;border:1px dashed #8FCB8Baa;color:var(--acc);align-self:flex-start}
 .tc .chipd{align-self:center}
-.coinwrap{display:grid;place-items:center}
+.plantwrap{display:grid;place-items:center}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .gc{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px 12px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);position:relative;transition:border-color .2s,opacity .2s}
 .gc b{font:600 14px var(--sans)}
@@ -382,7 +382,6 @@ const IC={
   clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
   scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/>',
   leaf:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
-  coin:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/>',
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5M2 17l10 5 10-5"/>',
   hand:'<path d="M7 11V8a2 2 0 0 1 4 0v3M11 10V7a2 2 0 0 1 4 0v4M15 10a2 2 0 0 1 4 0v4a7 7 0 0 1-14 0v-2a2 2 0 0 1 2-2"/>',
@@ -416,6 +415,7 @@ const COLLECT={
     yellow:{label:'Too much water',days:['Check the soil with a finger, 3 cm down.','Empty any water sitting in the saucer.','Let the top soil dry before watering.','Move it to brighter, indirect light.','Remove fully yellow leaves with clean cuts.','Check that the pot drains freely.','Note what changed and water by feel.']},
     droop:{label:'Thirst or root stress',days:['Feel the soil: dry means water slowly.','If the soil is soggy, hold off watering.','Check the roots for soft, dark parts.','Move it away from heaters and drafts.','Keep a steady, even watering routine.','Look for new, firm growth.','Re-check the leaves and adjust.']},
     brown:{label:'Dry air or uneven watering',days:['Trim brown tips with clean scissors.','Move it away from heaters and vents.','Water evenly: soak, then drain.','Group plants together for more humidity.','Wipe dusty leaves with a damp cloth.','Check light: scorch spots need shade.','Look for new, clean growth.']},
+    unsure:{label:'Not sure yet',days:['Check the soil with a finger, 3 cm down.','Look under leaves and along stems.','Note the light it gets through the day.','Water only when the top soil is dry.','Move it closer to bright, indirect light.','Write down any new changes you see.','Re-check and adjust one thing at a time.']},
     pests:{label:'Possible pests',days:['Keep it apart from your other plants.','Check under leaves and along stems.','Wipe leaves and stems with a damp cloth.','Rinse the plant gently in a sink.','For any spray, read the product label first.','Re-check the leaves every day.','If it spreads, ask a garden centre or professional.']}
   },
   games:[
@@ -451,6 +451,8 @@ function plantSVG(kind,sz=120){
 }
 const AVATAR=`<svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true"><rect width="64" height="64" fill="#2A2722"/><path d="M32 30c-2-8-10-12-16-10 1 8 8 12 16 10z" fill="#5FA86A"/><path d="M32 30c2-9 10-13 17-11-1 9-9 13-17 11z" fill="#8FCB8B"/><path d="M20 38h24l-3 20H23z" fill="#B96F43"/><rect x="17" y="34" width="30" height="8" rx="3" fill="#9C5A34"/><circle cx="27" cy="48" r="2" fill="#0F2A14"/><circle cx="37" cy="48" r="2" fill="#0F2A14"/><path d="M28 53c2 1.6 6 1.6 8 0" fill="none" stroke="#0F2A14" stroke-width="1.5" stroke-linecap="round"/></svg>`;
 
+const DEMO_NOTE='Demo only: this prototype can\'t identify real photos, so it shows a sample result.';
+const demoNote=()=>`<p class="note" style="margin:0">${DEMO_NOTE}</p>`;
 const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h};
 const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',name:'',src:'',srcOther:'',water:'',types:[],typesOther:'',light:'',g1:'',g2:'',front:null,back:null,sample:false,backSkipped:false,photoErr:'',photoWarn:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false,offerSeen:false});
 let S=INIT();
@@ -459,7 +461,7 @@ const SCREENS={1:'hook',2:'meet',3:'name',4:'q_plant',5:'q_water',6:'q_symptoms'
 const nm=()=>(S.name||'').trim()||'friend';
 const sfx=()=>(S.name||'').trim()?', '+esc(S.name.trim()):'';
 const plant=()=>COLLECT.samples[COLLECT.samples[S.src]?S.src:'leafy'];
-const diag=()=>COLLECT.diag[S.types.find(k=>COLLECT.diag[k])||'yellow'];
+const diag=()=>COLLECT.diag[S.types.find(k=>COLLECT.diag[k])||'unsure'];
 function lvl(){const p=(S.light&&S.light!=='unsure'?1:0)+(S.water&&S.water!=='unsure'?1:0)+(S.types.filter(x=>x!=='other').length>1?1:0)+COLLECT.games.filter(g=>S[g.id]===g.right).length;
   const i=p<=1?0:p<=2?1:p<=3?2:3;return Object.assign({i,p},COLLECT.levels[i])}
 function face(side){const u=S[side]&&S[side].url;if(u)return `<img src="${u}" alt="Your plant, ${side==='front'?'whole plant':'close-up'}">`;
@@ -544,7 +546,7 @@ const P_ORDER=['intro','w4','w12'];
 const todayLine=()=>`${tok(CONFIG.plans[S.plan].price)} today`;
 const renewText=k=>{const P=CONFIG.plans[k];return k==='intro'?`${tok(P.price)} for the first week, then ${tok(P.renewPrice)} every week until you cancel.`:`${tok(P.price)} today, then ${tok(P.renewPrice)} every ${P.period} until you cancel.`};
 function planBlock(){const P=CONFIG.plans;
-  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${P_ORDER.map(k=>{const p=P[k];return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${k==='w4'?'<span class="rib">MOST POPULAR</span>':''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renewPrice)}</small></span></button>`}).join('')}</div>
+  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${P_ORDER.map(k=>{const p=P[k];return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${k==='w4'?'<span class="rib">Pre-selected</span>':''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renewPrice)}</small></span></button>`}).join('')}</div>
    <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
    <div style="height:12px"></div>${cta('Unlock my plan',true,'pay')}
    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
@@ -567,7 +569,7 @@ const carePlan=(paid)=>{const d=diag().days;const rows=(paid?d:d.slice(0,2)).map
   return `<div class="card"><h4>Your 7-day plan${paid?'':' · days 1 and 2 free'}</h4><div>${rows}</div><p class="hint" style="margin-top:8px">A general plan from your answers. An indication, not expert advice.</p></div>`};
 const cardBlock=(extra='')=>{const c=plant();return `<div class="cardid"><div class="faces"><div class="roundph">${face('front')}</div>${S.backSkipped?'':`<div class="roundph">${face('back')}</div>`}</div>
   <h2 class="cname">${esc(c.name)}</h2>
-  <div>${[['Common name',c.common],['Family',c.family],['Native to',c.native],['Light',c.light],['Water',c.water]].map(([a,b])=>`<div class="frow"><span>${a}</span><b>${esc(b)}</b></div>`).join('')}</div>${extra}</div>`};
+  <div>${[['Common name',c.common],['Family',c.family],['Native to',c.native],['Light',c.light],['Water',c.water]].map(([a,b])=>`<div class="frow"><span>${a}</span><b>${esc(b)}</b></div>`).join('')}</div>${extra}<span class="chipd" style="align-self:center">Sample data</span></div>`};
 const V={
 1:()=>`<div class="scr" style="padding-top:0;gap:14px"><div class="hero" style="height:250px"><img src="${im('img/hero.jpg')}" alt="A houseplant with drooping, yellowing leaves"></div>
   <div style="margin-top:-64px;position:relative;display:flex;flex-direction:column;gap:10px">${ed(t("Let's find out what's wrong.","Hello! Let's check your plant."),true)}</div>
@@ -603,14 +605,14 @@ const V={
 13:()=>scanScreen('back'),
 14:()=>`<div class="scr center tc" style="gap:16px"><h1 class="display sm">${t('Checking your plant…',"Reading your plant's leaves…")}</h1>
   <div class="spin3d"><div class="roundph lg">${face('front')}<span class="ringscan"></span></div></div>
-  <p class="note" style="margin:0">${S.backSkipped?'One photo scanned (whole plant only)':'Two photos scanned'}</p>
+  <p class="note" style="margin:0">${S.backSkipped?'Photo received (whole plant only)':'Photos received'}</p>${demoNote()}
   <div class="tasks">${['Reading leaf shape and color…','Matching it to known plants…','Checking common care problems…','Fern is preparing your plan…'].map((x,i)=>`<div class="task" id="tk${i}"><i></i><span style="flex:1;text-align:left">${x}</span><span id="pc${i}" style="font-variant-numeric:tabular-nums">0%</span></div>`).join('')}</div></div>`,
 15:()=>{const c=plant(),d=diag(),nomatch=QS.get('nomatch')==='1';
   if(nomatch)return `<div class="scr center tc" style="gap:14px">${ed("Hmm, I can't see it clearly.")}<h1 class="display sm">We couldn't match this one yet</h1><p class="lead">Try brighter light and a plain background.</p></div><div class="foot">${cta('Retake photos',true,'retake12')}<button class="link" data-a="sample">Use a sample plant</button></div>`;
   return `<div class="scr" style="gap:14px;padding-top:24px">${ed(`Here's your plant, ${esc(nm())}.`)}
   <div><h1 class="display sm">${t("It's a "+esc(c.name),'We found your plant')}</h1><p class="lead" style="margin-top:8px">${t('Likely cause: '+esc(d.label)+'.','Care plan days 1 and 2 are free.')}</p></div>
   ${cardBlock(`<div class="hint tc">Match confidence: ${S.backSkipped?'Medium':'High'} · <button class="link" style="min-height:0;padding:0" data-a="retake12">Not right? Try another photo</button></div>`)}
-  <span class="chipd">${S.sample||!(S.front)?'Sample plant result':'Demo result: the live app checks your photo'}</span>
+  <span class="chipd">Sample data</span>${demoNote()}
   ${carePlan(false)}${lockRows(false)}
   <p class="note" style="margin:0">An indication from your photos, not expert advice.</p></div><div class="foot">${cta('See my badge')}</div>`},
 16:()=>{const l=lvl();
@@ -639,7 +641,7 @@ const V={
   <div class="wbar"><div class="brand">${ic('leaf',16)} CoinIn</div><button class="mini" data-a="toplans">Unlock my plan</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
   <div class="wsec tight"><span class="eyebrow">Your plant card is ready</span><h1 class="display" style="font-size:31px">${heroH}</h1>
    <p class="lead" style="margin:8px 0 16px">${esc(c.name)}. Three parts are still locked.</p>
-   <div class="whero"><div class="pv" style="aspect-ratio:1;border-radius:50%"><div class="roundph" style="width:100%;height:100%;border:none">${face('front')}</div></div><div class="facts"><div class="fact">Plant<b>${esc(c.name)}</b></div><div class="fact">Level<b>${esc(l.n)}</b></div><div class="fact">Locked<b>3 of 3 parts</b></div></div></div>
+   <p class="note" style="margin:0 0 10px"><b>Sample data.</b> ${DEMO_NOTE}</p><div class="whero"><div class="pv" style="aspect-ratio:1;border-radius:50%"><div class="roundph" style="width:100%;height:100%;border:none">${face('front')}</div></div><div class="facts"><div class="fact">Plant<b>${esc(c.name)}</b></div><div class="fact">Level<b>${esc(l.n)}</b></div><div class="fact">Locked<b>3 of 3 parts</b></div></div></div>
    <div style="margin-top:14px">${lockRows(true)}</div>
    <div style="margin-top:14px">${ed('Fern is an illustrated guide, not a botanist.')}</div></div>
   <div class="wsec" id="plans1">${planBlock()}</div>
@@ -660,7 +662,7 @@ const V={
    <p class="lead" style="margin-top:8px">${t("Pay once for this plant's full plan.",'No subscription, no renewal.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard">${o.badge&&!isTok(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
-   <div class="orow"><div class="roundph" style="width:64px;height:64px">${face('front')}</div><div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(plant().name)}</div></div></div>
+   <div class="orow"><div class="roundph" style="width:64px;height:64px">${face('front')}</div><div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(plant().name)} · Sample data</div></div></div>
    <div class="oprice"><b>${tok(o.price)}</b><span>one time</span></div>
    <div class="checks" style="margin:14px 0 8px">${["This plant's full cause check",'Full 7-day care plan','Watering and light schedule'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
    <div class="checks" style="margin:0 0 14px;color:var(--t3)"><div style="color:var(--t2);font-weight:600;font-size:12.5px">Not included</div>${['Unlimited plant scans','Plant tracker','Other plants'].map(x=>`<div>${ic('x',16,2.2)}<span>${x}</span></div>`).join('')}</div>
@@ -672,7 +674,7 @@ const V={
   return `<div class="scr" style="gap:14px;padding-top:26px">${paid?`<span class="badge">${ic('check',13,2.6)} Unlocked</span>`:''}
   <div><h1 class="display sm">${t('Your plant card'+sfx(),'Your plant, decoded')}</h1><p class="lead" style="margin-top:8px">${t('Fern saved it to your plants.','Check your next plant any time.')}</p></div>
   ${cardBlock(`<div class="hint tc">${ic('check',13,2.6)} Level: ${esc(l.n)}</div>`)}
-  ${paid?`<div class="card"><h4>Likely cause: ${esc(diag().label)}</h4><p style="margin-top:6px">Based on your photos and answers. Check the soil, light and leaves yourself before changing anything big.</p><p class="hint" style="margin-top:6px">An indication, not expert advice. For sprays, check the product label or ask a professional.</p></div>${carePlan(true)}
+  ${demoNote()}${paid?`<div class="card"><h4>Likely cause: ${esc(diag().label)}</h4><p style="margin-top:6px">Based on your photos and answers. Check the soil, light and leaves yourself before changing anything big.</p><p class="hint" style="margin-top:6px">An indication, not expert advice. For sprays, check the product label or ask a professional.</p></div>${carePlan(true)}
     <div class="card"><h4>Water and light</h4><p>${esc(plant().water)}. ${esc(plant().light)}.</p></div>`:`${carePlan(false)}${lockRows(false)}`}
   <div class="gridc"><div class="f"><div class="roundph" style="width:100%;height:100%;border:none;border-radius:0">${face('front')}</div></div><div></div><div></div><div></div></div><p class="note" style="margin:-6px 0 0">Plants: 1 plant</p>
   ${ed('Nice work. Bring me the next plant.')}</div>

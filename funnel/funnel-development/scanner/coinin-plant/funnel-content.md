@@ -109,7 +109,7 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 - 🟤 Brown tips or spots
 - 🐛 Pests or webbing
 - ✏️ Other
-**Field:** Multi-select, CTA disabled until at least one pick. If Other is picked its input must be non-empty. If only Other is picked, the demo falls back to the yellow-leaves plan (unverified assumption, labeled as an indication).
+**Field:** Multi-select, CTA disabled until at least one pick. If Other is picked its input must be non-empty. If only Other is picked, the cause shows as a neutral "Not sure yet" with a general check-the-basics plan.
 **Visual:** Same pill list, check circle right, progress 3/4.
 **Error state:** Other picked, field empty: CTA disabled, hint "Type a few words to continue."
 **CTA:** Continue
@@ -226,7 +226,7 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 3. Checking common care problems… (0 to 100%, check)
 4. Fern is preparing your plan… (0 to 100%, check)
 **Visual:** The user's whole-plant photo (or the sample plant) fills a round frame, tilts slowly in 3D (the only 3D in the funnel) with a green scanning ring sweeping its rim. Four rows beneath: label, percent, check, green bar.
-**Microcopy:** Under headline: "Two photos scanned". Honest-demo note in the panel footnote: the demo cannot identify real photos and shows the sample result.
+**Microcopy:** Under headline: "Photos received". Visible demo note on screens 14, 15, 20 and the paywall hero: "Demo only: this prototype can't identify real photos, so it shows a sample result." (prototype only, not shipped copy)
 **CTA:** (auto-advances when the result returns, minimum ~5 seconds)
 
 ### 15. Your plant — free ID card and likely cause
@@ -236,7 +236,7 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 **Body A:** Likely cause: {{issue}}.
 **Body B:** Care plan days 1 and 2 are free.
 **Visual:** Plant card with the captured photos side by side, plant name in serif, fact rows (common name, family, native to, light, water). Below, a "Your 7-day plan · days 1 and 2 free" card with Day 1 and Day 2 steps, then three locked rows with a green lock: "Care plan, days 3 to 7", "Full cause check", "Watering and light schedule". Fern bubble: "Here's your plant, {{name}}."
-**Microcopy:** "Match confidence: {{confidence}}" with link "Not right? Try another photo." Under the plan: "An indication from your photos, not expert advice." No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photos" / "Use a sample plant".
+**Microcopy:** "Match confidence: {{confidence}}" with link "Not right? Try another photo." Chip "Sample data" under the card (prototype only). Under the plan: "An indication from your photos, not expert advice." No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photos" / "Use a sample plant".
 **CTA:** See my badge
 
 ### 16. Plant parent level badge
@@ -277,7 +277,7 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 **Body B:** Check unlimited plants and track them in one place.
 **Plans:** Structure only, no invented numbers.
 - 1-week intro: intro price token, then weekly renewal shown beside it. Never called free.
-- **4-week: pre-selected**, "MOST POPULAR", price and renewal tokens.
+- **4-week: pre-selected**, "Pre-selected", price and renewal tokens.
 - 12-week: anchor, price and renewal tokens.
 - Every plan shows its own renewal price and period next to the price.
 **Visual:** Sticky brand bar with a close X. Hero: the user's plant card (photo, name, level) with three locked rows glowing green as "unlocking". The hero headline uses the first symptom picked ("Plan for the yellow leaves", "...the drooping", "...the brown tips", "...the pests"); default "Get your full care plan". Plan block. "What's inside" list (pest check first if the user picked pests). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
@@ -334,7 +334,7 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 
 **Dark patterns not copied.** Countdown timer, strike-through anchor prices, "payment period" fine print, live user counter, fake expert testimonials, and an email gate that claims no storage.
 
-**Drop-off risk.** Screens 12 to 13 (upload). The sample-plant link, camera or gallery choice and "whole plant only" skip exist for this. Screen 17 (email) is required in the web variant. Users who cannot find a symptom pick Other, which falls back to the yellow-leaves plan.
+**Drop-off risk.** Screens 12 to 13 (upload). The sample-plant link, camera or gallery choice and "whole plant only" skip exist for this. Screen 17 (email) is required in the web variant. Users who cannot find a symptom pick Other, which shows "Not sure yet" and a general plan.
 
 **Monetization.** One layer, the subscription, plus a one-time single-plant plan on decline. Measure separately: first-scan success, paywall conversion by plan, offer accept rate and refund rate.
 
@@ -342,6 +342,6 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 
 **Verify before build.** Real plan periods and prices; refund terms; rating and reviews; the real plant-ID and cause-check API and a reviewed cause-to-plan table (the demo's four causes and 7-day plans are general placeholders, unverified by a horticulturist); licensed photos (the demo's four images are drawn placeholders, `gen_images.py` can replace them with the same names); whether the brand is CoinIn or a PlantIn-style listing.
 
-**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample (by Q1 pick) with the cause chosen by the first symptom, and the footnote says so. Images are placeholders drawn with PIL/SVG (no `IKAME_AI_KEY` was set); `gen_images.py` is ready to replace them.
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample (by Q1 pick) with the cause chosen by the first symptom, and a visible "Demo only" note plus "Sample data" chips (cards, paywall hero, offer) say so. Images are placeholders drawn with PIL/SVG (no `IKAME_AI_KEY` was set); `gen_images.py` is ready to replace them.
 
 **Demo (Artifact, private):** https://claude.ai/artifact/XF56cAX6rchhcghwa3PQ5w
