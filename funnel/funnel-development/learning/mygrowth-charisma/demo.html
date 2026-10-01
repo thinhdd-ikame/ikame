@@ -461,7 +461,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     </div>
     <div>
       <p class="foot-note"><b>Computed from your answers:</b> style = the tags of your three replies (2+ questions = Listener, 2+ stories = Storyteller, otherwise Connector) (#9, #16); script cards come from your first tough situation (#18); weekly themes from your style skills and goal (#17); hours = 20 cards x minutes / 60. Weeks are goals, not promised outcomes.</p>
-      <p class="foot-note"><b>Placeholders:</b> prices, renewals and the offer price are dashed placeholder tokens (growth team sets them); illustrations are flat placeholders until gen_images.py runs with IKAME_AI_KEY; QR, phone mockup and the second review card are placeholders. The 4.5 rating and "Kare" quote come from the sibling MyGrowth brief; re-check at launch.</p>
+      <p class="foot-note"><b>Placeholders:</b> prices, renewals, the offer price, rating and review blocks and the guarantee are gated in <code>CONFIG</code> and stay hidden until real values are set. Illustrations are flat placeholders until gen_images.py runs; QR and phone mockups are placeholders.</p>
       <p class="foot-note">Pick "Other" on screens 3, 4 or 10 to see the empty-input state (CTA disabled). Try <code>taken@example.com</code> on #15. No purchase, sign-in or email is made.</p>
     </div>
   </aside>
@@ -506,11 +506,16 @@ const SIMS=[
   o:[['"Of course! How can I help?"','ask','Open and warm: it invites them to lead.'],['"Sure, sorry, I was stuck in traffic!"','story','A small human detail makes a call feel lighter.'],['"No problem."','safe','Fine, but the silence after it is yours. Add a question.']]}
 ];
 const TK=n=>`<span class="tok">{{${n}}}</span>`;
-const RV='<p>"Review from a real communication-course learner goes here, 15 words max."</p><small>First name · fill from real store data only</small>';
+/* Proof is gated: ratings, reviews and the guarantee render only when CONFIG holds a real value (not a {{token}}). */
+const real=v=>v!==null&&v!==undefined&&v!==''&&!/^\{\{/.test(String(v));
+const hasRating=()=>real(CONFIG.proof.rating)&&real(CONFIG.proof.count);
+const reviews=()=>(CONFIG.proof.reviews||[]).filter(r=>real(r.q)&&real(r.by));
+const ratingStrip=()=>hasRating()?`<span class="rating"><b>★</b> ${esc(CONFIG.proof.rating)} · ${esc(CONFIG.proof.count)} App Store ratings</span>`:'';
+const reviewCard=r=>`<div class="rcard"><span class="stars">★★★★★</span><p>"${esc(r.q)}"</p><small>${esc(r.by)}</small></div>`;
 
 /* Last-chance offer: once per session, on paywall close. A smaller 7-day one-track starter pass (not "free"), terms shown, no extra discount, no timer.
    price / renews stay tokens until the growth team sets them. compareAt null = nothing struck. expiresMin null = no timer. */
-const CONFIG={funnel:'mygrowth-charisma',offer:{enabled:true,name:'7-day starter pass',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'week',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+const CONFIG={funnel:'mygrowth-charisma',proof:{rating:'{{app_rating}}',count:'{{rating_count}}',reviews:[],refundDays:'{{refund_days}}'},offer:{enabled:true,name:'7-day starter pass',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'week',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
 
 const INIT=()=>({v:'A',i:1,hist:[],spots:[],spotsO:'',happens:[],happensO:'',sim:[null,null,null],goal:'',goalO:'',mins:0,name:'',email:'',mkt:false,acct:'',plan:'w4',paid:false,flip:[false,false,false],offerSeen:false,offerEnd:0,offerViewed:false,offer:false,faq:-1,err:''});
 let S=INIT();
@@ -634,7 +639,7 @@ const faqBlock=()=>`<div class="faq">${FAQS.map(([q,a],i)=>`<button data-a="faq"
 const logo='<div class="logo"><i>🌱</i>MyGrowth</div>';
 
 const V={
-1:()=>`<div class="scr" style="padding-top:8px"><div style="display:flex;flex-direction:column;gap:6px"><div class="logo"><i>🌱</i>MyGrowth</div><span class="rating"><b>★</b> 4.5 · 2,400+ App Store ratings</span></div>
+1:()=>`<div class="scr" style="padding-top:8px"><div style="display:flex;flex-direction:column;gap:6px"><div class="logo"><i>🌱</i>MyGrowth</div>${ratingStrip()}</div>
   ${hero('img/hook-talk.jpg',210,'Illustration of two people trading speech bubbles while a third bubble fills in')}
   <h1 class="h1 xl">${lastViolet(t('Never run out of words','Small talk, made easy'))}</h1>
   <p class="lead" style="margin-top:-6px">${t('Practice real conversations in five minutes a day.','Know what to say, before you need it.')}</p></div>
@@ -681,19 +686,19 @@ const V={
   <p class="lead" style="margin-top:-6px">${t("We'll put it on your plan.",'First name is all we need.')}</p>
   <div class="field"><div class="box"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
   <div class="foot">${cta('Continue',true,'name')}</div>`,
-13:()=>`<div class="scr center" style="align-items:center;text-align:center">
-  <div style="display:flex;align-items:center;gap:4px">${laurel(false)}<div><div style="font:800 34px/1.2 var(--disp)">4.5</div><div class="stars" style="font-size:20px">★★★★<span style="opacity:.45">★</span></div></div>${laurel(true)}</div>
-  <h1 class="h1 c">${t('Rated 4.5 on the App Store','Learners give it 4.5 stars')}</h1>
-  <p class="lead c" style="margin-top:-6px">${t('From 2,400+ ratings by people like '+nmT()+'.','Lessons short enough to finish over coffee.')}</p>
+13:()=>{const hr=hasRating(),rv=reviews();
+  return `<div class="scr center" style="align-items:center;text-align:center">
+  ${hr?`<div style="display:flex;align-items:center;gap:4px">${laurel(false)}<div><div style="font:800 34px/1.2 var(--disp)">${esc(CONFIG.proof.rating)}</div><div class="stars" style="font-size:20px">★★★★<span style="opacity:.45">★</span></div></div>${laurel(true)}</div>`:`<div class="avt" style="width:72px;height:72px;font-size:34px">💬</div>`}
+  <h1 class="h1 c">${hr?t(`Rated ${esc(CONFIG.proof.rating)} on the App Store`,`Learners give it ${esc(CONFIG.proof.rating)} stars`):t('Practice beats theory','Short reps, real moments')}</h1>
+  <p class="lead c" style="margin-top:-6px">${hr?t(`From ${esc(CONFIG.proof.count)} ratings by people like `+nmT()+'.','Lessons short enough to finish over coffee.'):t('A few minutes of rehearsal a day.','Rehearse real moments, a little each day.')}</p>
   <div style="width:100%">${stores()}</div>
-  <div class="rcard" style="text-align:left;width:100%"><p>"It beats mindless scrolling. You learn while you scroll!"</p><small>Kare · App Store review (confirm reuse rights)</small></div></div>
-  <div class="foot">${cta('Continue')}</div>`,
+  ${rv.length?reviewCard(rv[0]).replace('class="rcard"','class="rcard" style="text-align:left;width:100%"'):''}</div>
+  <div class="foot">${cta('Continue')}</div>`},
 14:()=>{const rows=['Reading your three replies…','Spotting your conversation style…',`Choosing script cards for ${topSpot()}…`,'Almost ready, your plan awaits…'];
   return `<div class="scr" style="gap:14px;padding-top:6px"><div style="display:flex;gap:8px;justify-content:center">${['💬','💬','🗂️'].map((e,i)=>`<span class="avt" style="width:52px;height:52px;font-size:24px;${i<2?'':'background:var(--lav)'}">${e}</span>`).join('')}</div>
   <h1 class="h1 c" id="h14" style="font-size:24px">${t(`Building ${nm()}'s plan…`,'Reading your three replies…')}</h1>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct">0%</span></div><div class="bar"><span></span></div></div>`).join('')}</div>
-  <div><div class="eyebrow" style="margin-bottom:8px;color:var(--ink2)"><span class="stars">★</span> 4.5 on the App Store</div>
-  <div class="revs"><div class="rev on"><p>"I feel more accomplished than when I just sit on my phone."</p><small>Sherri H. · confirm reuse rights</small></div><div class="rev"><p>"Short and sweet and to the point."</p><small>Heidi B. · confirm reuse rights</small></div></div></div></div>`},
+  ${reviews().length?`<div><div class="eyebrow" style="margin-bottom:8px;color:var(--ink2)">${hasRating()?`<span class="stars">★</span> ${esc(CONFIG.proof.rating)} on the App Store`:'What learners say'}</div><div class="revs">${reviews().map((r,i)=>`<div class="rev ${i?'':'on'}"><p>"${esc(r.q)}"</p><small>${esc(r.by)}</small></div>`).join('')}</div></div>`:''}</div>`},
 15:()=>{const st=STYLES.Connector;return `<div class="gatebg"><div style="filter:blur(7px);display:flex;flex-direction:column;gap:10px;padding:18px">${hero(st.img,170)}<div class="skill">Open with confidence<i>Goal</i></div><div class="skill">Keep it going<i>Goal</i></div></div></div><div class="scr" style="padding:0;gap:0"><div class="gsheet">
   <h1 class="h1">${t('Where should we send it?','Save your plan, '+nmT())}</h1>
   <p class="lead" style="margin-top:-6px">${t('Your email unlocks your plan in the app.',"You'll sign in with this email later.")}</p>
@@ -735,7 +740,8 @@ const V={
   <div class="trust">🔒 Secure checkout · Cancel online anytime</div>
   <div class="lav sec"><h2>What's inside</h2><div class="get">${['5-15 minute lessons','Script cards for every situation','Practice scenes with feedback','Read or listen to every lesson','Streaks and reminders'].map(x=>`<div>${x}</div>`).join('')}</div></div>
   <div class="sec"><h2>How it works</h2><div class="how"><div><b>1</b>Pick your plan</div><div><b>2</b>Sign in with ${esc(S.email||'your email')}</div><div><b>3</b>Open your first script card</div></div></div>
-  <div class="sec"><h2>What learners say</h2><div style="display:flex;flex-direction:column;gap:10px"><div class="rcard"><span class="stars">★★★★★</span><p>"It beats mindless scrolling. You learn while you scroll!"</p><small>Kare · App Store review (confirm reuse rights)</small></div><div class="rcard ph">${RV}</div></div></div>
+  ${reviews().length?`<div class="sec"><h2>What learners say</h2><div style="display:flex;flex-direction:column;gap:10px">${reviews().map(reviewCard).join('')}</div></div>`:''}
+  ${real(CONFIG.proof.refundDays)?`<div class="sec"><h2>Our guarantee</h2><div class="gbox"><span>🛡️</span><span><b>${esc(CONFIG.proof.refundDays)}-day money-back guarantee.</b> Conditions in plain words go here.</span></div></div>`:''}
   <div class="sec"><h2>Questions</h2>${faqBlock()}</div>
   <div class="sec"><h2>Choose your plan</h2>${planBlock()}</div>
   <p class="hint" style="text-align:center;margin:0">We'll email you before every renewal.</p>

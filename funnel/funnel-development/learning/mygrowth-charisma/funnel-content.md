@@ -22,7 +22,7 @@ motion: >
 
 Same app and brand as `learning/mygrowth` (MyGrowth, EXTRAMILE LIMITED: 5-15 minute lessons, Communication is one of its six subjects). This variant sells one skill: never running out of words. **References (adspylab, captured 2026-09-28 and 2026-10-01):** MyGrowth `communication-bau` (29 screens, 689 ads), RiseGuide `buildcharisma.com/l` (33 screens, 1,213 ads) and Smartyme small talk (45 screen configs, source-extracted). The shape is the shared learning-plan archetype: goal and pace quiz, a skill check, a measured result, a dated plan, one web paywall. **Deliberate differences from the competitors:** (1) the skill check is three *simulated conversations* where the user picks what to say and gets feedback on the spot, instead of Likert self-ratings and "92% ready" percentages; (2) the result is a conversation style built from those three real replies, not a celebrity role-model match or a profile "Readiness: PERFECT" gauge; (3) the plan is a set of script cards (situation, what to say, what to say next) built from the situations the user named; (4) no scratch card, no 10:00 promo timer, no "950+ started today" ticker, no struck-through "reference" prices; (5) no "Cambridge methodology" authority claim and no promise that charisma is "fixed in 4 weeks"; (6) the competitor's email-only cancellation is replaced by self-serve cancel. **Look:** identical to `learning/mygrowth`: white background, lavender panels `#EBE9F7`, violet gradient `#8488F4 → #7D73E3`, blue `#007BFF`, orange `#FF9F00` accent. Copy rules apply throughout: headline ≤6 words, body ≤12 words, A/B on every screen.
 
-Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{style_hint}}`, `{{minutes}}`, `{{cards_hours}}`, `{{email}}`, `{{price_1w}}`, `{{renewal_1w}}`, `{{price_4w}}`, `{{renewal_4w}}`, `{{price_12w}}`, `{{renewal_12w}}`, `{{offer_price}}`, `{{offer_renew_price}}`, `{{app_rating}}`, `{{rating_count}}`. Unset personal tokens fall back to: name "you", top_spot "parties", goal "enjoy conversations", style "Connector", minutes "10".
+Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{style_hint}}`, `{{minutes}}`, `{{cards_hours}}`, `{{email}}`, `{{price_1w}}`, `{{renewal_1w}}`, `{{price_4w}}`, `{{renewal_4w}}`, `{{price_12w}}`, `{{renewal_12w}}`, `{{offer_price}}`, `{{offer_renew_price}}`, `{{app_rating}}`, `{{rating_count}}`, `{{refund_days}}`. Unset personal tokens fall back to: name "you", top_spot "parties", goal "enjoy conversations", style "Connector", minutes "10".
 
 ---
 
@@ -35,7 +35,7 @@ Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{sty
 **Body A:** Practice real conversations in five minutes a day.
 **Body B:** Know what to say, before you need it.
 **Visual:** White background, MyGrowth logo top-left, rating strip. Two speech bubbles trading lines with a third bubble filling in, last headline word in violet, violet CTA pinned bottom.
-**Microcopy:** Rating strip: "★ {{app_rating}} · {{rating_count}} App Store ratings" (verified 4.5 / 2,400+ in the sibling brief; re-check at launch, never a geo-injected "Top app in {country}").
+**Microcopy:** Rating strip: "★ {{app_rating}} · {{rating_count}} App Store ratings", shown only when both values are real (CONFIG); hidden while they are tokens. Never a geo-injected "Top app in {country}".
 **CTA:** Start my quiz
 
 ### 2. Hook B — Real moments, real practice
@@ -209,13 +209,14 @@ Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{sty
 ## C. Trust
 
 ### 13. Social proof
-**Purpose:** Trust beat before the loader, public checkable numbers only.
-**Headline A:** Rated 4.5 on the App Store
-**Headline B:** Learners give it 4.5 stars
-**Body A:** From 2,400+ ratings by people like {{name}}.
+**Purpose:** Trust beat before the loader. Rating and review blocks render only from real store data in CONFIG; with none, the screen falls back to a proof-free practice message.
+**Headline A:** Rated {{app_rating}} on the App Store
+**Headline B:** Learners give it {{app_rating}} stars
+**Body A:** From {{rating_count}} ratings by people like {{name}}.
 **Body B:** Lessons short enough to finish over coffee.
-**Visual:** Large "{{app_rating}}" with star row and laurel, App Store and Google Play badges, one review card.
-**Microcopy:** Quote from the sibling brief (confirm reuse rights): "It beats mindless scrolling. You learn while you scroll!" — Kare. This is the only verified review; replace with a communication-course review from real store data before launch. No invented user counts.
+**Fallback (no real rating):** Headline A "Practice beats theory" / B "Short reps, real moments"; Body A "A few minutes of rehearsal a day." / B "Rehearse real moments, a little each day." No rating, laurel or count shown.
+**Visual:** Large rating with star row and laurel (rating version) or a chat avatar (fallback), App Store and Google Play badges, and one review card only if a real review is in CONFIG.
+**Microcopy:** No quote, name or count is shown until the growth team supplies verified store data; the sibling brief's 4.5 / 2,400+ rating and "Kare" quote are unverified for this funnel and are not used.
 **CTA:** Continue
 
 ---
@@ -231,8 +232,8 @@ Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{sty
 - Spotting your conversation style…
 - Choosing script cards for {{top_spot}}…
 - Almost ready, your plan awaits…
-**Visual:** Three speech bubbles flipping into script cards; four progress rows; two real reviews rotating beneath.
-**Microcopy:** Carousel header: "★ {{app_rating}} on the App Store"
+**Visual:** Three speech bubbles flipping into script cards; four progress rows; real reviews rotate beneath only if CONFIG has them.
+**Microcopy:** An optional review block (rating header plus real reviews) appears under the rows only when CONFIG holds real reviews; otherwise nothing.
 **CTA:** (auto-advances, ~6 seconds)
 
 ---
@@ -313,14 +314,14 @@ Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{sty
 - **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. "MOST POPULAR" only if sales data backs it.
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
 - Plans are named by the period they bill. No fake "was" price.
-**Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (style card, goal, `{{minutes}}` min/day chips) · plan block · what's inside · how it works (3 steps) · proof (rating + review cards) · guarantee · FAQ · plan block repeated · sticky CTA.
-**Visual:** Same web look as the rest of the funnel. Radio plan cards, violet border on the selected one, payment-method row (Apple Pay / PayPal / card), safe-checkout badges. No countdown bar.
+**Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (style card, goal, `{{minutes}}` min/day chips) · plan block · what's inside · how it works (3 steps) · proof (rating + review cards, only when real) · guarantee (only when refund days are real) · FAQ · plan block repeated · sticky CTA.
+**Visual:** Same web look as the rest of the funnel. Proof section hidden until real reviews exist. Radio plan cards, violet border on the selected one, payment-method row (Apple Pay / PayPal / card), safe-checkout badges. No countdown bar.
 **Microcopy:**
 - Line above the sticky CTA: "{{price_4w}} today. Then {{renewal_4w}} every 4 weeks until you cancel." (follows the selected plan)
 - Trust row: "🔒 Secure checkout · Cancel online anytime"
 - What's inside (shipped features only, confirm against the app): "5-15 minute lessons" · "Script cards for every situation" · "Practice scenes with feedback" · "Read or listen to every lesson" · "Streaks and reminders"
 - How it works: 1 "Pick your plan" · 2 "Sign in with {{email}}" · 3 "Open your first script card"
-- Guarantee: hidden while the refund terms are still a token; shown only once the real conditions are filled in.
+- Guarantee: hidden while `refundDays` is a token; shown only once the real terms are filled in.
 - FAQ: "How do I cancel?" → "Profile → Settings → Manage subscription, or the link in your receipt." · "Will it renew?" → "Yes, at the renewal price shown, until you cancel. We email you before every renewal." · "Is this therapy?" → "No. It's practice for everyday conversation, not treatment."
 **Fallback offer:** On close, the last-chance offer (#20) once per session. No timer.
 **CTA:** Start my plan
@@ -355,7 +356,7 @@ Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{sty
 ## Notes
 
 - **Unverified:** the research marks MyGrowth communication-bau and RiseGuide as observed (V); Smartyme small talk is source-extracted (config, not a live capture). Nothing here is inferred from a competitor screen, but the three simulations, the style bands (ask / story / tie → Connector), the script-card text, the 20-card ramp and the starter-pass offer are this brief's own design, not a competitor's. The "style" is a practice guide, not a validated psychological test. Prices are tokens; the 1-week / 4-week / 12-week structure mirrors the sibling brief, not MyGrowth's live 4/12/26-week plans, so confirm with growth before launch.
-- **Honesty guardrails:** no promise that the user becomes "charismatic" or confident in N weeks; weeks are goals; no "Cambridge methodology", celebrity role-model or "92% ready" claims; the simulation feedback explains effects instead of grading right or wrong; the only review quote is the one verified in the sibling brief.
+- **Honesty guardrails:** no promise that the user becomes "charismatic" or confident in N weeks; weeks are goals; no "Cambridge methodology", celebrity role-model or "92% ready" claims; the simulation feedback explains effects instead of grading right or wrong; no rating, count or review is shown until real store data is set in CONFIG (the sibling brief's 4.5 / 2,400+ and "Kare" quote are unverified here).
 - **Dropped competitor mechanics:** scratch card, 10:00 promo timer, "950+ started today" and "1.5M users" tickers, struck reference prices, email-only cancellation, recycled reviews from other subjects, expert/authority personas.
 - **Not a health product:** communication practice, not social-anxiety treatment. If a user types distress into an Other field the app does not react, but the FAQ states it is not therapy; do not target ads at "social anxiety".
 - **Measure:** quiz completion by screen, simulation reply split (ask / story / safe), #16 to #19 reach, paywall conversion per plan, starter-pass accept rate, activation (install + sign-in + first card within 48 h), first-renewal retention at full price, refund rate.
