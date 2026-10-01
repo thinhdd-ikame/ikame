@@ -601,9 +601,12 @@ const locale=(navigator.language||'es').slice(0,2).toLowerCase();
    Real terms only: price / renews stay placeholder tokens until the growth team sets them; checkout must charge exactly these.
    compareAt = the plan it undercuts (its real current price is struck); null = nothing struck.
    expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session (never reset). */
-const CONFIG={funnel:'ewa-latam',plans:{'1w':{checkoutUrl:''},'4w':{checkoutUrl:''},'12w':{checkoutUrl:''}},refundDays:'{{refund_days}}',offer:{enabled:true,name:'Plan de 4 semanas, precio de introducción',price:'{{offer_price_mxn}}',priceBrl:'{{offer_price_brl}}',renews:'{{renew_mxn_4w}}',renewsBrl:'{{renew_brl_4w}}',period:'4 semanas',compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+const CONFIG={funnel:'ewa-latam',plans:{'1w':{checkoutUrl:''},'4w':{checkoutUrl:''},'12w':{checkoutUrl:''}},refundDays:'{{refund_days}}',rating:{score:'{{app_rating}}',count:'{{rating_count}}'},reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],offer:{enabled:true,name:'Pase de falsos amigos',price:'{{offer_price_mxn}}',priceBrl:'{{offer_price_brl}}',oneTime:true,period:'pago único',compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
 const hasGuar=()=>!/^\{\{/.test(String(CONFIG.refundDays));
-const PLANS=[['1w','1 semana','','/semana','semana'],['4w','4 semanas','MÁS ELEGIDO',' cada 4 semanas','4 semanas'],['12w','12 semanas','MENOR PRECIO POR DÍA',' cada 12 semanas','12 semanas']];
+const live=v=>!!v&&!/^\{\{/.test(String(v));
+const ratingOn=()=>live(CONFIG.rating.score)&&live(CONFIG.rating.count);
+const reviewsOn=()=>(CONFIG.reviews||[]).filter(r=>r&&live(r.text));
+const PLANS=[['1w','1 semana','','/semana','semana'],['4w','4 semanas','Recomendado',' cada 4 semanas','4 semanas'],['12w','12 semanas','MENOR PRECIO POR DÍA',' cada 12 semanas','12 semanas']];
 
 const INIT=()=>({v:'A',i:1,hist:[],native:locale==='pt'?'pt':'es',otherLang:'',
   goals:[],goalOther:'',name:'',self:'',struggles:[],strOther:'',sounds:[],soundOther:'',
@@ -691,9 +694,8 @@ const clockFill=f=>{const a=f*2*Math.PI,x=12+8*Math.sin(a),y=12-8*Math.cos(a);re
 const tok=n=>`<span class="tok">{{${n}}}</span>`;
 const isAndroid=/android/i.test(navigator.userAgent);
 const storeBtn=()=>isAndroid?`<button class="store" data-a="store">${ic('gplay',18)}<span><small>DISPONIBLE EN</small>Google Play</span></button>`:`<button class="store" data-a="store">${ic('apple',18)}<span><small>Descárgala en</small>App Store</span></button>`;
-/* real EWA reviews (original English), carried over from the EWA web funnel; verify before launch */
-const REVS=[['Maria','If anything is unclear while reading, just tap a word — the translation is right there.','#7F6BD8'],['Anutel','The coolest function is that you can immediately tap and translate words.','#2E9D69']];
-const rev=i=>`<div class="rev"><div class="who"><span class="av" style="background:${REVS[i][2]}">${REVS[i][0][0]}</span>${REVS[i][0]}<span class="stars">${stars(5,13)}</span></div><p>“${REVS[i][1]}”</p><span class="src">Reseña real de App Store, en inglés</span></div>`;
+/* reviews come from CONFIG.reviews and stay hidden until real text is set */
+const rev=r=>`<div class="rev"><div class="who"><span class="av" style="background:#7F6BD8">${live(r.name)?esc(r.name.slice(0,1).toUpperCase()):'•'}</span>${live(r.name)?esc(r.name):'Estudiante'}${live(r.meta)?`<small style="margin-left:6px;color:var(--t3)">${esc(r.meta)}</small>`:''}<span class="stars">${stars(5,13)}</span></div><p>“${esc(r.text)}”</p><span class="src">Reseña de usuario</span></div>`;
 const book=(c,n,eager)=>`<div class="book" style="background:${c}">${coverImg(n,eager)}</div>`;
 
 const STILL_ALT={door:'Escena de película: dos amigos hablan en la puerta de un departamento de noche',cafe:'Escena de película: dos amigos ríen con un café',dusk:'Escena de película: una mujer ve el atardecer en una azotea'};
@@ -715,7 +717,7 @@ function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funne
   try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
   try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}}
 function checkoutNav(p){const o=p==='offer'?CONFIG.offer:((CONFIG.plans||{})[p]||{}),url=(o&&o.checkoutUrl)||'';if(!url)return false;let u;try{u=new URL(url,location.href)}catch(e){return false}
-  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan',p);if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan',p);
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}return true}
 const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?tok(m[1]):esc(s)};
@@ -730,11 +732,11 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
     el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
   tick();window.__oiv=setInterval(tick,1000)}
 function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
-function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'',pr=ccy()==='brl'?o.priceBrl:o.price,rn=ccy()==='brl'?o.renewsBrl:o.renews;
-  emit('offer_accept',{price:pr,renewPrice:rn,period:o.period,url});
-  emit('checkout_click',{plan:'offer',price:pr,renewPrice:rn,period:o.period,url});
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'',pr=ccy()==='brl'?o.priceBrl:o.price;
+  emit('offer_accept',{price:pr,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:pr,oneTime:true,url});
   if(!url)return false;let u;try{u=new URL(url,location.href)}catch(e){return false}
-  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}return true}
 
@@ -762,7 +764,7 @@ const V={
       <div class="subtl"><span>See you <b>tomorrow</b>, okay?</span></div></div>
     <div class="tbub" style="left:50%;top:228px;transform:translate(-8%,-100%)"><span><small>${S.native==='pt'?'Português':'Español'}</small>${S.native==='pt'?'amanhã':'mañana'}</span></div>
   </div>
-  <div class="trust"><span class="st">★</span> 4.7 · 196K reseñas en App Store</div>
+  ${ratingOn()?`<div class="trust"><span class="st">★</span> ${esc(CONFIG.rating.score)} · ${esc(CONFIG.rating.count)} reseñas en App Store</div>`:''}
   <h1 class="display xl">${t('Inglés sin miedo','Habla inglés sin pena')}</h1>
   <p class="lead">${t('Lecciones diarias con series, libros y un tutor.','Toca una palabra y entiende al instante.')}</p></div>
   <div class="foot">${cta('Empezar')}</div>`,
@@ -818,11 +820,11 @@ const V={
   <div class="hintline">Paso 1 de 3</div></div>
   <div class="foot">${cta('Continuar')}</div>`},
 9:()=>`<div class="scr center">
-  <div class="rating"><b>4.7</b><div class="srow">${stars(5,24)}</div></div>
-  <h1 class="display tc">${t('4.7 de 196K reseñas','Les encanta tocar y traducir')}</h1>
-  <p class="lead tc">${t('Reseñas reales de App Store.','La función más mencionada, en cada idioma.')}</p>
+  ${ratingOn()?`<div class="rating"><b>${esc(CONFIG.rating.score)}</b><div class="srow">${stars(5,24)}</div></div>`:''}
+  <h1 class="display tc">${ratingOn()?t(`${esc(CONFIG.rating.score)} de ${esc(CONFIG.rating.count)} reseñas`,'Les encanta tocar y traducir'):t('Aprende tocando y traduciendo','Toca una palabra, entiéndela')}</h1>
+  <p class="lead tc">${ratingOn()?t('Reseñas de App Store.','La función más mencionada, en cada idioma.'):t('Series, libros y un tutor, en tu idioma.','Con la app en App Store y Google Play.')}</p>
   <div class="stores"><span class="store">${ic('apple',18)}<span><small>Descárgala en</small>App Store</span></span><span class="store">${ic('gplay',18)}<span><small>DISPONIBLE EN</small>Google Play</span></span></div>
-  ${rev(0)}${rev(1)}</div>
+  ${reviewsOn().map(rev).join('')}</div>
   <div class="foot">${cta('Continuar')}</div>`,
 10:()=>gridScreen('easy'),
 11:()=>gridScreen('hard'),
@@ -896,29 +898,38 @@ const V={
   <div class="sec" id="pb1">${planBlock(1)}</div>
   <div class="sec"><h2>Lo que incluye</h2><div class="incl">${['Clips de series y películas con toque para traducir','Libros adaptados con audio','Tarjetas de repaso espaciado','Tutor de IA para practicar hablando','Pack de falsos amigos para tu idioma','Ejercicios de los sonidos que te cuestan'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div></div>
   <div class="sec"><h2>Cómo funciona</h2><div class="steps3"><div><b>1</b>Instala la app</div><div><b>2</b>Entra con ${esc(S.email||'tu correo')}</div><div><b>3</b>Empieza el Día 1 a tu hora</div></div></div>
-  <div class="sec"><h2>Lo que dicen los estudiantes</h2><div class="stores"><span class="store">${ic('apple',18)}<span><small>Calificación</small>4.7 · 196K</span></span></div>${rev(0)}${rev(1)}</div>
+  ${(ratingOn()||reviewsOn().length)?`<div class="sec"><h2>Lo que dicen los estudiantes</h2>${ratingOn()?`<div class="stores"><span class="store">${ic('apple',18)}<span><small>Calificación</small>${esc(CONFIG.rating.score)} · ${esc(CONFIG.rating.count)}</span></span></div>`:''}${reviewsOn().map(rev).join('')}</div>`:''}
   ${hasGuar()?`<div class="sec"><div class="guar"><span style="font-size:24px">🛡️</span><div><b>Garantía de ${CONFIG.refundDays} días</b><span>Si no es para ti, te devolvemos tu dinero.</span></div></div></div>`:''}
-  <div class="sec"><h2>Preguntas frecuentes</h2><div class="stack">${[['cancel','¿Cómo cancelo?','Cancela cuando quieras, hasta 24 h antes de renovar. Te avisaremos por correo antes de tu primera renovación.']].concat(hasGuar()?[['refund','¿Hay garantía de devolución?',`Sí: ${CONFIG.refundDays} días de garantía.`]]:[]).concat([,['trial','¿Qué pasa si cierro esta página?','Verás una oferta única con precio de introducción, claramente indicada, y solo una vez.']]).map(([k,q,a])=>`<div class="faq ${S.faq[k]?'open':''}"><button data-a="faq" data-v="${k}" aria-expanded="${!!S.faq[k]}">${q}${ic('chev',18)}</button>${S.faq[k]?`<p>${a}</p>`:''}</div>`).join('')}</div></div>
+  <div class="sec"><h2>Preguntas frecuentes</h2><div class="stack">${[['cancel','¿Cómo cancelo?','Cancela cuando quieras, hasta 24 h antes de renovar. Te avisaremos por correo antes de tu primera renovación.']].concat(hasGuar()?[['refund','¿Hay garantía de devolución?',`Sí: ${CONFIG.refundDays} días de garantía.`]]:[]).concat([,['trial','¿Qué pasa si cierro esta página?','Verás una oferta única, con su alcance y precio claros, y solo una vez.']]).map(([k,q,a])=>`<div class="faq ${S.faq[k]?'open':''}"><button data-a="faq" data-v="${k}" aria-expanded="${!!S.faq[k]}">${q}${ic('chev',18)}</button>${S.faq[k]?`<p>${a}</p>`:''}</div>`).join('')}</div></div>
   <div class="sec" id="pb2"><h2>Elige tu plan</h2>${planBlock(2)}</div>
   <div class="legal"><span>Términos</span><span>Privacidad</span><span>Restaurar</span></div>
   <div class="stk" id="stk"><div class="sumline"><span>${planMeta()[1]}</span><b>${pk('price',S.plan)} hoy</b></div>${cta('Empezar a aprender',true,'buy')}</div></div>`,
-21:()=>{const o=CONFIG.offer,br=ccy()==='brl',was=o.compareAt?pk('price',o.compareAt):'',pr=br?o.priceBrl:o.price,rn=br?o.renewsBrl:o.renews;
+21:()=>{const o=CONFIG.offer,br=ccy()==='brl',pr=br?o.priceBrl:o.price;
   return `<div class="scr owrap">
   <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">EWA</span><button class="oclose" data-a="offerno" aria-label="No, gracias">${ic('x',18)}</button></div>
   <div class="ohead"><span class="eyebrow">Oferta única · se muestra una vez</span>
-   <h1 class="display" style="font-size:28px">${t('Un precio inicial para ti','Empieza hoy con precio inicial')}</h1>
-   <p class="lead">${t('Primeras 4 semanas a precio de introducción.','Luego se renueva a su precio normal.')}</p>
+   <h1 class="display" style="font-size:28px">${t('Solo el pack de falsos amigos','Llévate solo el pack')}</h1>
+   <p class="lead">${t('Pago único, sin renovación.','Pagas una vez. No se renueva.')}</p>
    ${o.expiresMin?`<div class="otimer">La oferta termina en <b id="otimer">--:--</b></div>`:''}</div>
-  <div class="ocard">${o.badge?`<span class="obadge">${tv(o.badge)}</span>`:''}
-   <div class="sumc">${sumCard(true)}</div>
-   <div class="oname"><b>${esc(o.name)}</b><span>Biblioteca completa, tutor de IA y todos los niveles</span></div>
-   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(pr)}</b><span>las primeras 4 semanas</span></div>
-   <div class="ochecks">${['Clips de series con toque para traducir','Libros con audio y tarjetas de repaso','Pack de falsos amigos de tu idioma','Un aviso por correo antes de renovar'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
-   ${cta('Quiero mi oferta',true,'offerbuy')}
+  <div class="ocard">${live(o.badge)?`<span class="obadge">${tv(o.badge)}</span>`:''}
+   <div class="ffcard" style="padding:12px"><h3 style="font-size:14px">🪞 Tu pack de falsos amigos</h3><div class="hint" style="color:var(--t2)">${ffMini()}</div></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>Solo el pack de falsos amigos de tu idioma</span></div>
+   <div class="oprice"><b>${tv(pr)}</b><span>pago único</span></div>
+   <div class="ochecks">${['Pack de falsos amigos de tu idioma','Con ejemplos y práctica de cada par','Acceso sin renovación'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   <p class="ofine" style="text-align:left"><b>No incluye:</b> clips de series, libros con audio, tarjetas de repaso, tutor de IA ni tu plan diario.</p>
+   ${cta('Quiero el pack',true,'offerbuy')}
    <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
-   <p class="ofine">${tv(pr)} por las primeras 4 semanas, luego ${tv(rn)} cada ${esc(o.period)} hasta que canceles. Te avisamos antes de renovar. Cancela hasta 24 h antes de renovar.</p></div>
+   <p class="ofine">${tv(pr)} en un solo pago. Sin renovación automática ni suscripción.</p></div>
   <button class="link" data-a="offerno">No, gracias, volver a mi plan</button></div>`},
-22:()=>`<div class="scr" style="gap:14px"><h1 class="display">${t(`¡Ya estás dentro, ${nm()}!`,'Tu primera escena te espera')}</h1>
+22:()=>S.offer?`<div class="scr" style="gap:14px"><h1 class="display">${t(`¡Tu pack está listo, ${nm()}!`,'Tu pack de falsos amigos te espera')}</h1>
+  <p class="lead" style="margin-top:-6px">${t(`Descarga la app y entra con ${esc(S.email||'tu correo')}.`,'Pago único: el pack ya está ahí.')}</p>
+  <div class="mock"><div class="in"><div class="hd"><span>EWA</span><span style="color:var(--t3)">Pack de falsos amigos</span></div>
+    <div class="d1"><span style="font-size:22px">🪞</span><span>Tu pack de falsos amigos<small>Pago único · sin renovación</small></span></div>
+    ${ffRows(3)}</div></div>
+  <div style="display:flex;justify-content:center">${storeBtn()}</div>
+  <div class="steps3"><div><b>1</b>Instala la app</div><div><b>2</b>Entra con ${esc(S.email||'tu correo')}</div><div><b>3</b>Abre el pack de falsos amigos</div></div>
+  <p class="hint tc">Recibo enviado a ${esc(S.email||'tu correo')}. Es un pago único: nada se renueva.</p></div>
+  <div class="foot">${cta('Descargar la app',true,'store')}</div>`:`<div class="scr" style="gap:14px"><h1 class="display">${t(`¡Ya estás dentro, ${nm()}!`,'Tu primera escena te espera')}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Descarga la app y entra con ${esc(S.email||'tu correo')}.`,'Tu plan y tu pack ya están ahí.')}</p>
   <div class="mock"><div class="in"><div class="hd"><span>EWA</span><span style="color:var(--t3)">Día 1 de tu plan</span></div>
     <div class="d1"><span style="font-size:22px">🎬</span><span>Día 1 · Tu primera escena<small>${minTok()} min · ${esc(level())}</small></span></div>
@@ -1121,7 +1132,7 @@ phone.addEventListener('click',e=>{
     case 'faq':S.faq[v]=!S.faq[v];render();break;
     case 'buy':S.bought={'1w':'1 semana','4w':'4 semanas','12w':'12 semanas'}[S.plan]+' (demo)';emit('checkout_click',{plan:S.plan,currency:ccy()});if(checkoutNav(S.plan))break;toast('Solo demo: no se hizo ningún cargo');go(22);break;
     case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('La persona sale del embudo aquí (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;if(offerCheckout())break;S.plan=CONFIG.offer.compareAt||S.plan;S.bought='Oferta final: precio de introducción 4 semanas (demo)';toast('Solo demo: no se hizo ningún cargo');go(22);break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;if(offerCheckout())break;S.plan=CONFIG.offer.compareAt||S.plan;S.bought='Oferta final: pase de falsos amigos, pago único (demo)';toast('Solo demo: no se hizo ningún cargo');go(22);break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{});offerExit();break;
     case 'store':toast(isAndroid?'Aquí se abriría Google Play (demo)':'Aquí se abriría App Store (demo)');break;
     case 'flip':{const f=b.querySelector('.hflip');if(!f)break;S.flipped=!S.flipped;f.classList.remove('on','off');void f.offsetWidth;f.classList.add(S.flipped?'on':'off');break}

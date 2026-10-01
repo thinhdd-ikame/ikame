@@ -6,7 +6,7 @@ subject: person
 input: native language (ES or PT), goals, self-rated level, struggles (false friends, sounds, listening), a 2-grid word check, one false-friend subtitle question, minutes per day, optional deadline
 output: estimated English vocabulary size + level, and a paced plan with a false-friends pack and sound drills for ES/PT speakers
 screens: 22
-monetization: web subscription paywall (1-week intro / 4-week pre-selected / 12-week anchor) priced in local currency tokens (MXN / BRL), intro and renewal price shown together, paid intro offer (no free period) as the dismiss fallback
+monetization: web subscription paywall (1-week intro / 4-week pre-selected / 12-week anchor) priced in local currency tokens (MXN / BRL), intro and renewal price shown together, one-time false-friends pass (paid once, no renewal) as the dismiss fallback
 creative_screens:
   hook-a: 1
   hook-b: 9
@@ -42,7 +42,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 **Body A:** Lecciones diarias con series, libros y un tutor.
 **Body B:** Toca una palabra y entiende al instante.
 **Visual:** Cream background, a fanned stack of 3 movie-still cards; the centre card has an English subtitle "See you tomorrow, okay?" with "tomorrow" glowing and a translation bubble "mañana" above it; book covers peek behind; orange pill CTA pinned at the bottom.
-**Microcopy:** Trust line under the cards: "★ 4.7 · 196K reseñas en App Store" *(EWA's own figures from its web funnel, verify before launch)*
+**Microcopy:** Trust line under the cards: "★ {{app_rating}} · {{rating_count}} reseñas en App Store", rendered only when both CONFIG tokens hold real values (`CONFIG.rating`); hidden while unset. *(No figure is hard-coded; EWA supplies its own verified numbers.)*
 **CTA:** Empezar
 
 ---
@@ -155,12 +155,12 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 
 ### 9. Social proof
 **Purpose:** Trust beat right after the heaviest profiling stretch and right before the word check, the highest-effort screen.
-**Headline A:** 4.7 de 196K reseñas
-**Headline B:** Les encanta tocar y traducir
-**Body A:** Reseñas reales de App Store.
-**Body B:** La función más mencionada, en cada idioma.
-**Visual:** Large "4.7" with a star row, App Store and Google Play badges below, two review cards with avatars (original English text of real reviews, labelled "reseña real, en inglés").
-**Microcopy:** Quotes: "If anything is unclear while reading, just tap a word — the translation is right there." — Maria / "The coolest function is that you can immediately tap and translate words." — Anutel *(EWA's real reviews, quoted in its own funnel; verify before launch)*. Numbers are EWA-only.
+**Headline A:** Aprende tocando y traduciendo
+**Headline B:** Toca una palabra, entiéndela
+**Body A:** Series, libros y un tutor, en tu idioma.
+**Body B:** Con la app en App Store y Google Play.
+**Visual:** App Store and Google Play badges. When `CONFIG.rating` holds real values (not `{{app_rating}}` / `{{rating_count}}`), a large rating with a star row appears and the copy switches to Headline A "{{app_rating}} de {{rating_count}} reseñas" / Body A "Reseñas de App Store." (B: "Les encanta tocar y traducir" / "La función más mencionada, en cada idioma."). Review cards render only from `CONFIG.reviews` entries with real text, labelled "Reseña de usuario"; with none set the cards are hidden. Fallback copy makes no rating claim and does not call the reviews verified.
+**Microcopy:** Review quotes and rating are CONFIG tokens (`{{app_rating}}`, `{{rating_count}}`, `{{review_1}}`, `{{review_2}}`); nothing is hard-coded and the block hides while they are unset. Numbers and quotes must be EWA-verified before use.
 **CTA:** Continuar
 
 ---
@@ -268,7 +268,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 - Reuniendo tus falsos amigos típicos…
 - Ajustando a {{minutes}} minutos diarios…
 - Casi listo: tu plan te espera…
-**Visual:** Top half: the false-friend flashcard from #12 with book covers and clip stills orbiting it slowly; four progress rows beneath; one review card rotating under the rows (real EWA reviews from #9 only).
+**Visual:** Top half: the false-friend flashcard from #12 with book covers and clip stills orbiting it slowly; four progress rows beneath; one review card rotating under the rows (only entries from `CONFIG.reviews` that hold real text; hidden while unset).
 **CTA:** (auto-advances, ~6-8 seconds)
 
 ---
@@ -323,24 +323,24 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 **Body B:** Cancela cuando quieras, con aviso antes de renovar.
 **Plans:**
 - **1 semana** — `{{price_mxn_1w}}` today, then `{{renew_mxn_1w}}`/week. Per-day price small. No badge.
-- **4 semanas** — **pre-selected**, "MÁS ELEGIDO" badge. `{{price_mxn_4w}}` today, then `{{renew_mxn_4w}}` every 4 weeks. Per-day price small.
+- **4 semanas** — **pre-selected**, "Recomendado" badge. `{{price_mxn_4w}}` today, then `{{renew_mxn_4w}}` every 4 weeks. Per-day price small.
 - **12 semanas** — "MENOR PRECIO POR DÍA" badge, the anchor. `{{price_mxn_12w}}` today, then `{{renew_mxn_12w}}` every 12 weeks.
 - BRL variant uses `{{price_brl_*}}` / `{{renew_brl_*}}` (same structure). On every card the renewal line sits directly under the price at the same size. Savings badges compare against the 1-week price times weeks, never an invented "was" price.
 **Visual:** Top to bottom, one scroll: (1) brand bar with the app name and a close ✕ · (2) personalised hero: level to next level card, goal, minutes, and a "Tu pack de falsos amigos" line · (3) plan block with 3 cards and the CTA · (4) what's inside (clips with tap-to-translate, books with audio, flashcards, AI tutor, false-friends pack, sound drills) · (5) how it works in 3 steps (install, log in with the same email, Day 1) · (6) proof: store rating and two real review cards · (7) guarantee card, rendered only when `CONFIG.refundDays` is a real number (hidden while it is the token `{{refund_days}}`) · (8) FAQ accordion, "¿Cómo cancelo?" open by default · (9) the plan block again with the CTA · (10) legal row. A sticky bottom bar (selected plan + today's charge + CTA) appears after the first plan block scrolls out of view.
 **Microcopy:** Disclosure above every CTA, updated live for the selected plan: "Pagas {{price_sel}} hoy. Se renueva a {{renew_sel}} cada {{period}} hasta que canceles. Cancela hasta 24 h antes de renovar." Under the CTA: "Te avisaremos por correo antes de tu primera renovación." Trust row: "🔒 Pago seguro · Cancela cuando quieras", plus "· Garantía de {{refund_days}} días" only when refund days are confirmed. The same gate hides the guarantee card and its FAQ line.
-**Fallback offer:** On dismiss, the last-chance offer (#21) once per session: a paid intro offer on the 4-week plan (intro price for the first 4 weeks, then its regular renewal). No free period, no timer, no second discount.
+**Fallback offer:** On dismiss, the last-chance offer (#21) once per session: a smaller one-time pass ("Pase de falsos amigos", the false-friends pack only, paid once, no renewal). No free period, no timer, no second discount.
 **CTA:** Empezar a aprender
 
 ### 21. Last-chance offer (on close)
-**Purpose:** Second chance for users who close the paywall without paying: a paid intro offer on the 4-week plan: `{{offer_price_mxn}}` for the first 4 weeks, then the regular renewal. No free period, no second discount. Shown once per session, then never again.
-**Headline A:** Un precio inicial para ti
-**Headline B:** Empieza hoy con precio inicial
-**Body A:** Primeras 4 semanas a precio de introducción.
-**Body B:** Luego se renueva a su precio normal.
-**Plans:** One offer card: **4-week plan, intro price**. `{{offer_price_mxn}}` for the first 4 weeks, nothing struck (`compareAt: null`, because a different-length plan is not a fair comparison), then `{{renew_mxn_4w}}` every 4 weeks until cancelled. Optional `{{offer_badge}}` only if true.
-**Visual:** Same web-page look as #20: sticky bar with app name and ✕, eyebrow "Oferta única · se muestra una vez", headline and lead, one orange-bordered card with the level summary, plan name, price row, 3 checks, CTA, payment badges and the renewal line. A plain decline link below.
-**Microcopy:** Renewal line: "{{offer_price_mxn}} por las primeras 4 semanas, luego {{renew_mxn_4w}} cada 4 semanas hasta que canceles. Te avisamos antes de renovar. Cancela hasta 24 h antes de renovar." Shown once per session (sessionStorage `ikf_offer_ewa-latam`). No timer: `CONFIG.offer.expiresMin` is `null`. Decline link: "No, gracias, volver a mi plan" returns to #19. Events: `paywall_close`, `offer_view`, `offer_accept`, `checkout_click`, `offer_decline`.
-**CTA:** Quiero mi oferta
+**Purpose:** Second chance for users who close the paywall without paying: a different, smaller product than the subscription tiers, the false-friends pack only, for one payment of `{{offer_price_mxn}}` (BRL: `{{offer_price_brl}}`). No renewal, no free period, no second discount. Shown once per session, then never again.
+**Headline A:** Solo el pack de falsos amigos
+**Headline B:** Llévate solo el pack
+**Body A:** Pago único, sin renovación.
+**Body B:** Pagas una vez. No se renueva.
+**Plans:** One offer card: **Pase de falsos amigos**, `{{offer_price_mxn}}` once (`oneTime: true`, `compareAt: null`, nothing struck). Needs a non-renewing SKU. Optional `{{offer_badge}}` only if true. **No incluye:** clips de series, libros con audio, tarjetas de repaso, tutor de IA ni tu plan diario.
+**Visual:** Same web-page look as #20: sticky bar with app name and ✕, eyebrow "Oferta única · se muestra una vez", headline and lead, one orange-bordered card with the false-friends preview, pass name, one-time price, 3 checks, a "No incluye:" line, CTA and payment badges. A plain decline link below. Buyers of the pass land on a reduced #22 that shows only the false-friends pack (no Day 1 plan).
+**Microcopy:** Fine print: "{{offer_price_mxn}} en un solo pago. Sin renovación automática ni suscripción." Shown once per session (sessionStorage `ikf_offer_ewa-latam`). No timer: `CONFIG.offer.expiresMin` is `null`. Decline link: "No, gracias, volver a mi plan" returns to #19. Events: `paywall_close`, `offer_view`, `offer_accept`, `checkout_click`, `offer_decline`.
+**CTA:** Quiero el pack
 
 ---
 
@@ -360,7 +360,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 
 ## Notes
 
-**Unverified / inferred.** The Praktika multilingual funnel (native language asked at step 2) is taken from the research doc and was not re-walked screen by screen: the order after step 2 is unverified. The EWA Spanish-for-English variant was only seen as a count (134 screens). The money-back guarantee (refund days not confirmed, so the demo hides it behind `{{refund_days}}`), "4.7 · 196K", the two review quotes and the "about 70M learners" figure are carried over from `learning/ewa` and must be confirmed with EWA before launch. The false-friends pack and the sound drills are our own addition, not a live competitor feature.
+**Unverified / inferred.** The Praktika multilingual funnel (native language asked at step 2) is taken from the research doc and was not re-walked screen by screen: the order after step 2 is unverified. The EWA Spanish-for-English variant was only seen as a count (134 screens). The money-back guarantee (refund days not confirmed, so the demo hides it behind `{{refund_days}}`), the "about 70M learners" figure is carried over from `learning/ewa` and must be confirmed with EWA before launch. The store rating, review count and review quotes are now empty CONFIG tokens (hidden until EWA supplies verified values). The false-friends pack and the sound drills are our own addition, not a live competitor feature.
 
 **ES / PT-BR variants (the demo is ES; PT only swaps data).**
 
