@@ -691,8 +691,8 @@ const V={
   return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
   <div class="wbar">${wordmark()}</div>
   <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display sm">${lead('want a smaller option?')}</h1>
-   <p class="lead" style="margin:0">One area in detail, plus a guide for talking to a professional.</p>
+   <h1 class="display sm">${t(lead('want a smaller option?'),'Just one area in detail?')}</h1>
+   <p class="lead" style="margin:0">${t('One area in detail, plus a guide for talking to a professional.','One payment. Nothing renews, nothing to cancel.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
    <div class="orow"><div class="atile" style="flex:none;width:72px;min-height:72px">${tileInner(ca)}</div><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">One payment · nothing renews</span></div></div>
