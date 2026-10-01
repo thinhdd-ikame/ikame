@@ -668,12 +668,12 @@ const PLANS={
  '12w':{n:'12-week plan',period:'12 weeks',days:84,rib:'badge_12w'}
 };
 /* Last-chance offer: shown once per session when the paywall is closed without paying (✕ or back).
-   A different product from the paywall tiers: one-time "Skill map + project kit", paid once, no renewal, no lessons, no certificate.
+   A different product from the paywall tiers: one-time "Career-switch kit" (PDF), paid once, no renewal, no lessons, no certificate.
    compareAt null = no struck price. expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session. */
 const CONFIG={funnel:'coursiv-ai-career',brand:'Coursiv',refundDays:'{{refund_days}}',legalEntity:'{{legal_entity}}',
  rating:{score:'{{rating_score}}',count:'{{rating_count}}'},
  reviews:[{name:'{{reviewer_1}}',meta:'{{review_1_meta}}',text:'{{review_1_text}}'},{name:'{{reviewer_2}}',meta:'{{review_2_meta}}',text:'{{review_2_text}}'}],
- offer:{enabled:true,name:'Skill map + project kit',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+ offer:{enabled:true,name:'Career-switch kit',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
 const refundReal=()=>!/^\{\{/.test(CONFIG.refundDays);
 const ratingReal=()=>!/^\{\{/.test(CONFIG.rating.score)&&!/^\{\{/.test(CONFIG.rating.count);
 const reviewsReal=()=>CONFIG.reviews.filter(r=>!/^\{\{/.test(r.name)&&!/^\{\{/.test(r.text));
@@ -866,7 +866,7 @@ const V={
 
 10:()=>{const R=CONFIG.rating,real=ratingReal(),rvs=reviewsReal();
   return `<div class="scr" style="gap:16px">
-  ${real?`<div style="text-align:center"><div class="stars">★★★★★</div><div class="hint" style="margin-top:4px">${esc(R.count)} ratings</div></div>`:`<div class="strip" aria-hidden="true">${['🧑🏽‍💼','👩🏼‍🏫','🧑🏻‍🔧'].map(f=>`<span class="face" style="background:#EEEDFD">${f}</span>`).join('')}</div>`}
+  ${real?`<div style="text-align:center"><div class="stars">★★★★★</div><div class="hint" style="margin-top:4px">${esc(R.count)} ratings</div></div>`:`<div class="chips"><span class="gchip">🧭 For career switchers</span></div>`}
   <h1 class="display" style="text-align:center">${real&&S.v==='A'?`Rated ${esc(R.score)}★ by learners`:'Made for career switchers'}</h1>
   <p class="lead" style="text-align:center;margin-top:-6px">${real&&S.v==='A'?'Reviews from people learning AI skills.':'Short lessons. Plain English. Your pace.'}</p>
   ${real||rvs.length?rvs.map(r=>`<div class="rv"><div class="rh"><span class="av">📷</span><div><b style="font-size:16px">${esc(r.name)}</b><br><small>${esc(r.meta)}</small></div></div><p>${esc(r.text)}</p></div>`).join(''):`<div class="chips"><span class="gchip">✓ Plain English</span><span class="gchip">✓ 5-20 min lessons</span><span class="gchip">✓ Your own project</span></div>`}
@@ -997,12 +997,12 @@ const V={
   <div class="obar"><span class="obrand"><i>C</i>Coursiv</span><button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
    <h1 class="display">${t('Not ready? Get the kit','A smaller way to start')}</h1>
-   <p class="lead">${t('Skill map plus project kit. Paid once.','No subscription. Nothing to cancel.')}</p>
+   <p class="lead">${t('A printable switch kit. Paid once.','No subscription. Nothing to cancel.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${o.badge?`<span class="obadge">${tv(o.badge)}</span>`:''}
-   <div class="oname"><b>${esc(o.name)}</b><span>For ${esc(lc(tgtL()))}</span></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>PDF download · for ${esc(lc(tgtL()))}</span></div>
    <div class="oprice"><b>${tv(o.price)}</b><span>paid once</span></div>
-   <div class="ochecks">${[`Your full 5-skill gap map for ${esc(lc(tgtL()))}`,`Your project brief: ${esc(lc(projL()))}`,'Both saved to your email'].map(x=>`<div><span class="ck">${ic('check',12,'currentColor',3)}</span><span>${x}</span></div>`).join('')}</div>
+   <div class="ochecks">${[`Ready-to-copy AI requests for ${esc(lc(tgtL()))}`,`Step-by-step checklist: ${esc(lc(projL()))}`,'Résumé line templates, sent as a PDF'].map(x=>`<div><span class="ck">${ic('check',12,'currentColor',3)}</span><span>${x}</span></div>`).join('')}</div>
    <div class="scopen">Not included: the 4-week lessons, daily practice in the app, certificate of completion.</div>
    ${cta('Get the kit',true,'offerbuy')}
    <div class="pays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
@@ -1024,9 +1024,9 @@ const V={
 24:()=>{const kit=S.offer;
   return `<div class="scr" style="gap:16px;padding-top:18px"><span class="okbig">${ic('check',40,'currentColor',3)}</span>
   <h1 class="display" style="text-align:center">${kit?'Your kit is in your inbox':S.v==='A'?(nm()?`Welcome aboard, ${nmE()}!`:'Welcome aboard!'):'Day 1 is ready for you'}</h1>
-  <p class="lead" style="text-align:center;margin-top:-8px">${kit?'Your skill map and project brief are inside.':S.v==='A'?'Get the app, then tap the link we emailed.':'Your first AI lesson is waiting.'}</p>
-  ${kit?`<div class="d1"><span class="ic">${ic('mail',20,'#fff',2.2)}</span><div><small>Sent to your email</small><b>Skill map + ${esc(lc(projL()))}</b></div></div>
-  <div class="nsteps"><div><b>1</b><span>✉️ Open our email</span></div><div><b>2</b><span>🗺️ Read your 5-skill gap map</span></div><div><b>3</b><span>📌 Start your project brief</span></div></div>`
+  <p class="lead" style="text-align:center;margin-top:-8px">${kit?'Your PDF download link is inside.':S.v==='A'?'Get the app, then tap the link we emailed.':'Your first AI lesson is waiting.'}</p>
+  ${kit?`<div class="d1"><span class="ic">${ic('mail',20,'#fff',2.2)}</span><div><small>Sent to your email</small><b>Career-switch kit (PDF)</b></div></div>
+  <div class="nsteps"><div><b>1</b><span>✉️ Open our email</span></div><div><b>2</b><span>📥 Download your kit PDF</span></div><div><b>3</b><span>📌 Follow the project checklist</span></div></div>`
   :`<div class="d1"><span class="ic">${ic('play',20,'#fff',2.2)}</span><div><small>Up next in the app</small><b>Day 1 · AI basics + honest use</b></div></div>
   <div class="nsteps"><div><b>1</b>📲 Install the app</div><div><b>2</b><span>✉️ Open our email, tap 'Log in'</span></div><div><b>3</b><span>🧭 Start Day 1: your ${esc(lc(tgtL()))} AI skills</span></div></div>
   <div class="stores"><button class="store" data-a="store">${ic('apple',22,'#fff')}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store"><span class="g">▶</span><span>Get it on<b>Google Play</b></span></button></div>`}

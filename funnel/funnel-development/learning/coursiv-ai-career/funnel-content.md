@@ -6,7 +6,7 @@ subject: person
 input: switch stage, current field, myth tap, target field, life events, transferable skills, AI tools tried, hurdle, AI skills already used, portfolio project, review check, daily minutes, name, email
 output: personalized 4-week career-switch learning plan with an AI skill gap map for the target field, one portfolio project, and a dated certificate of completion (no job guarantee)
 screens: 24
-monetization: web subscription paywall (1-week / 4-week pre-selected / 12-week, intro price with renewal price on every card and in the CTA line), one-time paid-once "Skill map + project kit" as the last-chance offer, app unlocked by the same email via magic link
+monetization: web subscription paywall (1-week / 4-week pre-selected / 12-week, intro price with renewal price on every card and in the CTA line), one-time paid-once "Career-switch kit" (PDF) as the last-chance offer, app unlocked by the same email via magic link
 creative_screens:
   hook-a: 1
   lesson: 13
@@ -189,7 +189,7 @@ Niche "AI skills cho người đổi nghề": a Coursiv web funnel for working a
 **Headline B:** Made for career switchers
 **Body A:** Reviews from people learning AI skills.
 **Body B:** Short lessons. Plain English. Your pace.
-**Visual:** With real data: star row with the store name, rating count, two review cards (first name, age range, previous job, date, consented photo). Without: three green chips ("Plain English", "5-20 min lessons", "Your own project") and the Headline B / Body B copy.
+**Visual:** With real data: star row with the store name, rating count, two review cards (first name, age range, previous job, date, consented photo). Without: no photos or avatars, just three neutral chips ("Plain English", "5-20 min lessons", "Your own project") and the Headline B / Body B copy.
 **Microcopy:** Never feature reviews claiming jobs, income or interviews. Never write "real reviews" while placeholders are in place; the headline A line is used only when the rating is real, otherwise Headline B is shown to both variants.
 **CTA:** Continue
 
@@ -358,13 +358,13 @@ Niche "AI skills cho người đổi nghề": a Coursiv web funnel for working a
 **CTA:** Get my plan
 
 ### 22. Last-chance offer
-**Purpose:** A genuinely different, smaller product for users who close the paywall: a **one-time "Skill map + project kit"**, paid once, no subscription, no renewal. It is not a cheaper tier: it has no lessons, no app plan and no certificate, and the card says so. Shown once per session, then never again. (Whether the kit ships as a standalone product is unverified: confirm with product before launch.)
+**Purpose:** A genuinely different, smaller product for users who close the paywall: a **one-time "Career-switch kit"** (downloadable PDF), paid once, no subscription, no renewal. It is not a cheaper tier: it has no lessons, no app plan and no certificate, and the card says so. Shown once per session, then never again. (Whether the kit ships as a standalone product is unverified: confirm with product before launch.)
 **Headline A:** Not ready? Get the kit
 **Headline B:** A smaller way to start
-**Body A:** Skill map plus project kit. Paid once.
+**Body A:** A printable switch kit. Paid once.
 **Body B:** No subscription. Nothing to cancel.
-**Plans:** One offer card: **Skill map + project kit**, {{offer_price}} paid once. No struck-through price. Includes: your full five-skill gap map for {{target}}; your {{project}} brief with steps; both saved to your email. Not included (stated on the card): the 4-week lessons, daily practice in the app, certificate of completion. Optional {{offer_badge}} only if true.
-**Visual:** Same web-page look as #21: sticky bar with the Coursiv logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one indigo-bordered offer card: the name, price row, 3 checks that match the scope, a "Not included" line, the CTA, payment badges and a "Paid once. No renewal." line. Plain decline link below.
+**Plans:** One offer card: **Career-switch kit** (PDF), {{offer_price}} paid once. No struck-through price. Includes only things not shown free in the funnel: ready-to-copy AI requests for each of the five skills for {{target}}; a step-by-step checklist for your {{project}}; résumé line templates (with a "only claim what you did" check). Sent to your email as a download. Not included (stated on the card): the 4-week lessons, daily practice in the app, certificate of completion. Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #21: sticky bar with the Coursiv logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one indigo-bordered offer card: the name, price row, 3 checks that match the scope (requests, checklist, résumé templates), a "Not included" line, the CTA, payment badges and a "Paid once. No renewal." line. Plain decline link below.
 **Microcopy:** Shown once per session (sessionStorage `ikf_offer_coursiv-ai-career`): a second paywall close goes straight to the previous screen (#20). No timer: `CONFIG.offer.expiresMin` is `null`; a real deadline would show a countdown and withdraw the offer at its end, never reset on reload. Decline (link and ✕): "No thanks, back to my plan" returns to #20. Accept opens the offer checkout (`CONFIG.offer.checkoutUrl`, plan `offer`, email, UTMs); the receipt on #23 shows "Paid once" and no renewal. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
 **CTA:** Get the kit
 
