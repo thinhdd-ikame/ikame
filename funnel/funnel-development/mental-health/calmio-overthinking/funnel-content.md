@@ -222,13 +222,14 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 
 ## C. Trust
 
-### 15. Real people, real ratings
+### 15. Trust beat (live ratings, or privacy promise)
 **Purpose:** The trust beat right after the investment stage and before the reveal. Proof has to be real; this category is where fake experts and fake stats do the most harm.
 **Headline A:** {{app_rating}}★ from real people
 **Headline B:** Private. Judgment-free. Yours.
 **Body A:** {{rating_count}} ratings from people who've been there.
 **Body B:** Your chats stay private. Nothing is ever public.
-**Visual:** A: large rating number, sage star row, one dashed "real review goes here" card. B: three lucide rows (lock, eye-off, trash) on a white card.
+**Fallback:** Variant A shows only when `{{app_rating}}` and `{{rating_count}}` are both live (not a `{{token}}`); otherwise the screen falls back to variant B's privacy promise. No placeholder is ever shown as a rating, and "from real people" never appears over a token.
+**Visual:** A: large rating number, sage star row, a real store review card only if one is live. B: three lucide rows (lock, eye-off, trash) on a white card.
 **Microcopy:** Pull rating and count live from this app's own store listing, never hardcode. Review cards are real store reviews only, quoted as shown. No press logos, no "expert" or staff photos unless each is a real, named, credentialed person. B's "delete" row ships only if in-app deletion exists.
 **CTA:** Continue
 
@@ -298,21 +299,21 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Body A:** Four weeks of evening chats and prompts, made for you.
 **Body B:** Price shown upfront. We remind you before renewing.
 **Plans:** 1-week intro · **4-week, pre-selected** (matches the 4-week plan, ribbon "Matches your plan") · 12-week anchor. Every card shows `{{price_*}}` big and `then {{renewal_*}} / period` right under it, plus a per-week equivalent `{{week_*}}`. No percent-off badge, no struck price, no decoy.
-**Visual:** Sticky brand bar with close (×) and the persistent "Need help now?" link. Sections in order: personal hero (their profile card and four fact chips: night-mind type, loudest at, bedtime, plan length) · plan block (cards, "Due today" row, CTA, payment badges, secure/cancel row, renewal line) · what's inside (the four weeks as a TOC) · how it works (3 steps) · proof (rating and review placeholders, dashed) · FAQ (is this therapy, how to cancel, will I be charged again, are chats private, what if I'm in crisis) · plan block again · legal. A sticky bottom CTA slides up while no plan block is visible.
+**Visual:** Sticky brand bar with close (×) and the persistent "Need help now?" link. Sections in order: personal hero (their profile card and four fact chips: night-mind type, loudest at, bedtime, plan length) · plan block (cards, "Due today" row, CTA, payment badges, secure/cancel row, renewal line) · what's inside (the four weeks as a TOC) · how it works (3 steps) · proof (rating and reviews, rendered only when live, i.e. not a `{{token}}`; the block is omitted otherwise) · FAQ (is this therapy, how to cancel, will I be charged again, are chats private, what if I'm in crisis) · plan block again · legal. A sticky bottom CTA slides up while no plan block is visible.
 **Microcopy:** Under the CTA at body size: "Renews at {{renewal_4w}} every 4 weeks until you cancel. Cancel anytime in your account." Reminder line: "We'll email you before every renewal." No guarantee or refund block is shown until a real refund window and its full terms exist. Always shown: "Crisis resources are always free." Not shown on this page: timers, promo codes, "no charge yet" wording, usage counters.
 **Fallback offer:** #21. Every way off this page without paying (× and "Not now") goes to #21 first, once per session. Declining it, or closing the paywall a second time, leads to #22 in free mode.
 **CTA:** Start my plan
 
 ### 21. A gentler first step (one-time offer, shown on close)
 **Purpose:** A second, softer chance for people who closed #20 because four weeks felt like a lot. Shown once, never after crisis language.
-**Headline A:** Start gently, {{name}}
-**Headline B:** Start tonight for less
-**Body A:** Same 4-week plan, at a gentler first price.
-**Body B:** No rush. A lower first price, if it helps.
-**Plans:** One offer card: `{{offer_name}}` (demo: "Intro 4-week plan"): the same 4-week plan at an introductory first-period price that the store or checkout actually offers. `{{offer_price}}` today, the regular 4-week price `{{price_4w}}` struck (same duration, the real current price, never an invented anchor), then `{{offer_renews}}` until cancelled. It is not a shorter product and not a copy of the 1-week tier. Optional `{{offer_badge}}`.
-**Visual:** Same web look as #20: sticky bar with close ×, Calmio wordmark and "Need help now?". Centered eyebrow "One-time offer · shown once", one sage-bordered card with a calm thumbnail, offer name, price row (struck → price "today"), 3 checks ("Your 4-week plan, from night one" · "Evening chats with Calmio" · "A reminder before it renews"), CTA, payment badges and the renewal line. Below: "Crisis resources are always free."
-**Microcopy:** Renewal line at body size: "{{offer_price}} today, then {{offer_renews}} until you cancel." No timer: `CONFIG.offer.expiresMin` stays null, and there is no "last chance", "offer ends" or "don't miss out" wording. Never shown after crisis language (free text or the #19 chat, which opens the crisis sheet). Merely opening "Need help now?" does not suppress it. Decline link: "No thanks, keep the free unload". Events: `offer_view`, `offer_accept` + `checkout_click`, `offer_decline`.
-**CTA:** Claim my offer
+**Headline A:** A smaller step, {{name}}
+**Headline B:** Start with seven nights
+**Body A:** A 7-night starter pack, paid once. No subscription.
+**Body B:** Seven wind-downs. Nothing to cancel.
+**Plans:** One offer card, a different and smaller product than any paywall tier: `{{offer_name}}` (demo: "Wind-down starter pack"), 7 guided wind-down nights, one a night, for the user's night-mind type. `{{offer_price}}` paid once, no renewal, no strike-through. Includes the 7 nights, the night-mind pattern saved to the email, and a reminder at the wind-down time. Not included (stated on the card): the 4-week plan, evening chats with Calmio, journaling prompts. Optional `{{offer_badge}}`.
+**Visual:** Same web look as #20: sticky bar with close ×, Calmio wordmark and "Need help now?". Centered eyebrow "One-time offer · shown once", one sage-bordered card with a calm thumbnail, offer name, price row (price "paid once"), 3 checks ("7 guided wind-down nights, one a night" · "Your night-mind pattern, saved to your email" · "A reminder at the wind-down time"), a "Not included" line, CTA, payment badges and the line "{{offer_price}} paid once. No renewal, nothing to cancel." Below: "Crisis resources are always free."
+**Microcopy:** Paid-once line at body size: "{{offer_price}} paid once. No renewal, nothing to cancel." Buyers land in #22 in free mode with a "Starter pack unlocked · 7 wind-down nights" chip, not the full plan. No timer: `CONFIG.offer.expiresMin` stays null, and there is no "last chance", "offer ends" or "don't miss out" wording. Never shown after crisis language (free text or the #19 chat, which opens the crisis sheet). Merely opening "Need help now?" does not suppress it. Decline link: "No thanks, keep the free unload". Events: `offer_view`, `offer_accept` + `checkout_click`, `offer_decline`.
+**CTA:** Get the starter pack
 
 ---
 
@@ -335,8 +336,8 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 - **Archetype call.** Plan subscription after a data quiz -> personalization-quiz, Calmio variant (see Known variants in `archetypes/personalization-quiz.md`). Borrowed from companion-chat: the first live chat before the paywall (#19). Skipped from the default: decoy tier, countdown upsell, before/after screen, separate premium-preview screen (the plan on #17 does that job), gamified wheel.
 - **Mental-health safety, built in.** "Need help now?" on all 22 screens and on the web paywall and offer bars · expectations screen (#4) before any thought or night question · crisis detection on every free-text field (#5, #10, #11, #12, #19) · minors blocked with youth resources (#3) · no medication questions anywhere · not positioned as insomnia treatment · no clinical labels, scores or gauges. Crisis help is never behind the paywall. Clinical and legal review should cover #3, #4, #17 and the crisis sheet, including non-US helplines.
 - **Competitor mechanics - reference only, NOT implemented:** insomnia severity score, pill-use and dependence questions, pill-fear and dementia claims, fake MD or neuroscientist bylines, "93% improved / 53% faster" stats, Oxford and Stanford name-drops, EMDR-inspired claims, personalised promo codes, 10-minute countdown, scratch-card discount, "-60% applied" against a never-charged anchor, renewal 2.5x the intro price.
-- **Plans are placeholders.** The structure (1-week / 4-week pre-selected / 12-week anchor) mirrors the competitor layout. All prices are `{{price_*}}` / `{{renewal_*}}` tokens; the offer's struck price is the real 4-week price. The real Calmio store lists 1-month and 3-month SKUs (see `mental-health/calmio`); align SKUs before launch. Renewal is shown beside every price and a pre-renewal email is promised, so it must be built.
-- **Unverified.** Calmio's real in-app onboarding and tone settings, the free-tier scope (the demo assumes the 3-minute unload stays free), and the app-store rating were not viewable; the rating and review blocks are placeholders. Competitor screen flows are verified from AdSpyLab captures (2026-09-28/29), not live.
+- **Plans are placeholders.** The structure (1-week / 4-week pre-selected / 12-week anchor) mirrors the competitor layout. All prices are `{{price_*}}` / `{{renewal_*}}` tokens; the offer is a one-time pack with no renewal and nothing struck. The real Calmio store lists 1-month and 3-month SKUs (see `mental-health/calmio`); align SKUs before launch. Renewal is shown beside every price and a pre-renewal email is promised, so it must be built.
+- **Unverified.** Calmio's real in-app onboarding and tone settings, the free-tier scope (the demo assumes the 3-minute unload stays free), and the app-store rating were not viewable; the rating and review blocks are hidden until real store data is set. Competitor screen flows are verified from AdSpyLab captures (2026-09-28/29), not live.
 - **Likert-to-profile mapping is our own design,** not taken from a competitor: the highest of statements 2, 3 and 4 picks the type, themes break ties. It needs clinical review.
 - **Free text is not diagnosed.** Likert answers only pick one of three reflective profile types. They are never summed into a score shown to the user.
 - **Drop-off risk:** #3 age gate · #6-9 four statements in a row (kept to one tap each, with a moon scale and a "x of 4" chip) · #18 email · #20 paywall. Keep #16 at 6-8 s.
