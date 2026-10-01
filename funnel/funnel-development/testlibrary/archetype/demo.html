@@ -1,0 +1,939 @@
+<title>Archetype Funnel Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* page (control panel) tokens */
+:root{
+  color-scheme:light;
+  --page:#ECEFF4;--pt1:#15233F;--pt2:#4B5875;--pt3:#77829A;
+  --psurf:#FFFFFF;--psurf2:#E1E6EE;--pborder:#D2D9E3;--pacc:#A8650A;--pacc-ink:#FFFFFF;
+  --k:1;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+    --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+  --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--pt1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+code{font-size:.92em;overflow-wrap:anywhere}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:32px 16px 48px}
+.phonebox{width:calc(390px * var(--k));height:calc(812px * var(--k));flex:none}
+
+/* phone: app brand tokens, fixed in both page themes */
+.phone{
+  --bg:#FFFFFF;--paper:#F6F7F9;--ink:#15233F;--ink-2:#243557;--t2:#4B5875;--t3:#838DA3;
+  --line:#DCE1E9;--line2:#EDF0F4;--acc:#E39B2D;--acc-dim:#E39B2D1F;--acc-ink:#9A5F0C;--err:#C23B22;--ok:#2F7D5B;
+  color-scheme:light;
+  width:390px;height:812px;border-radius:52px;overflow:hidden;position:relative;isolation:isolate;
+  transform:scale(var(--k));transform-origin:0 0;
+  background:#fff linear-gradient(#F1F4F8 1px,transparent 1px) 0 18px/100% 32px;
+  color:var(--ink);border:1px solid #C9D0DB;
+  box-shadow:0 0 0 10px #1A2230,0 0 0 11px #3A4456,0 40px 80px -24px #0A1020aa;
+}
+.phone button:focus-visible,.phone input:focus-visible,.phone summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--ink)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--ink)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--ink);border-radius:1px}
+
+/* simple screen change: fade + small slide */
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+.view.in.b{animation-name:vinb}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes vinb{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--line2)}
+.navspacer{width:36px;flex:none}
+.navlabel{flex:1;text-align:center;font:600 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.segs{flex:1;display:flex;gap:4px}
+.segs span{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.segs span i{display:block;height:100%;background:var(--ink);transition:width .3s ease}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:16px;position:relative}
+.scr.center{justify-content:center}
+.scr>*{flex-shrink:0}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;background:linear-gradient(to top,#fff 70%,#ffffff00)}
+.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+
+.display{font:700 29px/1.14 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
+.display.sm{font-size:25px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.ph{font:500 .82em/1.3 ui-monospace,"Cascadia Mono",Consolas,monospace;border:1px dashed #C98A2A;color:#94600F;background:#FFF7EA;border-radius:6px;padding:0 5px;white-space:nowrap;letter-spacing:0;text-transform:none}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--ink);color:#fff;font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;flex:none}
+.btn:hover{background:var(--ink-2)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:#E4E8EF;color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:4px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.link:hover{color:var(--ink)}
+
+.wm{display:flex;align-items:center;gap:8px;font:700 17px/1 var(--sans);color:var(--ink);letter-spacing:-.01em}
+.wm i{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 11px/1 var(--sans);font-style:normal}
+.hero1{position:relative;height:172px;border-radius:20px;overflow:hidden;background:#F6F4EF;border:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.hero1>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:18% 45%}
+.hero1 .bell3d{margin:0;z-index:1}
+.banner{display:block;width:100%;height:150px;object-fit:cover;border-radius:18px;background:#F6F4EF;border:1px solid var(--line)}
+.banner.pw{height:118px;object-position:50% 52%}
+.tpop{transform-box:fill-box;transform-origin:center;animation:tpop .4s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes tpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+
+.pills{display:flex;flex-direction:column;gap:8px}
+.pill{height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;border-radius:14px;border:1.5px solid var(--ink);background:#fff;text-align:left;width:100%;font-weight:600;font-size:16px;color:var(--ink);transition:background .15s,color .15s}
+.pill:hover{background:var(--paper)}
+.pill.on{background:var(--ink);color:#fff}
+.pill .em{width:24px;text-align:center;font-size:18px}
+.disc{font-size:15px;color:var(--t2);text-align:center;margin:0}
+.disc b{color:var(--ink);font-weight:600}
+.flinks{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:11.5px;color:var(--t3)}
+.flinks span{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+.err{font-size:13px;color:var(--err)}
+.hint{font-size:13px;color:var(--t3)}
+
+.rows{display:flex;flex-direction:column}
+.irow{display:flex;gap:14px;align-items:center;padding:14px 2px;border-top:1px solid var(--line2);font-size:16px;font-weight:500}
+.irow:first-child{border-top:none}
+.irow .em{width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:19px;flex:none}
+.rule{height:1px;background:var(--line)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--t2)}
+.secchip{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font:600 12px/1 var(--sans);color:var(--t2)}
+.box{min-width:0;height:52px;border-radius:14px;background:#fff;border:1.5px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--ink)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--ink);font:400 16px var(--sans)}
+.box.bad{border-color:var(--err)}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:500 13px/1 var(--sans);color:var(--t2)}
+
+/* test */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 1px 0 var(--line),0 10px 24px -18px #15233F66;min-height:120px}
+.seq{font:700 28px/1.2 var(--serif);letter-spacing:.02em;color:var(--ink);text-align:center}
+.seq .gap{display:inline-block;min-width:44px;border-bottom:3px solid var(--acc);color:transparent}
+.wq{font:600 21px/1.35 var(--serif);text-align:center;color:var(--ink);text-wrap:balance}
+.wq b{color:var(--ink);text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:3px;text-underline-offset:4px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.tile{position:relative;border-radius:14px;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;padding:0;transition:border-color .15s,background .15s}
+.tiles.img .tile{height:84px}
+.tiles.txt .tile{height:60px}
+.tile:hover{border-color:#AEB8C9}
+.tile.on{border:2px solid var(--ink);background:#EEF1F6}
+.tile .tl{position:absolute;left:7px;top:6px;font:600 10px/1 var(--sans);color:var(--t3)}
+.tile .tv{font:600 19px/1 var(--sans);color:var(--ink)}
+.cpring{display:grid;place-items:center;position:relative;margin:4px auto 0}
+.cpring .mid{position:absolute;inset:0;display:grid;place-items:center;color:var(--acc)}
+.cpring .mid span{width:64px;height:64px;border-radius:50%;background:var(--acc-dim);display:grid;place-items:center}
+.minitype{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+.minitype .t{font-size:13px;color:var(--t2)}
+.minitype b{display:block;font-size:14px;color:var(--ink)}
+.tip{padding:12px 14px;border-radius:14px;border-left:3px solid var(--acc);background:#FFF9EF;font-size:14px;color:var(--ink)}
+
+/* trust */
+.bignum{font:700 44px/1 var(--serif);text-align:center;color:var(--ink)}
+.bignum .ph{font-size:24px}
+.stars{display:flex;gap:3px;justify-content:center;color:var(--acc)}
+.quote{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px -20px #15233F80}
+.quote q{font:600 17px/1.4 var(--serif);quotes:none;color:var(--ink)}
+.quote .by{font-size:12px;color:var(--t3)}
+.quote.dash{border-style:dashed;background:var(--paper);box-shadow:none}
+.quote.dash q{color:var(--t3);font-weight:500;font-size:15px}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--ink)}
+.step.done .pct{color:var(--ok)}
+.bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ink);width:0}
+.qrot{min-height:92px}
+.qrot .quote{animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fadein{animation:fi .35s ease}
+
+
+/* gate */
+.sum{padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t2)}
+.sum .r{display:flex;justify-content:space-between;gap:10px}
+.sum .r b{color:var(--ink);font-weight:600}
+.blurv{filter:blur(6px);user-select:none}
+.soc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.soc .btn{height:48px;font-size:14px}
+.orline{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t3)}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+.certo{position:relative;border:1.5px dashed #C6CEDA;border-radius:14px;padding:22px 18px 18px;text-align:center;background:#FBFCFD}
+.certo .cl{font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.certo .nl{margin:14px auto 6px;min-height:34px;font:700 24px/1.3 var(--serif);color:var(--ink);border-bottom:2px solid var(--acc);max-width:230px;background:var(--acc-dim);border-radius:6px 6px 0 0}
+.certo .nl.empty{color:#C6CEDA}
+.certo .ls{height:8px;border-radius:4px;background:#E9EDF2;margin:8px auto 0;width:60%}
+
+/* preview + result */
+.pv{padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.pv h4{margin:0;font-size:13px;font-weight:600;color:var(--t2);display:flex;justify-content:space-between;align-items:center}
+.flatbell{position:relative}
+.flatbell .lbl{position:absolute;right:6px;top:4px;font:700 18px/1 var(--serif);color:var(--ink)}
+.sbars{display:flex;flex-direction:column;gap:9px}
+.sbar{display:grid;grid-template-columns:74px 1fr 34px;gap:10px;align-items:center;font-size:13px;color:var(--t2);background:none;border:none;padding:2px 0;text-align:left;width:100%}
+.sbar .trk{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}
+.sbar .trk i{display:block;height:100%;border-radius:4px;background:#8E9AB2}
+.sbar.top{color:var(--ink);font-weight:600}
+.sbar.top .trk i{background:var(--acc)}
+.sbar .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.sbar .tag{font-size:10px;color:var(--acc-ink)}
+.sbar.blur .trk,.sbar .val.blur{filter:blur(3px)}
+.bens{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)}
+.bens div{display:flex;gap:10px;align-items:center}
+.minicert{display:flex;gap:12px;align-items:center}
+.minicert .mc{width:92px;height:64px;border-radius:6px;border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:-5px;display:grid;place-items:center;text-align:center;font:700 10px/1.2 var(--serif);color:var(--ink);background:#fff;flex:none;padding:6px}
+.band{align-self:flex-start;display:inline-flex;gap:6px;align-items:center;padding:6px 11px;border-radius:999px;font:600 13px/1 var(--sans);background:var(--acc-dim);color:var(--acc-ink)}
+.band.b{background:#E9EDF3;color:var(--t2)}
+.method{font-size:12.5px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.stip{font-size:13px;color:var(--ink);background:#FFF9EF;border-radius:10px;padding:8px 10px;min-height:34px}
+.goaltips{padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.goaltips h4{margin:0 0 8px;font-size:14px}
+.goaltips ul{margin:0;padding-left:18px;color:var(--t2);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* paywall + checkout */
+.closex{position:absolute;top:56px;right:16px;z-index:3;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--t2)}
+.pstrip{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--paper);border:1px solid var(--line);margin-right:40px}
+.pstrip b{display:block;font-size:14px}
+.plan{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:16px;border:1.5px solid var(--line);background:#fff;text-align:left;width:100%}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid #AEB8C9;display:grid;place-items:center;flex:none;margin-top:1px}
+.plan.on{border:2px solid var(--ink);padding:12.5px 13.5px}
+.plan.on .radio{border:6.5px solid var(--ink)}
+.plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--ink)}
+.plan .pl{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.plan .pl span:nth-child(odd){color:var(--t3)}
+.plan .pd{font-size:12.5px;color:var(--t2);margin-top:5px}
+.badge{font:700 10px/1 var(--sans);letter-spacing:.05em;background:var(--acc);color:#2A1A02;padding:4px 7px;border-radius:6px}
+.stack{display:flex;flex-direction:column;gap:9px}
+.today{font-size:13.5px;color:var(--ink);text-align:center;text-wrap:balance;font-variant-numeric:tabular-nums}
+.pays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pays span{font:600 11px/1 var(--sans);color:var(--t2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff}
+.checks{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.checks div{display:flex;gap:9px;align-items:flex-start}
+.checks svg{color:var(--ok);flex:none;margin-top:2px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:12px 2px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--t3);font-weight:500}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:0 2px 12px;font-size:13.5px;color:var(--t2)}
+.small{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance;margin:0}
+.ordr{padding:4px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.ordr .r{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line2);font-size:15px;font-variant-numeric:tabular-nums}
+.ordr .r:first-child{border-top:none}
+.ordr .r span{color:var(--t2)}
+.ordr .r b{font-weight:600}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--ink);cursor:pointer;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:#fff}
+.consent.bad{border-color:var(--err)}
+.consent input{width:22px;height:22px;margin:0;flex:none;accent-color:#15233F}
+.pmeth{display:flex;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:3px}
+.pmeth button{flex:1;border:none;background:none;border-radius:9px;padding:9px 0;font-size:13px;font-weight:600;color:var(--t2)}
+.pmeth button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #15233F26}
+.cardrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* certificate */
+.cert{position:relative;padding:22px 18px 16px;border-radius:8px;background:#fff;border:3px double var(--ink);box-shadow:0 18px 30px -20px #15233F80;text-align:center;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.cert::before{content:"";position:absolute;inset:6px;border:1px solid #C6CEDA;border-radius:4px;pointer-events:none}
+.cert .ct{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--t3)}
+.cert .cn{font:700 28px/1.2 var(--serif);color:var(--ink);margin-top:6px}
+.cert .cs{font:700 40px/1 var(--serif);color:var(--ink)}
+.cert .cs small{display:block;font:500 11px/1.4 var(--sans);color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.cert .cb{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;font-size:11px;color:var(--t2);text-align:left}
+.seal{width:52px;height:52px;border-radius:50%;border:2px solid var(--acc);display:grid;place-items:center;font:700 13px/1 var(--serif);color:var(--acc-ink);background:#FFF9EF;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #E39B2D66}
+.cert .cf{font-size:10.5px;color:var(--t3);margin-top:6px}
+.share{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.share button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--t2)}
+.share button:hover{border-color:var(--ink)}
+.sharetxt{font-size:13px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px dashed var(--line)}
+
+/* next tests */
+.lib{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:2px 20px 8px;scroll-snap-type:x mandatory}
+.lcard{flex:none;width:170px;scroll-snap-align:start;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;text-align:left}
+.lcard .ei{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;font-size:20px}
+.lcard .lt{display:block;width:100%;height:96px;object-fit:cover;border-radius:12px;background:#F6F4EF}
+.lcard b{font-size:15px}
+.lcard span{font-size:12px;color:var(--t3)}
+
+.wbar{display:flex;align-items:center;justify-content:space-between;padding:2px 0 4px;margin-right:44px}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:20px;border:2px solid var(--ink);background:#fff;box-shadow:0 0 0 5px var(--acc-dim),0 22px 36px -24px #15233F66}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 11px;border-radius:999px;background:var(--acc);color:#2A1A02;font:700 10.5px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{display:block;font:700 18px/1.2 var(--serif);color:var(--ink)}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:14px;background:var(--paper);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:700 28px/1 var(--serif);color:var(--ink)}.oprice span{color:var(--t2);font-size:13px}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc-ink);font-variant-numeric:tabular-nums}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:9;background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.6s ease forwards;pointer-events:none}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* side panel */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:700 30px/1.1 var(--serif);margin:0 0 8px}
+.panel .intro{color:var(--pt2);margin:0;font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--pborder);border-radius:999px;padding:3px;background:var(--psurf)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--pt2);font-weight:500}
+.seg button.on{background:var(--pt1);color:var(--page)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--pborder);background:none;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--pt2)}
+.ctrls .restart:hover{color:var(--pt1)}
+.panel button:focus-visible{outline:2px solid var(--pacc);outline-offset:2px}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pt3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12px;color:var(--pacc);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--pt2);font-size:13px;width:100%}
+.flow button:hover{background:var(--psurf);color:var(--pt1)}
+.flow button.on{background:var(--psurf2);color:var(--pt1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--pt3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--pt3);border:1px solid var(--pborder);border-radius:4px;padding:1px 5px;flex:none}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--pt3)}
+.data dd{margin:0;color:var(--pt1);overflow-wrap:anywhere}
+.callout{font-size:13px;color:var(--pt2);border:1px solid var(--pborder);background:var(--psurf);border-radius:12px;padding:10px 12px;margin:0}
+.callout b{color:var(--pt1)}
+.foot-note{font-size:12px;color:var(--pt3);margin:0;display:flex;flex-direction:column;gap:6px}
+.foot-note p{margin:0}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:36px;padding-block:24px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+/* personality-specific */
+.pills.lk .pill{height:44px;font-size:15px;border-width:1.5px}
+.stmt{font:700 25px/1.25 var(--serif);margin:0;text-wrap:balance;color:var(--ink);min-height:96px;display:flex;align-items:center}
+.letters{display:flex;gap:8px}
+.ltr{flex:1;aspect-ratio:1;max-height:76px;border-radius:16px;border:2px solid var(--ink);background:#fff;display:grid;place-items:center;font:700 34px/1 var(--serif);color:var(--ink);transition:transform .35s,background .25s}
+.ltr.q{border-style:dashed;border-color:#C6CEDA;color:#C6CEDA;background:var(--paper)}
+.ltr.flip{animation:flipin .5s ease both}
+@keyframes flipin{from{transform:rotateX(90deg)}to{transform:none}}
+.ltr.big{max-height:84px;font-size:38px}
+.nick{font:600 15px/1.3 var(--serif);color:var(--acc-ink);text-align:center}
+.tbars{display:flex;flex-direction:column;gap:12px}
+.tb .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--t2);margin-bottom:5px;gap:8px}
+.tb .top b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.tb .trk{height:10px;border-radius:5px;background:var(--line2);overflow:hidden}
+.tb .trk i{display:block;height:100%;border-radius:5px;background:var(--ink);transition:width .5s ease}
+.tb.hot .trk i{background:var(--acc)}
+.tb.blur .trk,.tb.blur .top b{filter:blur(4px)}
+.tb .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:3px}
+.lockrow{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;border:1px dashed #C6CEDA;background:var(--paper);font-size:14px;color:var(--t2)}
+.lockrow svg{flex:none;color:var(--t3)}
+.str{display:flex;gap:10px;align-items:center;padding:11px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:500}
+.str i{width:26px;height:26px;border-radius:50%;background:var(--acc-dim);color:var(--acc-ink);display:grid;place-items:center;font:700 12px var(--sans);font-style:normal;flex:none}
+.sec{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.sec h4{margin:0;font:700 17px/1.2 var(--serif)}
+.sec p{margin:0;font-size:14px;color:var(--t2)}
+.sec ul{margin:0;padding-left:18px;font-size:14px;color:var(--t2);display:flex;flex-direction:column;gap:4px}
+/* long-scroll paywall */
+.pwbar{display:flex;align-items:center;justify-content:space-between;margin-right:44px;padding-bottom:2px}
+.pwhero{padding:16px;border-radius:20px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 26px -20px #15233F80}
+.pwsec{display:flex;flex-direction:column;gap:10px;padding-top:6px}
+.pwsec>h2{margin:0;font:700 21px/1.2 var(--serif);color:var(--ink)}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.how b{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px;flex:none}
+.guar{padding:14px;border-radius:16px;background:#F3F8F5;border:1px solid #CFE3D8;font-size:14px;color:var(--ink);display:flex;gap:10px}
+.guar svg{color:var(--ok);flex:none;margin-top:2px}
+.mcard{width:150px;height:96px;border-radius:12px;background:#fff;border:2px solid var(--ink);padding:8px;display:flex;flex-direction:column;gap:6px;flex:none}
+.mcard .ml{display:flex;gap:3px}.mcard .ml i{flex:1;height:22px;border-radius:5px;background:var(--ink);color:#fff;font:700 12px/22px var(--serif);text-align:center;font-style:normal}
+.mcard .mb{height:6px;border-radius:3px;background:var(--line)}.mcard .mb.b{filter:blur(2px)}
+.phimg{display:block;width:100%;height:120px;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#F6F4EF}
+.demo-skip{align-self:center;font-size:12px}
+/* archetype-specific */
+.tiles{display:flex;flex-direction:column;gap:12px}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:158px;border-radius:20px;border:2px solid var(--ink);background:linear-gradient(160deg,#fff,#F6F4EF);color:var(--ink);transition:background .15s,color .15s,transform .15s}
+.tile:hover{background:var(--paper)}
+.tile.on{background:var(--ink);color:#fff}
+.tile .te{font-size:62px;line-height:1}
+.tile .tl{font:600 17px/1.2 var(--serif)}
+.wheel{display:block;margin:0 auto;max-width:100%;height:auto}
+.wheel .wd{fill:var(--ink);opacity:.82;transition:transform .5s ease,fill .3s}
+.wheel .wd.lead{fill:var(--acc);opacity:1}
+.wheel .wl{font-size:15px}
+.wheel .blurg{filter:blur(3.5px)}
+.embs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.emb{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:inline-grid;place-items:center;font-size:17px;flex:none}
+.emblg{width:58px;height:58px;border-radius:50%;border:2px solid var(--ink);background:#fff;display:grid;place-items:center;font-size:30px;flex:none}
+.leadcard{display:flex;flex-direction:row;align-items:center;gap:12px}
+.arn{font:700 22px/1.15 var(--serif);color:var(--ink)}
+.bigpct{font:700 26px var(--serif);color:var(--acc-ink);font-variant-numeric:tabular-nums}
+.arow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:#fff}
+.arow .rl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--acc-ink);font-weight:700}
+.arow .rp{font:700 18px var(--serif);font-variant-numeric:tabular-nums}
+.leadmini{display:flex;align-items:center;gap:12px;margin:6px 0}
+.trio{display:flex;gap:8px}.trio span{flex:1;padding:8px 10px;border-radius:12px;background:var(--paper);font-weight:600;font-size:13px;display:flex;flex-direction:column}
+.trio small{font-weight:400;color:var(--t3);font-size:11px}
+.pron{font:500 12px var(--sans);color:var(--t3)}
+.pv.leadcard{padding:14px}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:10px;font-size:12px;color:var(--t2)}
+.legend span{display:flex;justify-content:space-between;gap:6px;padding:3px 0;border-bottom:1px solid var(--line2)}
+.legend b{color:var(--ink);font-variant-numeric:tabular-nums}.legend .hot b{color:var(--acc-ink)}
+</style>
+<div class="wrap">
+  <div class="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>12-archetype funnel</h1>
+      <p class="intro">An ikame prototype of the 16-screen funnel in <code>testlibrary/archetype/funnel-content.md</code>, in the IQ brief's light "exam paper" look. Tap through the phone, or jump to any screen below.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant">
+        <button id="vA" class="on" aria-pressed="true">Copy A</button><button id="vB" aria-pressed="false">Copy B</button>
+      </div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <p class="callout"><b>Full-length test.</b> All 24 image pairs are here (each archetype appears in exactly 4 pairs). Use "Demo: fill the rest" under a pair to skip ahead; checkpoints appear after pair 6, 12, 18 and 22.</p>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <div class="foot-note">
+      <p><b>Faked:</b> the archetype is a simple count of picks (each archetype appears in 4 pairs, percent = picks/4, no norms), the loading steps, Google/Apple sign-in, checkout, PDF and share buttons are simulated, and no charge is made.</p>
+      <p><b>Real:</b> the plan structure only. Every price is a token ({{price_*}}, {{renewal_*}}). Review text and the refund window on the paywall are placeholders (dashed). Fill them from real data only. The 5-minute estimate is a guess until measured.</p>
+      <p><b>Images</b> in <code>img/</code> are placeholder art, and the pair tiles use emoji art until the 48 scene illustrations exist. Run <code>gen_images.py</code> with <code>IKAME_AI_KEY</code> set to replace them under the same names.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const IMG=/*IMG-START*/{'img/hero.jpg':'img/hero.jpg','img/howto.jpg':'img/howto.jpg','img/report.jpg':'img/report.jpg','img/profile.jpg':'img/profile.jpg','img/next.jpg':'img/next.jpg'}/*IMG-END*/;
+const im=p=>IMG[p]||p;
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-dasharray="2 2"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  chat:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  story:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const starRow=(n=5,s=18)=>`<div class="stars" aria-label="${n} stars">${Array.from({length:n},()=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${IC.star}</svg>`).join('')}</div>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* price/renewal/offer/refund/review tokens keep their {{braces}}; every other placeholder shows as [name] */
+const ph=s=>/price|renew|offer|refund|review/.test(s)?`<span class="ph">{{${s}}}</span>`:`<span class="ph">[${s.replace(/_/g,' ')}]</span>`;
+const tok=v=>esc(v).replace(/\{\{(\w+)\}\}/g,(_,k)=>ph(k));
+
+/* ---------- the test: 24 image pairs, 12 archetypes x 4 scenes ---------- */
+/* wheel order; each archetype appears in exactly 4 pairs (2 with its wheel neighbour, 2 with the archetype 5 steps on) */
+const AR=[
+ {k:'Innocent',e:'🌼',g:'Seekers',gist:'Hopeful and trusting, drawn to simple joy.',gift:'trust and simplicity',
+  str:['Sees the good in people','Brings calm and optimism','Keeps things simple and honest'],
+  love:'You love with loyalty and warmth. You want a partner who feels safe and kind.',work:['Education','Hospitality','Wellness','Nonprofits'],
+  grow:['Name one worry out loud to someone you trust.','Say no once this week, kindly.','Plan one thing without assuming it will work out.'],
+  sc:[['🌼','Open meadow'],['🧁','Simple joy'],['🕊️','Fresh start'],['🌅','Quiet morning']]},
+ {k:'Everyman',e:'🤝',g:'Connectors',gist:'Down to earth, loyal, at home with people.',gift:'belonging and fairness',
+  str:['Easy to be around','Fair and dependable','Makes others feel included'],
+  love:'You love by showing up. You want a partner who feels like a best friend.',work:['Operations','Retail','Community work','Support roles'],
+  grow:['Share one opinion you usually keep back.','Do one thing just for yourself.','Ask for what you want, not what is easy.'],
+  sc:[['🍻','Neighbourhood table'],['🤝','Belonging crowd'],['🧢','Down to earth'],['🏘️','Familiar street']]},
+ {k:'Caregiver',e:'🤲',g:'Connectors',gist:'Warm, protective, happiest when helping.',gift:'care and generosity',
+  str:['Notices who needs help','Generous with time and attention','Steady in a crisis'],
+  love:'You love through care and practical kindness. You want to feel needed and appreciated.',work:['Healthcare','Teaching','Social work','Customer care'],
+  grow:['Schedule one hour that is only yours.','Let someone help you this week.','Say what you need before you are exhausted.'],
+  sc:[['🍲','Cooked for you'],['🧸','Looking after'],['🩹','Lend a hand'],['🤲','Open arms']]},
+ {k:'Lover',e:'🌹',g:'Connectors',gist:'Passionate, devoted, drawn to closeness.',gift:'intimacy and appreciation',
+  str:['Deeply attentive to people','Brings warmth and beauty','Commits with your whole heart'],
+  love:'You love with intensity and detail. You want closeness that feels chosen.',work:['Design','Hospitality','Beauty and wellness','Event planning'],
+  grow:['Spend one evening on a friendship, not a partner.','Notice what you need before you give.','Keep one plan that is only for you.'],
+  sc:[['🌹','Candlelit dinner'],['💌','Love letter'],['🍷','Slow evening'],['🎶','Close dance']]},
+ {k:'Jester',e:'🎈',g:'Shapers',gist:'Playful, quick, here to enjoy the moment.',gift:'humor and lightness',
+  str:['Lifts the mood of a room','Thinks fast and adapts','Makes hard things feel lighter'],
+  love:'You love with laughter and play. You want a partner who can be silly with you.',work:['Entertainment','Marketing','Teaching','Hospitality'],
+  grow:['Finish one small thing you started.','Have one serious talk, no jokes.','Plan next week on paper.'],
+  sc:[['🎈','Pure play'],['🤡','Prank day'],['🎉','Laugh loud'],['🛝','Playground']]},
+ {k:'Explorer',e:'🧭',g:'Seekers',gist:'Curious and independent, always heading somewhere new.',gift:'freedom and discovery',
+  str:['Learns fast in new places','Independent and self-reliant','Not afraid of the unknown'],
+  love:'You love with space and adventure. You want a partner who grows with you.',work:['Travel','Research','Product work','Journalism'],
+  grow:['Stay with one thing for a full week.','Tell someone close where you are heading.','Invite a friend on your next adventure.'],
+  sc:[['🧭','Open road'],['⛰️','Unmapped trail'],['🎒','Pack and go'],['🌍','New horizon']]},
+ {k:'Outlaw',e:'🔥',g:'Seekers',gist:'Bold and unconventional, ready to break a stale rule.',gift:'courage and change',
+  str:['Challenges what is not working','Brave when others hesitate','Drives real change'],
+  love:'You love with honesty and heat. You want a partner who does not need you to be tame.',work:['Startups','Creative direction','Advocacy','Disruptive tech'],
+  grow:['Pick one rule worth keeping and follow it.','Build something, not just break something.','Listen fully before you push back.'],
+  sc:[['🏍️','Break the rules'],['🎸','Loud rebellion'],['🔥','Burn it down'],['✊','Shake things up']]},
+ {k:'Magician',e:'🔮',g:'Shapers',gist:'Visionary, sees how to turn ideas into change.',gift:'vision and transformation',
+  str:['Sees patterns and possibilities','Turns ideas into reality','Inspires others to try'],
+  love:'You love with depth and meaning. You want a partner who shares your big picture.',work:['Innovation','Coaching','Psychology','Product strategy'],
+  grow:['Turn one big idea into three small steps.','Explain your vision in plain words.','Check one belief against a hard fact.'],
+  sc:[['🔮','Hidden meaning'],['✨','Make it happen'],['🌙','Midnight ritual'],['🧪','Transform it']]},
+ {k:'Hero',e:'🛡️',g:'Leaders',gist:'Driven and disciplined, built to rise to a challenge.',gift:'courage and mastery',
+  str:['Rises to a challenge','Disciplined and determined','Protects what matters'],
+  love:'You love with action and loyalty. You want a partner who stands beside you.',work:['Sports and fitness','Emergency services','Management','Law'],
+  grow:['Rest for one full day without guilt.','Ask for help on one thing.','Celebrate a win before the next goal.'],
+  sc:[['🏔️','Summit push'],['🥇','Finish line'],['🛡️','Stand and fight'],['💪','Proving myself']]},
+ {k:'Sage',e:'📚',g:'Leaders',gist:'Thoughtful and curious, seeks the truth behind things.',gift:'wisdom and clarity',
+  str:['Thinks things through','Curious and well-read','Calm, clear perspective'],
+  love:'You love through conversation and understanding. You want a partner who thinks with you.',work:['Research','Writing','Analysis','Education'],
+  grow:['Act on one decision before you feel ready.','Share a half-formed idea with a friend.','Trade one hour of reading for a walk with someone.'],
+  sc:[['📚','Quiet library'],['🔭','Seek the truth'],['🕯️','Late study'],['🧠','Think it through']]},
+ {k:'Creator',e:'🎨',g:'Shapers',gist:'Imaginative, driven to make something that did not exist.',gift:'imagination and craft',
+  str:['Makes ideas real','Original and expressive','Keeps going on long projects'],
+  love:'You love by making things with and for someone. You want a partner who respects your craft.',work:['Design','Writing','Film and music','Architecture'],
+  grow:['Ship one thing before it feels perfect.','Share a draft with one honest friend.','Take one day off from making.'],
+  sc:[['🎨','Blank canvas'],['🛠️','Build from nothing'],['🖌️','Make something'],['💡','Original idea']]},
+ {k:'Ruler',e:'👑',g:'Leaders',gist:'Organized and decisive, takes charge so things work.',gift:'order and responsibility',
+  str:['Organizes people and plans','Decisive under pressure','Takes responsibility'],
+  love:'You love by building a stable life together. You want a partner who shares your standards.',work:['Management','Operations','Public service','Finance'],
+  grow:['Ask the quietest person for their view.','Delegate one task fully.','Let one thing be imperfect.'],
+  sc:[['👑','Head of table'],['🏛️','Set the order'],['📋','Take charge'],['🗝️','Hold the keys']]}
+];
+const NA=12,N=24,CPS=[6,12,18,22];
+const PAIRS=(()=>{const cnt=Array(NA).fill(0),out=[];
+  for(let q=0;q<N;q++){const h=q>>1,j=q%2===0?(h*5)%NA:(h*7)%NA,k=q%2===0?1:5;let a=j,b=(j+k)%NA;
+    const ta={ar:a,sc:cnt[a]++},tb={ar:b,sc:cnt[b]++};
+    out.push(h%2?[tb,ta]:[ta,tb])}
+  return out})();
+const tileOf=(q,i)=>{const t=PAIRS[q][i];return {ar:t.ar,e:AR[t.ar].sc[t.sc][0],l:AR[t.ar].sc[t.sc][1]}};
+const SCALE=null;
+const TIPS=['Tip: pick what you’d do, not what sounds best.','Tip: it’s fine if both feel true. Pick one.','Tip: don’t count your picks. Just choose.','Tip: last few. Trust your first instinct.'];
+/* panel-jump prefill: leans Sage, Explorer, Creator, with a few flips so the wheel is not flat */
+const RANK=Array.from({length:NA},(_,a)=>({9:0,5:1,10:2}[a]??a+3));
+const PRE=PAIRS.map((p,q)=>{const lo=RANK[p[0].ar]<RANK[p[1].ar]?0:1;return q%6===5?1-lo:lo});
+
+/* ---------- scoring: deterministic, from the user's picks only ---------- */
+const answered=()=>S.ans.filter(a=>a!==null).length;
+const scores=()=>{const s=Array(NA).fill(0);S.ans.forEach((a,q)=>{if(a!==null)s[PAIRS[q][a].ar]++});return s};
+const pct=a=>scores()[a]*25;
+const wd=(a,b)=>{const d=Math.abs(a-b)%NA;return Math.min(d,NA-d)};
+const ranked=()=>{const s=scores();return [...Array(NA).keys()].sort((x,y)=>s[y]-s[x]||x-y)};
+const lead=()=>ranked()[0],support=()=>ranked()[1];
+const closeCall=()=>{const s=scores(),r=ranked();return s[r[0]]===s[r[1]]};
+const shadow=()=>{const s=scores(),L=lead(),mn=Math.min(...s);return [...Array(NA).keys()].filter(a=>s[a]===mn&&a!==L).sort((x,y)=>wd(y,L)-wd(x,L)||x-y)[0]};
+const arName=a=>'The '+AR[a].k;
+const arLow=a=>'the '+AR[a].k;
+const arCount=()=>scores().filter(x=>x>0).length;
+const fmtDur=ms=>{const s=Math.max(1,Math.round(ms/1000));return `${Math.floor(s/60)}m ${String(s%60).padStart(2,'0')}s`};
+const dstr=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return dstr(d)};
+const renewal=p=>addDays(p==='t4'?28:7);
+
+const AGES=[['18-24','🌱'],['25-34','🚀'],['35-44','🧭'],['45-59','🌿'],['60+','🦉']];
+const GENDERS=[['woman','👩','Woman','she/her'],['man','👨','Man','he/him'],['nb','🧑','Non-binary',''],['pns','🤐','Prefer not to say',''],['other','✏️','Other','']];
+const pronouns=()=>{const g=GENDERS.find(x=>x[0]===S.gender);return S.gender==='other'?S.genderOther.trim():g?g[3]:''};
+const LIBG={Seekers:[['🌊','Big Five','10 min'],['💼','Career Test','5 min'],['💪','Strengths Finder','8 min']],Connectors:[['💞','Love Style','6 min'],['🔗','Attachment Style','7 min'],['💛','EQ Test','8 min']],Shapers:[['🔷','Enneagram','12 min'],['🕰️','Mental Age','5 min'],['💪','Strengths Finder','8 min']],Leaders:[['💼','Career Test','5 min'],['🧩','DISC','7 min'],['🧠','IQ Test','20 min']]};
+const PLANS={
+  one:{n:'One-time report',today:'{{price_report}}',then:'Nothing renews',d:'This profile’s full report. Nothing renews.'},
+  t1:{n:'1-week Full Access',today:'{{price_trial}}',then:'{{renewal_trial}} every 4 weeks',badge:'ALL TESTS'},
+  t4:{n:'4-week Full Access',today:'{{price_4week}}',then:'{{renewal_4week}} every 4 weeks',d:'Renews at {{renewal_4week}} every 4 weeks.'}
+};
+const CONFIG={
+  funnel:'testlibrary-archetype',
+  /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
+  reminder:true,
+  /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
+     Default: this one profile report, no subscription. Prices are tokens: real values come from checkout config.
+     compareAt:null = nothing struck. renews:null = one payment, nothing renews. expiresMin:null = no timer (the brief promises none). */
+  offer:{enabled:true,name:'This profile report only',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+PLANS.offer={n:esc(CONFIG.offer.name),today:CONFIG.offer.price,then:CONFIG.offer.renews||'Nothing renews',later:CONFIG.offer.renews||''};
+const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
+
+const INIT=()=>({v:'A',i:1,hist:[],age:'',under:false,gender:'',genderOther:'',q:0,ans:Array(N).fill(null),cp:0,t0:null,dur:null,email:'',name:'',plan:'t1',offerSeen:false,offerEnd:null,consent:false,pay:'card',cardNo:'',cardExp:'',cardCvc:'',paid:false,paidPlan:null,upsell:false,err:'',errKind:''});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nameOk=()=>S.name.trim();
+const nm=()=>esc(nameOk()||'you');
+/* name-led headings fall back cleanly when the name was skipped */
+const lead_=txt=>nameOk()?`${esc(S.name.trim())}, ${txt}`:txt.charAt(0).toUpperCase()+txt.slice(1);
+const tail=txt=>nameOk()?`${txt}, ${esc(S.name.trim())}`:txt;
+
+const SCREENS=[
+ {n:1,g:'A. Hook',l:'Lander - which archetype'},{n:2,g:'A. Hook',l:'Gender (optional)'},{n:3,g:'A. Hook',l:'How it works'},
+ {n:4,g:'B. Investment',l:'Image pair',tag:'×24'},{n:5,g:'B. Investment',l:'Progress checkpoint',tag:'×4'},
+ {n:6,g:'C. Trust',l:'Social proof'},{n:7,g:'D. Anticipation',l:'Scoring',tag:'auto'},
+ {n:8,g:'E. Gate',l:'Email gate'},{n:9,g:'E. Gate',l:'Name for your profile'},
+ {n:10,g:'D. Anticipation (tease)',l:'Profile preview'},
+ {n:11,g:'F. Monetization',l:'Paywall',tag:'long page'},{n:12,g:'F. Monetization',l:'Last-chance offer',tag:'once'},{n:13,g:'F. Monetization',l:'Order summary + consent',tag:'consent'},
+ {n:14,g:'G. Payoff',l:'Your full profile'},{n:15,g:'G. Payoff',l:'Profile card + share',tag:'verify'},{n:16,g:'G. Payoff',l:'Your next test',tag:'2nd layer'}];
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timer=null,timer2=null,pend=null;
+function clearTimers(){clearInterval(timer);clearTimeout(timer);clearInterval(timer2);clearTimeout(pend);timer=timer2=pend=null}
+
+function go(n,push=true){clearTimers();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.errKind='';render(dir)}
+let backing=false;
+function back(){clearTimers();let p=S.hist.pop();if(p===12&&S.offerSeen)p=S.hist.pop();if(p===12&&S.offerSeen)p=11;if(p){S.i=p;S.err='';S.errKind='';backing=true;try{render('b')}finally{backing=false}}}
+const EVENTS=window.__ikfEvents=[];
+function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p)}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+function startTest(){if(S.t0===null)S.t0=Date.now();if(S.ans.every(a=>a===null))S.q=0;go(4)}
+
+function fillTo(n){
+  if(n>1&&!S.age)S.age='25-34';
+  if(n>5){S.ans=S.ans.map((a,i)=>a===null?PRE[i]:a);S.q=N-1;if(S.dur===null)S.dur=150000}
+  if(n===4&&S.t0===null)S.t0=Date.now();
+  if(n===5){const cp=Math.max(0,Math.min(3,S.cp||0));S.cp=cp;for(let i=0;i<CPS[cp];i++)if(S.ans[i]===null)S.ans[i]=PRE[i];S.q=CPS[cp]-1;if(S.t0===null)S.t0=Date.now()}
+  if(n>8&&!S.email)S.email='maya@example.com';
+  if(n>9&&!S.name)S.name='Maya';
+  if(n>13&&!S.paid){S.paid=true;S.paidPlan=S.plan}
+}
+
+/* ---------- nav bar per screen ---------- */
+function segs(){const a=answered();return `<div class="segs" aria-label="Test progress">${CPS.map((c,j)=>{const lo=j?CPS[j-1]:0,span=c-lo+(j===3?2:0),f=Math.max(0,Math.min(span,a-lo));return `<span><i style="width:${Math.round(f/span*100)}%"></i></span>`}).join('')}</div>`}
+function nav(){
+  const b=`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`,sp='<div class="navspacer"></div>';
+  switch(S.i){
+    case 2:case 3:case 9:case 10:case 13:return `<div class="nav">${b}<div style="flex:1"></div>${sp}</div>`;
+    case 4:return `<div class="nav"><button class="iconbtn" data-a="tback" aria-label="Back">${ic('back',22)}</button>${segs()}${sp}</div>`;
+    case 5:return `<div class="nav">${sp}${segs()}${sp}</div>`;
+  }
+  return '';
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+
+/* ---------- shared pieces ---------- */
+const wordmark=()=>`<div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>TestLibrary</div>`;
+const embRow=()=>`<div class="embs" aria-hidden="true">${AR.map(a=>`<span class="emb">${a.e}</span>`).join('')}</div>`;
+/* 12-wedge wheel. mode: full | teaser (lead clear, rest blurred) | empty (scoring start) */
+function wheel(mode='full',w=260){
+  const cx=120,cy=120,r0=20,L=lead(),pt=(r,deg)=>[cx+r*Math.cos(deg*Math.PI/180),cy+r*Math.sin(deg*Math.PI/180)].map(x=>x.toFixed(1));
+  const wedge=(i,r)=>{const a=-90+i*30,[x0,y0]=pt(r0,a-14),[x1,y1]=pt(r,a-14),[x2,y2]=pt(r,a+14),[x3,y3]=pt(r0,a+14);return `M${x0} ${y0}L${x1} ${y1}A${r} ${r} 0 0 1 ${x2} ${y2}L${x3} ${y3}A${r0} ${r0} 0 0 0 ${x0} ${y0}Z`};
+  const one=i=>{const p=pct(i),r=30+p/100*64,[lx,ly]=pt(108,-90+i*30),isL=i===L&&mode!=='empty';
+    return `<g class="${mode==='teaser'&&i!==L?'blurg':''}"><path class="wd ${isL?'lead':''}" data-i="${i}" style="transform-origin:120px 120px;${mode==='empty'?'transform:scale(.25)':''}" d="${wedge(i,r)}"><title>${AR[i].k} ${p}%</title></path><text class="wl" x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central">${AR[i].e}</text></g>`};
+  return `<svg class="wheel" id="wheel" viewBox="0 0 240 240" width="${w}" height="${w}" role="img" aria-label="${mode==='full'?'Your 12-archetype wheel':'Your 12-archetype wheel, lead archetype shown'}"><circle cx="120" cy="120" r="94" fill="none" stroke="#DCE1E9" stroke-dasharray="3 4"/><circle cx="120" cy="120" r="62" fill="none" stroke="#EDF0F4"/>${AR.map((_,i)=>one(i)).join('')}</svg>${mode==='full'?`<div class="legend">${ranked().map(i=>`<span class="${i===L?'hot':''}">${AR[i].e} ${AR[i].k} <b>${pct(i)}%</b></span>`).join('')}</div>`:''}`}
+const leadCard=()=>{const L=lead();return `<div class="pv leadcard"><span class="emblg">${AR[L].e}</span><div style="flex:1;min-width:0"><div class="nick" style="text-align:left">Your lead archetype</div><div class="arn">${arName(L)}</div><div class="hint" style="margin:2px 0 0">${AR[L].gist}</div></div><b class="bigpct">${pct(L)}%</b></div>`};
+const reviewCard=()=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${ph('review_quote')}”</q><span class="by">— ${ph('review_first_name')}, ${ph('review_country')} · ${ph('review_platform')}</span></div>`;
+const dashQuote=()=>`<div class="quote dash"><q>“Real, current review goes here.”</q><span class="by">— fill from real review data only</span></div>`;
+const miniCard=()=>`<div class="mcard"><div class="ml"><i style="font-style:normal">${AR[lead()].e}</i><i>?</i><i>?</i></div><div class="mb"></div><div class="mb b" style="width:70%"></div><div class="mb b" style="width:85%"></div></div>`;
+const pays=`<div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>`;
+const DISC='For self-discovery only. Independent archetype quiz. Not a clinical or diagnostic assessment.';
+const todayLine=p=>p==='one'?`One payment of ${tok(PLANS.one.today)}. Nothing renews.`:`Today: ${tok(PLANS[p].today)}. On ${renewal(p)}: ${tok(p==='t1'?'{{renewal_trial}}':'{{renewal_4week}}')}, then every 4 weeks until you cancel.`;
+function planBlock(tag){const p=S.plan;
+  return `<div class="stack" role="radiogroup" aria-label="Plans ${tag}">${['one','t1','t4'].map(k=>{const P=PLANS[k];return `<button class="plan ${p===k?'on':''}" data-a="plan" data-v="${k}" role="radio" aria-checked="${p===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${P.n}${P.badge?`<span class="badge">${P.badge}</span>`:''}</span><span class="pl"><span>Today</span><b style="font-weight:600">${tok(P.today)}</b><span>Then</span><b style="font-weight:600">${tok(P.then)}</b></span>${P.d?`<span class="pd" style="display:block">${tok(P.d)}</span>`:''}</span></button>`}).join('')}</div>
+  <div class="today">${todayLine(p)}</div>
+  <button class="btn" data-a="checkout">Continue to checkout</button>`}
+const roleRow=(lbl,a,note)=>`<div class="arow"><span class="emb">${AR[a].e}</span><div style="flex:1;min-width:0"><div class="rl">${lbl}</div><b>${arName(a)}</b><span class="hint" style="display:block">${note}</span></div><b class="rp">${pct(a)}%</b></div>`;
+
+/* ---------- screens ---------- */
+const V={
+1:()=>`<div class="scr" style="gap:14px">${wordmark()}
+  <img class="banner" src="${im('img/hero.jpg')}" alt="A ring of twelve emblems around a question mark" width="720" height="480" fetchpriority="high" style="height:120px">
+  <h1 class="display">${t('Which archetype leads you?','Find your lead archetype')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('24 quick picks between two images. No wrong answers.','Pick your age to start. About 5 minutes.')}</p>
+  <div class="pills" role="group" aria-label="Your age">${AGES.map(([a,e])=>`<button class="pill ${S.age===a?'on':''}" data-a="age" data-v="${a}" aria-pressed="${S.age===a}"><span class="em">${e}</span>${a}</button>`).join('')}</div>
+  <p class="disc"><b>Free to take · Full report is a paid unlock</b></p>
+  <p class="small" style="margin-top:-8px">Independent archetype quiz. Not clinical.</p>
+  ${S.under?`<div class="err" style="text-align:center">You must be 18 or older to take this test.</div>`:`<button class="link" data-a="under" style="font-size:13px">I’m under 18</button>`}
+  <div class="flinks"><span>Cancel subscription</span><span>Subscription policy</span><span>FAQ</span><span>Terms</span><span>Privacy</span></div></div>`,
+2:()=>`<div class="scr"><h1 class="display">${t('How should we word it?','Who is this profile for?')}</h1>
+  <p class="lead">${t('Only used for pronouns on your profile card.','Scoring ignores this. Skip anytime.')}</p>
+  <div class="pills" role="group" aria-label="Gender">${GENDERS.map(([k,e,l])=>`<button class="pill ${S.gender===k?'on':''}" data-a="gender" data-v="${k}" aria-pressed="${S.gender===k}"><span class="em">${e}</span>${l}</button>`).join('')}</div>
+  ${S.gender==='other'?`<div class="box fadein"><input id="go" data-f="genderOther" maxlength="20" placeholder="Your pronouns, e.g. xe/xem" value="${esc(S.genderOther)}" aria-label="Your pronouns"></div>`:''}</div>
+  <div class="foot">${S.gender==='other'?cta('Continue',!!S.genderOther.trim(),'gendernext'):'<div class="note">Tap one to continue</div>'}</div>`,
+3:()=>`<div class="scr"><img class="banner" src="${im('img/howto.jpg')}" alt="Pairs of image tiles with one picked in each" width="720" height="480" loading="lazy"><h1 class="display">${t('Before you begin','Here’s how it works')}</h1>
+  <p class="lead">${t('Pick the image that feels more like you.','Go with your first instinct. Progress saves.')}</p>
+  <div class="rows">
+    <div class="irow"><span class="em">🖼️</span>24 pairs · tap one image</div>
+    <div class="irow"><span class="em">⏱</span><span>About 5 minutes</span></div>
+    <div class="irow"><span class="em">🔓</span>Free to take, report is paid</div></div>
+  <div class="rule"></div>${embRow()}</div>
+  <div class="foot">${cta('Start the test',true,'start')}<div class="note">Free to take · Full report is a paid unlock</div></div>`,
+4:()=>{const sel=S.ans[S.q];
+  return `<div class="scr" style="gap:12px"><h1 class="display sm" id="stmt" style="margin-top:2px">${t('Which feels more like you?','Pick your pull')}</h1>
+  <p class="lead" style="margin-top:-2px">${t(`Pair ${S.q+1} of ${N}`,'Trust your first instinct.')}</p>
+  <div class="tiles" role="group" aria-label="Pick one image">${[0,1].map(i=>{const x=tileOf(S.q,i);return `<button class="tile ${sel===i?'on':''}" data-a="ans" data-v="${i}" aria-pressed="${sel===i}"><span class="te" aria-hidden="true">${x.e}</span><span class="tl">${x.l}</span></button>`}).join('')}</div>
+  <div class="note">No right or wrong answers</div>
+  <button class="link demo-skip" data-a="fill">Demo: fill the rest</button></div>
+  <div class="foot"><div class="note">Tap an image to continue</div></div>`},
+5:()=>{const cp=Math.max(0,Math.min(3,S.cp)),a=CPS[cp],pc=Math.round(a/N*100),R=42,C=2*Math.PI*R;
+  return `<div class="scr center" style="align-items:stretch"><div class="cpring" style="width:160px;height:160px"><svg viewBox="0 0 100 100" width="160" height="160" aria-hidden="true"><circle cx="50" cy="50" r="${R}" fill="none" stroke="#DCE1E9" stroke-width="8"/><circle cx="50" cy="50" r="${R}" fill="none" stroke="#15233F" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(C*pc/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/></svg><div class="mid" style="color:var(--ink);font:700 30px var(--serif)">${pc}%</div></div>
+  <h1 class="display" style="text-align:center">${t(`You’re ${pc}% done`,`${N-a} pairs to go`)}</h1>
+  <p class="lead" style="text-align:center">${t(`${a} of ${N} picked. Your answers are saved.`,'Keep going with your first instinct.')}</p>
+  ${embRow()}
+  <div class="tip">${TIPS[cp]}</div></div>
+  <div class="foot">${cta('Keep going',true,'nextsec')}</div>`},
+6:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${t('See what test-takers say','Real reviews, real people')}</h1>
+  <p class="lead" style="text-align:center">${t('Reviews from people who took a TestLibrary test.','Your results are almost ready.')}</p>
+  ${dashQuote()}</div>
+  <div class="foot">${cta('See my results')}</div>`,
+7:()=>{const rows=['Counting your 24 picks…','Placing you on the 12-archetype wheel…','Finding your lead and supporting archetypes…','Writing your profile, almost ready…'];
+  return `<div class="scr" style="gap:12px"><h1 class="display" style="text-align:center;margin-top:6px">${t('Scoring your picks…','Building your wheel…')}</h1>
+  <p class="lead" style="text-align:center;margin-top:-8px">Scored from your picks only.</p>
+  <div id="ltr">${wheel('empty',220)}</div>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
+  <div class="qrot" id="qrot">${dashQuote()}</div></div>
+  <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
+8:()=>`<div class="scr"><h1 class="display">${t('Your results are ready','Where should we save them?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Enter your email to save your profile.','Your profile lives in your account, anytime.')}</p>
+  <div class="sum"><div class="r"><span>Completed in</span><b>${fmtDur(S.dur||0)}</b></div><div class="r"><span>Picked</span><b>${answered()}/${N}</b></div><div class="r"><span>Archetypes with a pick</span><b>${arCount()} of 12</b></div><div class="r"><span>Your lead</span><b class="blurv">The XXXXX · 00%</b></div></div>
+  <div class="soc"><button class="btn ghost" data-a="sso" data-v="Google">${ic('google',17)} Google</button><button class="btn ghost" data-a="sso" data-v="Apple">${ic('apple',17)} Apple</button></div>
+  <div class="orline">or</div>
+  <div class="field"><label for="em">Email</label><div class="box ${S.err?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" data-f="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Save my results',true,'email')}<div class="note">No spam. We never sell your email. · Terms · Privacy</div></div>`,
+9:()=>`<div class="scr"><h1 class="display">${t('What’s your first name?','Whose profile is this?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('It appears on your profile and share card.','Printed exactly as you type it.')}</p>
+  <div class="field"><label for="nm">First name</label><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <div class="certo" aria-hidden="true"><div class="cl">TestLibrary · archetype profile</div><div class="nl ${nameOk()?'':'empty'}" id="certname">${nameOk()?esc(S.name.trim()):'Your name'}</div><div class="ls"></div><div class="ls" style="width:40%"></div></div></div>
+  <div class="foot">${cta('Continue',true,'name')}<button class="link" data-a="skipname" style="font-size:13px">Skip for now</button></div>`,
+10:()=>{
+  return `<div class="scr" style="gap:13px"><h1 class="display sm">${t(lead_('your archetype is ready'),tail('Meet your lead'))}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your lead archetype is free. The rest is locked.','Everything blurred below unlocks with your report.')}</p>
+  ${leadCard()}
+  <div class="pv"><h4>Your 12-archetype wheel ${ic('lock',15)}</h4>${wheel('teaser',240)}</div>
+  <div class="lockrow">${ic('lock',18)}<span>Supporting archetype</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Shadow archetype</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>How you love</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Career fit for you</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Your growth path</span></div>
+  <p class="small">Based on your picks. Not clinical.</p></div>
+  <div class="foot">${cta('Unlock my report')}</div>`},
+11:()=>{const hb=lead_('read your full profile'),p=S.plan,L=lead();
+  return `<button class="closex" data-a="exit" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:16px">
+  <div class="pwbar">${wordmark()}</div>
+  <div class="pwhero">${leadCard()}${wheel('teaser',190)}
+   <div class="lockrow">${ic('lock',18)}<span>Love · Career · Growth · Shadow</span></div></div>
+  <h1 class="display sm">${t('Unlock your full report',hb)}</h1>
+  <p class="lead" style="margin-top:-8px">${t('One report, or every test in the library.','Choose one report or full library access.')}</p>
+  ${planBlock('top')}
+  ${CONFIG.reminder?'<p class="small">We’ll email you 2 days before your trial ends.</p>':''}${pays}
+  <div class="pwsec"><h2>What’s inside</h2><div class="checks">${['How you love, in detail','Career fit for '+esc(arLow(L)),'A 3-week growth path','All 12 archetype percentages','Your supporting and shadow archetypes','Full Access plans: every test in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
+  <div class="pwsec"><h2>How it works</h2><div class="how"><div><b>1</b><span>Unlock your report in one step.</span></div><div><b>2</b><span>Read it any time in your account.</span></div><div><b>3</b><span>Take the next test from the library.</span></div></div></div>
+  <div class="pwsec"><h2>People like you</h2>${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}${reviewCard()}</div>
+  <div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Refund window: ${ph('refund_window')}. Cancel a plan any time in your account.</span></div>
+  <div class="pwsec"><h2>Questions</h2><div class="faq">${[['How is my archetype decided?','From your 24 picks: each pick adds a point to its archetype. The most points lead, the fewest is your shadow. It is a self-report estimate.'],['What does the trial include?','1 week of Full Access to every test in the library, including this report.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','In your account, in two clicks.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
+  <div class="pwsec"><h2>Ready when you are</h2>${planBlock('bottom')}</div>
+  <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel</p>
+  <p class="small" style="margin-bottom:8px">${DISC}</p></div>
+  <div class="foot"><div class="today">${todayLine(p)}</div>${cta('Continue to checkout',true,'checkout')}</div>`},
+12:()=>{const o=CONFIG.offer,L=lead();
+  return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
+  <div class="wbar">${wordmark()}</div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display sm">${t(lead_('just want your report?'),'Want only this report?')}</h1>
+   <p class="lead" style="margin:0">${t('Your archetype is scored. Get this one report, no subscription.','One payment. Nothing renews, nothing to cancel.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow">${miniCard()}<div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">${o.renews?'Full report + library trial':'One payment · nothing renews'}</span></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>today</span></div>
+   <div class="checks">${['How you love, in detail','Career fit for '+esc(arLow(L)),'Your 3-week growth path'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}${pays}
+   <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
+  <p class="small">${DISC}</p>
+  <button class="link" data-a="offerno" style="margin-bottom:24px">No thanks, back to my free preview</button></div>`},
+13:()=>{const p=S.plan,P=PLANS[p],rec=recurring(p),rd=renewal(p);
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t('Review your order','Confirm your plan')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Here’s exactly what you pay, today and later.','Check the details before you pay.')}</p>
+  <div class="ordr"><div class="r"><span>Plan</span><b>${P.n}</b></div><div class="r"><span>Today</span><b>${tok(P.today)}</b></div>
+  ${rec?`<div class="r"><span>${rd}</span><b>${tok(P.later||P.then)}</b></div><div class="r" style="font-size:13px"><span>Cancel anytime before ${rd} to pay nothing more.</span></div>`:`<div class="r"><span>Later</span><b>Nothing renews</b></div>`}</div>
+  ${rec?`<label class="consent ${S.errKind==='consent'?'bad':''}"><input type="checkbox" id="consent" data-f="consent" ${S.consent?'checked':''}><span>I understand my plan renews at ${tok(P.later||P.then)} until I cancel.</span></label>${S.errKind==='consent'?`<div class="err" style="margin-top:-6px">${S.err}</div>`:''}`:''}
+  <div class="pmeth" role="group" aria-label="Payment method">${[['card','Card'],['apple','Apple Pay'],['google','Google Pay']].map(([k,l])=>`<button class="${S.pay===k?'on':''}" data-a="pay" data-v="${k}" aria-pressed="${S.pay===k}">${l}</button>`).join('')}</div>
+  ${S.pay==='card'?`<div class="box"><input data-f="cardNo" inputmode="numeric" placeholder="Card number" aria-label="Card number" value="${esc(S.cardNo)}"></div><div class="cardrow"><div class="box"><input data-f="cardExp" placeholder="MM / YY" aria-label="Expiry" value="${esc(S.cardExp)}"></div><div class="box"><input data-f="cardCvc" inputmode="numeric" placeholder="CVC" aria-label="CVC" value="${esc(S.cardCvc)}"></div></div>`:`<p class="hint" style="margin:0;text-align:center">${S.pay==='apple'?'Apple Pay':'Google Pay'} sheet opens on pay.</p>`}
+  ${S.errKind==='card'?`<div class="err">${S.err}</div>`:''}
+  <p class="small">Receipt with cancel link sent to ${esc(S.email||'your email')}.</p>
+  <p class="small">Refund terms are in the Subscription policy.</p>
+  <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
+  <div class="foot">${cta('Pay and see profile',true,'paynow')}</div>`},
+14:()=>{const L=lead(),S2=support(),SH=shadow(),close=closeCall();
+  return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`You lead with ${arLow(L)}`,nameOk()?`${nm()}, you’re ${arLow(L)}`:`You’re ${arLow(L)}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your wheel, shadow and next steps.','Love, career and growth, all unlocked.')}</p>
+  ${leadCard()}
+  <div class="pv"><h4>Your strengths</h4>${AR[L].str.map((x,i)=>`<div class="str"><i>${i+1}</i>${x}</div>`).join('')}</div>
+  <div class="pv"><h4>Your 12-archetype wheel</h4>${wheel('full',250)}</div>
+  ${roleRow('Lead',L,AR[L].gist)}
+  ${roleRow('Supporting',S2,close?`Close call: level with your lead. ${AR[S2].gist}`:AR[S2].gist)}
+  ${roleRow('Shadow',SH,`The side you rarely lean on: ${AR[SH].gift}. A little of it could help.`)}
+  <div class="sec"><h4>💞 How you love</h4><p>${AR[L].love}</p><p>Your supporting archetype adds: ${AR[S2].gift}.</p></div>
+  <div class="sec"><h4>💼 Career fit</h4><p>Fields to explore for ${esc(arLow(L))}:</p><ul>${AR[L].work.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div class="sec"><h4>🌱 Your 3-week growth path</h4><p>Built from the blind spots of ${esc(arLow(L))}.</p><ul>${AR[L].grow.map((x,i)=>`<li>Week ${i+1}: ${x}</li>`).join('')}</ul></div>
+  <div class="method">Based on your 24 picks. Each percent is how many of an archetype’s 4 scenes you chose. ${DISC}</div></div>
+  <div class="foot">${cta('Get my profile card')}</div>`},
+15:()=>{const L=lead(),S2=support(),SH=shadow(),pr=pronouns();
+  return `<div class="scr" style="gap:14px"><h1 class="display sm" style="margin-top:4px">${t('Your profile card is ready',tail('Share your archetype'))}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Download a PDF or share a card with friends.','Proudly yours. Download it or share it.')}</p>
+  <div class="cert"><div class="ct">TestLibrary · archetype profile</div><div class="cn">${nm()}${pr?` <span class="pron">${esc(pr)}</span>`:''}</div>
+  <div class="leadmini"><span class="emblg">${AR[L].e}</span><div><div class="arn">${arName(L)}</div><div class="hint" style="margin:0">Lead · ${pct(L)}%</div></div></div>
+  <div class="trio"><span>${AR[S2].e} ${arName(S2)}<small>Supporting · ${pct(S2)}%</small></span><span>${AR[SH].e} ${arName(SH)}<small>Shadow · ${pct(SH)}%</small></span></div>
+  <div class="cb"><span>${dstr(new Date())}<br>Archetype test · ${N} picks</span><span class="seal">${ic('star',20,'currentColor',1.8)}</span></div>
+  <div class="cf">For personal use. Not an official or clinical result.</div></div>
+  <div class="share"><button data-a="share" data-v="WhatsApp">${ic('chat',20)}WhatsApp</button><button data-a="share" data-v="Instagram story">${ic('story',20)}Story card</button><button data-a="share" data-v="copy">${ic('link',20)}Copy link</button></div>
+  <div class="sharetxt">“My lead archetype is ${arLow(L)} on the TestLibrary archetype test. Your turn?”</div></div>
+  <div class="foot">${cta(`${ic('dl',18,'currentColor',2)} Download PDF`,true,'pdf')}</div>`},
+16:()=>{const one=!recurring(S.paidPlan||S.plan),list=LIBG[AR[lead()].g],rd=renewal(S.paidPlan||S.plan);
+  return `<div class="scr"><h1 class="display" style="margin-top:4px">${t(nameOk()?`What’s next, ${nm()}?`:'What’s next?','Your mind, from new angles')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your plan includes every test below. Start any.','Pair your archetype with how you feel and relate.')}</p>
+  <div class="lib">${list.map(([e,n,m],i)=>`<div class="lcard"><img class="lt" style="object-position:${20+i*30}% 50%" src="${im('img/next.jpg')}" alt="" width="400" height="267" loading="lazy"><b>${e} ${n}</b><span>${m}</span></div>`).join('')}</div>
+  ${one?`<div class="tip">Unlock all tests - ${tok('{{price_trial}}')} for 1 week, then ${tok('{{renewal_trial}}')} every 4 weeks.</div>`:`<div class="sum"><div class="r"><span>Included until ${rd}</span><b style="text-decoration:underline;text-underline-offset:3px">Manage plan</b></div></div>`}
+  <p class="small">Log in anytime with ${esc(S.email||'your email')}. Your report stays in your dashboard.</p></div>
+  <div class="foot">${cta('Start next test',true,'nexttest')}</div>`}
+};
+
+function runLoading(){
+  let row=0,pct_=0;
+  timer=setInterval(()=>{
+    pct_+=3;const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    el.querySelector('.bar span').style.width=Math.min(pct_,100)+'%';
+    el.querySelector('.pct span').textContent=Math.min(pct_,100)+'%';
+    if(pct_>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.5)}<span>100%</span>`;
+      /* real scores are known already: wedges grow 3 at a time, lead lights up last */
+      const W=[...document.querySelectorAll('#wheel .wd')];
+      for(let k=row*3;k<row*3+3;k++){const w=W[k];if(w)w.style.transform='scale(1)'}
+      if(row===3){const w=W[lead()];if(w)w.classList.add('lead')}
+      row++;pct_=0;
+      if(row>3){clearInterval(timer);timer=setTimeout(()=>go(8,false),1300)}}
+  },45);
+  let qi=0;const Q=[dashQuote,dashQuote,dashQuote];
+  timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi=(qi+1)%Q.length;q.innerHTML=Q[qi]()},2300);
+}
+
+function render(dir){
+  const n=S.i,html=nav()+V[n](),old=cur();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in'+(dir==='b'?' b':'');nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);
+    setTimeout(()=>nv.classList.remove('in','b'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{if(dir)old.scrollTop=0;old.innerHTML=html}
+  const v=cur();
+  if(n===7)runLoading();
+  if(n===12&&dir&&!backing)runOffer();
+  const f=v.querySelector('#em,#nm,#go');
+  if(f&&dir!==undefined){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  renderPanel();
+}
+
+function renderPanel(){
+  const groups=[];SCREENS.forEach(s=>{let g=groups.find(x=>x[0]===s.g);if(!g){g=[s.g,[]];groups.push(g)}g[1].push(s)});
+  document.getElementById('flow').innerHTML=groups.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(s=>`<button class="${S.i===s.n?'on':''}" data-j="${s.n}" ${S.i===s.n?'aria-current="step"':''}><span class="n">${s.n}</span><span>${s.l}</span>${s.tag?`<span class="tag">${s.tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const done=S.ans.every(a=>a!==null);
+  const d=[
+    ['Copy',`Variant ${S.v}`],
+    ['Age',S.age||'—'],
+    ['Pronouns',S.gender?(pronouns()||'none printed'):'—'],
+    ['Test',`${answered()}/${N} picked${S.i===4?` · on #${S.q+1}`:''}`],
+    ['Time',S.dur!==null?fmtDur(S.dur):'—'],
+    ['Lead',done?`${arName(lead())} · ${pct(lead())}%`:'—'],
+    ['Supporting',done?`${arName(support())} · ${pct(support())}%`:'—'],
+    ['Shadow',done?`${arName(shadow())} · ${pct(shadow())}%`:'—'],
+    ['Email',S.email||'—'],
+    ['Name',S.name||'—'],
+    ['Plan',S.i>=11?PLANS[S.plan].n:'—'],
+    ['Consent',!recurring(S.plan)?'n/a (one-time)':S.consent?'Ticked':'Not ticked'],
+    ['Paid',S.paid?`${PLANS[S.paidPlan||S.plan].n} (demo, no charge)`:'—']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':go(S.i+1);break;
+    case 'back':if(S.i===11)exitPaywall();else back();break;
+    case 'age':S.age=v;S.under=false;b.parentElement.querySelectorAll('.pill').forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===1)go(2)},280);break;
+    case 'under':S.under=true;render();break;
+    case 'gender':S.gender=v;if(v==='other'){render();setTimeout(()=>document.getElementById('go')?.focus(),30)}else{b.parentElement.querySelectorAll('.pill').forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===2)go(3)},280)}break;
+    case 'gendernext':if(S.genderOther.trim())go(3);break;
+    case 'start':startTest();break;
+    case 'ans':{const q=S.q,i=+v;S.ans[q]=i;cur().querySelectorAll('.tiles .tile').forEach((el,k)=>{el.classList.toggle('on',k===i);el.setAttribute('aria-pressed',k===i)});renderPanel();
+      clearTimeout(pend);pend=setTimeout(()=>{if(S.i!==4||S.q!==q)return;
+        if(q===N-1){S.dur=Date.now()-(S.t0||Date.now());go(6,false)}
+        else if(CPS.includes(q+1)){S.cp=CPS.indexOf(q+1);go(5,false)}
+        else{S.q++;render('f')}},350);break}
+    case 'tback':clearTimeout(pend);if(S.q===0)back();else{S.q--;render('b')}break;
+    case 'fill':S.ans=S.ans.map((x,i)=>x===null?PRE[i]:x);S.dur=Date.now()-(S.t0||Date.now());go(6,false);break;
+    case 'nextsec':S.q=CPS[S.cp];go(4,false);break;
+    case 'sso':S.email=`${v} account (demo)`;toast(`Signed in with ${v} (demo)`);go(9);break;
+    case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;go(9)}break}
+    case 'name':{const x=S.name.trim();if(!x||!/^[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ \-]*$/.test(x)){S.err='Please enter your first name.';render();document.getElementById('nm')?.focus()}else{S.name=x;go(10)}break}
+    case 'skipname':S.name='';go(10);break;
+    case 'plan':{const sc=cur().querySelector('.scr'),y=sc?sc.scrollTop:0;S.plan=v;S.consent=false;render();const n2=cur().querySelector('.scr');if(n2)n2.scrollTop=y;break}
+    case 'checkout':emit('checkout_click',{plan:S.plan});go(13);break;
+    case 'exit':exitPaywall();break;
+    case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      else{S.plan='offer';S.consent=false;go(13)}break}
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
+    case 'pay':S.pay=v;render();break;
+    case 'decline':S.err='Card declined. Try another card or PayPal.';S.errKind='card';render();break;
+    case 'paynow':if(recurring(S.plan)&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
+      S.paid=true;S.paidPlan=S.plan;toast('Demo only — no charge made');{const dest=S.upsell?16:14;S.upsell=false;go(dest)}break;
+    case 'share':toast(v==='copy'?'Link copied (demo)':`${v} share sheet would open (demo)`);break;
+    case 'pdf':toast('PDF download would start (demo)');clearTimeout(pend);pend=setTimeout(()=>{if(S.i===15)go(16)},1100);break;
+    case 'nexttest':if(!recurring(S.paidPlan||S.plan)){S.plan='t1';S.consent=false;S.upsell=true;go(13)}else toast(`${LIBG[AR[lead()].g][0][1]} would open (demo)`);break;
+  }
+});
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  clearInterval(window.__oiv);
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==12)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');toast('This offer has ended');go(10);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* Every exit from the paywall (close X, nav back) goes to the offer first, once; after that, back to the free preview. */
+function exitPaywall(){emit('paywall_close');if(offerOpen())go(12);else if(S.hist.length)back();else go(10,false)}
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f||e.target.type==='checkbox')return;
+  S[f]=e.target.value;
+  if(f==='genderOther'){const btn=cur().querySelector('.foot .btn');if(btn)btn.disabled=!S.genderOther.trim()}
+  if(f==='name'){const c=document.getElementById('certname');if(c){const x=S.name.trim();c.textContent=x||'Your name';c.classList.toggle('empty',!x)}}
+  if((f==='email'||f==='name')&&S.err){S.err='';const box=e.target.closest('.box');box.classList.remove('bad');box.parentElement.querySelector('.err')?.remove()}
+  renderPanel();
+});
+phone.addEventListener('change',e=>{if(e.target.dataset.f==='consent'){S.consent=e.target.checked;if(S.consent&&S.errKind==='consent'){S.err='';S.errKind='';render()}else renderPanel()}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){const b=cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);go(n)});
+const setV=v=>{S.v=v;['A','B'].forEach(x=>{const el=document.getElementById('v'+x);el.classList.toggle('on',v===x);el.setAttribute('aria-pressed',v===x)});if(S.i!==7)render();else renderPanel()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{clearTimers();const v=S.v;S=INIT();S.v=v;render('b')};
+
+function fit(){const k=Math.min(1,(document.documentElement.clientWidth-32-24)/390);document.documentElement.style.setProperty('--k',k.toFixed(4))}
+fit();addEventListener('resize',fit);
+
+{const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){const n=+m[1];fillTo(n);S.i=n}
+ const vb=location.hash.match(/v=?([AB])/);if(vb){S.v=vb[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
+render();
+</script>
