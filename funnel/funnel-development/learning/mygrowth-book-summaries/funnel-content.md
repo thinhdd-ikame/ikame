@@ -341,4 +341,4 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 - **Dropped competitor mechanics:** sensitive profiling (sex life, boundaries), "72% / 94% ready" scores, role-model match, "55M downloads" and "5M in your location" claims, live masked-email learner feed, anchor prices equal to the renewal, recycled reviews, "Does this book seem interesting?" cards with no content.
 - **Copyright:** only public-domain titles (Meditations, Walden, The Art of War, Self-Reliance, The Wealth of Nations, As a Man Thinketh); any modern bestseller needs a licence before it can appear in the picker.
 - **Measure:** quiz completion by screen, book picks and sample-card completion (#9), #16 to #18 reach, paywall conversion per plan, single-book-pass accept rate, activation (install + sign-in + first idea within 48 h), first-renewal retention at full price, refund rate.
-- **Demo (private Artifact):** (pending)
+- **Demo (private Artifact):** https://claude.ai/artifact/VwAUbUHtwKaDkgbkDJJBkb
