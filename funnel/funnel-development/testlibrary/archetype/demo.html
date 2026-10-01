@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Archetype Funnel Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -398,6 +403,8 @@ code{font-size:.92em;overflow-wrap:anywhere}
 .legend span{display:flex;justify-content:space-between;gap:6px;padding:3px 0;border-bottom:1px solid var(--line2)}
 .legend b{color:var(--ink);font-variant-numeric:tabular-nums}.legend .hot b{color:var(--acc-ink)}
 </style>
+</head>
+<body>
 <div class="wrap">
   <div class="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
   <aside class="panel">
@@ -564,8 +571,16 @@ const CONFIG={
   /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
      Default: this one profile report, no subscription. Prices are tokens: real values come from checkout config.
      compareAt:null = nothing struck. renews:null = one payment, nothing renews. expiresMin:null = no timer (the brief promises none). */
-  offer:{enabled:true,name:'This profile report only',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+  offer:{enabled:true,name:'Lead archetype summary',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  /* refund window in days. Keep the token until it is a real policy: the guarantee line is hidden while it is a token. */
+  refundDays:'{{refund_days}}',
+  /* real, current reviews only: [{q:'...',n:'First name',c:'Country',p:'Platform'}], plus optional rating:{value:'4.x',source:'...'}.
+     null = no stars, no cards, no "reviews" claims anywhere. */
+  reviews:null
 };
+const isTok=v=>v===null||v===undefined||/\{\{/.test(String(v));
+const REV=()=>Array.isArray(CONFIG.reviews&&CONFIG.reviews.items)?CONFIG.reviews.items:[];
+const hasRev=()=>REV().length>0;
 PLANS.offer={n:esc(CONFIG.offer.name),today:CONFIG.offer.price,then:CONFIG.offer.renews||'Nothing renews',later:CONFIG.offer.renews||''};
 const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
 
@@ -637,8 +652,8 @@ function wheel(mode='full',w=260){
     return `<g class="${mode==='teaser'&&i!==L?'blurg':''}"><path class="wd ${isL?'lead':''}" data-i="${i}" style="transform-origin:120px 120px;${mode==='empty'?'transform:scale(.25)':''}" d="${wedge(i,r)}"><title>${AR[i].k} ${p}%</title></path><text class="wl" x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central">${AR[i].e}</text></g>`};
   return `<svg class="wheel" id="wheel" viewBox="0 0 240 240" width="${w}" height="${w}" role="img" aria-label="${mode==='full'?'Your 12-archetype wheel':'Your 12-archetype wheel, lead archetype shown'}"><circle cx="120" cy="120" r="94" fill="none" stroke="#DCE1E9" stroke-dasharray="3 4"/><circle cx="120" cy="120" r="62" fill="none" stroke="#EDF0F4"/>${AR.map((_,i)=>one(i)).join('')}</svg>${mode==='full'?`<div class="legend">${ranked().map(i=>`<span class="${i===L?'hot':''}">${AR[i].e} ${AR[i].k} <b>${pct(i)}%</b></span>`).join('')}</div>`:''}`}
 const leadCard=()=>{const L=lead();return `<div class="pv leadcard"><span class="emblg">${AR[L].e}</span><div style="flex:1;min-width:0"><div class="nick" style="text-align:left">Your lead archetype</div><div class="arn">${arName(L)}</div><div class="hint" style="margin:2px 0 0">${AR[L].gist}</div></div><b class="bigpct">${pct(L)}%</b></div>`};
-const reviewCard=()=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${ph('review_quote')}”</q><span class="by">— ${ph('review_first_name')}, ${ph('review_country')} · ${ph('review_platform')}</span></div>`;
-const dashQuote=()=>`<div class="quote dash"><q>“Real, current review goes here.”</q><span class="by">— fill from real review data only</span></div>`;
+const reviewCard=(r)=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${esc(r.q)}”</q><span class="by">— ${esc(r.n)}, ${esc(r.c)} · ${esc(r.p)}</span></div>`;
+const quoteBlock=i=>hasRev()?reviewCard(REV()[i%REV().length]):'';
 const miniCard=()=>`<div class="mcard"><div class="ml"><i style="font-style:normal">${AR[lead()].e}</i><i>?</i><i>?</i></div><div class="mb"></div><div class="mb b" style="width:70%"></div><div class="mb b" style="width:85%"></div></div>`;
 const pays=`<div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>`;
 const DISC='For self-discovery only. Independent archetype quiz. Not a clinical or diagnostic assessment.';
@@ -687,16 +702,16 @@ const V={
   ${embRow()}
   <div class="tip">${TIPS[cp]}</div></div>
   <div class="foot">${cta('Keep going',true,'nextsec')}</div>`},
-6:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${t('See what test-takers say','Real reviews, real people')}</h1>
-  <p class="lead" style="text-align:center">${t('Reviews from people who took a TestLibrary test.','Your results are almost ready.')}</p>
-  ${dashQuote()}</div>
+6:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${hasRev()?t('See what test-takers say','Real reviews, real people'):t('Your picks are in','Almost there')}</h1>
+  <p class="lead" style="text-align:center">${hasRev()?t('Reviews from people who took a TestLibrary test.','Your results are almost ready.'):t('Next, we score all 24 of them.','Your results are almost ready.')}</p>
+  ${hasRev()?quoteBlock(0):`<div class="embs">${embRow()}</div>`}</div>
   <div class="foot">${cta('See my results')}</div>`,
 7:()=>{const rows=['Counting your 24 picks…','Placing you on the 12-archetype wheel…','Finding your lead and supporting archetypes…','Writing your profile, almost ready…'];
   return `<div class="scr" style="gap:12px"><h1 class="display" style="text-align:center;margin-top:6px">${t('Scoring your picks…','Building your wheel…')}</h1>
   <p class="lead" style="text-align:center;margin-top:-8px">Scored from your picks only.</p>
   <div id="ltr">${wheel('empty',220)}</div>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
-  <div class="qrot" id="qrot">${dashQuote()}</div></div>
+  ${hasRev()?`<div class="qrot" id="qrot">${quoteBlock(0)}</div>`:''}</div>
   <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
 8:()=>`<div class="scr"><h1 class="display">${t('Your results are ready','Where should we save them?')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Enter your email to save your profile.','Your profile lives in your account, anytime.')}</p>
@@ -719,7 +734,7 @@ const V={
   <div class="lockrow">${ic('lock',18)}<span>Shadow archetype</span></div>
   <div class="lockrow">${ic('lock',18)}<span>How you love</span></div>
   <div class="lockrow">${ic('lock',18)}<span>Career fit for you</span></div>
-  <div class="lockrow">${ic('lock',18)}<span>Your growth path</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Suggested growth goals</span></div>
   <p class="small">Based on your picks. Not clinical.</p></div>
   <div class="foot">${cta('Unlock my report')}</div>`},
 11:()=>{const hb=lead_('read your full profile'),p=S.plan,L=lead();
@@ -731,10 +746,10 @@ const V={
   <p class="lead" style="margin-top:-8px">${t('One report, or every test in the library.','Choose one report or full library access.')}</p>
   ${planBlock('top')}
   ${CONFIG.reminder?'<p class="small">We’ll email you 2 days before your trial ends.</p>':''}${pays}
-  <div class="pwsec"><h2>What’s inside</h2><div class="checks">${['How you love, in detail','Career fit for '+esc(arLow(L)),'A 3-week growth path','All 12 archetype percentages','Your supporting and shadow archetypes','Full Access plans: every test in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
+  <div class="pwsec"><h2>What’s inside</h2><div class="checks">${['How you love, in detail','Career fit for '+esc(arLow(L)),'Suggested 3-week growth goals','All 12 archetype percentages','Your supporting and shadow archetypes','Full Access plans: every test in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
   <div class="pwsec"><h2>How it works</h2><div class="how"><div><b>1</b><span>Unlock your report in one step.</span></div><div><b>2</b><span>Read it any time in your account.</span></div><div><b>3</b><span>Take the next test from the library.</span></div></div></div>
-  <div class="pwsec"><h2>People like you</h2>${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}${reviewCard()}</div>
-  <div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Refund window: ${ph('refund_window')}. Cancel a plan any time in your account.</span></div>
+  ${hasRev()?`<div class="pwsec"><h2>What test-takers say</h2>${CONFIG.reviews.rating&&!isTok(CONFIG.reviews.rating.value)?`<p class="small" style="text-align:left">${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}Rated ${esc(CONFIG.reviews.rating.value)}${CONFIG.reviews.rating.source?' on '+esc(CONFIG.reviews.rating.source):''}</p>`:''}${REV().slice(0,2).map(reviewCard).join('')}</div>`:''}
+  ${isTok(CONFIG.refundDays)?'':`<div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Ask for a refund within ${esc(CONFIG.refundDays)} days. Cancel a plan any time in your account.</span></div>`}
   <div class="pwsec"><h2>Questions</h2><div class="faq">${[['How is my archetype decided?','From your 24 picks: each pick adds a point to its archetype. The most points lead, the fewest is your shadow. It is a self-report estimate.'],['What does the trial include?','1 week of Full Access to every test in the library, including this report.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','In your account, in two clicks.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="pwsec"><h2>Ready when you are</h2>${planBlock('bottom')}</div>
   <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel</p>
@@ -744,13 +759,13 @@ const V={
   return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
   <div class="wbar">${wordmark()}</div>
   <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display sm">${t(lead_('just want your report?'),'Want only this report?')}</h1>
-   <p class="lead" style="margin:0">${t('Your archetype is scored. Get this one report, no subscription.','One payment. Nothing renews, nothing to cancel.')}</p>
+   <h1 class="display sm">${t(lead_('just want your lead?'),'Want a smaller option?')}</h1>
+   <p class="lead" style="margin:0">${t('Get your lead archetype summary. No subscription.','One payment. Nothing renews, nothing to cancel.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
    <div class="orow">${miniCard()}<div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">${o.renews?'Full report + library trial':'One payment · nothing renews'}</span></div></div>
    <div class="oprice"><b>${tok(o.price)}</b><span>today</span></div>
-   <div class="checks">${['How you love, in detail','Career fit for '+esc(arLow(L)),'Your 3-week growth path'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   <div class="checks">${['Your lead archetype in detail','Your 3 core strengths','Your lead percent and one-line gist'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
    ${cta('Claim my offer',true,'offerbuy')}${pays}
    <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
   <p class="small">${DISC}</p>
@@ -769,6 +784,7 @@ const V={
   <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
   <div class="foot">${cta('Pay and see profile',true,'paynow')}</div>`},
 14:()=>{const L=lead(),S2=support(),SH=shadow(),close=closeCall();
+  if(S.paidPlan==='offer')return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`You lead with ${arLow(L)}`,nameOk()?`${nm()}, you’re ${arLow(L)}`:`You’re ${arLow(L)}`)}</h1><p class="lead" style="margin-top:-6px">${t('Your lead archetype summary.','Your lead, in detail.')}</p>${leadCard()}<div class="pv"><h4>Your strengths</h4>${AR[L].str.map((x,i)=>`<div class="str"><i>${i+1}</i>${x}</div>`).join('')}</div><div class="lockrow">${ic('lock',18)}<span>Wheel, supporting, shadow, love, career and growth are in the full report</span></div><div class="method">Based on your 24 picks. ${DISC}</div></div><div class="foot">${cta('Get my profile card')}</div>`;
   return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`You lead with ${arLow(L)}`,nameOk()?`${nm()}, you’re ${arLow(L)}`:`You’re ${arLow(L)}`)}</h1>
   <p class="lead" style="margin-top:-6px">${t('Your wheel, shadow and next steps.','Love, career and growth, all unlocked.')}</p>
   ${leadCard()}
@@ -779,7 +795,7 @@ const V={
   ${roleRow('Shadow',SH,`The side you rarely lean on: ${AR[SH].gift}. A little of it could help.`)}
   <div class="sec"><h4>💞 How you love</h4><p>${AR[L].love}</p><p>Your supporting archetype adds: ${AR[S2].gift}.</p></div>
   <div class="sec"><h4>💼 Career fit</h4><p>Fields to explore for ${esc(arLow(L))}:</p><ul>${AR[L].work.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-  <div class="sec"><h4>🌱 Your 3-week growth path</h4><p>Built from the blind spots of ${esc(arLow(L))}.</p><ul>${AR[L].grow.map((x,i)=>`<li>Week ${i+1}: ${x}</li>`).join('')}</ul></div>
+  <div class="sec"><h4>🌱 Suggested 3-week growth goals</h4><p>Suggested goals from the blind spots of ${esc(arLow(L))}. Adjust them to your life.</p><ul>${AR[L].grow.map((x,i)=>`<li>Week ${i+1}: ${x}</li>`).join('')}</ul></div>
   <div class="method">Based on your 24 picks. Each percent is how many of an archetype’s 4 scenes you chose. ${DISC}</div></div>
   <div class="foot">${cta('Get my profile card')}</div>`},
 15:()=>{const L=lead(),S2=support(),SH=shadow(),pr=pronouns();
@@ -787,7 +803,7 @@ const V={
   <p class="lead" style="margin-top:-6px">${t('Download a PDF or share a card with friends.','Proudly yours. Download it or share it.')}</p>
   <div class="cert"><div class="ct">TestLibrary · archetype profile</div><div class="cn">${nm()}${pr?` <span class="pron">${esc(pr)}</span>`:''}</div>
   <div class="leadmini"><span class="emblg">${AR[L].e}</span><div><div class="arn">${arName(L)}</div><div class="hint" style="margin:0">Lead · ${pct(L)}%</div></div></div>
-  <div class="trio"><span>${AR[S2].e} ${arName(S2)}<small>Supporting · ${pct(S2)}%</small></span><span>${AR[SH].e} ${arName(SH)}<small>Shadow · ${pct(SH)}%</small></span></div>
+  ${S.paidPlan==='offer'?'':`<div class="trio"><span>${AR[S2].e} ${arName(S2)}<small>Supporting · ${pct(S2)}%</small></span><span>${AR[SH].e} ${arName(SH)}<small>Shadow · ${pct(SH)}%</small></span></div>`}
   <div class="cb"><span>${dstr(new Date())}<br>Archetype test · ${N} picks</span><span class="seal">${ic('star',20,'currentColor',1.8)}</span></div>
   <div class="cf">For personal use. Not an official or clinical result.</div></div>
   <div class="share"><button data-a="share" data-v="WhatsApp">${ic('chat',20)}WhatsApp</button><button data-a="share" data-v="Instagram story">${ic('story',20)}Story card</button><button data-a="share" data-v="copy">${ic('link',20)}Copy link</button></div>
@@ -816,8 +832,8 @@ function runLoading(){
       row++;pct_=0;
       if(row>3){clearInterval(timer);timer=setTimeout(()=>go(8,false),1300)}}
   },45);
-  let qi=0;const Q=[dashQuote,dashQuote,dashQuote];
-  timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi=(qi+1)%Q.length;q.innerHTML=Q[qi]()},2300);
+  let qi=0;
+  if(hasRev())timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi++;q.innerHTML=quoteBlock(qi)},2300);
 }
 
 function render(dir){
@@ -937,3 +953,5 @@ fit();addEventListener('resize',fit);
  const vb=location.hash.match(/v=?([AB])/);if(vb){S.v=vb[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
 render();
 </script>
+</body>
+</html>

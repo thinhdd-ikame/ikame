@@ -4,7 +4,7 @@ display_name: TestLibrary - 12-archetype test (web)
 archetype: assessment-unlock
 subject: person
 input: age band, optional gender for pronouns, 24 forced-choice image pairs, email, first name
-output: lead archetype with a 12-archetype wheel (percent per archetype), a supporting archetype, a shadow archetype, and a locked report (love, career, growth)
+output: lead archetype with a 12-archetype wheel (percent per archetype), a supporting archetype, a shadow archetype, and a locked report (love, career, suggested growth goals)
 screens: 16
 monetization: web checkout - one-time profile report OR full-library access (disclosed paid trial then 4-weekly renewal); library cross-sell after the reveal
 creative_screens:
@@ -102,13 +102,14 @@ This is the archetype reskin of the TestLibrary flagship (`testlibrary/funnel-co
 ## C. Trust
 
 ### 6. Social proof - after the effort
-**Purpose:** A trust beat right after the longest effort, before the email ask. No count is claimed, only real reviews.
+**Purpose:** A trust beat right after the longest effort, before the email ask. It shows only real reviews held in `CONFIG.reviews`; with none, a neutral "almost there" beat replaces it.
 **Headline A:** See what test-takers say
 **Headline B:** Real reviews, real people
 **Body A:** Reviews from people who took a TestLibrary test.
 **Body B:** Your results are almost ready.
-**Visual:** Star row and one review card with first name and country. A review-platform logo only if that platform allows it.
-**Microcopy:** The review is a real, current review, or the card is omitted. No tests-taken number and no rating figure unless taken live from analytics or the platform. Never import another company's numbers.
+**Fallback (no reviews configured):** Headline A "Your picks are in" · Headline B "Almost there" · Body A "Next, we score all 24 of them." · Body B "Your results are almost ready." No stars, no review claim.
+**Visual:** With reviews: star row only if a real rating is configured, plus one review card with first name and country. Without: the twelve unlabeled emblems.
+**Microcopy:** Reviews and any rating figure come only from `CONFIG.reviews` (real, current, sourced). While it is unset, no stars, cards or "reviews" wording appear on screens 6, 7 or 11. Never import another company's numbers.
 **CTA:** See my results
 
 ---
@@ -124,7 +125,7 @@ This is the archetype reskin of the TestLibrary flagship (`testlibrary/funnel-co
 2. Placing you on the 12-archetype wheel…
 3. Finding your lead and supporting archetypes…
 4. Writing your profile, almost ready…
-**Visual:** The wheel is drawn empty, then each wedge grows to its real length one at a time, with the lead wedge turning amber last, but only after the real scores are known. Four progress rows beside it, rotating real review cards beneath.
+**Visual:** The wheel is drawn empty, then each wedge grows to its real length one at a time, with the lead wedge turning amber last, but only after the real scores are known. Four progress rows beside it, rotating real review cards beneath only if `CONFIG.reviews` is set.
 **Microcopy:** "Scored from your picks only."
 **CTA:** (auto-advances, ~6-8 seconds)
 
@@ -166,7 +167,7 @@ This is the archetype reskin of the TestLibrary flagship (`testlibrary/funnel-co
 **Body A:** Your lead archetype is free. The rest is locked.
 **Body B:** Everything blurred below unlocks with your report.
 **Visual:** Stacked preview on white. (1) The lead archetype card: emblem, name (e.g. "The Sage"), its percent and a one-line gist, all clear. (2) The 12-archetype wheel with the lead wedge clear and amber, the other eleven wedges and all labels blurred. (3) Two blurred rows with lock icons: "Supporting archetype" and "Shadow archetype". (4) Three locked rows: Love · Career · Growth.
-**Microcopy:** Benefit rows: "💞 How you love" · "💼 Career fit for you" · "🌱 Your growth path" · "🎡 All 12 percentages" · "🌓 Your shadow archetype". Line under the card: "Based on your picks. Not clinical."
+**Microcopy:** Benefit rows: "💞 How you love" · "💼 Career fit for you" · "🌱 Suggested growth goals" · "🎡 All 12 percentages" · "🌓 Your shadow archetype". Line under the card: "Based on your picks. Not clinical."
 **CTA:** Unlock my report
 
 ---
@@ -184,7 +185,7 @@ This is the archetype reskin of the TestLibrary flagship (`testlibrary/funnel-co
 - **1-week Full Access - {{price_trial}} today, then {{renewal_trial}} every 4 weeks.** Pre-selected, badge "ALL TESTS". The renewal line is printed on the card at the same size and color as the intro price.
 - **4-week Full Access - {{price_4week}}, renews at {{renewal_4week}} every 4 weeks.**
 Plan block repeats lower on the page, with the same selection.
-**Visual:** One long scroll, web style, light page. In order: (1) brand bar with wordmark and a close X. (2) Personal hero with the lead archetype emblem, name and percent, a mini wheel, and locked rows beneath. (3) Plan block with three stacked radio cards, "today" and "then" in two equal-weight lines, then the CTA. (4) What's inside: Love · Career · Growth · all 12 percentages · supporting and shadow archetypes · all tests (Full Access only). (5) How it works: 1 unlock · 2 read it in your account · 3 take the next test. (6) Proof: a real review card and the rating. (7) Guarantee: the refund window that really exists, in plain words. (8) FAQ accordion: How is my archetype decided? · What does the trial include? · When will I be charged? · How do I cancel? (9) The plan block again. (10) Sticky bottom CTA that always shows today's charge and the renewal line.
+**Visual:** One long scroll, web style, light page. In order: (1) brand bar with wordmark and a close X. (2) Personal hero with the lead archetype emblem, name and percent, a mini wheel, and locked rows beneath. (3) Plan block with three stacked radio cards, "today" and "then" in two equal-weight lines, then the CTA. (4) What's inside: Love · Career · Suggested growth goals · all 12 percentages · supporting and shadow archetypes · all tests (Full Access only). (5) How it works: 1 unlock · 2 read it in your account · 3 take the next test. (6) Proof: real review cards and rating, only when `CONFIG.reviews` is set; the whole section is hidden otherwise. (7) Guarantee: the refund window that really exists, in plain words, shown only when `CONFIG.refundDays` is a real number (hidden while it is a token). (8) FAQ accordion: How is my archetype decided? · What does the trial include? · When will I be charged? · How do I cancel? (9) The plan block again. (10) Sticky bottom CTA that always shows today's charge and the renewal line.
 **Microcopy:**
 - Above the CTA, changing with the plan: "Today: {{price_trial}}. On {{renewal_date}}: {{renewal_trial}}, then every 4 weeks until you cancel." / "One payment of {{price_report}}. Nothing renews."
 - Trust row: "Secure checkout · Cancel anytime in your account · 2-click cancel".
@@ -194,14 +195,15 @@ Plan block repeats lower on the page, with the same selection.
 **CTA:** Continue to checkout
 
 ### 12. Last-chance offer (on close)
-**Purpose:** A second chance for people who closed the paywall, most often because they don't want a subscription. It is the one-time report, nothing renews. Shown once per session (sessionStorage `ikf_offer_testlibrary-archetype`), then never again.
-**Headline A:** {{name}}, just want your report?
-**Headline B:** Want only this report?
-**Body A:** Your archetype is scored. Get this one report, no subscription.
+**Purpose:** A second chance for people who closed the paywall, most often because they don't want a subscription. It is a genuinely smaller option than every paywall tier: the **lead archetype summary** only (lead, its percent, three strengths), with no wheel, supporting or shadow archetype, love, career or growth. Nothing renews. Shown once per session (sessionStorage `ikf_offer_testlibrary-archetype`), then never again.
+**Headline A:** {{name}}, just want your lead?
+**Headline B:** Want a smaller option?
+**Body A:** Get your lead archetype summary. No subscription.
 **Body B:** One payment. Nothing renews, nothing to cancel.
-**Plans:** One offer card: {{offer_name}} (default "This profile report only": one payment, nothing renews). {{offer_price}} today. A struck-through price appears only if it is a real, lower price that checkout charges; if the offer is the one-time report at its listed price, nothing is struck. Optional {{offer_badge}}.
-**Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with a mini profile card (lead emblem clear, report blurred), the price row, 3 checks (love · career · growth), the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
+**Plans:** One offer card: {{offer_name}} (default "Lead archetype summary": one payment, nothing renews). {{offer_price}} today. A struck-through price appears only if it is a real, lower price that checkout charges; if the offer is the one-time report at its listed price, nothing is struck. Optional {{offer_badge}}.
+**Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with a mini profile card (lead emblem clear, the rest blurred), the price row, 3 checks (your lead archetype in detail · your 3 core strengths · your lead percent and gist), the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
 **Microcopy:** No timer by default. A timer appears only if `CONFIG.offer.expiresMin` is set to a real deadline; when it ends the offer is withdrawn (`offer_expired`) and the user returns to the preview. Decline link: "No thanks, back to my free preview". Disclaimer as on the paywall. Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Offer CVR is measured separately.
+**After purchase:** screen 14 shows only the lead card and strengths, with one locked row pointing to the full report; screen 15's card shows the lead only.
 **CTA:** Claim my offer
 
 ### 13. Order summary + consent
@@ -226,7 +228,7 @@ Plan block repeats lower on the page, with the same selection.
 **Headline B:** {{name}}, you're {{archetype}}
 **Body A:** Your wheel, shadow and next steps.
 **Body B:** Love, career and growth, all unlocked.
-**Visual:** The lead archetype card (emblem, name, percent, 3 strengths), then the full 12-archetype wheel with every wedge and percent clear, then three role cards in order: Lead (percent), Supporting (percent) and Shadow (percent, with a line on what leaning into it can feel like). Then three unlocked sections: Love (how you show and want love) · Career (4 fields to explore) · Growth (one habit per week for 3 weeks, from the lead archetype's blind spots).
+**Visual:** The lead archetype card (emblem, name, percent, 3 strengths), then the full 12-archetype wheel with every wedge and percent clear, then three role cards in order: Lead (percent), Supporting (percent) and Shadow (percent, with a line on what leaning into it can feel like). Then three unlocked sections: Love (how you show and want love) · Career (4 fields to explore) · Suggested growth goals (one habit per week for 3 weeks, from the lead archetype's blind spots, labeled as suggestions).
 **Microcopy:** Method line, always visible: "Based on your 24 picks. Each percent is how many of an archetype's 4 scenes you chose." Disclaimer: "For self-discovery only. Independent archetype quiz. Not clinical." Every result is shown with the same warmth, including the shadow.
 **CTA:** Get my profile card
 
