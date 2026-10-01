@@ -111,19 +111,18 @@ Mở file, tìm `const CONFIG` ở đầu phần script. Mọi giá trị dạng
 
 ## Sau khi thanh toán
 
-Chỉ **13 funnel** (5 Nebula, 3 Chai, 5 CoinIn) có API `window.IkFunnel`: checkout báo lại bằng `window.IkFunnel.completePurchase(plan)` hoặc redirect về funnel với `?paid=<plan>`. Với offer, giá trị `plan` là `'offer'`.
+Cả **43 funnel** đều có API `window.IkFunnel`. Checkout báo lại cho funnel bằng một trong hai cách: gọi `window.IkFunnel.completePurchase(plan)`, hoặc redirect về funnel với `?paid=<plan>`. Với offer, giá trị `plan` là `'offer'` (người mua offer chỉ thấy phần nội dung nhỏ hơn của offer, trừ MyGrowth và AyahPath vẫn vào màn payoff chung). Khi `checkoutUrl` của gói được điền, nút mua chuyển sang URL đó kèm `?funnel=<id>&plan=<plan>`.
 
-**30 funnel còn lại (Testlibrary, Calmio, EWA, MyGrowth, Coursiv, AyahPath) chưa có hook này:** nút mua chuyển sang `checkoutUrl` (kèm `plan`, email nếu có, và tham số UTM/query hiện tại), và màn "đã thanh toán" trong file chỉ hiện ở chế độ demo. Hãy cấu hình FunnelFox để chính checkout redirect user sang trang/app sau mua, hoặc bổ sung hook trước khi chạy thật.
+Riêng Calmio: nếu user vừa gõ nội dung khủng hoảng, `completePurchase('offer')` / `?paid=offer` bị từ chối và offer không hiện lại; `completePurchase` chờ user đóng bảng hỗ trợ.
 
 ## Event
 
-- **13 funnel có `IkFunnel`:** event gửi qua `ikfunnel:<event>` (window CustomEvent), qua `postMessage` lên trang cha, và qua `fbq` / `ttq` nếu có.
-- **MyGrowth, Coursiv, AyahPath, EWA (15 file):** event gửi qua `ikfunnel:<event>` (window CustomEvent) và đẩy vào `window.dataLayer`. Không có `postMessage`.
-- **Calmio và Testlibrary (15 file):** event chỉ ghi vào mảng nội bộ `EVENTS` (và console), chưa gửi ra ngoài. Cần bổ sung nếu muốn tracking trên FunnelFox.
-- **Event chính:** `funnel_start`, `screen_view`, `answer`, `lead`, `paywall_view`, `plan_select`, `checkout_click`, `paywall_close`, `complete` (tên có thể khác đôi chút giữa các app; xem hàm `emit` trong file).
-- **Event của offer:** `offer_view`, `offer_accept`, `offer_decline`, `offer_expired`.
+- Mỗi event được gửi qua `ikfunnel:<event>` (window CustomEvent), qua `postMessage` lên trang cha (`source:'ikame-funnel'`), và qua `fbq` / `ttq` nếu có (một số app còn đẩy vào `window.dataLayer`).
+- **Event chính:** `funnel_start`, `screen_view`, `answer`, `lead`, `paywall_view`, `plan_select`, `checkout_click`, `paywall_close`, `purchase_complete` / `complete`.
+- **Event của offer:** `offer_view`, `offer_accept`, `offer_decline`.
+- `funnel_start` bắn ngay khi tải trang, nên listener phải gắn trước khi script của funnel chạy.
 
-Không event nào gửi email thô hay nội dung nhạy cảm.
+Không event nào gửi email thô, nội dung chat hay ảnh. Lưu ý: offer checkout URL của Coursiv vẫn kèm tham số email prefill; bỏ nếu không muốn email nằm trên URL.
 
 ## Lưu ý
 
