@@ -6,7 +6,7 @@ subject: person
 input: event type (trip, interview, new job, meeting, other), event date, first name, self-rated level, what worries them, 3 one-tap situation replies, minutes per day
 output: a measured starting level, a phrase kit for their event, and a paced plan with a goal to be ready by their date
 screens: 19
-monetization: web subscription paywall (1-week intro / 4-week / 12-week anchor; the plan that fits the event date is pre-selected), intro and renewal price shown together, one-time smaller 1-week event kit as the dismiss fallback
+monetization: web subscription paywall (1-week intro / 4-week / 12-week anchor; the plan that fits the event date is pre-selected), intro and renewal price shown together, a smaller one-time event kit (paid once, no renewal) as the dismiss fallback
 creative_screens:
   hook-a: 1
   event: 2
@@ -135,12 +135,12 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 **Body A:** Rehearse your {{event}} until it feels familiar.
 **Body B:** Each worry gets its own training.
 **Visual:** One small card per worry picked (max 3): a reply-bubble demo (speaking up) · a waveform slowed to 0.75x (understanding fast) · a phrase card that flips (finding the words) · a rehearsal run with a progress ring (nerves).
-**Microcopy:** Captions, shown only for picked worries: "🗣️ Role-play it with your AI tutor" / "👂 Hear real speed, then slowed down" / "📚 A phrase kit for your {{event}}" / "😰 Rehearse until it feels familiar". Progress hint: "Step 1 of 3"
+**Microcopy:** Captions, shown only for picked worries: "🗣️ Role-play it with your AI tutor" / "👂 Hear real speed, then slowed down" / "📚 A phrase kit for your {{event}}" / "😰 Rehearse until it feels familiar". Progress hint: "Step 1 of 2"
 **CTA:** Continue
 
 ---
 
-## B. Investment — three situations
+## C. Investment — three situations
 
 ### 8. Situation 1
 **Purpose:** First taste of the product: one real moment from their event, one tap. It is not a quiz and nothing is graded out loud.
@@ -178,7 +178,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 
 ---
 
-## C. Trust
+## D. Trust
 
 ### 11. Rehearse before the real thing
 **Purpose:** Trust beat after the highest-effort stretch and right before the commitment questions: shows the method (role-play with a tutor, phrase kit) instead of a made-up number.
@@ -192,7 +192,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 
 ---
 
-## B. Investment — pacing
+## E. Investment — pacing
 
 ### 12. Minutes per day
 **Purpose:** The pacing input: the plan's goals in #16 are computed from it. It is also a small commitment.
@@ -207,12 +207,12 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 - 🔥 20+ min · Intense
 **Field:** Single-select, 10 min suggested. Sets `{{minutes}}`.
 **Visual:** Four stacked pills, a clock icon on each that fills to match the minutes. When a date is set, a line under the list: "{{date}} is N days away."
-**Microcopy:** Progress hint: "Step 3 of 3"
+**Microcopy:** Progress hint: "Step 2 of 2"
 **CTA:** Continue
 
 ---
 
-## D. Anticipation
+## F. Anticipation
 
 ### 13. Building the plan (loading)
 **Purpose:** Makes the plan feel built from the answers in the highest-attention moment before the gate.
@@ -228,7 +228,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 
 ---
 
-## E. Gate
+## G. Gate
 
 ### 14. Email
 **Purpose:** Captures identity before the result. On web it is also the login that links the purchase to the app, so it is functional, not just a lead grab.
@@ -244,7 +244,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 
 ---
 
-## D. Anticipation — reveal
+## H. Reveal
 
 ### 15. Level and your phrase kit
 **Purpose:** The measured payoff of the three situations: a starting level and the first phrases from the kit for their event. Only the first three are open, so the full kit is what the plan sells.
@@ -268,7 +268,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 
 ---
 
-## F. Monetization
+## I. Monetization
 
 ### 17. Paywall
 **Purpose:** The single ask: unlock the phrase kit, the practice and the plan built for the date. It is a long-scroll web sales page, not an app sheet. The renewal terms are as visible as the price, and the plan that fits the date is the one pre-selected.
@@ -278,28 +278,28 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 **Body B:** Cancel anytime. Renewal price shown up front.
 **Plans:**
 - **1 week** — `{{price_1w}}` today, then `{{renew_1w}}` every week. Pre-selected when the event is 7 days away or less; ribbon "FITS YOUR DATE".
-- **4 weeks** — `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Pre-selected when the event is 8-28 days away, or no date, or further out; ribbon "FITS YOUR DATE" or "SUGGESTED" (no date).
-- **12 weeks** — "LOWEST PER WEEK", the anchor. `{{price_12w}}` today, then `{{renew_12w}}` every 12 weeks. Never pre-selected by the date logic.
+- **4 weeks** — `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Pre-selected when the event is 8-28 days away, or no date, or further out; ribbon "FITS YOUR DATE" when the event is within 28 days, otherwise "SUGGESTED".
+- **12 weeks** — ribbon is the token `{{badge_12w}}` ("lowest per week" is only true once the real prices are set; verify before showing), the anchor. `{{price_12w}}` today, then `{{renew_12w}}` every 12 weeks. Never pre-selected by the date logic.
 - Renewal sits directly under the intro price at the same size on every card, in the CTA line and on the receipt. Per-week equivalents are tokens (`{{week_equiv_*}}`). Savings compare only against the real weekly price. No "most popular" claim and no countdown.
 **Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close ✕); personalised hero (level to next level, chips for event, date, minutes per day and weeks, the first phrases of the kit); plan block; "What's inside" (first 3 phrases open, full kit, situation drills, tap-to-translate lessons, AI tutor marked verify, daily plan to the date); "How it works" (3 steps); proof (rating block and review cards, rendered only when real; hidden while they are tokens); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open, "Will I be ready by my date?" answered honestly); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.
-**Microcopy:** Disclosure above each CTA, live for the selected plan: "You pay {{price_sel}} today. Renews at {{renew_sel}} every {{period}} until you cancel." Under the CTA: "We'll email you before your first renewal." Trust row: "🔒 Secure payment · Cancel anytime", plus "{{refund_days}}-day money-back" only when a real refund period is set. FAQ answer on readiness: "We can't promise a result. Your plan is a goal built from your date, level and minutes."
+**Microcopy:** Disclosure above each CTA, live for the selected plan: "You pay {{price_sel}} today. Renews at {{renew_sel}} every {{period}} until you cancel." Cancel cutoff is the token `{{renew_cancel_cutoff}}` (placeholder until the real store/billing rule is confirmed). Under the CTA: "We'll email you before your first renewal." Trust row: "🔒 Secure payment · Cancel anytime", plus "{{refund_days}}-day money-back" only when a real refund period is set. FAQ answer on readiness: "We can't promise a result. Your plan is a goal built from your date, level and minutes."
 **Fallback offer:** On close, the last-chance offer (#18), shown once per session.
 **CTA:** Start learning
 
 ### 18. Last-chance offer
-**Purpose:** One second chance for users who close the paywall: a smaller one-week event kit (the phrase kit and situation drills, without the AI tutor, lessons or daily plan), then its weekly renewal. Not a discount on the same SKU. Shown once.
+**Purpose:** One second chance for users who close the paywall: a smaller one-week event kit (the phrase kit and situation drills, without the AI tutor, lessons or daily plan), paid once, no renewal. Not a discount on the same SKU, and not a subscription. Shown once.
 **Headline A:** Start smaller with a kit
 **Headline B:** Just the {{event}} essentials
 **Body A:** Phrase kit and drills, no long plan.
-**Body B:** One-time starter, then weekly renewal.
-**Plans:** One offer card: **1-week event kit**, `{{offer_price}}` today (nothing struck, `compareAt: null`, because a smaller scope is not a fair comparison with the 1-week plan), then `{{renew_1w}}` every week until cancelled. Checks match its scope: the full phrase kit for the event, drills for the three situations, an email before renewal. A "Not included" line: "AI tutor, lessons and daily plan." Optional `{{offer_badge}}` only if true.
-**Visual:** Same web look as #17: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the plan name, price row, three checks, the "Not included" line, CTA, payment badges and the renewal line; plain decline link.
-**Microcopy:** Renewal line: "{{offer_price}} today, then {{renew_1w}} every week until you cancel. We'll email you before. Cancel anytime." Shown once per session (sessionStorage `ikf_offer_ewa-travel-work`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #16. Events: `paywall_close`, `offer_view`, `offer_accept`, `checkout_click`, `offer_decline`.
+**Body B:** Paid once. No renewal, no subscription.
+**Plans:** One offer card: **Event kit, paid once** (`oneTime: true`): `{{offer_price}}` charged once, no renewal and no recurring price (so no `{{renew_*}}` token). Nothing struck (`compareAt: null`, a smaller scope is not a fair comparison with any plan). Checks match its scope: the full phrase kit for the event, drills for the three situations, "Paid once, no renewal". A "Not included" line: "AI tutor, lessons and daily plan." Optional `{{offer_badge}}` only if true. Growth to confirm a one-time SKU exists in checkout.
+**Visual:** Same web look as #17: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the kit name, price row, three checks, the "Not included" line, CTA, payment badges and a one-time-charge line; plain decline link.
+**Microcopy:** Charge line: "{{offer_price}} once. No renewal, no subscription. A receipt is emailed to you." Shown once per session (sessionStorage `ikf_offer_ewa-travel-work`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #16. Events: `paywall_close`, `offer_view`, `offer_accept`, `checkout_click`, `offer_decline`.
 **CTA:** Claim my offer
 
 ---
 
-## G. Payoff
+## J. Payoff
 
 ### 19. Get the app
 **Purpose:** Web buyers who never open the app refund. Get them to install, log in with the same email and finish Day 1.
@@ -325,7 +325,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books, clip
 
 **Drop-off risk:** #3 (a date is a commitment; the skip link protects completion), #8-10 (three questions in a row; they are one tap each), #14 email before the result.
 
-**Monetization and metrics:** one subscription layer. Measure separately: paywall CVR (#17) split by days-to-event bucket and by which plan was pre-selected, offer CVR (#18 `offer_view` to `offer_accept`), intro to paid, first-renewal retention at full price (refund and chargeback rate is the guardrail; deadline buyers may stop after the event), and activation (install plus login plus Day 1 within 24h). Intro to renewal jumps are category default; the renewal is shown next to every intro price.
+**Monetization and metrics:** one subscription layer plus a one-time offer SKU. Measure separately: paywall CVR (#17) split by days-to-event bucket and by which plan was pre-selected, offer CVR (#18 `offer_view` to `offer_accept`, one-time charge), intro to paid, first-renewal retention at full price (refund and chargeback rate is the guardrail; deadline buyers may stop after the event), and activation (install plus login plus Day 1 within 24h). Intro to renewal jumps are category default; the renewal is shown next to every intro price.
 
 **First A/B tests:** (1) date asked second (this brief) vs. after the situations; (2) pre-select the plan that fits the date vs. always the 4-week plan; (3) three situations vs. one.
 

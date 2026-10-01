@@ -680,12 +680,12 @@ const fmt=n=>n.toLocaleString('en-US');
    expiresMin: null = no timer; a number = a real deadline, withdrawn when it ends. */
 const CONFIG={
   brand:'EWA',funnel:'ewa-travel-work',defaultEvent:'trip',
-  plans:{'1w':{name:'1 week',period:'week'},'4w':{name:'4 weeks',period:'4 weeks'},'12w':{name:'12 weeks',period:'12 weeks',rib:'LOWEST PER WEEK',alt:1}},
+  plans:{'1w':{name:'1 week',period:'week'},'4w':{name:'4 weeks',period:'4 weeks'},'12w':{name:'12 weeks',period:'12 weeks',rib:'{{badge_12w}}',alt:1}},
   refundDays:'{{refund_days}}',legalEntity:'{{legal_entity}}',
   /* ratings and reviews are unverified (copied from sibling EWA briefs, not used): tokens, blocks hidden while unset */
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],
-  offer:{enabled:true,name:'1-week event kit',sub:'Phrase kit and drills, one week',price:'{{offer_price}}',renews:'{{renew_1w}}',period:'week',compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+  offer:{enabled:true,oneTime:true,name:'Event kit, paid once',sub:'Phrase kit and drills, no renewal',price:'{{offer_price}}',renews:null,period:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
 };
 const isTok=v=>/^\{\{/.test(String(v));
 const refundReal=()=>/^\d+$/.test(String(CONFIG.refundDays));
@@ -745,14 +745,14 @@ const whenLabel=()=>S.when==='pick'?(hasDate()?dShort(evDate()):'—'):WHEN[S.wh
 const FLOW=[
  ['A · Hook',[[1,'Ready before your trip?']]],
  ['B · Investment: your moment',[[2,'Event'],[3,'Event date','skippable'],[4,'Name'],[5,'Level'],[6,'What worries you'],[7,'How we fix it','bridge']]],
- ['B · Investment: three situations',[[8,'Situation 1'],[9,'Situation 2'],[10,'Situation 3']]],
- ['C · Trust',[[11,'Rehearse first']]],
- ['B · Investment: pacing',[[12,'Minutes per day']]],
- ['D · Anticipation',[[13,'Building the plan','auto']]],
- ['E · Gate',[[14,'Email']]],
- ['D · Reveal',[[15,'Level + phrase kit'],[16,'Plan + goal']]],
- ['F · Monetization',[[17,'Paywall','web page'],[18,'Last-chance offer','once']]],
- ['G · Payoff',[[19,'Get the app']]]
+ ['C · Investment: three situations',[[8,'Situation 1'],[9,'Situation 2'],[10,'Situation 3']]],
+ ['D · Trust',[[11,'Rehearse first']]],
+ ['E · Investment: pacing',[[12,'Minutes per day']]],
+ ['F · Anticipation',[[13,'Building the plan','auto']]],
+ ['G · Gate',[[14,'Email']]],
+ ['H · Reveal',[[15,'Level + phrase kit'],[16,'Plan + goal']]],
+ ['I · Monetization',[[17,'Paywall','web page'],[18,'Last-chance offer','once']]],
+ ['J · Payoff',[[19,'Get the app']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -813,8 +813,8 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
 /* decline / close: back to the plan screen (#16), never back into the paywall, never a loop */
 function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
 function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
-  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
-  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('offer_accept',{price:o.price,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:o.price,oneTime:true,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
@@ -898,7 +898,7 @@ const V={
   return `<div class="scr"><h1 class="display">${t('Practice it before it happens','That\'s exactly what we fix')}</h1>
   <p class="lead">${t(`Rehearse your ${ev()} until it feels familiar.`,'Each worry gets its own training.')}</p>
   <div class="stack">${show.map((k,i)=>`<div class="fix fadein" style="animation-delay:${i*.12}s"><span class="demo">${demo[k]||demo.words}</span><b>${capt[k]||capt.words}</b></div>`).join('')}</div>
-  <div class="hintline">Step 1 of 3</div></div>
+  <div class="hintline">Step 1 of 2</div></div>
   <div class="foot">${cta('Continue')}</div>`},
 8:()=>sitScreen(0),9:()=>sitScreen(1),10:()=>sitScreen(2),
 11:()=>{const T=TUT[S.event];
@@ -917,7 +917,7 @@ const V={
   <p class="lead">${t('A little each day beats one long night.','Be realistic. You can change it anytime.')}</p>
   <div class="opts">${MINS.map(([m,e,l,f])=>pill('min',m,e,l,S.minutes===m,false,(m===10?'<span class="tagsug">Suggested</span>':'')+clockFill(f))).join('')}</div>
   ${hasDate()?`<div class="react"><span style="font-size:20px">📅</span><span>${esc(dShort(evDate()))} is ${d===0?'today':d===1?'1 day away':d+' days away'}.</span></div>`:''}
-  <div class="hintline">Step 3 of 3</div></div>
+  <div class="hintline">Step 2 of 2</div></div>
   <div class="foot">${cta('Continue',!!S.minutes)}</div>`},
 13:()=>{const rows=[`Choosing phrases for your ${ev()}…`,'Matching them to your level…',hasDate()?`Pacing it around ${dateTok()}…`:`Pacing it to ${minTok()} minutes daily…`,'Almost ready, your plan is waiting…'];
   return `<div class="scr" style="gap:14px;padding-top:6px"><div class="hero" data-mode="spin" data-sats="1" data-w="150"></div>
@@ -956,7 +956,7 @@ const V={
   <div class="foot">${cta('Start my plan')}</div>`},
 17:()=>{
   const R=CONFIG.rating,RV=reviewsOn(),K=kit();
-  const FAQ=[['How do I cancel?','Cancel anytime in your account settings, up to 24 hours before renewal. We\'ll email you before your first renewal.'],
+  const FAQ=[['How do I cancel?',`Cancel anytime in your account settings, up to ${tok('renew_cancel_cutoff')} before renewal. We\'ll email you before your first renewal.`],
     ['Will I be charged again?','Yes, unless you cancel: each plan renews at the price and period shown on its card.'],
     ['Will I be ready by my date?','We can\'t promise a result. Your plan is a goal built from your date, level and minutes. Results depend on your practice.'],
     ['Does it replace a teacher?','It is a daily habit and phrase trainer built around your moment. Your level and plan are guides, not a certificate.']];
@@ -990,17 +990,17 @@ const V={
   <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">${CONFIG.brand}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
    <h1 class="display" style="font-size:28px">${t('Start smaller with a kit',`Just the ${ev()} essentials`)}</h1>
-   <p class="lead">${t('Phrase kit and drills, no long plan.','One-time starter, then weekly renewal.')}</p>
+   <p class="lead">${t('Phrase kit and drills, no long plan.','Paid once. No renewal, no subscription.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${o.badge&&!isTok(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
    <div class="sumc">${sumCard(true)}</div>
    <div class="oname"><b>${esc(o.name)}</b><span>${esc(o.sub)}</span></div>
    <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${[`Full phrase kit for your ${ev()}`,'Drills for your 3 situations','An email before your first renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   <div class="ochecks">${[`Full phrase kit for your ${ev()}`,'Drills for your 3 situations','Paid once, no renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
    <p class="hint" style="margin:10px 0 0">Not included: AI tutor, lessons and daily plan.</p>
    ${cta('Claim my offer',true,'offerbuy')}
    <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
-   <p class="ofine">${tv(o.price)} today, then ${tv(o.renews)} every ${esc(o.period)} until you cancel. We'll email you before. Cancel anytime, up to 24h before renewal.</p></div>
+   <p class="ofine">${tv(o.price)} once. No renewal, no subscription. A receipt is emailed to you.</p></div>
   <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
 19:()=>{
   return `<div class="scr" style="gap:14px"><h1 class="display">${t(`You're in, ${nm()}!`,'Your first phrase awaits')}</h1>
@@ -1019,9 +1019,9 @@ const V={
 const planPeriod=()=>CONFIG.plans[plan()].period;
 const todayLine=()=>`${tok('price_'+plan())} today, then ${tok('renew_'+plan())}`;
 const renewLine=()=>`You pay ${tok('price_'+plan())} today. Renews at ${tok('renew_'+plan())} every ${planPeriod()} until you cancel. Cancel anytime. We'll email you before your first renewal.`;
-const ribOf=k=>k===sugPlan()?(hasDate()?'FITS YOUR DATE':'SUGGESTED'):(CONFIG.plans[k].rib||'');
+const ribOf=k=>k===sugPlan()?(hasDate()&&daysLeft()<=28?'FITS YOUR DATE':'SUGGESTED'):(CONFIG.plans[k].rib||'');
 function planBlock(id){const P=CONFIG.plans,cp=plan();
-  return `<div class="pick" data-pick="${id}"><h2 class="wh2" style="text-align:center;margin-bottom:16px">Choose your plan</h2><div class="plans">${Object.entries(P).map(([k,p])=>{const rb=ribOf(k);return `<button class="wplan ${cp===k?'on':''}" data-a="plan" data-v="${k}" data-plan="${k}" aria-pressed="${cp===k}">${rb?`<span class="rib ${k===sugPlan()?'':'alt'}">${rb}</span>`:''}<span class="rd">${cp===k?ic('check',12,'currentColor',3.2):''}</span><span class="nm">${p.name}</span><span class="sub">${tok('price_'+k)} today, then ${tok('renew_'+k)} every ${p.period}</span><span class="pr">${tok('week_equiv_'+k)}<small>per week</small></span></button>`}).join('')}</div>
+  return `<div class="pick" data-pick="${id}"><h2 class="wh2" style="text-align:center;margin-bottom:16px">Choose your plan</h2><div class="plans">${Object.entries(P).map(([k,p])=>{const rb=ribOf(k);return `<button class="wplan ${cp===k?'on':''}" data-a="plan" data-v="${k}" data-plan="${k}" aria-pressed="${cp===k}">${rb?`<span class="rib ${k===sugPlan()?'':'alt'}">${tv(rb)}</span>`:''}<span class="rd">${cp===k?ic('check',12,'currentColor',3.2):''}</span><span class="nm">${p.name}</span><span class="sub">${tok('price_'+k)} today, then ${tok('renew_'+k)} every ${p.period}</span><span class="pr">${tok('week_equiv_'+k)}<small>per week</small></span></button>`}).join('')}</div>
    <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
    <div style="height:12px"></div>${cta('Start learning',true,'buy')}
    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
@@ -1202,7 +1202,7 @@ phone.addEventListener('click',e=>{
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'buy':S.bought=CONFIG.plans[plan()].name+' (demo)';emit('checkout_click',{plan:plan()});toast('Demo only. No charge made.');go(LAST);break;
     case 'closepw':{const show=offerOpen();emit('paywall_close',{plan:plan(),offerShown:show});if(show)go(OFFER_N);else toast('User leaves the funnel here (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: 1-week event kit (demo)';toast('Demo only. No charge made.');go(LAST);break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: event kit, paid once (demo)';toast('Demo only. No charge made.');go(LAST);break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast(isAndroid?'Google Play would open (demo)':'App Store would open (demo)');break;
     case 'flip':{const f=b.querySelector('.hflip');if(!f)break;S.flipped=!S.flipped;f.classList.remove('on','off');void f.offsetWidth;f.classList.add(S.flipped?'on':'off');break}
