@@ -6,7 +6,7 @@ subject: person
 input: daily screen time, biggest time app, after-scroll feeling, subject, level, 2 knowledge-check answers, scroll moment, reminder time, swap minutes, email
 output: hours of scrolling redirected per month + 4-week plan slotted into the user's scroll window
 screens: 23
-monetization: web subscription (3 plans, 1-week intro / 4-week pre-selected / 12-week anchor, renewal shown beside every intro price); store-trial last-chance offer; activation (install + sign-in) measured separately
+monetization: web subscription (3 plans, 1-week intro / 4-week pre-selected / 12-week anchor, renewal shown beside every intro price); store paid 7-day intro as the last-chance offer; activation (install + sign-in) measured separately
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -36,7 +36,7 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 **Body A:** One quick lesson instead of one more feed.
 **Body B:** Five-minute lessons that fit your day.
 **Visual:** White background, MyGrowth logo top-left, rating strip. Phone-feed illustration on the left sliding into a lesson card on the right, last headline word in violet, violet CTA pinned bottom.
-**Microcopy:** Rating strip: "★ {{app_rating}} · {{rating_count}} App Store ratings" (verified 4.5 / 2,400+ in the sibling brief; re-check at launch, never a geo-injected "Top app in {country}").
+**Microcopy:** Rating strip: "★ {{app_rating}} · {{rating_count}} App Store ratings" Real store data only: hidden while `CONFIG.rating` / `CONFIG.rating_count` are unset; never a geo-injected "Top app in {country}".
 **CTA:** Start my quiz
 
 ### 2. Hook B — Small swaps add up
@@ -269,12 +269,12 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 
 ### 16. Social proof
 **Purpose:** Trust beat before the loader, public checkable numbers only.
-**Headline A:** Rated 4.5 on the App Store
-**Headline B:** Learners give it 4.5 stars
-**Body A:** From 2,400+ ratings by people like {{name}}.
+**Headline A:** Rated {{app_rating}} on the App Store
+**Headline B:** Learners give it {{app_rating}} stars
+**Body A:** From {{rating_count}} ratings by people like {{name}}.
 **Body B:** Lessons short enough to finish over coffee.
 **Visual:** Large "{{app_rating}}" with star row and laurel, App Store and Google Play badges, one real review card.
-**Microcopy:** Quote from the sibling brief (confirm reuse rights): "It beats mindless scrolling. You learn while you scroll!" — Kare. No invented user counts.
+**Microcopy:** Rating and review card come from real store data only (`CONFIG.reviews`, verbatim, with reuse rights confirmed). While rating or reviews are unset the demo and build show the fallback copy "Made for five-minute breaks" / "Every lesson works as text or audio." and hide the rating hero and review card. No invented user counts.
 **CTA:** Continue
 
 ---
@@ -290,7 +290,7 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 - Matching lessons to your slot…
 - Choosing {{subject}} lessons you'll love…
 - Almost ready, your plan awaits…
-**Visual:** A feed stack shuffling into lesson cards; four progress rows; two real reviews rotating beneath.
+**Visual:** A feed stack shuffling into lesson cards; four progress rows; real reviews rotating beneath (hidden while reviews or rating are unset).
 **Microcopy:** Carousel header: "★ {{app_rating}} on the App Store"
 **CTA:** (auto-advances, ~6 seconds)
 
@@ -312,7 +312,7 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 
 ---
 
-## D. Reveal
+## F. Reveal
 
 ### 19. Your scroll-to-learn swap
 **Purpose:** The result: hours of scrolling redirected per month, calculated from #3 and #15, drawn as a before/after weekly bar.
@@ -330,50 +330,50 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 **Headline B:** Built around {{scroll_window}}
 **Body A:** One lesson a day, right where you scroll.
 **Body B:** Week by week, building to a daily swap.
-**Visual:** Four week rows with a day dot strip: Week 1 swap 3 days, Week 2 swap 5, Weeks 3 and 4 every day (22 swaps, each `{{swap_minutes}}` min). Chips: Subject · Level · Window · Reminder `{{reminder_time}}`. Footer line "22 swaps · X hours in 4 weeks" computed.
+**Visual:** Four week rows with a day dot strip: Week 1 swap 3 days, Week 2 swap 5, Weeks 3 and 4 every day (22 swaps, each `{{swap_minutes}}` min). Chips: Subject · Level · Window · Reminder `{{reminder_time}}`. Eyebrow "Your goal, from your answers"; each row reads "goal: N swaps"; footer line "Goal: 22 swaps · X hours in 4 weeks. A target set from your answers, not a promise of results." (computed). The 3/5/7/7 ramp is this brief's own design.
 **CTA:** Start my plan
 
 ---
 
-## F. Monetization
+## G. Monetization
 
 ### 21. Paywall
 **Purpose:** Long-scroll web sales page. Intro and renewal prices sit side by side on every plan; no struck-through "reference" prices, no timer. Final prices are the growth team's call, so the page shows tokens.
 **Headline A:** {{name}}, start your swap today
 **Headline B:** Your {{subject}} swap plan
 **Body A:** Every price and renewal shown before you pay.
-**Body B:** {{hours_month}} hours a month, one lesson a day.
+**Body B:** Your goal: {{hours_month}} hours a month.
 **Plans:** (structure only, prices are tokens)
 - **1-week plan** intro `{{price_1w}}`, then `{{renewal_1w}}` per week.
 - **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. "MOST POPULAR" only if sales data backs it.
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
 - Plans are named by the period they bill. No fake "was" price.
-**Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (course cover, "{{hours_month}} h a month" chip, `{{scroll_window}}` · `{{swap_minutes}}` min/day) · plan block · what's inside · how it works (3 steps) · proof (rating + real review cards) · guarantee · FAQ · plan block repeated · sticky CTA.
+**Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (course cover, "goal {{hours_month}} h / month" chip, `{{scroll_window}}` · `{{swap_minutes}}` min/day) · plan block · what's inside · how it works (3 steps) · proof (real rating + real review cards; section hidden while unset) · guarantee (hidden while `CONFIG.refundDays` is unset) · FAQ · plan block repeated · sticky CTA.
 **Visual:** Same web look as the rest of the funnel. Radio plan cards, violet border on the selected one, payment-method row (Apple Pay / PayPal / card), safe-checkout badges. No countdown bar.
 **Microcopy:**
 - Line above the sticky CTA: "{{price_4w}} today. Then {{renewal_4w}} every 4 weeks until you cancel." (follows the selected plan)
-- Trust row: "🔒 Secure checkout · Cancel online anytime · Money-back guarantee"
+- Trust row: "🔒 Secure checkout · Cancel online anytime" plus " · {{refund_days}}-day money-back guarantee" only once `CONFIG.refundDays` holds a confirmed number.
 - What's inside (shipped features only): "5-15 minute lessons in 6 subjects" · "Read or listen to every lesson" · "Quizzes and games" · "Streaks and achievements" · "In-app reminder at {{reminder_time}}"
 - How it works: 1 "Pick your plan" · 2 "Sign in with {{email}}" · 3 "Swap your first scroll"
-- Guarantee: conditions written in plain words on the page (the sibling funnel's live guarantee is 30-day; confirm the exact terms before launch).
+- Guarantee: the section and every guarantee mention stay hidden while `CONFIG.refundDays` is a token. Once the real days and conditions are confirmed, show them in plain words on the page.
 - FAQ: "How do I cancel?" → "Profile → Settings → Manage subscription, or the link in your receipt." · "Will it renew?" → "Yes, at the renewal price shown, until you cancel. We email you before every renewal." · "Do I have to quit scrolling?" → "No. You swap one session."
 **Fallback offer:** On close, the last-chance offer (#22) once per session. No timer.
 **CTA:** Start my plan
 
 ### 22. Last-chance offer (on close)
-**Purpose:** Second chance for users who close the page without paying: the store app's own 7-day free trial, terms shown. No extra discount. Shown once per session, then never again.
-**Headline A:** Wait, {{name}}: try it free first
-**Headline B:** Try your swap plan free
-**Body A:** Start with 7 days free in the app.
-**Body B:** Seven days of lessons before you pay anything.
-**Plans:** One offer card: **7-day free trial in the app**, billed by the store; {{offer_price}} for 7 days, then {{offer_renew_price}} until cancelled. No struck-through price.
+**Purpose:** Second chance for users who close the page without paying: a paid 7-day intro plan sold through the store app, terms shown. Not free, no extra discount. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: try 7 days first
+**Headline B:** Try 7 days of your plan
+**Body A:** Start with 7 days in the app.
+**Body B:** Seven days of lessons, one clear price.
+**Plans:** One offer card: **7-day intro plan in the app**, billed by the store; {{offer_price}} for 7 days, then {{offer_renew_price}} / week until cancelled. Benefits: 7 days of full access, read or listen to every lesson, quizzes, games and streaks. No "free" wording, no struck-through price.
 **Visual:** Same web look as #21: sticky bar with logo and ✕, eyebrow "One-time offer · shown once", one violet-bordered card with course thumbnail, checks, store badges, renewal line, text link "No thanks, back to my plan".
-**Microcopy:** "{{offer_price}} for 7 days, then {{offer_renew_price}} until you cancel. Cancel anytime in your store subscriptions." Shown once (sessionStorage `ikf_offer_mygrowth-scroll-swap`); `CONFIG.offer.expiresMin` is `null`, no timer.
-**CTA:** Claim my offer
+**Microcopy:** "{{offer_price}} for 7 days, then {{offer_renew_price}} / week until you cancel. Cancel anytime in your store subscriptions." Shown once (sessionStorage `ikf_offer_mygrowth-scroll-swap`); `CONFIG.offer.expiresMin` is `null`, no timer; `CONFIG.offer.period` is `week`.
+**CTA:** Start 7 days
 
 ---
 
-## G. Payoff
+## H. Payoff
 
 ### 23. Get the app
 **Purpose:** Web buyers who never sign in refund; the first job after paying is lesson 1 with the same email.

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+<head>
 <title>MyGrowth Scroll-Swap Funnel Demo</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta charset="utf-8">
@@ -361,7 +362,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .oname{display:flex;flex-direction:column;gap:3px;text-align:center}
 .oname b{font-size:18px;line-height:1.2}.oname span{font-size:13px;opacity:.8}
 .oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
-.oprice s,.oprice s .tok{font-size:14px;opacity:.75;text-decoration:line-through;text-decoration-thickness:1.5px}
 .oprice b{font-size:26px;line-height:1;color:var(--vio)}.oprice>span{font-size:13px;opacity:.8}
 .ochecks{display:flex;flex-direction:column;gap:9px}
 .ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.35}
@@ -412,6 +412,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sec h2{font:800 18px/1.2 var(--disp);margin:0 0 10px;color:var(--ink)}
 .pimgbox{position:relative;overflow:hidden}
 </style>
+</head>
+<body>
 <div class="wrap">
   <div class="phonebox" id="pbox"><div class="phone" id="phone" aria-live="polite"></div></div>
   <aside class="panel">
@@ -435,7 +437,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     </div>
     <div>
       <p class="foot-note"><b>Computed from your answers:</b> hours per month = swap minutes x 30 / 60 (#19), the 4-week ramp of 22 swaps (#20), the knowledge-check score (#12). Hours are redirected from time you already spend, not extra free time.</p>
-      <p class="foot-note"><b>Placeholders:</b> prices, renewals and the offer price are dashed placeholder tokens (the growth team sets them), the phone-feed art, QR code and lesson-1 mockup, and one review card. The 4.5 rating and "Kare" quote are from the sibling MyGrowth brief; re-check at launch.</p>
+      <p class="foot-note"><b>Placeholders:</b> prices, renewals and the offer price are dashed placeholder tokens (the growth team sets them), the phone-feed art, QR code and lesson-1 mockup, and one review card. Rating, review count, reviews and the money-back guarantee stay hidden until real values are set in CONFIG.</p>
       <p class="foot-note">Pick "Other" on screens 3, 4, 8, 13 or 14 to see the empty-input state (CTA disabled). Try <code>taken@example.com</code> on #18. No purchase, sign-in or email is made.</p>
     </div>
   </aside>
@@ -481,11 +483,18 @@ const PLANS={
  w12:{n:'12-week plan',tok:'12w',first:'12 weeks',every:'12 weeks',tag:'LONGEST PLAN'}
 };
 const TK=n=>`<span class="tok">{{${n}}}</span>`;
-const RV='<p>"Real App Store review goes here, 15 words max."</p><small>First name · fill from real store data only</small>';
 
-/* Last-chance offer: once per session, on paywall close. Store-app 7-day free trial, terms shown, no extra discount, no timer.
+/* Last-chance offer: once per session, on paywall close. Store-app paid 7-day intro, terms shown, no free claim, no extra discount, no timer.
    price / renews stay tokens until the growth team sets them. compareAt null = nothing struck. expiresMin null = no timer. */
-const CONFIG={funnel:'mygrowth-scroll-swap',offer:{enabled:true,name:'7-day free trial in the app',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'month',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+const CONFIG={funnel:'mygrowth-scroll-swap',
+ refundDays:'{{refund_days}}',      /* set to a number once the real guarantee is confirmed; every guarantee line stays hidden while it is a token */
+ rating:'{{app_rating}}',ratingCount:'{{rating_count}}',   /* real store data only; rating strips and the rating hero stay hidden while unset */
+ reviews:[],                        /* [{q:'verbatim review',by:'First name'}] real store reviews only; review blocks stay hidden while empty */
+ offer:{enabled:true,name:'7-day intro plan in the app',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'week',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+const isTok=x=>/^\{\{.*\}\}$/.test(String(x));
+const refundOn=()=>!isTok(CONFIG.refundDays);
+const ratingOn=()=>!isTok(CONFIG.rating)&&!isTok(CONFIG.ratingCount);
+const revs=()=>CONFIG.reviews||[];
 
 const INIT=()=>({v:'A',i:1,hist:[],hours:'',hoursO:'',top:'',topO:'',feel:[],feelO:'',name:'',subject:'hist',subjO:'',level:'',q1:null,q2:null,win:'',winO:'',rem:'',remT:'',mins:0,email:'',mkt:false,acct:'',plan:'w4',paid:false,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,faq:-1,err:''});
 let S=INIT();
@@ -521,9 +530,9 @@ const FLOW=[
  ['C · Trust',[[16,'Social proof']]],
  ['D · Anticipation',[[17,'Building the plan','auto']]],
  ['E · Gate',[[18,'Email']]],
- ['D · Reveal',[[19,'Your scroll-to-learn swap','computed'],[20,'Your 4-week plan']]],
- ['F · Monetization',[[21,'Paywall','long scroll'],[22,'Last-chance offer','once']]],
- ['G · Payoff',[[23,'Get the app']]]
+ ['F · Reveal',[[19,'Your scroll-to-learn swap','computed'],[20,'Your 4-week plan']]],
+ ['G · Monetization',[[21,'Paywall','long scroll'],[22,'Last-chance offer','once']]],
+ ['H · Payoff',[[23,'Get the app']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -627,7 +636,7 @@ const FAQS=[['How do I cancel?','Profile → Settings → Manage subscription, o
 const faqBlock=()=>`<div class="faq">${FAQS.map(([q,a],i)=>`<button data-a="faq" data-v="${i}" aria-expanded="${S.faq===i}">${q}<span>${S.faq===i?'−':'+'}</span></button>${S.faq===i?`<p class="fadein">${a}</p>`:''}`).join('')}</div>`;
 
 const V={
-1:()=>`<div class="scr" style="padding-top:8px"><div style="display:flex;flex-direction:column;gap:6px"><div class="logo"><i>🌱</i>MyGrowth</div><span class="rating"><b>★</b> 4.5 · 2,400+ App Store ratings</span></div>
+1:()=>`<div class="scr" style="padding-top:8px"><div style="display:flex;flex-direction:column;gap:6px"><div class="logo"><i>🌱</i>MyGrowth</div>${ratingOn()?`<span class="rating"><b>★</b> ${esc(CONFIG.rating)} · ${esc(CONFIG.ratingCount)} App Store ratings</span>`:''}</div>
   <div class="feedart"><div class="fd scroll"><i></i><i></i><i></i><i></i></div><span class="arrow">→</span><div class="fd lesson"><b>5-min lesson</b><i></i><span class="ok">✅ Nailed it</span></div></div>
   <h1 class="h1 xl">${lastViolet(t('Swap 5 minutes of scrolling','Scroll less, learn more'))}</h1>
   <p class="lead" style="margin-top:-6px">${t('One quick lesson instead of one more feed.','Five-minute lessons that fit your day.')}</p></div>
@@ -695,19 +704,19 @@ const V={
   <div class="pills">${MINS.map(([m,em,l])=>`<button class="pill ${S.mins===m?'on':''}" data-a="mins" data-v="${m}" aria-pressed="${S.mins===m}" style="min-height:68px"><span class="em">${em}</span><span class="lb">${l}<small style="display:block;font-weight:500;font-size:13px;opacity:.7">${m} min/day</small></span></button>`).join('')}</div>
   <p class="hint" style="text-align:center">Most lessons take 5-15 minutes.</p></div>
   <div class="foot">${cta('Set my swap',OKF[15]())}</div>`,
-16:()=>`<div class="scr center" style="align-items:center;text-align:center">
-  <div style="display:flex;align-items:center;gap:4px">${laurel(false)}<div><div style="font:800 34px/1.2 var(--disp)">4.5</div><div class="stars" style="font-size:20px">★★★★<span style="opacity:.45">★</span></div></div>${laurel(true)}</div>
-  <h1 class="h1 c">${t('Rated 4.5 on the App Store','Learners give it 4.5 stars')}</h1>
-  <p class="lead c" style="margin-top:-6px">${t('From 2,400+ ratings by people like '+nmT()+'.','Lessons short enough to finish over coffee.')}</p>
+16:()=>{const r=revs()[0];return `<div class="scr center" style="align-items:center;text-align:center">
+  ${ratingOn()?`<div style="display:flex;align-items:center;gap:4px">${laurel(false)}<div><div style="font:800 34px/1.2 var(--disp)">${esc(CONFIG.rating)}</div><div class="stars" style="font-size:20px">★★★★<span style="opacity:.45">★</span></div></div>${laurel(true)}</div>`:`<div class="lav" style="width:100%;font-size:44px;padding:22px">⏱️📖🎧</div>`}
+  <h1 class="h1 c">${ratingOn()?t('Rated '+esc(CONFIG.rating)+' on the App Store','Learners give it '+esc(CONFIG.rating)+' stars'):t('Made for five-minute breaks','Read it, hear it, finish it')}</h1>
+  <p class="lead c" style="margin-top:-6px">${ratingOn()?t('From '+esc(CONFIG.ratingCount)+' ratings by people like '+nmT()+'.','Lessons short enough to finish over coffee.'):t('Every lesson works as text or audio.','Lessons short enough to finish over coffee.')}</p>
   <div style="width:100%">${stores()}</div>
-  <div class="rcard" style="text-align:left;width:100%"><p>"It beats mindless scrolling. You learn while you scroll!"</p><small>Kare · App Store review (confirm reuse rights)</small></div></div>
-  <div class="foot">${cta('Continue')}</div>`,
+  ${r?`<div class="rcard" style="text-align:left;width:100%"><p>"${esc(r.q)}"</p><small>${esc(r.by)} · App Store review</small></div>`:''}</div>
+  <div class="foot">${cta('Continue')}</div>`},
 17:()=>{const rows=['Counting your daily scroll minutes…','Matching lessons to your slot…',`Choosing ${subjL()} lessons you'll love…`,'Almost ready, your plan awaits…'];
   return `<div class="scr" style="gap:14px;padding-top:6px"><div class="feedart"><div class="fd scroll"><i></i><i></i><i></i></div><span class="arrow">→</span><div class="fd lesson"><b>${esc(subjL())}</b><i></i><span class="ok">Ready</span></div></div>
   <h1 class="h1 c" id="h17" style="font-size:24px">${t(`Building ${nm()}'s swap plan…`,`Slotting lessons into ${winL()}…`)}</h1>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct">0%</span></div><div class="bar"><span></span></div></div>`).join('')}</div>
-  <div><div class="eyebrow" style="margin-bottom:8px;color:var(--ink2)"><span class="stars">★</span> 4.5 on the App Store</div>
-  <div class="revs"><div class="rev on"><p>"I feel more accomplished than when I just sit on my phone."</p><small>Sherri H. · confirm reuse rights</small></div><div class="rev"><p>"Short and sweet and to the point."</p><small>Heidi B. · confirm reuse rights</small></div></div></div></div>`},
+  ${revs().length&&ratingOn()?`<div><div class="eyebrow" style="margin-bottom:8px;color:var(--ink2)"><span class="stars">★</span> ${esc(CONFIG.rating)} on the App Store</div>
+  <div class="revs">${revs().slice(0,2).map((r,i)=>`<div class="rev ${i?'':'on'}"><p>"${esc(r.q)}"</p><small>${esc(r.by)}</small></div>`).join('')}</div></div>`:''}</div>`},
 18:()=>`<div class="gatebg">${swapBars()}</div><div class="scr" style="padding:0;gap:0"><div class="gsheet">
   <h1 class="h1">${t('Where should we send it?','Save your plan, '+nmT())}</h1>
   <p class="lead" style="margin-top:-6px">${t('Your email unlocks your plan in the app.',"You'll sign in with this email later.")}</p>
@@ -724,26 +733,26 @@ const V={
   <div class="formula"><b>How we got it:</b> ${mins()} min × 30 days ÷ 60. These are hours redirected from time you already spend, not extra free time. Your real screen time will vary.</div></div>
   <div class="foot">${cta('See my plan')}</div>`,
 20:()=>{const wk=[['Week 1',3],['Week 2',5],['Week 3',7],['Week 4',7]];
-  return `<div class="scr"><h1 class="h1">${t(nmT()==='you'?'Your 4-week swap plan':nm()+"'s 4-week swap plan",'Built around '+winL())}</h1>
+  return `<div class="scr"><div class="eyebrow">Your goal, from your answers</div><h1 class="h1" style="margin-top:-8px">${t(nmT()==='you'?'Your 4-week swap plan':nm()+"'s 4-week swap plan",'Built around '+winL())}</h1>
   <p class="lead" style="margin-top:-6px">${t('One lesson a day, right where you scroll.','Week by week, building to a daily swap.')}</p>
-  <div style="display:flex;flex-direction:column;gap:10px">${wk.map(([w,d])=>`<div class="wk"><b>${w}</b><span class="dots">${Array.from({length:7},(_,i)=>`<i class="${i<d?'on':''}"></i>`).join('')}</span><small>${d} swaps</small></div>`).join('')}</div>
+  <div style="display:flex;flex-direction:column;gap:10px">${wk.map(([w,d])=>`<div class="wk"><b>${w}</b><span class="dots">${Array.from({length:7},(_,i)=>`<i class="${i<d?'on':''}"></i>`).join('')}</span><small>goal: ${d} swaps</small></div>`).join('')}</div>
   <div class="chips"><span class="chip">${sk()?SUBJ[sk()].e:'✨'} <small>Subject</small> ${subjL()}</span><span class="chip">${lvl()[1]} <small>Level</small> ${lvl()[2]}</span><span class="chip">📍 <small>Window</small> ${winChip()}</span><span class="chip">⏰ <small>Reminder</small> ${esc(remTime())}</span></div>
-  <p class="hint" style="text-align:center;margin:0">${SWAPS} swaps · ${swapHours()} hours of lessons in 4 weeks</p></div>
+  <p class="hint" style="text-align:center;margin:0">Goal: ${SWAPS} swaps · ${swapHours()} hours of lessons in 4 weeks. A target set from your answers, not a promise of results.</p></div>
   <div class="foot">${cta('Start my plan')}</div>`},
 21:()=>{const P=PLANS[S.plan],s=SUBJ[sk()||'hist'];
   return `<div class="scr" style="padding-top:6px;gap:18px">
   <div class="pwbar"><div class="logo"><i>🌱</i>MyGrowth</div><button class="oclose" data-a="close" aria-label="Close">✕</button></div>
   <div class="pwhero"><div class="pwtop"><span class="thumb" style="background:${s.bg};overflow:hidden">${thumbSubj(sk())}</span><div><div class="eyebrow">Your course</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${courseT()}</div></div></div>
    <h1 class="h1">${t(nmT()==='you'?'Start your swap today':`${nm()}, start your swap today`,`Your ${subjL()} swap plan`)}</h1>
-   <p class="lead" style="margin-top:-6px">${t('Every price and renewal shown before you pay.',`${hMonth()} hours a month, one lesson a day.`)}</p>
-   <div class="chips"><span class="chip">📍 ${winChip()}</span><span class="chip">⏱ ${mins()} min/day</span><span class="chip">🔁 ${hMonth()} h / month</span></div></div>
+   <p class="lead" style="margin-top:-6px">${t('Every price and renewal shown before you pay.',`Your goal: ${hMonth()} hours a month.`)}</p>
+   <div class="chips"><span class="chip">📍 ${winChip()}</span><span class="chip">⏱ ${mins()} min/day</span><span class="chip">🎯 goal ${hMonth()} h / month</span></div></div>
   <div class="sec" id="plans1">${planBlock()}</div>
   <div class="payrow"><span>${APL(15)} Pay</span><span style="color:#003087">PayPal</span><span>💳 Card</span></div>
-  <div class="trust">🔒 Secure checkout · Cancel online anytime · Money-back guarantee</div>
+  <div class="trust">🔒 Secure checkout · Cancel online anytime${refundOn()?` · ${esc(CONFIG.refundDays)}-day money-back guarantee`:''}</div>
   <div class="lav sec"><h2>What's inside</h2><div class="get">${['5-15 minute lessons in 6 subjects','Read or listen to every lesson','Quizzes and games','Streaks and achievements',`In-app reminder at ${esc(remTime())}`].map(x=>`<div>${x}</div>`).join('')}</div></div>
   <div class="sec"><h2>How it works</h2><div class="how"><div><b>1</b>Pick your plan</div><div><b>2</b>Sign in with ${esc(S.email||'your email')}</div><div><b>3</b>Swap your first scroll</div></div></div>
-  <div class="sec"><h2>Loved by learners</h2><div style="display:flex;flex-direction:column;gap:10px"><div class="rcard"><span class="stars">★★★★★</span><p>"It beats mindless scrolling. You learn while you scroll!"</p><small>Kare · App Store review (confirm reuse rights)</small></div><div class="rcard ph">${RV}</div></div></div>
-  <div class="sec"><h2>Our guarantee</h2><div class="gbox"><span>🛡️</span><span><b>Money-back guarantee.</b> Conditions in plain words go here; confirm the exact terms with the growth team before launch.</span></div></div>
+  ${revs().length||ratingOn()?`<div class="sec"><h2>Loved by learners</h2><div style="display:flex;flex-direction:column;gap:10px">${ratingOn()?`<div class="rating"><b>★</b> ${esc(CONFIG.rating)} · ${esc(CONFIG.ratingCount)} App Store ratings</div>`:''}${revs().map(r=>`<div class="rcard"><span class="stars">★★★★★</span><p>"${esc(r.q)}"</p><small>${esc(r.by)} · App Store review</small></div>`).join('')}</div></div>`:''}
+  ${refundOn()?`<div class="sec"><h2>Our guarantee</h2><div class="gbox"><span>🛡️</span><span><b>${esc(CONFIG.refundDays)}-day money-back guarantee.</b> Conditions are listed in plain words in the subscription terms.</span></div></div>`:''}
   <div class="sec"><h2>Questions</h2>${faqBlock()}</div>
   <div class="sec"><h2>Choose your plan</h2>${planBlock()}</div>
   <p class="hint" style="text-align:center;margin:0">We'll email you before every renewal.</p>
@@ -753,15 +762,15 @@ const V={
   return `<div class="scr owrap">
   <div class="obar"><div class="logo"><i>🌱</i>MyGrowth</div><button class="oclose" data-a="offerno" aria-label="No thanks">✕</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="h1 c">${t(nmT()==='you'?'Wait: try it free first':`Wait, ${nm()}: try it free first`,'Try your swap plan free')}</h1>
-   <p class="lead c">${t('Start with 7 days free in the app.','Seven days of lessons before you pay anything.')}</p>
+   <h1 class="h1 c">${t(nmT()==='you'?'Wait: try 7 days first':`Wait, ${nm()}: try 7 days first`,'Try 7 days of your plan')}</h1>
+   <p class="lead c">${t('Start with 7 days in the app.','Seven days of lessons, one clear price.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">
    <div class="pwtop"><span class="thumb" style="background:${s.bg};overflow:hidden">${thumbSubj(sk())}</span><div><div class="eyebrow">Your course</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${courseT()}</div></div></div>
-   <div class="oname"><b>${esc(o.name)}</b><span>Every lesson, audio and game, billed by the store</span></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>Billed by the store, renews weekly until you cancel</span></div>
    <div class="oprice"><b>${tv(o.price)}</b><span>for 7 days</span></div>
-   <div class="ochecks">${['5-15 minute lessons in 6 subjects','Read or listen to every lesson','Quizzes and games'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="ochecks">${['7 days of full access','Read or listen to every lesson','Quizzes, games and streaks'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
+   ${cta('Start 7 days',true,'offerbuy')}
    <div class="opays"><span>App Store</span><span>Google Play</span></div>
    <p class="ofine">${tv(o.price)} for 7 days, then ${tv(o.renews)} until you cancel. Cancel anytime in your store subscriptions.</p></div>
   <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
@@ -824,7 +833,7 @@ function renderPanel(){
     ['Email',S.email?(S.acct?`${S.email} (via ${S.acct})`:S.email):'—'],
     ['Marketing emails',S.mkt?'Opted in':'Not opted in'],
     ['Plan',S.paid?`${PLANS[S.plan].n} (demo, not charged)`:S.i>=PW_N?`${PLANS[S.plan].n} selected`:'—'],
-    ['Offer',S.offer?'Accepted (store trial)':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
+    ['Offer',S.offer?'Accepted (7-day intro)':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 }
@@ -853,7 +862,7 @@ phone.addEventListener('click',e=>{
     case 'faq':{const y=cur().querySelector('.scr').scrollTop;S.faq=S.faq===+v?-1:+v;render();cur().querySelector('.scr').scrollTop=y;break}
     case 'buy':S.paid=true;toast('Demo only — no charge made');go(23);break;
     case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('Would leave the funnel (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast("Would open the store app's 7-day trial (demo)");break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast("Would open the store app's 7-day intro (demo)");break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast('Would open the store (demo)');break;
     case 'open':toast('Would deep-link into the app (demo)');break;
@@ -877,4 +886,5 @@ document.getElementById('vB').onclick=()=>setV('B');
 document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v;S=INIT();S.v=v;render(true)};
 render(false);
 </script>
+</body>
 </html>
