@@ -668,6 +668,12 @@ const CONFIG={funnel:'coursiv-ai-automation',brand:'Coursiv',refundDays:'{{refun
  reviews:[{name:'{{reviewer_1}}',meta:'{{review_1_meta}}',text:'{{review_1_text}}'},{name:'{{reviewer_2}}',meta:'{{review_2_meta}}',text:'{{review_2_text}}'}],
  offer:{enabled:true,name:'2-week starter',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'2 weeks',compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
 const refundReal=()=>!isTok(CONFIG.refundDays);
+/* proof only renders when real: tokens hide ratings, counts and reviews entirely */
+const ratingReal=()=>!isTok(CONFIG.rating.score)&&!isTok(CONFIG.rating.count);
+const reviewsReal=()=>CONFIG.reviews.filter(r=>!isTok(r.name)&&!isTok(r.meta)&&!isTok(r.text));
+const starRow=()=>{const n=Math.max(1,Math.min(5,Math.round(parseFloat(CONFIG.rating.score)||5)));return '★'.repeat(n)+'☆'.repeat(5-n)};
+const NOW={tools:'Too many tools to choose from',start:'Not sure where to start',time:'Little time to learn',fear:'Worried about mistakes'};
+const nowRow=()=>S.hurdle==='other'?(S.hurdleOther.trim()||'Another hurdle'):(NOW[S.hurdle]||NOW.start);
 
 const INIT=()=>({v:'A',i:1,hist:[],share:'',work:'',workOther:'',myth:'',tasks:[],taskOther:'',hours:'',tools:[],toolOther:'',goal:'',goalOther:'',skills:[],skillOther:'',hurdle:'',hurdleOther:'',mtask:'',review:'',stage:0,short:false,minutes:15,name:'',email:'',tips:false,plan:'4w',agree:false,offerSeen:false,offerEnd:0,offerViewed:false,paid:false,offer:false,err:''});
 let S=INIT();
@@ -861,13 +867,14 @@ const V={
   ${S.hurdle==='other'?otherBox('hurdleOther',S.hurdleOther):''}</div></div>
   <div class="foot">${cta('Continue',ok(10))}</div>`,
 
-11:()=>{const R=CONFIG.rating;
+11:()=>{const R=CONFIG.rating,rr=ratingReal(),rv=reviewsReal();
+  const head=rr?(S.v==='A'?`Rated ${esc(R.score)}★ by learners`:'Learners are automating work'):t('Learn on your own tasks','Short lessons, real tasks');
+  const lead=rv.length?'What learners say':rr?t('Verified ikame ratings.','Rated by real learners.'):t('Five to twenty minutes a day.','One workflow at a time.');
   return `<div class="scr" style="gap:16px">
-  <div style="text-align:center"><div class="stars">★★★★★</div><div class="hint" style="margin-top:4px">${tv('{{app_store_name}}')} · ${tv(R.count)} ratings</div></div>
-  <h1 class="display" style="text-align:center">${S.v==='A'?`Rated ${tv(R.score)}★ by learners`:'Learners are automating work'}</h1>
-  <p class="lead" style="text-align:center;margin-top:-6px">${t('Real reviews from people learning AI skills.','Verified ikame reviews only.')}</p>
-  ${CONFIG.reviews.map(r=>`<div class="rv"><div class="rh"><span class="av">📷</span><div><b style="font-size:16px">${tv(r.name)}</b><br><small>${tv(r.meta)}</small></div></div><p>${tv(r.text)}</p></div>`).join('')}
-  <p class="hint" style="margin:0;text-align:center;font-size:13.5px">Placeholders until real, attributed, dated reviews are added.</p></div>
+  ${rr?`<div style="text-align:center"><div class="stars">${starRow()}</div><div class="hint" style="margin-top:4px">${esc(R.count)} ratings</div></div>`:`<div class="line3" aria-hidden="true"><div class="nd"><i>⚡</i>Trigger</div><span class="ar">›</span><div class="nd"><i>✨</i>AI step</div><span class="ar">›</span><div class="nd you"><i>✓</i>You check</div></div>`}
+  <h1 class="display" style="text-align:center">${head}</h1>
+  <p class="lead" style="text-align:center;margin-top:-6px">${lead}</p>
+  ${rv.map(r=>`<div class="rv"><div class="rh"><span class="av">📷</span><div><b style="font-size:16px">${esc(r.name)}</b><br><small>${esc(r.meta)}</small></div></div><p>${esc(r.text)}</p></div>`).join('')}</div>
   <div class="foot">${cta('Continue')}</div>`},
 
 12:()=>{const sel=mt();
@@ -919,7 +926,7 @@ const V={
   <p class="lead" style="text-align:center;margin-top:-8px">${t('Using your answers, step by step.','This takes a few seconds.')}</p>
   <div class="cal" id="cal">${Array.from({length:28},(_,i)=>i===27?`<span class="ctile">🏅</span>`:`<span>${i+1}</span>`).join('')}</div>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
-  <div class="rv" id="rrot" style="margin-top:auto"><p>${tok('review_text')}</p><small>— ${tok('reviewer')} · source · date (1 of 2)</small></div></div>
+  ${reviewsReal().length?`<div class="rv" id="rrot" style="margin-top:auto"><p>${esc(reviewsReal()[0].text)}</p><small>— ${esc(reviewsReal()[0].name)} · ${esc(reviewsReal()[0].meta)}</small></div>`:`<div class="rv" style="margin-top:auto"><p>You review every result before it goes out.</p></div>`}</div>
   <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
 
 18:()=>{const b=level();
@@ -947,10 +954,10 @@ const V={
    [c2?`${c2} and ${lc(workL())} automations`:`${workL()} automations`,sk==='general'?'Examples from your day':`Uses your ${sk==='client'?'client-talk':sk} skills`],
    ['Your own project',`${w4} · certificate`]];
   return `<div class="scr" style="gap:16px">
-  <h1 class="display" style="text-align:center;margin-top:6px">${S.v==='A'?`Certificate by ${certDate()}`:'Your 4-week automation plan'}</h1>
+  <h1 class="display" style="text-align:center;margin-top:6px">${S.v==='A'?`Goal: certificate by ${certDate()}`:'Your 4-week automation plan'}</h1>
   <p class="lead" style="text-align:center;margin-top:-8px">${S.v==='A'?`At ${S.minutes} min a day, you finish ${certDate()}.`:`Week two starts with your ${esc(wfName())} workflow.`}</p>
   <div style="display:flex;flex-direction:column;gap:8px">${weeks.map(([h,s],i)=>`<div class="wk ${i===3?'last':''}"><span class="n">${i===3?'🏅':'W'+(i+1)}</span><div style="min-width:0"><b>Week ${i+1}: ${esc(h)}</b><span>${esc(s)}</span></div></div>`).join('')}</div>
-  <div class="ba"><div class="now"><h5>You now</h5>${[`${hoursLabel()} on repeat tasks`,`Hurdle: ${hurdleL()}`,'Not sure where to start'].map(x=>`<div><span>✕</span><span>${esc(x)}</span></div>`).join('')}</div>
+  <div class="ba"><div class="now"><h5>You now</h5>${[`${hoursLabel()} on repeat tasks`,nowRow(),'Doing each task by hand'].map(x=>`<div><span>✕</span><span>${esc(x)}</span></div>`).join('')}</div>
   <div class="with"><h5>With the plan</h5>${['A workflow you built','A review habit','Certificate of completion'].map(x=>`<div><span>✓</span><span>${x}</span></div>`).join('')}</div></div>
   <p class="fine">Estimated date based on your pace.<br>Certificate of completion. Not an accredited degree, and no job, client or income guarantee.</p></div>
   <div class="foot">${cta('Get my plan')}</div>`},
@@ -974,8 +981,8 @@ const V={
    <p class="hint" style="margin:0;font-size:12.5px">Only what the app ships. Verify this list before launch.</p></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From today to Day 1</h2>
    <div class="how" style="margin-top:6px">${[['Checkout','Secure payment, takes a few seconds.'],['Open the app with your email','We send a login link. No password.'],['Build your first workflow','Day 1 starts with your own task.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  <div class="wsec"><span class="eyebrow">What learners say</span><div class="rate"><div class="sc">${tv(R.score)}</div><div><div style="color:#E3A400;letter-spacing:2px">★★★★★</div><div class="hint">${tv(R.count)} ratings</div></div></div>
-   ${RV.map(r=>`<div class="rev"><b>${tv(r.name)}</b><small>${tv(r.meta)}</small><span>${tv(r.text)}</span></div>`).join('')}</div>
+  ${(ratingReal()||reviewsReal().length)?`<div class="wsec"><span class="eyebrow">What learners say</span>${ratingReal()?`<div class="rate"><div class="sc">${esc(R.score)}</div><div><div style="color:#E3A400;letter-spacing:2px">${starRow()}</div><div class="hint">${esc(R.count)} ratings</div></div></div>`:''}
+   ${reviewsReal().map(r=>`<div class="rev"><b>${esc(r.name)}</b><small>${esc(r.meta)}</small><span>${esc(r.text)}</span></div>`).join('')}</div>`:''}
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${ic('shield',30,'currentColor',2)}</div><div><b style="font:800 18px var(--head)">Money-back guarantee</b><p class="lead" style="font-size:14px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq2" style="margin-top:4px">${FAQ.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock('b')}</div>
@@ -1063,7 +1070,7 @@ function runLoading(){
       el.querySelector('.bar span').style.width=p+'%';
       if(p>=100&&!el.classList.contains('done')){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',16,'currentColor',2.6)}<span>100%</span>`}
       else if(p<100)el.querySelector('.pct span').textContent=p+'%'}
-    const nr=Math.floor(e/2200)%2;if(nr!==rv){rv=nr;const c=document.getElementById('rrot');if(c){c.classList.remove('fadein');void c.offsetWidth;c.classList.add('fadein');c.querySelector('small').innerHTML=`— ${tok('reviewer')} · source · date (${nr+1} of 2)`}}
+    const RL=reviewsReal(),nr=RL.length?Math.floor(e/2200)%RL.length:0;if(RL.length>1&&nr!==rv){rv=nr;const c=document.getElementById('rrot');if(c){c.classList.remove('fadein');void c.offsetWidth;c.classList.add('fadein');c.querySelector('p').textContent=RL[nr].text;c.querySelector('small').textContent=`— ${RL[nr].name} · ${RL[nr].meta}`}}
     if(k>=1){clearInterval(timer);timer=setTimeout(()=>{if(S.i===LOAD_N)go(LOAD_N+1)},700)}
   },50);
 }

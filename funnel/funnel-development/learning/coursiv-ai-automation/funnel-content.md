@@ -196,12 +196,12 @@ Niche "Tự động hoá việc lặp lại bằng AI": a Coursiv web funnel for
 
 ### 11. Social proof
 **Purpose:** Peer proof right before the micro-task, after the highest-friction run of questions. Only real ikame numbers and reviews appear.
-**Headline A:** Rated {{rating_score}}★ by learners
-**Headline B:** Learners are automating work
-**Body A:** Real reviews from people learning AI skills.
-**Body B:** Verified ikame reviews only.
-**Visual:** Star row with the store name, learner count, two review cards with first name, age range, job and date, plus a photo if consented.
-**Microcopy:** Real, attributed, dated ikame reviews only. Prefer reviews about time saved and ease; never feature reviews claiming income, clients or job offers (earnings-claim risk). Until real values exist, the demo shows labelled placeholder chips, not invented numbers.
+**Headline A:** Learn on your own tasks
+**Headline B:** Short lessons, real tasks
+**Body A:** Five to twenty minutes a day.
+**Body B:** One workflow at a time.
+**Visual:** Default (no real proof yet): the trigger → AI step → you check line from screen 7 above the headline, no stars, no numbers, no reviews. Once ikame has real data, the screen switches to proof: star row built from the real score, the real rating count, the headline "Rated {{rating_score}}★ by learners" (Headline A variant) and, only if real, attributed, dated reviews, with the lead line "What learners say".
+**Microcopy:** Every rating, count and review is gated on a real value (CONFIG tokens): while a token is unset the element is hidden, never shown as a placeholder or hard-coded stars. Prefer reviews about time saved and ease; never feature reviews claiming income, clients or job offers (earnings-claim risk).
 **CTA:** Continue
 
 ---
@@ -293,8 +293,8 @@ Niche "Tự động hoá việc lặp lại bằng AI": a Coursiv web funnel for
 - Starting with your {{task}} workflow…
 - Pacing it for {{minutes}} minutes a day…
 - Almost ready — your certificate date awaits…
-**Visual:** A 28-tile calendar filling tile by tile, four progress rows beneath, a rotating placeholder for real reviews at the bottom.
-**Microcopy:** Rotating review cards: real, attributed, dated ikame reviews only
+**Visual:** A 28-tile calendar filling tile by tile, four progress rows beneath, a rotating real review at the bottom when real reviews exist, otherwise the line "You review every result before it goes out."
+**Microcopy:** Rotating review cards: real, attributed, dated ikame reviews only; hidden while unset
 **CTA:** (auto-advances, ~6 seconds)
 
 ---
@@ -333,7 +333,7 @@ Niche "Tự động hoá việc lặp lại bằng AI": a Coursiv web funnel for
 
 ### 20. Your plan + certificate date
 **Purpose:** The reveal. A dated 4-week plan built from their tasks, work and goal; the date moves with pace.
-**Headline A:** Certificate by {{cert_date}}
+**Headline A:** Goal: certificate by {{cert_date}}
 **Headline B:** Your 4-week automation plan
 **Body A:** At {{minutes}} min a day, you finish {{cert_date}}.
 **Body B:** Week two starts with your {{task}} workflow.
@@ -356,7 +356,7 @@ Niche "Tự động hoá việc lặp lại bằng AI": a Coursiv web funnel for
 - **4-week plan** — pre-selected, covers the full program, "MOST POPULAR" badge only if true. "{{price_4w}} today, then {{renew_4w}} every 4 weeks".
 - **12-week plan** — best per-week value, "BEST VALUE" badge. "{{price_12w}} today, then {{renew_12w}} every 12 weeks".
 - Any struck-through price must be the real regular price of the *same* plan length. Same plan structure as the sibling Coursiv funnels; real prices at launch.
-**Visual:** Long-scroll web page. (1) Sticky brand bar (Coursiv, close ✕, a small "Start" button once scrolled). (2) Personal hero: profile card with {{work}}, {{task}}, "about N h/week" estimate tag, certificate date, and the output card from screen 13. (3) Plan block (three stacked cards, 4-week pre-selected, "Due today" line, CTA, Apple Pay / G Pay / card badges, renewal line). (4) What's inside: 6-row list of only what ships. (5) How it works: 3 steps (checkout → open the app with your email → Day 1 workflow). (6) Proof: store rating and two review cards as placeholders until real. (7) Guarantee block, hidden until the refund window is a real value. (8) FAQ: cancel, renewals, "do I need to code?", "is it a degree?". (9) Plan block repeated. (10) Footer: legal links, "Not affiliated with any AI tool maker". Sticky bottom CTA appears when no plan block is on screen.
+**Visual:** Long-scroll web page. (1) Sticky brand bar (Coursiv, close ✕, a small "Start" button once scrolled). (2) Personal hero: profile card with {{work}}, {{task}}, "about N h/week" estimate tag, certificate date, and the output card from screen 13. (3) Plan block (three stacked cards, 4-week pre-selected, "Due today" line, CTA, Apple Pay / G Pay / card badges, renewal line). (4) What's inside: 6-row list of only what ships. (5) How it works: 3 steps (checkout → open the app with your email → Day 1 workflow). (6) Proof: store rating and reviews, rendered only when real (the whole section is hidden while unset). (7) Guarantee block, hidden until the refund window is a real value. (8) FAQ: cancel, renewals, "do I need to code?", "is it a degree?". (9) Plan block repeated. (10) Footer: legal links, "Not affiliated with any AI tool maker". Sticky bottom CTA appears when no plan block is on screen.
 **Microcopy:** Trust row: "Secure checkout · Cancel anytime". Agreement checkbox **unchecked**: "I agree to the Terms, Subscription and Refund Policy". Line above CTA, from the selected plan: "You'll pay [today] today. It renews at [renewal] every [period] until you cancel. We'll email you before each renewal." A "How do I cancel?" FAQ item gives the 3 steps.
 **Fallback offer:** On dismiss (✕ or back), the last-chance offer (#22) once per session.
 **CTA:** Get my plan
@@ -414,6 +414,6 @@ Niche "Tự động hoá việc lặp lại bằng AI": a Coursiv web funnel for
 
 **Blocks skipped:** multi-item knowledge check (one review item only), web notification opt-in, gamified wheel, post-purchase upsell, password registration.
 
-**Demo:** `demo.html` (images are CSS/emoji placeholders wired through the `IMG` map; `gen_images.py` fills `img/` with the same names).
+**Demo:** `demo.html` (price, plan-badge and legal tokens show as dashed chips on the paywall and offer only; ratings, reviews and the guarantee are hidden while unset; images are CSS/emoji placeholders wired through the `IMG` map; `gen_images.py` fills `img/` with the same names).
 
 **Artifact (private):** https://claude.ai/artifact/MABLw18ZvQ5yy9iEvuYnfp
