@@ -33,7 +33,7 @@ This is the personality-test reskin of the TestLibrary flagship in `testlibrary/
 **Headline A:** Discover your personality type
 **Headline B:** Which of 16 types are you?
 **Body A:** 40 quick statements. No right or wrong answers.
-**Body B:** Pick your age to start. Takes about {{est_minutes}} minutes.
+**Body B:** Pick your age to start. Takes about 8 minutes.
 **Options:**
 - 🌱 18-24
 - 🚀 25-34
@@ -51,8 +51,8 @@ This is the personality-test reskin of the TestLibrary flagship in `testlibrary/
 **Headline B:** Here's how it works
 **Body A:** Answer how you usually are, not how you wish to be.
 **Body B:** Go with your first instinct. Progress saves as you go.
-**Visual:** Three icon rows: 🧩 "40 statements · 5-point scale", ⏱ "About {{est_minutes}} minutes", 🔓 "Free to take, report is paid". Beneath, four chips for the four things measured: Energy · Information · Decisions · Lifestyle.
-**Microcopy:** `{{est_minutes}}` is the real median completion time. Under the CTA: "Free to take · Full report is a paid unlock".
+**Visual:** Three icon rows: 🧩 "40 statements · 5-point scale", ⏱ "About 8 minutes", 🔓 "Free to take, report is paid". Beneath, four chips for the four things measured: Energy · Information · Decisions · Lifestyle.
+**Microcopy:** "8 minutes" is an estimate for 40 statements; replace with the real median once measured. Under the CTA: "Free to take · Full report is a paid unlock".
 **CTA:** Start the test
 
 ---
@@ -107,13 +107,13 @@ This is the personality-test reskin of the TestLibrary flagship in `testlibrary/
 ## C. Trust
 
 ### 6. Social proof - after the effort
-**Purpose:** A trust beat right after the longest effort, before the email ask.
-**Headline A:** {{tests_taken}} tests taken
-**Headline B:** Rated {{review_rating}} by test-takers
-**Body A:** People use TestLibrary to understand how they tick.
-**Body B:** Real reviews from people who took a test.
-**Visual:** Large navy number, star row, one review card with first name and country. A review-platform logo only if that platform allows it.
-**Microcopy:** Use real, current figures only: `{{tests_taken}}` from analytics, `{{review_rating}}` the live platform rating. The review text is a real, current review, or the card is omitted. Never import another company's numbers.
+**Purpose:** A trust beat right after the longest effort, before the email ask. No count is claimed, only real reviews.
+**Headline A:** See what test-takers say
+**Headline B:** Real reviews, real people
+**Body A:** Reviews from people who took a TestLibrary test.
+**Body B:** Your results are almost ready.
+**Visual:** Star row and one review card with first name and country. A review-platform logo only if that platform allows it.
+**Microcopy:** The review is a real, current review, or the card is omitted. No tests-taken number and no rating figure unless taken live from analytics or the platform. Never import another company's numbers.
 **CTA:** See my results
 
 ---
@@ -193,7 +193,7 @@ Plan block repeats lower on the page, with the same selection.
 **Microcopy:**
 - Above the CTA, changing with the plan: "Today: {{price_trial}}. On {{renewal_date}}: {{renewal_trial}}, then every 4 weeks until you cancel." / "One payment of {{price_report}}. Nothing renews."
 - Trust row: "Secure checkout · Cancel anytime in your account · 2-click cancel".
-- Reminder promise, only if actually sent: "We'll email you 2 days before your trial ends."
+- Reminder promise, only if the reminder email is actually sent (`CONFIG.reminder`, default on): "We'll email you 2 days before your trial ends."
 - Disclaimer: "For self-discovery only. Independent 16-type test. Not a clinical or diagnostic assessment."
 - Headline B variant by reason: Career → "Your career-fit report is ready"; Relationships → "Read your relationship style".
 **Fallback offer:** Screen 12. The close X (and any back or exit) goes to the last-chance offer first, once per session. After it is declined, closing the paywall returns to the preview (10).
@@ -202,7 +202,9 @@ Plan block repeats lower on the page, with the same selection.
 ### 12. Last-chance offer (on close)
 **Purpose:** A second chance for people who closed the paywall, most often because they don't want a subscription. It is the one-time report, nothing renews. Shown once per session (sessionStorage `ikf_offer_testlibrary-personality`), then never again.
 **Headline A:** {{name}}, just want your report?
+**Headline B:** Want only this report?
 **Body A:** Your type is scored. Get this one report, no subscription.
+**Body B:** One payment. Nothing renews, nothing to cancel.
 **Plans:** One offer card: {{offer_name}} (default "This profile report only": one payment, nothing renews). {{offer_price}} today. A struck-through price appears only if it is a real, lower price that checkout charges; if the offer is the one-time report at its listed price, nothing is struck. Optional {{offer_badge}}.
 **Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with a mini profile card (letters clear, report blurred), the price row, 3 checks (career fit · relationship style · growth plan), the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
 **Microcopy:** No timer by default. A timer appears only if `CONFIG.offer.expiresMin` is set to a real deadline; when it ends the offer is withdrawn (`offer_expired`) and the user returns to the preview. Decline link: "No thanks, back to my free preview". Disclaimer as on the paywall. Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Offer CVR is measured separately.
@@ -217,7 +219,7 @@ Plan block repeats lower on the page, with the same selection.
 **Field:** Summary card (plan, today's charge, next charge date, amount and interval, "Cancel anytime before {{renewal_date}} to pay nothing more"). Below it a **consent checkbox, unticked by default**: "I understand my plan renews at {{renewal_trial}} every 4 weeks until I cancel." Required for recurring plans, hidden for One-time. Then card / Apple Pay / Google Pay.
 **Visual:** White summary card with two rows, "Today" and "{{renewal_date}}", in equal type. Checkbox and label at body size right above the pay button.
 **Error state:** "Please tick the box to confirm renewal terms." · "Card declined. Try another card or PayPal."
-**Microcopy:** "Receipt with cancel link sent to {{email}}." Plus the real refund wording: "Refund window: {{refund_window}}".
+**Microcopy:** "Receipt with cancel link sent to {{email}}." Refund wording points to the Subscription policy; the paywall guarantee carries the real refund window.
 **CTA:** Pay and see profile
 
 ---
