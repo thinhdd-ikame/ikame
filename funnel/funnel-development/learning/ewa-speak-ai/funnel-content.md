@@ -4,7 +4,7 @@ display_name: EWA Speak (Speaking practice with an AI tutor)
 archetype: learning-plan
 subject: person
 input: speaking fears, situation they need English for, how often they speak now, self-rated level, one spoken (or typed) sentence, AI tutor pick, minutes per day
-output: speaking level (CEFR estimate) plus one specific pronunciation note from their own sentence, and a paced speaking plan
+output: speaking level (CEFR estimate) plus a pronunciation tip (a personal note only when a word was actually missed, otherwise a tip for the trickiest word in the sentence), and a paced speaking plan
 screens: 21
 monetization: web subscription paywall (1-week intro / 4-week pre-selected / 12-week anchor), intro and renewal price shown together, one-time last-chance offer on paywall close, no permanent sale ribbon
 creative_screens:
@@ -22,7 +22,7 @@ motion: >
 
 # Funnel Content — EWA Speak (Speaking practice with AI)
 
-Reference funnels: Lola Speak (1,273 ads, 62 screens, CEFR level plus a "Lexical Access Score") and Jumpspeak (1,264 ads, 30 screens, fear-of-speaking angle), captured Sept 2026 via AdSpyLab (research `ewa-ayahpath.md` §3). EWA (Lithium Lab) already has an AI-tutor mention on its main funnel (`learning/ewa`) but never lets you speak before paying. This brief keeps the learning-plan spine and adds a **real speaking check before the paywall**: the user says one sentence into the mic (or types it if the mic is unavailable or denied), the AI marks which words it matched, and gives **one specific pronunciation note with a model voice**. The result is a **CEFR speaking estimate plus that note plus a plan**, then a web paywall and a one-time offer.
+Reference funnels: Lola Speak (1,273 ads, 62 screens, CEFR level plus a "Lexical Access Score") and Jumpspeak (1,264 ads, 30 screens, fear-of-speaking angle), captured Sept 2026 via AdSpyLab (research `ewa-ayahpath.md` §3). EWA (Lithium Lab) already has an AI-tutor mention on its main funnel (`learning/ewa`) but never lets you speak before paying. This brief keeps the learning-plan spine and adds a **real speaking check before the paywall**: the user says one sentence into the mic (or types it if the mic is unavailable or denied), the AI marks which words it matched, and gives **one pronunciation tip with a model voice** (a personal note only when a word was actually missed). The result is a **CEFR speaking estimate plus a pronunciation tip plus a plan**, then a web paywall and a one-time offer.
 
 Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate differences from the competitors: feedback is real and arrives before any email or payment; the mic is optional on every path (explain screen with "Type instead", skip link on the test, typed fallback that is labelled honestly); no invented score name, no lifetime "€229 (was €459)" anchor, no scratch card, no countdown reset, no fake expert persona (tutors are labelled AI voices, not people). Fear-of-speaking questions use soft, normalising copy and never imply a disorder.
 
@@ -146,9 +146,10 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 ### 9. Social proof
 **Purpose:** Trust beat right before the highest-friction ask (the mic).
 **Headline A:** Rated by {{rating_count}} learners
-**Headline B:** Learners love the instant feedback
+**Headline B:** Speak, listen, fix one thing
 **Body A:** Ratings from the App Store.
 **Body B:** The feature reviewers mention most.
+**No-rating fallback (while `{{app_rating}}`/`{{rating_count}}` are unset):** Headline A and B both read "Speak, listen, fix one thing"; Body A "Feedback on your own words.", Body B "Instant feedback, every session."; the rating number is hidden and a three-step strip replaces it.
 **Visual:** Large rating number with star row, App Store and Google Play badges, real review cards only when set; with no rating yet the screen shows a three-step strip (Speak, Listen, Fix one thing).
 **Microcopy:** Numbers are tokens (`{{app_rating}}`, `{{rating_count}}`); hidden while unset. EWA reference: 4.7 · 196K. Do not reuse for any other brand.
 **CTA:** Continue
@@ -187,7 +188,7 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 **Headline B:** Your first feedback, {{name}}
 **Body A:** Green words matched. One tip to try.
 **Body B:** Listen, then say the word again.
-**Field:** The target sentence with each word marked matched (green) or missed (orange) by comparing the transcript to the target. One tip card: the first missed word, otherwise the sentence's trickiest word, with how to say it and a "Hear it" model-voice button. Typed mode is labelled honestly: "You typed this, so we can't judge sound. Tip is for the trickiest word." Tip words: Thursday, pharmacy, heard, thirteen. Shown only if #11 was not skipped.
+**Field:** The target sentence with each word marked matched (green) or missed (orange) by comparing the transcript to the target. One tip card: the first missed word (labelled "Word to fix"), otherwise the sentence's trickiest word labelled "Tip for the trickiest word" (never presented as a personal note), with how to say it and a "Hear it" model-voice button. Typed mode is labelled honestly: "You typed this, so we can't judge sound. Tip is for the trickiest word." Tip words: Thursday, pharmacy, heard, thirteen. Shown only if #11 was not skipped.
 **Visual:** Word chips in a wrapped line, a tip card with the word large and syllable breaks, a small wave icon on the Hear it button.
 **Microcopy:** Footnote: "Demo uses word matching. Production uses a pronunciation model (unverified)." CTA label stays "Continue".
 **CTA:** Continue
@@ -261,12 +262,12 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 ## G. Reveal
 
 ### 17. Your speaking level
-**Purpose:** The result: a CEFR speaking estimate, one pronunciation note from their own sentence, and the situation they picked.
+**Purpose:** The result: a CEFR speaking estimate, a pronunciation tip and the situation they picked. The card is titled "Your pronunciation note" only when a word was actually missed in a scored mic sentence; otherwise "Tip for the trickiest word in this sentence", with "You typed this, so we can't judge sound" in typed mode.
 **Headline A:** Your speaking level: {{level}}
 **Headline B:** You're at {{level}}, {{name}}
-**Body A:** One sentence to polish: {{tip_word}}.
+**Body A:** One word to polish: {{tip_word}}.
 **Body B:** Next up: {{next_level}}, one session at a time.
-**Visual:** CEFR strip (A1 to C1) with a marker moving to the estimate; below it a note card showing the tip word with its how-to line and a Hear it button; chips for situation, tutor and minutes. If #11 was skipped the note card is replaced by "Say a sentence in the app to get your first note."
+**Visual:** CEFR strip (A1 to C1) with a marker moving to the estimate; below it a tip card showing the word with its how-to line and a Hear it button (label per the rule above); chips for situation, tutor and minutes. If #11 was skipped the note card is replaced by "Say a sentence in the app to get your first note."
 **Microcopy:** Footnote: "Estimate from your self-rating and one sentence. It updates as you practice." Mic mode: "Your sentence matched N of M words."
 **CTA:** See my plan
 
@@ -295,21 +296,21 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 - **4 weeks** — **pre-selected**, "MOST POPULAR". `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Each card also shows its per-week equivalent (`{{week_equiv_4w}}`).
 - **12 weeks** — "LOWEST PER WEEK". `{{price_12w}}` today, then `{{renew_12w}}` every 12 weeks.
 - Renewal sits directly under the intro price at the same size, on every card, in the CTA line and on the receipt. Savings compare only against the real weekly price. No countdown, no ribbon that follows the user through the funnel, no lifetime anchor.
-**Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close); personalized hero (their level strip, the pronunciation note, tutor chip, fact chips: level, situation, minutes per day); plan block; "What's inside" (daily speaking sessions, instant feedback with model voice, situation phrase packs, progress check, AI tutor marked verify); "How it works" (3 steps); proof (rating block plus review cards, hidden while tokens); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open, "Is my voice saved?" marked verify); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.
+**Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close); personalized hero (their level strip, the pronunciation tip with the same label rule, tutor chip, fact chips: level, situation, minutes per day); plan block; "What's inside" (daily speaking sessions, instant feedback with model voice, situation phrase packs, progress check, AI tutor marked verify); "How it works" (3 steps); proof (rating block plus review cards, hidden while tokens); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open, "Is my voice saved?" marked verify); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.
 **Microcopy:** Disclosure above each CTA, live for the selected plan: "You pay {{price_sel}} today. Renews at {{renew_sel}} every {{period}} until you cancel." Under the CTA: "We'll email you before your first renewal." Trust row: "🔒 Secure payment · Cancel anytime", plus "{{refund_days}}-day money-back" only when a real refund period is set. Disclaimer: "AI tutor voices are not real people."
-**Fallback offer:** On close, the last-chance offer (#20), shown once per session.
+**Fallback offer:** On close, the last-chance one-time pass (#20), shown once per session.
 **CTA:** Start speaking
 
 ### 20. Last-chance offer
-**Purpose:** One second chance for users who close the paywall: a smaller 1-week speaking starter (daily speaking sessions with feedback, without the situation packs, progress checks or long plan), then its weekly renewal. Not a discount on the same SKU. Shown once.
-**Headline A:** Start smaller with one week
-**Headline B:** Try {{tutor}} for a week
-**Body A:** Daily sessions with feedback, no long plan.
-**Body B:** One-time starter, then weekly renewal.
-**Plans:** One offer card: **1-week speaking starter**, `{{offer_price}}` today with the real `{{price_1w}}` (same plan length) struck only if it is lower, then `{{renew_1w}}` every week until cancelled. Checks match its scope: daily speaking sessions, instant feedback, an email before renewal. Not included: situation packs, progress checks, the full plan. Optional `{{offer_badge}}` only if true.
-**Visual:** Same web look as #19: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the plan name, price row (struck then offer price), three checks, a "Not included" line, CTA, payment badges and the renewal line; plain decline link.
-**Microcopy:** Renewal line: "{{offer_price}} today, then {{renew_1w}} every week until you cancel. We'll email you before. Cancel anytime." Shown once per session (sessionStorage `ikf_offer_ewa-speak-ai`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #18.
-**CTA:** Claim my offer
+**Purpose:** One second chance for users who close the paywall: a one-time 7-day speaking pass, paid once, no auto-renew, with a reduced scope. A different and smaller product than the 1-week plan, not a discount on it. Shown once.
+**Headline A:** Try a 7-day pass
+**Headline B:** Try {{tutor}} for 7 days
+**Body A:** Paid once. No subscription.
+**Body B:** Daily sessions with feedback, no long plan.
+**Plans:** One offer card: **7-day speaking pass**, `{{offer_price}}` paid once, no renewal, no strike-through price. Includes 7 days of speaking sessions with the tutor, instant feedback with a model voice and a receipt by email. Not included (stated on the card): phrase packs, progress checks, the full plan, any renewal. Optional `{{offer_badge}}` only if true.
+**Visual:** Same web look as #19: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the pass name, price row ("paid once"), three checks, a "Not included" line, CTA, payment badges and a "paid once, nothing to cancel" line; plain decline link.
+**Microcopy:** Line under the CTA: "{{offer_price}} paid once for 7 days. No subscription, no auto-renew, nothing to cancel." Shown once per session (sessionStorage `ikf_offer_ewa-speak-ai`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #18.
+**CTA:** Get the 7-day pass
 
 ---
 

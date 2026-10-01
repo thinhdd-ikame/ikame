@@ -669,7 +669,7 @@ const CONFIG={
   defaultPlan:'4w',refundDays:'{{refund_days}}',legalEntity:'{{legal_entity}}',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],
-  offer:{enabled:true,name:'1-week speaking starter',sub:'Daily sessions with feedback, one week',price:'{{offer_price}}',renews:'{{renew_1w}}',period:'week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+  offer:{enabled:true,name:'7-day speaking pass',sub:'Paid once, no auto-renew',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
 };
 /* a token string is truthy: gates test "is not a {{token}}" */
 const isReal=v=>!!v&&!/^\{\{/.test(String(v));
@@ -798,8 +798,8 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
 /* decline / close: back to the plan screen (#18), never back into the paywall, never a loop */
 function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
 function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
-  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
-  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('offer_accept',{price:o.price,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:o.price,oneTime:true,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
@@ -891,8 +891,8 @@ const V={
   <div class="foot">${cta('Continue',true,'name')}</div>`,
 9:()=>`<div class="scr center">
   ${ratingReal()?`<div class="rating"><b>${esc(CONFIG.rating.score)}</b><div class="srow">${stars(5,24)}</div></div>`:''}
-  <h1 class="display tc">${t(ratingReal()?`Rated by ${esc(CONFIG.rating.count)} learners`:'Learners love instant feedback','Learners love the instant feedback')}</h1>
-  <p class="lead tc">${ratingReal()?t('Ratings from the App Store.','The feature reviewers mention most.'):t('Speak, listen, fix one thing.','Feedback on your own words.')}</p>
+  <h1 class="display tc">${ratingReal()?t(`Rated by ${esc(CONFIG.rating.count)} learners`,'Learners love the instant feedback'):'Speak, listen, fix one thing'}</h1>
+  <p class="lead tc">${ratingReal()?t('Ratings from the App Store.','The feature reviewers mention most.'):t('Feedback on your own words.','Instant feedback, every session.')}</p>
   ${ratingReal()?'':`<div class="trio" aria-hidden="true"><div><i>🎙️</i>Speak</div><div><i>👂</i>Listen</div><div><i>🎯</i>Fix one thing</div></div>`}
   <div class="stores"><span class="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></span><span class="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></span></div>
   ${reviewBlock()}</div>
@@ -926,7 +926,7 @@ const V={
   return `<div class="scr" style="gap:14px"><h1 class="display">${t('Here\'s what we heard',`Your first feedback, ${nm()}`)}</h1>
   <p class="lead" style="margin-top:-6px">${t('Green words matched. One tip to try.','Listen, then say the word again.')}</p>
   <div class="sentc" style="padding:12px 14px"><div>${chips}</div><div class="hint">${note}</div></div>
-  <div class="tipc"><span class="eyebrow">${tp.missed?'Word to fix':'Word to polish'}</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p>
+  <div class="tipc"><span class="eyebrow">${tp.missed?'Word to fix':'Tip for the trickiest word'}</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p>
    <button class="listen" data-a="sayw" data-v="${esc(tp.w)}">${ic('vol',16)} Hear it</button></div>
   <p class="hint tc">Demo uses word matching. Production uses a pronunciation model (unverified).</p></div>
   <div class="foot">${cta('Continue')}</div>`},
@@ -957,7 +957,7 @@ const V={
   <button class="cbx ${S.mkt?'on':''}" data-a="mkt" aria-pressed="${S.mkt}"><span class="bx">${S.mkt?ic('check',13,'currentColor',3.2):''}</span><span>Send me learning tips and offers (optional)</span></button></div>
   <div class="foot">${cta('See my plan',true,'email')}<div class="note">By continuing, you agree to our Terms and Privacy Policy.</div></div>`,
 17:()=>{const li=levelIdx(),tp=tipFor(),sc=micScored();
-  const tipLine=hasSaid()?`One sentence to polish: ${esc(tp.w)}.`:'Say your first sentence in the app.';
+  const tipLine=!hasSaid()?'Say your first sentence in the app.':tp.missed?`One word to polish: ${esc(tp.w)}.`:`Tip: the trickiest word is ${esc(tp.w)}.`;
   return `<div class="scr" style="gap:14px"><h1 class="display">${t(`Your speaking level: ${lvlCode()}`,`You're at ${lvlCode()}, ${nm()}`)}</h1>
   <p class="lead" style="margin-top:-6px">${t(tipLine,`Next up: ${nextCode()}, one session at a time.`)}</p>
   <div class="lvlcard"><div class="eyebrow">English speaking · CEFR estimate</div>
@@ -965,7 +965,7 @@ const V={
       ${BANDS.map((b,i)=>`<span class="tick" style="left:${i*20+10}%">${b[0]}</span>`).join('')}
       <span class="mk" style="--p:${li*20+10}%"><span>${lvlCode()}</span></span></div>
     <div class="hint tc" style="margin-top:-6px">${esc(lvlFull(li))} <b>→</b> ${esc(lvlFull(li+1))}</div></div>
-  ${hasSaid()?`<div class="tipc"><span class="eyebrow">Your pronunciation note</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p><button class="listen" data-a="sayw" data-v="${esc(tp.w)}">${ic('vol',16)} Hear it</button></div>`
+  ${hasSaid()?`<div class="tipc"><span class="eyebrow">${tp.missed?'Your pronunciation note':'Tip for the trickiest word in this sentence'}</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p>${sc?'':`<p style="font-size:12.5px;opacity:.8">${mode()==='typed'?'You typed this, so we can\'t judge sound.':'General tip for this sentence.'}</p>`}<button class="listen" data-a="sayw" data-v="${esc(tp.w)}">${ic('vol',16)} Hear it</button></div>`
     :`<div class="nota">Say a sentence in the app to get your first pronunciation note.</div>`}
   <p class="hint tc">Estimate from your self-rating and one sentence. It updates as you practice.${sc?` Your sentence matched ${matchStat().ok} of ${matchStat().n} words.`:''}</p></div>
   <div class="foot">${cta('See my plan')}</div>`},
@@ -987,7 +987,7 @@ const V={
   <div class="wsec tight"><span class="eyebrow">Your speaking plan is ready</span><h1 class="display" style="font-size:29px">${t(`Start speaking with ${tn()}`,`Unlock ${nmP()} speaking plan`)}</h1>
    <p class="lead" style="margin:8px 0 16px">${t('Daily sessions and feedback in one plan.','Cancel anytime. Renewal price shown up front.')}</p>
    <div class="whero"><div class="lvbox"><div class="lv">${esc(lvlFull(levelIdx()))} <span class="ar">→</span> ${esc(lvlFull(levelIdx()+1))}</div><div class="chipsrow"><span>🎙️ ${esc(sitChip())}</span><span>⏱ ${minTok()} min/day</span><span>≈ ${weeks()} weeks</span></div></div>
-   ${hasSaid()?`<div class="tipc"><span class="eyebrow">Your first pronunciation note</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p></div>`:''}
+   ${hasSaid()?`<div class="tipc"><span class="eyebrow">${tp.missed?'Your first pronunciation note':'Tip for the trickiest word in this sentence'}</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p>${micScored()?'':`<p style="font-size:12.5px;opacity:.8">You typed this, so we can't judge sound.</p>`}</div>`:''}
    <div class="facts"><div class="fact">Tutor<b>${tn()}</b></div><div class="fact">Level<b>${esc(lvlCode())}</b></div><div class="fact">Situation<b>${esc(sitChip())}</b></div><div class="fact">Daily<b>${minTok()} min</b></div></div></div></div>
   <div class="wsec" id="plans1">${planBlock('a')}</div>
   <div class="wsec"><span class="eyebrow">What's inside</span><h2 class="wh2">Everything in your plan</h2><p class="lead">Your level and first note are open. Unlock the rest.</p>
@@ -1007,29 +1007,29 @@ const V={
   <div class="wfoot"><div class="legal"><span>Terms</span><span>Privacy Policy</span><span>Restore</span></div><div style="margin-top:8px">AI tutor voices are not real people. ${isReal(CONFIG.legalEntity)?esc(CONFIG.legalEntity):tok('legal_entity')}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span data-sumname>${CONFIG.plans[S.plan].name}</span><b data-sum>${todayLine()}</b></div>${cta('Start speaking',true,'buy')}</div>`},
-20:()=>{const o=CONFIG.offer,was=o.compareAt?tok('price_'+o.compareAt):'';
+20:()=>{const o=CONFIG.offer;
   return `<div class="scr owrap">
   <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">${CONFIG.brand}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display" style="font-size:28px">${t('Start smaller with one week',`Try ${tn()} for a week`)}</h1>
-   <p class="lead">${t('Daily sessions with feedback, no long plan.','One-time starter, then weekly renewal.')}</p>
+   <h1 class="display" style="font-size:28px">${t('Try a 7-day pass',`Try ${tn()} for 7 days`)}</h1>
+   <p class="lead">${t('Paid once. No subscription.','Daily sessions with feedback, no long plan.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${isReal(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
    <div class="sumc">${sumCard(true)}</div>
    <div class="oname"><b>${esc(o.name)}</b><span>${esc(o.sub)}</span></div>
-   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${[`Daily speaking sessions with ${esc(tn())}`,'Instant feedback with a model voice','An email before your first renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
-   <div class="onot">Not included: phrase packs, progress checks, the full plan.</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="oprice"><b>${tv(o.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${[`7 days of speaking sessions with ${esc(tn())}`,'Instant feedback with a model voice','Receipt sent to your email'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   <div class="onot">Not included: phrase packs, progress checks, the full plan, any renewal.</div>
+   ${cta('Get the 7-day pass',true,'offerbuy')}
    <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
-   <p class="ofine">${tv(o.price)} today, then ${tv(o.renews)} every ${esc(o.period)} until you cancel. We'll email you before. Cancel anytime, up to 24h before renewal.</p></div>
+   <p class="ofine">${tv(o.price)} paid once for 7 days. No subscription, no auto-renew, nothing to cancel.</p></div>
   <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
 21:()=>{const tp=tipFor();
   return `<div class="scr" style="gap:14px"><h1 class="display">${t(`You're in, ${nm()}!`,'Your first session awaits')}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Get the app and log in with ${esc(S.email||'your email')}.`,'Your plan and tutor are waiting.')}</p>
   <div class="mock"><div class="in"><div class="hd"><span>${CONFIG.brand}</span><span style="color:var(--t3)">Day 1 of your plan</span></div>
     <div class="d1"><span style="font-size:22px">🎙️</span><span>Day 1 · ${esc(cap1(sitChip()))} speaking<small>${minTok()} min · ${esc(lvlCode())} · with ${esc(tn())}</small></span></div>
-    <div class="mw">First note${hasSaid()?` · ${esc(tp.w)}`:''}</div>
+    <div class="mw">${tp.missed?'First note':'First tip'}${hasSaid()?` · ${esc(tp.w)}`:''}</div>
     <div style="display:flex;align-items:center;gap:10px">${av(S.tutor)}<div class="bubble" style="font-size:14px">${hasSaid()?`Let's say "${esc(tp.w)}" together.`:'Ready when you are.'}</div></div></div></div>
   <div style="display:flex;justify-content:center">${storeBtn()}</div>
   <div class="steps3"><div><b>1</b>Install the app</div><div><b>2</b>Log in with ${esc(S.email||'your email')}</div><div><b>3</b>Start Day 1 with ${esc(tn())}</div></div>
@@ -1173,7 +1173,7 @@ phone.addEventListener('click',e=>{
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'buy':S.bought=CONFIG.plans[S.plan].name+' (demo)';emit('checkout_click',{plan:S.plan});toast('Demo only. No charge made.');go(LAST);break;
     case 'closepw':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('User leaves the funnel here (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: 1-week speaking starter (demo)';toast('Demo only. No charge made.');go(LAST);break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: 7-day pass, paid once (demo)';toast('Demo only. No charge made.');go(LAST);break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast(isAndroid?'Google Play would open (demo)':'App Store would open (demo)');break;
   }
