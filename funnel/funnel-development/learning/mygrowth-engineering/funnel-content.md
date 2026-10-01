@@ -6,7 +6,7 @@ subject: person
 input: reasons to learn, level, 3 circuit puzzle answers, first topic, reminder time, daily minutes, email
 output: puzzle score + "How Things Work" course match + 4-week plan that starts on the user's chosen topic
 screens: 22
-monetization: web subscription (3 plans, 1-week intro / 4-week pre-selected / 12-week anchor, renewal shown beside every intro price); store paid 7-day intro as the last-chance offer; activation (install + sign-in) measured separately
+monetization: web subscription (3 plans, 1-week intro / 4-week pre-selected / 12-week anchor, renewal shown beside every intro price); store one-time starter module (paid once, no renewal) as the last-chance offer; activation (install + sign-in) measured separately
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — MyGrowth (Think Like an Engineer)
 
-Same app and brand as `learning/mygrowth` (MyGrowth, EXTRAMILE LIMITED: 5-15 minute lessons). This variant sells the "think like an engineer" angle to curious adults. **References (adspylab, source-extracted 2026-10-01):** Smartyme `start.smartymeapp.com/quiz` engineering (q118-eng, 1,241 ads, 47 screen configs) and electricity (q130-ele, 267 ads, 48 configs), headline "Master electricity knowledge". Their skeleton is age and gender, reasons, yes/no knowledge checks, trivia, a long habit quiz, role models (Franklin, Faraday, Tesla, Edison), a "skills plan" with percent bars, loader, email, a scratch card with timer, then a paywall with two upsells. This brief reuses the shared learning-plan shape and the `learning/mygrowth` palette, and swaps in **three visual circuit puzzles** ("which bulb lights?") as the quiz, where the competitor asks text trivia. **Deliberate differences:** (1) every puzzle shows the right answer plus one fact straight away, and the score on screen #10 and #18 comes from those answers, not from a stock "74% ready" percentage; (2) no scratch card, timer, role-model persona or percent skills bars; (3) no gender or age questions, since nothing downstream uses them; (4) the course match is a single honest course, "How Things Work", whose first module follows the topic the user picks; (5) **safety:** the course explains how things work, it is not a guide to doing electrical work. Screen #12 says so before the topic is locked in, and the course card, paywall and FAQ repeat it. **Look:** identical to `learning/mygrowth`: white background, lavender panels `#EBE9F7`, violet gradient `#8488F4 → #7D73E3`, blue `#007BFF` line, orange `#FF9F00` accent. Copy rules apply throughout: headline ≤6 words, body ≤12 words, A/B on every screen.
+Same app and brand as `learning/mygrowth` (MyGrowth, EXTRAMILE LIMITED: 5-15 minute lessons). This variant sells the "think like an engineer" angle to curious adults. **References (adspylab, source-extracted 2026-10-01):** Smartyme `start.smartymeapp.com/quiz` engineering (q118-eng, 1,241 ads, 47 screen configs) and electricity (q130-ele, 267 ads, 48 configs), headline "Master electricity knowledge". Their skeleton is age and gender, reasons, yes/no knowledge checks, trivia, a long habit quiz, role models (Franklin, Faraday, Tesla, Edison), a "skills plan" with percent bars, loader, email, a scratch card with timer, then a paywall with two upsells. This brief reuses the shared learning-plan shape and the `learning/mygrowth` palette, and swaps in **three visual circuit puzzles** ("which bulb lights?") as the quiz, where the competitor asks text trivia. **Deliberate differences:** (1) every puzzle shows the right answer plus one fact straight away, and the score on screen #10 and #18 comes from those answers, not from a stock "74% ready" percentage; (2) no scratch card, timer, role-model persona or percent skills bars; (3) no gender or age questions, since nothing downstream uses them; (4) the course match is a single honest course, "How Things Work", whose first module follows the topic the user picks; (5) **safety:** the course explains how things work, it is not a guide to doing electrical work. Screen #12 says so before the plan is built, and the course card, paywall and FAQ repeat it. **Look:** identical to `learning/mygrowth`: white background, lavender panels `#EBE9F7`, violet gradient `#8488F4 → #7D73E3`, blue `#007BFF` line, orange `#FF9F00` accent. Copy rules apply throughout: headline ≤6 words, body ≤12 words, A/B on every screen.
 
 Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score}}`, `{{score_line}}`, `{{topic}}`, `{{course_title}}`, `{{reminder_time}}`, `{{daily_minutes}}`, `{{lessons_4wk}}`, `{{hours_4wk}}`, `{{email}}`, `{{price_1w}}`, `{{renewal_1w}}`, `{{price_4w}}`, `{{renewal_4w}}`, `{{price_12w}}`, `{{renewal_12w}}`, `{{offer_price}}`, `{{offer_renew_price}}`, `{{app_rating}}`, `{{rating_count}}`. Unset personal tokens fall back to: name "you", reason "curiosity", topic "Electricity", level "Know the basics", `{{course_title}}` is always "How Things Work".
 
@@ -288,7 +288,7 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score}}`, `{{score_line}}`, `{
 **Purpose:** Turns the course into a ramp tied to the user's topic and daily minutes, labelled as goals.
 **Headline A:** {{name}}'s 4-week plan
 **Headline B:** Built around {{topic}}
-**Body A:** One short lesson a day, week by week.
+**Body A:** Short lessons, week by week.
 **Body B:** Goals, shaped by what you told us.
 **Visual:** Four week rows, each with a theme (for Electricity: Circuits and current · Voltage and resistance · Series and parallel · Everyday devices), a day dot strip and "goal: N lessons". Goals ramp 3/5/7/7 (22 lessons of `{{daily_minutes}}` min). Eyebrow "Your goal, from your answers"; footer "Goal: 22 lessons · {{hours_4wk}} hours in 4 weeks. A target set from your answers, not a promise of results." The ramp is this brief's own design.
 **CTA:** Start my plan
@@ -322,15 +322,15 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score}}`, `{{score_line}}`, `{
 **CTA:** Start my plan
 
 ### 21. Last-chance offer (on close)
-**Purpose:** Second chance for users who close the page without paying: a paid 7-day intro plan sold through the store app, terms shown. Not free, no extra discount, and a different option from the three web plans. Shown once per session, then never again.
-**Headline A:** Wait, {{name}}: try 7 days first
-**Headline B:** Try 7 days of your course
-**Body A:** Start with 7 days in the app.
-**Body B:** Seven days of lessons, one clear price.
-**Plans:** One offer card: **7-day intro plan in the app**, billed by the store; {{offer_price}} for 7 days, then {{offer_renew_price}} / week until cancelled. Benefits: 7 days of full access, read or listen to every lesson, quizzes and streaks. No "free" wording, no struck-through price.
-**Visual:** Same web look as #20: sticky bar with logo and ✕, eyebrow "One-time offer · shown once", one violet-bordered card with course thumbnail, checks, store badges, renewal line, text link "No thanks, back to my plan".
-**Microcopy:** "{{offer_price}} for 7 days, then {{offer_renew_price}} / week until you cancel. Cancel anytime in your store subscriptions." Shown once (sessionStorage `ikf_offer_mygrowth-engineering`); `CONFIG.offer.expiresMin` is `null`, no timer; `CONFIG.offer.period` is `week`.
-**CTA:** Start 7 days
+**Purpose:** Second chance for users who close the page without paying: a smaller, different product from the three plans, a single starter module paid once through the store app. No subscription, not free, no extra discount, no struck-through price. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: start with one module
+**Headline B:** Just the {{topic}} starter
+**Body A:** One module, paid once. No subscription.
+**Body B:** Try {{topic}} first, upgrade whenever.
+**Plans:** One offer card, a different and smaller product than the 1-week plan: **{{topic}} starter module** (module 1 of How Things Work, the topic the user picked; "Mixed starter" users get Electricity), {{offer_price}} paid once, no renewal. Includes the module's lessons (read or listen) and its visual quizzes. Not included (stated on the card): other topics, streaks and achievements, the full course, the in-app reminder.
+**Visual:** Same web look as #20: sticky bar with logo and ✕, eyebrow "One-time offer · shown once", one violet-bordered card with module thumbnail, price row, 3 checks, a "Not included" line, CTA, store badges, a "Paid once, nothing to cancel" line, text link "No thanks, back to my plan".
+**Microcopy:** "{{offer_price}} paid once. No subscription, nothing to cancel." Shown once (sessionStorage `ikf_offer_mygrowth-engineering`); `CONFIG.offer.expiresMin` is `null`, no timer; `CONFIG.offer.oneTime` is `true`.
+**CTA:** Get the starter module
 
 ---
 
