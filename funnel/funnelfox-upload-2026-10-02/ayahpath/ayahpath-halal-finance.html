@@ -513,7 +513,7 @@ const reviewCard=r=>`<div class="rcard"><span class="stars">★★★★★</spa
 
 /* Last-chance offer: once per session, on paywall close. A one-time 30-day pass (no renewal, smaller than every tier, not "free"). price stays a token until growth sets it.
    compareAt null = nothing struck. expiresMin null = no timer. */
-const CONFIG={funnel:'ayahpath-halal-finance',proof:{rating:'{{store_rating}}',count:'{{rating_count}}',store:'{{store_name}}',reviews:[],refundDays:'{{refund_days}}'},offer:{enabled:true,name:'30-day Rizq pass',price:'{{offer_price}}',renews:null,period:'30 days',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+const CONFIG={funnel:'ayahpath-halal-finance',checkoutUrl:{w1:'',w4:'',w12:''} /* '' = only emit checkout_click */,proof:{rating:'{{store_rating}}',count:'{{rating_count}}',store:'{{store_name}}',reviews:[],refundDays:'{{refund_days}}'},offer:{enabled:true,name:'30-day Rizq pass',price:'{{offer_price}}',renews:null,period:'30 days',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
 
 const INIT=()=>({v:'A',i:1,hist:[],focus:[],focusO:'',hab:[null,null,null],habO0:'',habO1:'',habO2:'',goal:'',goalO:'',name:'',mins:0,anchor:'',anchorO:'',intent:'',email:'',mkt:false,acct:'',plan:'w4',paid:false,flip:[false,false,false],offerSeen:false,offerEnd:0,offerViewed:false,offer:false,faq:-1,err:''});
 let S=INIT();
@@ -595,7 +595,31 @@ function qrSVG(seed){
 const APL=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.2.8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.2 0 2-1.1 2.8-2.2.9-1.3 1.2-2.5 1.2-2.6 0 0-2.4-.9-2.4-3.8zM14.1 5.8c.6-.8 1.1-1.8.9-2.8-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.7-.9 2.7 1 .1 2-.5 2.6-1.3z"/></svg>`;
 const stores=()=>`<div class="stores"><button class="store" data-a="store"><span class="g">${APL(18)}</span><span><small>Download on the</small>App Store</span></button><button class="store" data-a="store"><span class="g">▶</span><span><small>GET IT ON</small>Google Play</span></button></div>`;
 
-function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* ---------- tracking + host API (never the photo, email, name or typed text) ---------- */
+const IKQS=new URLSearchParams(location.search),DEBUG=IKQS.get('debug')==='1';
+function snapshot(){const o={screen:S.i,variant:S.v};for(const k in S){if(/^(hist|email|name|err|acct|offerEnd)$/.test(k)||/(Other|O\d?)$/.test(k))continue;const x=S[k];if(x===null||['string','number','boolean'].includes(typeof x)||(Array.isArray(x)&&x.every(y=>y===null||typeof y!=='object')))o[k]=x}o.email_provided=!!S.email;o.name_provided=!!S.name;return o}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{},{data});
+  try{(window.dataLayer=window.dataLayer||[]).push(d)}catch(e){}
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:name,detail:d},'*')}catch(e){}
+  const f=Object.assign({funnel:CONFIG.funnel},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel]',name,JSON.stringify(detail||{}))}catch(e){}
+}
+const answer=(k,v)=>emit('answer',{key:k,value:v});
+function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
+const planUrl=()=>(CONFIG.checkoutUrl&&CONFIG.checkoutUrl[S.plan])||'';
+function withParams(url,plan){try{const u=new URL(url,location.href);u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan',plan);return u.toString()}catch(e){return url}}
+const ANS_SKIP=/^(usesugg|plan|faq|acct|legal|login|store|open|toplans|next|back)$/;
+function ikView(){if(S._sv===S.i)return;S._sv=S.i;emit('screen_view',{index:S.i,name:'screen_'+S.i});if(S.i===PW_N)emit('paywall_view');if(S.i===22&&!S.completed){S.completed=true;emit('complete',{paid:S.paid,offer:S.offer})}}
+function planKey(p){p=String(p);if(PLANS[p])return p;if(PLANS['w'+p])return 'w'+p;const q=p.replace(/^w/,'');return PLANS[q]?q:null}
+function applyPaid(p){clearInterval(window.__oiv);if(p==='offer'){S.offer=true;S.offerSeen=true;try{sessionStorage.setItem(OKEY,'1')}catch(e){}}else{S.offer=false;const k=planKey(p);if(k)S.plan=k}S.paid=true}
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:()=>snapshot(),
+  completePurchase:plan=>{plan=plan||S.plan;applyPaid(plan);emit('purchase_complete',{plan:plan==='offer'?'offer':S.plan});go(22)}});
+
 const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?TK(m[1]):esc(s)};
 /* ---------- last-chance offer (once per session, on paywall close) ---------- */
 const OKEY='ikf_offer_'+CONFIG.funnel;
@@ -612,7 +636,7 @@ function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
   emit('offer_accept',{price:o.price,period:o.period,url});
   emit('checkout_click',{plan:'offer',price:o.price,period:o.period,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
 
 const PLD={w1:'Shortest commitment',w4:'Pre-selected · fits the 30 days',w12:'Longest plan · same renewal shown'};
@@ -792,7 +816,7 @@ function runLoading(){
   let r=0;timers.push(setInterval(()=>{const rs=cur()?.querySelectorAll('.rev');if(!rs||!rs.length)return;r=(r+1)%rs.length;rs.forEach((e,i)=>e.classList.toggle('on',i===r))},2600));
 }
 
-function render(anim){
+function render(anim){ikView();
   const n=S.i,html=nav()+V[n](),old=cur(),dk=DARK.includes(n)?' dkv':'';
   phone.classList.toggle('dk',!!dk);
   if(anim&&old&&!RM){
@@ -835,6 +859,7 @@ function updateCta(){const c=document.getElementById('cta');if(c&&OKF[S.i]){cons
 phone.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
   const a=b.dataset.a,v=b.dataset.v;
+  if(v!==undefined&&!ANS_SKIP.test(a))answer(a,v);
   switch(a){
     case 'next':next();break;
     case 'back':back();break;
@@ -846,11 +871,11 @@ phone.addEventListener('click',e=>{
     case 'name':if(!S.name.trim()){S.err='Please enter a name to continue';render()}else{S.name=S.name.trim();next()}break;
     case 'skip':S.intent='';next();break;
     case 'flip':{const y=cur().querySelector('.scr').scrollTop;S.flip[+v]=!S.flip[+v];render();cur().querySelector('.scr').scrollTop=y;break}
-    case 'acct':S.acct=v;S.email=(S.name||'amina').toLowerCase().replace(/[^a-z0-9]/g,'')+'@example.com';toast(`${v} sign-in sheet would open (demo)`);next();break;
-    case 'email':{const m=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)){S.err='Please enter a valid email address';render()}else if(/^taken@/i.test(m)){S.err='This email already has a plan. Check your inbox.';render()}else{S.email=m;S.acct='';next()}break}
-    case 'plan':S.plan=v;{const y=cur().querySelector('.scr').scrollTop;render();cur().querySelector('.scr').scrollTop=y}break;
+    case 'acct':S.acct=v;emit('lead',{method:v,email_provided:true});S.email=(S.name||'amina').toLowerCase().replace(/[^a-z0-9]/g,'')+'@example.com';toast(`${v} sign-in sheet would open (demo)`);next();break;
+    case 'email':{const m=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)){S.err='Please enter a valid email address';render()}else if(/^taken@/i.test(m)){S.err='This email already has a plan. Check your inbox.';render()}else{S.email=m;S.acct='';emit('lead',{method:'email',email_provided:true,marketing_opt_in:!!S.mkt});next()}break}
+    case 'plan':S.plan=v;emit('plan_select',{plan:v});{const y=cur().querySelector('.scr').scrollTop;render();cur().querySelector('.scr').scrollTop=y}break;
     case 'faq':{const y=cur().querySelector('.scr').scrollTop;S.faq=S.faq===+v?-1:+v;render();cur().querySelector('.scr').scrollTop=y;break}
-    case 'buy':S.paid=true;toast('Demo only — no charge made');go(22);break;
+    case 'buy':{const u=planUrl();emit('checkout_click',{plan:S.plan,url:u});if(u){navTop(withParams(u,S.plan));break}}S.paid=true;toast('Demo only — no charge made');go(22);break;
     case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('Would leave the funnel (demo)')}break;
     case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast('Would open checkout for the 30-day pass (demo)');break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
@@ -874,6 +899,8 @@ const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A'
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
 document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v;S=INIT();S.v=v;render(true)};
+{const pp=IKQS.get('paid');if(pp){applyPaid(pp);S.i=22}}
+emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
 render(false);
 </script>
 </body>
