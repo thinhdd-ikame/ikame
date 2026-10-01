@@ -443,8 +443,8 @@ const CONFIG={
      3 plans: 1-week intro / 4-week pre-selected / 12-week anchor. Renewal shown next to every price. */
   plans:{
     '1w':{name:'1 week',price:'{{price_1w}}',renew:'{{renewal_1w}}',per:'week',badge:'',sub:'Intro price',save:''},
-    '4w':{name:'4 weeks',price:'{{price_4w}}',renew:'{{renewal_4w}}',per:'4 weeks',badge:'MOST POPULAR',sub:'Best for most',save:''},
-    '12w':{name:'12 weeks',price:'{{price_12w}}',renew:'{{renewal_12w}}',per:'12 weeks',badge:'',sub:'Lowest per week',save:''}
+    '4w':{name:'4 weeks',price:'{{price_4w}}',renew:'{{renewal_4w}}',per:'4 weeks',badge:'',sub:'Pre-selected',save:''},
+    '12w':{name:'12 weeks',price:'{{price_12w}}',renew:'{{renewal_12w}}',per:'12 weeks',badge:'',sub:'',save:''}
   },
   defaultPlan:'4w',
   refundDays:'{{refund_days}}',
@@ -488,6 +488,7 @@ const IC={
 };
 const ic=(n,s=20,w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stars=n=>{n=Math.max(0,Math.min(5,Math.round(n)||0));return '★'.repeat(n)+'☆'.repeat(5-n)};
 const tok=s=>/\{\{/.test(s)?`<span class="tok">${esc(s)}</span>`:esc(s);
 
 /* ---------- niche data: swap this block to reuse the flow for another collectible ---------- */
@@ -611,7 +612,7 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
 
 /* ---------- item report pieces ---------- */
 const markTxt=()=>({yes:'Mark noted',no:'None noted',unsure:'Check underneath'}[S.mark||'unsure']);
-const factsDl=()=>{const c=item();return `<dl class="cfacts"><dt>Type</dt><dd>${esc(c.type)}</dd><dt>Est. era</dt><dd>${esc(c.era)}</dd><dt>Style</dt><dd>${esc(c.style)}</dd><dt>Material</dt><dd>${esc(c.material)}</dd><dt>Mark</dt><dd>${markTxt()}</dd></dl>`};
+const factsDl=()=>{const c=item();return `<dl class="cfacts"><dt>Type</dt><dd>${esc(c.type)}</dd><dt>Est. era</dt><dd>${esc(c.era)}</dd><dt>Style</dt><dd>${esc(c.style)}</dd><dt>Material</dt><dd>${esc(c.material)}</dd><dt>Mark</dt><dd>${markTxt()}</dd></dl><span class="chip" style="margin-top:8px">Sample data</span>`};
 const rawBox=()=>{const c=item();return `<div class="rng"><div class="lb"><span>Estimated value range</span><span class="chip">Sample data</span></div><div class="nums">${c.val[0]} to ${c.val[1]}</div><div class="bar"></div><div class="hint" style="margin-top:8px">Low to high by condition. Estimate, not an appraisal.</div></div>`};
 const lockRow=(x,glow)=>`<div class="lockrow ${glow?'glow':''}"><span class="${glow?'':'blurred'}">${x}</span><span class="l">${ic('lock',16)}</span></div>`;
 const LOCKS=['Value range','Where to sell','Real or reproduction'];
@@ -667,13 +668,13 @@ const V={
 12:()=>`<div class="scr" style="gap:16px;padding-top:14px"><h1 class="display sm tc">${t('Identifying your item…','Checking the style database…')}</h1>
   <div class="scanbox" style="margin:14px 0"><div class="frame" style="inset:-14px calc(50% - 90px)"></div><div class="tilt fast">${myCard({cw:150})}</div><div class="sl"></div></div>
   <div class="tasks">${['Reading shape and material…','Dating the style and era…','Looking for maker\'s marks…','Building your item report…'].map((x,i)=>`<div class="task" id="tk${i}"><i></i>${x}</div>`).join('')}</div>
-  <div class="ring" id="ring" style="--p:0;width:64px;height:64px;align-self:center"><b id="rp" style="font-size:15px">0%</b></div></div>`,
+  <div class="ring" id="ring" style="--p:0;width:64px;height:64px;align-self:center"><b id="rp" style="font-size:15px">0%</b></div><p class="note">Demo: we can't identify real photos; showing a sample result.</p></div>`,
 13:()=>{const c=item();
   return `<div class="scr" style="gap:14px"><div><h1 class="display sm">${t('We found your '+esc(c.type.toLowerCase()),'Your item, identified')}</h1><p class="lead" style="margin-top:8px">${t(esc(c.era)+', '+esc(c.style.toLowerCase())+', '+esc(c.material.toLowerCase())+'.','Era and style free. Value is one tap away.')}</p></div>
   <div class="cidrow">${myCard({cw:118})}<div style="flex:1;min-width:0">${factsDl()}</div></div>
   <div class="hint">Era is estimated from your photo. Estimate, not an appraisal.</div>
   <div class="stack">${LOCKS.map(x=>lockRow(x)).join('')}</div>
-  <div class="hint" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span>Match confidence: ${S.photo?'Medium':'High'}</span><button class="link" style="min-height:0;padding:0;font-size:13px" data-a="retake">Not right? Try another photo.</button></div></div>
+  <div class="hint" style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="chip">Sample data</span><button class="link" style="min-height:0;padding:0;font-size:13px" data-a="retake">Not right? Try another photo.</button></div></div>
   <div class="foot">${cta('See what it\'s worth')}</div>`},
 14:()=>`<div class="scr" style="gap:14px">${q(t('Real, or a reproduction?','Your authenticity read'),t('We check four clues. Your result is ready.','Unlock the read for this item.'))}
   <div class="crit" style="height:310px">${myCard({cw:150})}
@@ -690,22 +691,22 @@ const V={
 16:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text),c=item();
   const FAQ=[['What\'s included?','Value range for your item, where to sell, a real-or-reproduction read, history notes and unlimited scans.'],
     ['How is value estimated?','From your photo and what we can read: era, style, material and condition. It is a range, not an appraisal.'],
-    ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
+    ['How do I cancel?','In your account settings, any time before the next renewal.'],
     ['Will I be charged again?','Yes, unless you cancel: the plan renews at the price and period shown on the card you pick.'],
     ['Is this a formal appraisal?','No. For insurance, probate or selling a valuable piece, ask a qualified appraiser.']];
   return `<div class="wp" id="wp">
   <div class="wbar"><div class="brand">${ic('coin',16)} CoinIn</div><button class="mini" data-a="toplans">Unlock my item</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
   <div class="wsec tight"><span class="eyebrow">${family()?'Your family piece report is ready':'Your item report is ready'}</span><h1 class="display" style="font-size:31px">${t('See <em>what it\'s worth</em>','Unlock your <em>whole inventory</em>')}</h1>
    <p class="lead" style="margin:8px 0 14px">${t('Value range, where to sell, real or reproduction.','Scan every piece in the house.')}</p>
-   <div class="cidrow">${myCard({cw:112})}<div class="crow" style="flex:1"><div>Item<b style="font-size:12.5px">${esc(c.name)}</b></div><div>Est. era<b style="font-size:12.5px">${esc(c.era)}</b></div><div>Style<b style="font-size:12.5px">${esc(c.style)}</b></div><div>Value<b>Locked</b></div></div></div>
+   <div class="cidrow">${myCard({cw:112})}<div class="crow" style="flex:1"><div>Item<b style="font-size:12.5px">${esc(c.name)}</b></div><div>Est. era<b style="font-size:12.5px">${esc(c.era)}</b></div><div>Style<b style="font-size:12.5px">${esc(c.style)}</b></div><div>Value<b>Locked</b></div></div></div><div class="hint" style="margin-top:8px"><span class="chip">Sample data</span> Era and style shown are a demo sample.</div>
    <div class="stack" style="margin-top:12px">${LOCKS.map(x=>lockRow(x,true)).join('')}</div></div>
   <div class="wsec" id="plans1">${planBlock()}</div>
   <div class="wsec"><span class="eyebrow">Inside your report</span><h2 class="wh2">Everything for your pieces</h2><p class="lead">Your item ID is open. Unlock the rest.</p>
    <div class="toc"><div class="open"><span class="n">1</span><span>Item ID: ${esc(c.type)}, ${esc(c.era)}</span><span class="l">${ic('check',16,2.4)}</span></div>${insideList().map((x,i)=>`<div><span class="n">${i+2}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From one scan to the whole house</h2>
    <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['See your report','The value range for this item opens on this page.'],['Keep scanning in the app','Log in with your email to scan the rest.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  ${R&&R.score&&!/\{\{/.test(R.score)&&RV.length&&!RV.some(r=>/\{\{/.test(r.text))?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
-   <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div><span class="stars" style="margin-left:auto;font-size:12px">★★★★★</span></div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
+  ${R&&R.score&&R.count&&!/\{\{/.test(R.score)&&!/\{\{/.test(R.count)&&RV.length&&!RV.some(r=>/\{\{/.test(r.text))?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">${stars(parseFloat(R.score))}</div><div class="hint">${tok(R.count)} ratings</div></div></div>
+   <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div>${r.stars>=1?`<span class="stars" style="margin-left:auto;font-size:12px">${stars(r.stars)}</span>`:''}</div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
   ${/\{\{/.test(CONFIG.refundDays)?'':`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:700 19px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
@@ -731,7 +732,7 @@ const V={
   <div><h1 class="display sm">${t('Your piece'+(nm()?', '+esc(nm()):''),'Your item, decoded')}</h1><p class="lead" style="margin-top:8px">${t('Saved to your inventory.','Scan the next piece any time.')}</p></div>
   <div class="cidrow">${myCard({cw:118})}<div style="flex:1;min-width:0"><div class="cname">${esc(c.name)}</div><div style="margin-top:8px">${factsDl()}</div></div></div>
   ${g?`${rawBox()}<p class="hint">Estimate only. For a possibly valuable piece, get a qualified appraisal before selling.</p>`:`<div class="stack">${lockRow('Value range')}</div>`}
-  ${all?`<div class="card"><h4>${ic('check',14,2.6)} Where to sell</h4><p>${c.sell.map(esc).join(' · ')}</p></div><div class="card"><h4>${ic('check',14,2.6)} Real or reproduction</h4><div class="cname" style="color:var(--acc);font-size:20px;margin:4px 0 8px">${c.verdict}</div><div class="crow">${c.read.map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('')}</div><p class="hint" style="margin-top:8px">An estimate from your photo, not an expert authentication.</p></div><div class="card"><h4>${ic('check',14,2.6)} Inventory</h4><p>1 item saved. Add more pieces to see the whole house.</p></div>`:`<div class="stack">${lockRow('Where to sell')}${lockRow('Real or reproduction')}</div>`}
+  ${all?`<div class="card"><h4>${ic('check',14,2.6)} Where to sell</h4><p>${c.sell.map(esc).join(' · ')}</p></div><div class="card"><h4>${ic('check',14,2.6)} Real or reproduction <span class="chip" style="margin-left:6px">Sample data</span></h4><div class="cname" style="color:var(--acc);font-size:20px;margin:4px 0 8px">${c.verdict}</div><div class="crow">${c.read.map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('')}</div><p class="hint" style="margin-top:8px">An estimate from your photo, not an expert authentication.</p></div><div class="card"><h4>${ic('check',14,2.6)} Inventory</h4><p>1 item saved. Add more pieces to see the whole house.</p></div>`:`<div class="stack">${lockRow('Where to sell')}${lockRow('Real or reproduction')}</div>`}
   <p class="note">${NOTE}</p></div>
   <div class="foot">${all?'':cta(g?'Unlock all':'Unlock my item',true,'topw')}<button class="btn ${all?'':'ghost'}" data-a="scannext">Scan next item</button><div class="stores"><span class="store">${ic('apple',18)}<span>Download on the<b>App Store</b></span></span><span class="store">${ic('play',16)}<span>Get it on<b>Google Play</b></span></span></div></div>`}
 };

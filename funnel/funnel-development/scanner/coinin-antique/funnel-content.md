@@ -130,7 +130,7 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 **Headline B:** Marks hide on the base
 **Body A:** Maker's marks often sit on the bottom.
 **Body B:** One quick guess, then your scan.
-**Visual:** Default: two upturned bases side by side, one plain and one with a stamp, label "Same shape, different base". **If Q2 = inherited or estate clearing:** headline A "Don't clear it all yet", headline B "A family piece{{, name}}?", body A "Nothing needs deciding today. Check each piece first.", body B "Old things carry stories. Value comes second." with a small house icon and the same base pair below.
+**Visual:** Default: two upturned bases side by side, one plain and one with a stamp, label "Same shape, different base". **If Q2 = inherited or estate clearing:** headline A "Don't clear it all yet", headline B "A family piece, {{name}}?" (no name: "A family piece?"), body A "Nothing needs deciding today. Check each piece first.", body B "Old things carry stories. Value comes second." with a small house icon and the same base pair below.
 **Microcopy:** "Four clues we look for: marks, wear, construction, materials."
 **CTA:** Let's play
 
@@ -193,7 +193,7 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 3. Looking for maker's marks… (0 to 100%, check)
 4. Building your item report… (0 to 100%, check)
 **Visual:** The user's item (or the sample) tilts slowly in 3D, the only 3D in the funnel, with a gold scan line sweeping down it. Four rows beneath: label, percent, check, gold bar.
-**Microcopy:** Panel footnote: the demo cannot identify real photos and shows the sample result.
+**Microcopy:** Panel footnote: "Demo: we can't identify real photos; showing a sample result." (demo only)
 **CTA:** (auto-advances when the result returns, minimum about 5 seconds)
 
 ### 13. Your item — free ID card
@@ -203,7 +203,7 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 **Body A:** {{era}}, {{style}}, {{material}}.
 **Body B:** Era and style free. Value is one tap away.
 **Visual:** Item photo beside ID rows (type, estimated era, style, material, mark status from Q3). Below, three locked rows with a gold lock: "Value range", "Where to sell", "Real or reproduction". Neutral grey blur, no fake "$$$" shapes.
-**Microcopy:** "Era is estimated from your photo. Estimate, not an appraisal." · "Match confidence: {{confidence}}" with link "Not right? Try another photo." No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photo" / "Use a sample item".
+**Microcopy:** "Era is estimated from your photo. Estimate, not an appraisal." · link "Not right? Try another photo." (a "Match confidence" line appears only for real identify results, never for the demo sample) No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photo" / "Use a sample item".
 **CTA:** See what it's worth
 
 ### 14. Authenticity — teaser
@@ -244,7 +244,7 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 **Body B:** Scan every piece in the house.
 **Plans:** Structure only, no invented numbers.
 - 1-week intro: intro price token, then weekly renewal shown beside it. Never called free.
-- **4-week: pre-selected**, "MOST POPULAR", price and renewal tokens.
+- **4-week: pre-selected**, neutral "Pre-selected" label (no popularity claim), price and renewal tokens.
 - 12-week: anchor, price and renewal tokens.
 - Every plan shows its own renewal price and period next to the price.
 **Visual:** Sticky brand bar with a close X. Hero: the user's item with three locked rows glowing gold as "unlocking". Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
@@ -266,7 +266,7 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 **Plans:** One item: "One-item value check", one-time price token, **paid once, never renews**, no strike price. Includes this item's estimated value range by condition. Does **not** include unlimited scans, where to sell, the real-or-reproduction read, history notes or other items.
 **Visual:** Web page in the paywall's look: brand bar with a close X, gold eyebrow "One-time offer, shown once", one gold-bordered card with the item thumbnail, price row, two checks, a muted "Not included" list, CTA, payment badges, one-line terms note.
 **Microcopy:**
-- Terms line: "{{offer_price}} once. No renewal. Cancel nothing."
+- Terms line: "{{offer_price}} once. No renewal. Nothing to cancel."
 - No timer (`expiresMin` is null; none until a real deadline exists).
 - Decline link: "No thanks, keep the free item ID"
 - Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`.
@@ -306,8 +306,8 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 
 **First A/B test.** Hook "Don't sell grandma's vase for $5" vs. "Clearing out a family home?" **Second:** authenticity teaser (screen 14) shown vs. skipped.
 
-**Verify before build.** Real plan periods and prices; refund terms; rating and reviews; antique database source and coverage; the real identify API; real sold-lot data for the game; legal review of "$5" in the hook (a cautionary example, not a value claim).
+**Verify before build.** Real plan periods and prices; refund terms; rating and reviews; antique database source and coverage; the real identify API; real sold-lot data for the game; the cancel path and "how to cancel" FAQ wording (unverified); legal review of "$5" in the hook (a cautionary example, not a value claim).
 
-**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result for the chosen item type, with value range figures marked "Sample data". Item art in the demo is drawn SVG; images in `img/` are drawn placeholders and `gen_images.py` is ready (set `IKAME_AI_KEY`, not set during this build).
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result for the chosen item type, with the ID card, value range and authenticity verdict all marked "Sample data". Item art in the demo is drawn SVG; images in `img/` are drawn placeholders and `gen_images.py` is ready (set `IKAME_AI_KEY`, not set during this build).
 
 **Demo (Artifact, private).** https://claude.ai/artifact/23Pg6ezErm8BYS2t83FqU9
