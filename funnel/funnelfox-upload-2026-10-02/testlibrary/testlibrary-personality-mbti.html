@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Personality Type Funnel Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -369,6 +371,8 @@ code{font-size:.92em;overflow-wrap:anywhere}
 .phimg{display:block;width:100%;height:120px;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#F6F4EF}
 .demo-skip{align-self:center;font-size:12px}
 </style>
+</head>
+<body>
 <div class="wrap">
   <div class="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
   <aside class="panel">
@@ -487,7 +491,7 @@ const CONFIG={
   /* non-empty URL per plan key (one, t1, t4) = checkout_click leaves the demo for that hosted checkout (?funnel=&plan= appended) */
   checkoutUrls:{one:'',t1:'',t4:''},
   /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
-  reminder:true,
+  reminder:false,
   /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
      Default: this one profile report, no subscription. Prices are tokens: real values come from checkout config.
      compareAt:null = nothing struck. Strike a price only if it is a real, lower price that checkout charges.
@@ -825,7 +829,7 @@ phone.addEventListener('click',e=>{
     case 'checkout':{const u=planCheckoutUrl(S.plan);emit('checkout_click',{plan:S.plan,url:u||null});if(u&&leaveToCheckout(u,S.plan))break;go(13);break}
     case 'exit':exitPaywall();break;
     case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
-      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
       else{S.plan='offer';S.consent=false;go(13)}break}
     case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
     case 'pay':S.pay=v;render();break;
@@ -882,3 +886,4 @@ window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
 render();
 emit('funnel_start',{variant:S.v});
 </script>
+</body></html>
