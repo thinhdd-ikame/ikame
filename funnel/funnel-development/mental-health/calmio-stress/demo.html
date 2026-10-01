@@ -545,7 +545,7 @@ const JUMP_LK={sprinter:[3,5,2,2],carrier:[3,2,5,2],juggler:[3,2,2,5]};
 
 /* ---------- state ---------- */
 const INIT=()=>({v:'A',i:1,hist:[],year:null,minor:false,src:[],srcOther:'',sOther:false,signs:[],signsOther:'',gnOther:false,lk:[0,0,0,0],rhythm:'',rhythmOther:'',rOther:false,tried:[],triedOther:'',trOther:false,goal:'',goalOther:'',gOther:false,name:'',email:'',mkt:false,
-  chat:[],chatStep:0,chatPaused:false,crisisChat:false,plan:'w4',premium:null,remind:false,err:'',safety:[],jumpProf:'sprinter',offerSeen:false});
+  chat:[],chatStep:0,chatPaused:false,crisisChat:false,plan:'w4',premium:null,remind:false,err:'',safety:[],jumpProf:'sprinter',offerSeen:false,pack:false});
 let S=INIT();
 
 /* ---------- config ---------- */
@@ -558,9 +558,9 @@ const CONFIG={funnel:'calmio-stress',brand:'Calmio',
   defaultPlan:'w4',
   checkoutUrl:'',   /* '' = demo toast only */
   /* Gentle one-time offer shown ONCE when the paywall is closed without paying (fallback / "upsell on decline").
-     Real terms only: price and renewal must be what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
+     A genuinely smaller one-time product (7 micro-resets, paid once, no renewal, no strike-through). Price must be what checkout charges.
      expiresMin stays null: no timer in this category. Never shown after a safety event (crisis sheet, crisis chat, help link). */
-  offer:{enabled:true,name:'Intro 4-week plan',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'w4',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'Starter reset pack',price:'{{offer_price}}',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
   refundDays:'{{refund_days}}',refundTerms:'{{refund_terms}}',company:'{{legal_entity}}',
   termsUrl:'',privacyUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -577,7 +577,7 @@ const safetyHit=()=>S.crisisChat||S.chatPaused||S.safety.length>0;
 const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen||safetyHit())return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
   if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
 function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
-  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  emit('offer_view',{price:o.price});
   clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
   const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==21)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
     if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;S.premium=false;emit('offer_expired');go(22);return}
@@ -589,6 +589,9 @@ function offerCheckout(){const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept
     new URLSearchParams(location.search).forEach((v,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,v)});
     try{window.top.location.href=x.toString()}catch(e){location.href=x.toString()}return true}catch(e){return false}}
 
+const live=v=>!!v&&!/^\{\{/.test(String(v));
+const ratingLive=()=>live(CONFIG.rating.score)&&live(CONFIG.rating.count);
+const reviewsLive=()=>CONFIG.reviews.filter(r=>r&&live(r.text));
 const t=(a,b)=>S.v==='B'?b:a;
 const nameOK=()=>!!(S.name&&S.name.trim());
 const nm=()=>nameOK()?esc(S.name.trim()):'you';
@@ -813,12 +816,11 @@ const V={
   <p class="lead">${t('A nickname is fine. Change it anytime.','So your conversations feel like yours.')}</p>
   <div class="field"><div class="box"><input id="nm" data-f="name" maxlength="20" autocomplete="given-name" placeholder="Your name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
   <div class="foot">${cta('Continue',true,'name')}<button class="link" data-a="skipname">Skip for now</button></div>`,
-15:()=>S.v==='A'?`<div class="scr center" style="text-align:center">
+15:()=>S.v==='A'&&ratingLive()?`<div class="scr center" style="text-align:center">
   <div class="stars">${[0,1,2,3,4].map(()=>ic('star',26,'currentColor',1.6).replace('fill="none"','fill="#A9C5B0"')).join('')}</div>
-  <h1 class="display">${tok(CONFIG.rating.score)}★ from real people</h1>
-  <p class="lead">${tok(CONFIG.rating.count)} ratings from people who’ve been there.</p>
-  <p class="hint" style="margin:-6px 0 0">Placeholder · fill live from this app’s own store listing</p>
-  <div class="ph" style="text-align:left">“Real App Store review, quoted as shown, goes here.”<div class="hint" style="margin-top:6px">Real store data only · never invented</div></div></div>
+  <h1 class="display">${esc(CONFIG.rating.score)}★ from real people</h1>
+  <p class="lead">${esc(CONFIG.rating.count)} ratings from people who’ve been there.</p>
+  ${reviewsLive().slice(0,1).map(r=>`<div class="rev" style="text-align:left">${esc(r.text)}<small>${esc(r.name)} · ${esc(r.meta)}</small></div>`).join('')}</div>
   <div class="foot">${cta('Continue')}</div>`
   :`<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
   <h1 class="display" style="text-align:center">Private. Judgment-free. Yours.</h1>
@@ -854,7 +856,7 @@ const V={
    <button class="chkrow ${S.mkt?'on':''}" data-a="mkt" aria-pressed="${S.mkt}"><span class="cb">${S.mkt?ic('check',13,'currentColor',3):''}</span><span>Send me tips by email (optional)</span></button></div></div>
   <div class="foot">${cta('Continue',true,'emailgo')}<div class="note">By continuing you agree to the Terms and Privacy Policy.</div></div>`,
 19:()=>chatHTML(),
-20:()=>{const P=PR(),R=CONFIG.rating,RV=CONFIG.reviews.filter(r=>r&&r.text);
+20:()=>{const P=PR(),R=CONFIG.rating;
   const FAQ=[['Is Calmio therapy?','No. Calmio is an AI companion for reflection. It doesn’t diagnose or treat anything.'],
    ['Does it lower cortisol?','No. Calmio doesn’t measure or change stress hormones. It’s a companion for reflection and small resets.'],
    ['How do I cancel?','Any time in your account settings, before the next renewal. No calls, no forms.'],
@@ -873,30 +875,29 @@ const V={
    <div class="toc">${toc.map(([l,i],n)=>`<div><span class="n">${n+1}</span><span>${esc(l)}</span><span class="l">${ic(i,16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From today, two minutes</h2>
    <div class="how" style="margin-top:6px">${[['Choose a plan','Secure checkout, a few seconds.'],['Open today’s reset','Your first full reset starts right away.'],['Reset each day',`A 2-minute chat and one micro-reset, around ${wd()}.`]].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  <div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars2">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
-   ${RV.map(r=>`<div class="rev">${tok(r.text)}<small>${tok(r.name)} · ${tok(r.meta)}</small></div>`).join('')}
-   <p class="hint2">Placeholders. Real store reviews only, quoted as shown.</p></div>
+  ${(ratingLive()||reviewsLive().length)?`<div class="wsec"><span class="eyebrow">What people say</span>${ratingLive()?`<div class="rate"><div class="sc">${esc(R.score)}</div><div><div class="stars2">★★★★★</div><div class="hint">${esc(R.count)} ratings</div></div></div>`:''}
+   ${reviewsLive().map(r=>`<div class="rev">${esc(r.text)}<small>${esc(r.name)} · ${esc(r.meta)}</small></div>`).join('')}</div>`:''}
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:800 17px var(--sans)">Refund window</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days. Full terms: ${tok(CONFIG.refundTerms)}</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:4px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock('b')}<button class="link" data-a="notnow" style="margin-top:2px">Not now</button></div>
   <div class="wfoot">${legal()}<div>Calmio is AI and not a substitute for professional care.</div><div>${tok(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span id="sumname">${esc(CONFIG.plans[S.plan].name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Start my plan',true,'pay')}</div>`},
-21:()=>{const P=PR(),o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price:'';
+21:()=>{const P=PR(),o=CONFIG.offer;
   return `<div class="wp">
   <div class="wbar"><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button><div class="brand">${ic('flower',16)} ${CONFIG.brand}</div><span class="sp"></span><span class="helpspace" style="width:128px"></span></div>
   <div class="wsec tight" style="text-align:center"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display" style="font-size:28px">${t(nameOK()?`Start gently, ${nm()}`:'Start gently','Start today for less')}</h1>
-   <p class="lead">${t('Same 4-week plan, at a gentler first price.','No rush. A lower first price, if it helps.')}</p>
+   <h1 class="display" style="font-size:28px">${t(nameOK()?`A smaller step, ${nm()}`:'A smaller step','Start with a smaller step')}</h1>
+   <p class="lead">${t('A 7-day starter pack, paid once. No subscription.','Seven micro-resets. Nothing to cancel.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard" style="margin-top:${o.badge?10:0}px">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th"><img src="${im('img/topic-calm.jpg')}" alt="A still, misty lake" onerror="this.remove()"></div><div style="flex:1;min-width:0"><b style="font:800 18px var(--sans)">${esc(o.name)}</b><div class="hint">The ${P.label} plan · 4 weeks · Week 1: ${esc(P.weeks[0])}</div></div></div>
-   <div class="oprice">${was?`<s>${tok(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${['Your 4-week plan, from day one','Reset chats with Calmio','A reminder before it renews'].map(x=>`<div>${ic('check',16,'currentColor',2.6)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="orow"><div class="th"><img src="${im('img/topic-calm.jpg')}" alt="A still, misty lake" onerror="this.remove()"></div><div style="flex:1;min-width:0"><b style="font:800 18px var(--sans)">${esc(o.name)}</b><div class="hint">7 micro-resets for the ${P.label} · one a day</div></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${['7 guided micro-resets, one a day','Your stress pattern, saved to your email','A reminder at '+wd()].map(x=>`<div>${ic('check',16,'currentColor',2.6)}<span>${x}</span></div>`).join('')}</div>
+   <p class="fine" style="text-align:left"><b>Not included:</b> the 4-week plan, daily reset chats, journaling prompts.</p>
+   ${cta('Get the starter pack',true,'offerbuy')}
    <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-   <p class="fine">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.</p>
-   <p class="fine2">We’ll email you before it renews.</p></div></div>
+   <p class="fine">${tok(o.price)} paid once. No renewal, nothing to cancel.</p></div></div>
   <div class="wsec" style="text-align:center;align-items:center;padding-bottom:30px"><p class="fine2" style="color:var(--c-sage);font-weight:800">Crisis resources are always free.</p>
    <button class="link" data-a="offerno">No thanks, keep the free reset</button></div></div>`},
 22:()=>{const free=S.premium!==true,P=PR();
@@ -905,7 +906,7 @@ const V={
   <p class="lead" style="margin-top:-6px">${t(`Your daily reset opens at ${wd()}. Or start now.`,'Come back anytime. Calmio is here.')}</p>
   <div class="prompt" style="width:100%;text-align:left"><small>Today’s reset · 2 min</small>${esc(P.prompt)}</div>
   <button class="togrow ${S.remind?'on':''}" data-a="remind" aria-pressed="${S.remind}">${ic('clock',18)}<span style="font-weight:700;font-size:14px">Remind me at ${wd()}</span><span class="sw"></span></button>
-  ${free?`<button class="unlock" data-a="unlock">${ic('lock',15)} Unlock your plan</button>`:'<span class="chip">Full plan unlocked</span>'}</div>
+  ${S.pack&&free?'<span class="chip">Starter pack unlocked · 7 micro-resets</span>':''}${free?`<button class="unlock" data-a="unlock">${ic('lock',15)} Unlock your plan</button>`:'<span class="chip">Full plan unlocked</span>'}</div>
   <div class="foot" style="padding-bottom:12px">${cta('Start today’s reset',true,'lesson')}</div>
   <nav class="tabbar">${[['Today','flower'],['Chat','msg'],['Journal','book'],['Me','user']].map(([l,i],k)=>`<button class="${k===0?'on':''}" data-a="soon">${ic(i,22)}<span>${l}</span></button>`).join('')}</nav>`}
 };
@@ -1086,7 +1087,7 @@ function renderPanel(){
     ['Stress pattern',answered?PR().label:'—'],
     ['Email',S.email||'—'],
     ['Chat',S.crisisChat?'Paused: crisis path (no sales line)':S.chatStep>=2?'2 exchanges done':S.chat.length?`${S.chatStep} of 2 exchanges`:'—'],
-    ['Plan',S.premium===true&&S.plan==='offer'?CONFIG.offer.name+' (one-time offer, demo)':S.premium===true?CONFIG.plans[S.plan].name+' (demo)':S.premium===false?'Free mode':'—'],
+    ['Plan',S.pack&&S.premium!==true?CONFIG.offer.name+' (one-time pack, demo)':S.premium===true?CONFIG.plans[S.plan].name+' (demo)':S.premium===false?'Free mode':'—'],
     ['Safety events',S.safety.length?S.safety.join(' · '):'—'],
     ['Offer #21',(()=>{let seen=false;try{seen=!!sessionStorage.getItem(OKEY)}catch(e){}return (S.offerSeen||seen?'Shown this session':safetyHit()?'Suppressed (safety event)':'Not shown yet')+(EVENTS.length?' · events: '+EVENTS.map(e=>e.event).join(', '):'')})()]
   ];
@@ -1130,7 +1131,7 @@ phone.addEventListener('click',e=>{
     case 'plan':S.plan=v;updatePlan();break;
     case 'pay':S.premium=true;emit('checkout_click',{plan:S.plan,url:CONFIG.checkoutUrl});toast('Demo only — no charge made');go(22);break;
     case 'closepw':case 'notnow':S.premium=false;emit('paywall_close',{via:a});go(offerOpen()?21:22);break;
-    case 'offerbuy':S.offerSeen=true;clearInterval(window.__oiv);if(!offerCheckout()){S.premium=true;S.plan='offer';toast('Demo only — no charge made');go(22)}break;
+    case 'offerbuy':S.offerSeen=true;clearInterval(window.__oiv);if(!offerCheckout()){S.premium=false;S.pack=true;toast('Demo only — no charge made');go(22)}break;
     case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);S.premium=false;emit('offer_decline');go(22);break;
     case 'remind':S.remind=!S.remind;if(S.remind)toast('Demo only — no permission prompt shown');render();break;
     case 'lesson':toast('Today’s reset would start here (demo)');break;
