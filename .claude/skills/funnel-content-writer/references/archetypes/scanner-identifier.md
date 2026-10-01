@@ -30,3 +30,8 @@ One layer by default: subscription (unlimited scans + gated detail + collection)
 ## Known variants
 
 - `scanner/coinin` (17) — reference; two-sided capture, educational error mini-game.
+- **scanner/coinin-collector** (2026-10-01): web variant with labelled illustrated persona host, scan with sample-item fallback, free ID card plus level badge before email gate, one-time single-item report as offer; base for the other collectibles funnels (swap the `COLLECT` block).
+- **scanner/coinin-cards** (2026-10-01): trading cards; one "which card grades higher" game with no value figures, raw range plus grade-potential teaser, sports-card branch at bridge; descriptive text instead of game/grader trademarks.
+- **scanner/coinin-antique** (2026-10-01): heirlooms/estates; inherited/estate-clearing answer drives a calming "Don't clear it all yet" bridge; free ID card, paywall holds value range, where to sell and real-or-reproduction read.
+- **scanner/coinin-notes-stamps-gems** (2026-10-01): three object branches picked on screen 2 with branch-specific questions, game and sample; no persona host; "real or fake" is an indication, never certification; value always a range.
+- **scanner/coinin-plant** (2026-10-01): living subject; free plant ID plus likely-cause indication plus days 1-2 of a 7-day plan; whole-plant then leaf close-up photos; diagnosis is an indication, no pesticide or toxicity claims.

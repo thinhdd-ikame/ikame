@@ -50,3 +50,16 @@ land, ordering mistakes.>
 ## Known variants
 <One line per funnel written from this archetype that deviated, and why.>
 ```
+
+## House rules learned (2026-10)
+
+Cross-cutting rules enforced across the Squad 1M niche funnels; apply them to every new brief.
+
+- Last-chance offer is a smaller one-time pass (or different SKU) that lists what is NOT included, never a duplicate or cheaper copy of a paywall tier; its own screen, shown once.
+- Proof, rating, review-count and guarantee blocks stay hidden while their `{{token}}` is unset, gated by a "not a token" test (`!/^\{\{/.test(v)`), since a token string is truthy.
+- Never call a paid intro "free"; strike-through only against the same plan length; renewal price beside every intro price.
+- Plan and progress milestones are goals derived from the user's inputs and labelled as goals, not outcome promises.
+- Sample or seeded results are labelled as samples; photo or scan demos say the demo cannot identify real photos.
+- 18+ gates ask birth month and year and persist the block in sessionStorage.
+- Health niches: neutral default headline with no condition labels, no scores or cut-offs implying diagnosis, "Need help now?" on every screen including paywall and offer bars, expectations screen before sensitive items.
+

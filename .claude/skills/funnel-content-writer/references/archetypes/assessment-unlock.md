@@ -28,3 +28,7 @@ Two paths on one paywall: a clean one-time report, and library access (paid tria
 
 ## Known variants
 - `testlibrary` (15 screens) — reference implementation, IQ test; notes cover the Likert/profile reskin for personality tests.
+- **testlibrary/personality-mbti** (2026-10-01): Likert reskin of the IQ brief; 40 statements over 4 traits give 4-letter type plus trait percentages; profile card replaces certificate; trademarked test never named.
+- **testlibrary/archetype** (2026-10-01): 24 forced-choice image pairs instead of Likert; 12-archetype wheel with lead, supporting and shadow; optional gender screen only for card pronouns.
+- **testlibrary/autism-traits, adhd-traits, relationship-patterns** (2026-10-01): health trait self-checks; expectations screen before first item, banded results with no total, label or cut-off, persistent Need-help strip, support sheet; neutral landing headline (condition named only for organic); one-area offer smaller than the report. autism-traits: 30 items/5 areas, private visit-notes artifact instead of share card. adhd-traits: 18 frequency items/3 areas. relationship-patterns: 24 items/4 areas, describes own experience never labels others, DV hotline.
+- **testlibrary/brain-memory** (2026-10-01): five playable mini-games replace question items; own 0-100 per game, no norm or age scale; not-a-medical-test and Need-help on every screen; plan goals derived from own scores; offer is score summary.
