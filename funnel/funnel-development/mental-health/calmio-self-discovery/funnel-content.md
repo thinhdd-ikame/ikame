@@ -14,14 +14,14 @@ creative_screens:
   reveal: 17
   first-chat: 19
 motion: >
-  a soft lavender speech bubble reading "I used to people-please too." fades in
+  a soft lavender speech bubble reading "Let's find your pattern." fades in
   beside an illustrated guide silhouette, then eight small cards slide into
   three quiet clusters while a sage flower bud opens.
 ---
 
 # Funnel Content - Calmio: Self-Discovery with an Illustrative Guide
 
-Calmio is a chat-based AI companion for reflective conversation (18+, "a companion, not a therapist"). This is the **self-discovery / people-pleasing** niche: the user who says yes too fast, is hard on themselves afterwards and finds it hard to hold a boundary. The funnel is hosted by **Mara, an illustrative guide**: a fictional AI character who opens with "I used to people-please too" and walks the user through eight short statements. They give eight one-tap answers (a 4-step scale on people-pleasing, the inner critic and boundaries), one goal and a name. They get an **inner pattern profile** (Peacekeeper, Self-Editor, Over-Giver or Steady One), **three small practices for this week** and a **4-week pattern plan**. Before the paywall they do a real short chat in which Mara helps them rehearse one small "no". **Archetype: personalization-quiz** (Calmio mental-health variant, as in `mental-health/calmio-stress` and `calmio-life-planner`): money is a plan subscription sold after a data quiz, not a per-message meter. It borrows the first live conversation from companion-chat. 22 screens, A/B copy on every one.
+Calmio is a chat-based AI companion for reflective conversation (18+, "a companion, not a therapist"). This is the **self-discovery / people-pleasing** niche: the user who says yes too fast, is hard on themselves afterwards and finds it hard to hold a boundary. The funnel is hosted by **Mara, an illustrative guide**: a fictional AI character who opens with "Saying yes got tiring" (variant B: "I used to people-please too", pending sign-off) and walks the user through eight short statements. They give eight one-tap answers (a 4-step scale on people-pleasing, the inner critic and boundaries), one goal and a name. They get an **inner pattern profile** (Peacekeeper, Self-Editor, Over-Giver or Steady One), **three small practices for this week** and a **4-week pattern plan**. Before the paywall they do a real short chat in which Mara helps them rehearse one small "no". **Archetype: personalization-quiz** (Calmio mental-health variant, as in `mental-health/calmio-stress` and `calmio-life-planner`): money is a plan subscription sold after a data quiz, not a per-message meter. It borrows the first live conversation from companion-chat. 22 screens, A/B copy on every one.
 
 **Reference funnel (competitor teardown, AdSpyLab Funnels Library, via `calmio.md` section 4):** Liven Neurobalance (37 screens, about 368K ads, a saturated angle). Its spine (persona hook, age, Likert statements on people-pleasing, inner critic and boundaries, what to change, name, loader, profile, email, paywall) is kept. The competitor screens are verified from AdSpyLab captures, not live.
 
@@ -35,11 +35,11 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 
 ### 1. Hook A - Meet Mara
 **Purpose:** Open with a relatable first-person line from a clearly fictional guide, before asking for anything.
-**Headline A:** I used to people-please too.
-**Headline B:** Saying yes got tiring.
+**Headline A:** Saying yes got tiring.
+**Headline B:** I used to people-please too.
 **Body A:** Meet Mara, an illustrative guide. Find your pattern.
 **Body B:** A short quiz, a pattern profile, a chat.
-**Visual:** Warm off-white with a lavender wash and a calm window photo. Center: Mara as a flat illustration (a soft lavender silhouette in a round flower badge, no face detail). A chip right under her: "Illustrative guide · fictional AI character". One soft bubble: "I used to people-please too." A sage flower bud breathes beneath. Sage button pinned bottom. "Need help now?" link top-right, persistent on every screen to #22.
+**Visual:** Warm off-white with a lavender wash and a calm window photo. Center: Mara as a flat illustration (a soft lavender silhouette in a round flower badge, no face detail). A chip right under her: "Illustrative guide · fictional AI character". One soft bubble: "Let's find your pattern." A sage flower bud breathes beneath. Sage button pinned bottom. "Need help now?" link top-right, persistent on every screen to #22.
 **Microcopy:** Under CTA: "18+ · Mara is a fictional AI guide, not a person or an expert · Calmio is AI, not a substitute for professional care". "Need help now?" opens the crisis sheet: "Call or text 988 (US) · Outside the US: findahelpline.com · In danger now? Call your local emergency number." One tap, no sign-in, no paywall.
 **CTA:** Get started
 
@@ -74,7 +74,7 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Body A:** It helps you reflect. It doesn't diagnose or treat.
 **Body B:** For crisis or medical care, please reach real people.
 **Visual:** Four icon rows on a white card (chat bubble, person-outline, lifebuoy, lock). Sage icons, generous spacing, nothing else on screen.
-**Microcopy:** Rows: "Mara is an illustrative guide, a fictional AI character" · "She is not a real person, a coach or an expert" · "In crisis? Call or text 988 (US) or visit findahelpline.com" · "Your chats stay private". Footer: "Calmio is a self-reflection companion. It does not provide medical advice, diagnosis or treatment."
+**Microcopy:** Rows: "Mara is an illustrative guide, a fictional AI character" · "She is not a real person, a coach or an expert" · "In crisis? Call or text 988 (US) or visit findahelpline.com" · "You choose what you share". Footer: "Calmio is a self-reflection companion. It does not provide medical advice, diagnosis or treatment."
 **CTA:** I understand
 
 ### 5. Statement 1 - People-pleasing
@@ -232,11 +232,11 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 
 ### 15. Private by design
 **Purpose:** The trust beat after the investment stage and before the reveal. Proof has to be real; this category is where fake experts and fake stats do the most harm. The rating block ships only when real store data exists.
-**Headline A:** Private. Judgment-free. Yours.
-**Headline B:** Your answers stay yours.
-**Body A:** Your chats stay private. Nothing is ever public.
+**Headline A:** Judgment-free. Yours to share.
+**Headline B:** You choose what to share.
+**Body A:** You choose what you share. No judging.
 **Body B:** No judging, no streak guilt.
-**Visual:** Three lucide rows (lock, eye-off, trash) on a white card. The row "delete" ships only if in-app deletion exists. When `{{app_rating}}` and `{{rating_count}}` are real, a rating card with a real store review appears above the rows; while they are tokens the card is hidden.
+**Visual:** Rows on a white card: "You choose what you share" (lock), "No judging, no streak guilt" (eye-off). A "Delete your chats anytime" row (trash) renders only when `CONFIG.deletion` is true, and a sourced privacy line only when `CONFIG.privacyVerified` is true; both default to off. When `{{app_rating}}` and `{{rating_count}}` are real, a rating card with a real store review appears above the rows; while they are tokens the card is hidden.
 **Microcopy:** Pull rating and count live from this app's own store listing, never hardcode, never in the headline. Review cards are real store reviews only, quoted as shown. No press logos, no "expert" or staff photos unless each is a real, named, credentialed person. Mara is never presented as one.
 **CTA:** Continue
 
@@ -305,7 +305,7 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 **Body A:** Four weeks of small practices and chats.
 **Body B:** Price shown upfront. We remind you before renewing.
 **Plans:** 1-week intro · **4-week, pre-selected** (matches the 4-week plan, ribbon "Matches your plan") · 12-week anchor. Every card shows `{{price_*}}` big and `then {{renewal_*}} / period` right under it, plus a per-week equivalent `{{week_*}}`. No percent-off badge, no struck price, no decoy.
-**Visual:** Sticky brand bar with close (×) and the persistent "Need help now?" link. Sections in order: personal hero (their profile card, "Mara · illustrative guide" tag and four fact chips: pattern, what you want to change, plan length) · plan block (cards, "Due today" row, CTA, payment badges, secure/cancel row, renewal line) · what's inside (the four weeks as a TOC) · how it works (3 steps) · proof (rating and reviews, shown only when real, hidden while tokens) · refund block (shown only when `refundDays` and terms are real) · FAQ (is this therapy, is Mara a real person, will it fix my patterns, how to cancel, will I be charged again, are chats private, what if I'm in crisis) · plan block again · legal. A sticky bottom CTA slides up while no plan block is visible.
+**Visual:** Sticky brand bar with close (×) and the persistent "Need help now?" link. Sections in order: personal hero (their profile card, "Mara · illustrative guide" tag and four fact chips: pattern, what you want to change, plan length) · plan block (cards, "Due today" row, CTA, payment badges, secure/cancel row, renewal line) · what's inside (the four weeks as a TOC) · how it works (3 steps) · proof (rating and reviews, shown only when real, hidden while tokens) · refund block (shown only when `refundDays` and terms are real) · FAQ (is this therapy, is Mara a real person, will it fix my patterns, how to cancel, will I be charged again, how are chats handled, what if I'm in crisis) · plan block again · legal. A sticky bottom CTA slides up while no plan block is visible.
 **Microcopy:** Under the CTA at body size: "Renews at {{renewal_4w}} every 4 weeks until you cancel. Cancel anytime in your account." Reminder line: "We'll email you before every renewal." Always shown: "Crisis resources are always free." Not shown on this page: timers, promo codes, "no charge yet" wording, usage counters, outcome claims, expert credentials.
 **Fallback offer:** #21. Every way off this page without paying (× and "Not now") goes to #21 first, once per session. Declining it, or closing the paywall a second time, leads to #22 in free mode.
 **CTA:** Start my plan
@@ -340,14 +340,14 @@ Calmio is a chat-based AI companion for reflective conversation (18+, "a compani
 ## Notes
 
 - **Archetype call.** Plan subscription after a data quiz -> personalization-quiz, Calmio variant (see Known variants in `archetypes/personalization-quiz.md`). Borrowed from companion-chat: the first live chat before the paywall (#19). Skipped from the default: decoy tier, countdown upsell, before/after screen, separate premium-preview screen (the three practices on #17 do that job), gamified wheel.
-- **Persona rule (the main risk).** Mara is a fictional AI character, labeled "Illustrative guide" on #1, #2, #4, #17, #19 and #20. She is never called a coach, doctor, therapist, PhD or expert, has no credentials, no photo of a real person, no fake testimonial and no claimed results. "I used to people-please too" is a scripted fictional line that is disclosed as fiction on the same screen; legal and clinical review should decide whether to keep it or soften it to "People-pleasing is hard." if a reviewer finds the backstory misleading.
+- **Persona rule (the main risk).** Mara is a fictional AI character, labeled "Illustrative guide" on #1, #2, #4, #17, #19 and #20. She is never called a coach, doctor, therapist, PhD or expert, has no credentials, no photo of a real person, no fake testimonial and no claimed results. The default hook is "Saying yes got tiring."; "I used to people-please too" is a scripted fictional first-person line kept only as variant B, disclosed as fiction on the same screen, pending legal/clinical sign-off; legal and clinical review should decide whether to keep it or soften it to "People-pleasing is hard." if a reviewer finds the backstory misleading.
 - **Mental-health safety, built in.** "Need help now?" on all 22 screens and on the web paywall and offer bars · expectations screen (#4) before any feeling question · crisis detection on every free-text field (#13, #19) · minors blocked with youth resources (#3) · no medication questions · no clinical labels, scores, gauges or percentages (levels are words). Crisis help is never behind the paywall. Clinical and legal review should cover #3, #4, #5-#12, #17 and the crisis sheet, including non-US helplines. The statements are not a validated scale.
 - **Competitor mechanics - reference only, NOT implemented:** PhD or expert persona, pre-set scratch-card discount, countdown timer, personalised promo codes, "-60% applied" against a never-charged anchor, "faster than 93%" mid-test percentage, fake social-proof tickers.
 - **Plans are placeholders.** The structure (1-week / 4-week pre-selected / 12-week anchor) mirrors the competitor layout. All prices are `{{price_*}}` / `{{renewal_*}}` tokens. The real Calmio store lists 1-month and 3-month SKUs (see `mental-health/calmio`); align SKUs before launch. The offer's one-time SKU `{{offer_price}}` must exist as a non-renewing product at checkout. Renewal is shown beside every price and a pre-renewal email is promised, so it must be built.
-- **Unverified.** Calmio's real in-app onboarding, the free-tier scope (the demo assumes one practice and the short chat stay free), the app-store rating, the refund window and the review texts were not viewable; rating, reviews and refund blocks are token-gated and hidden until real values exist. Competitor flows are verified from AdSpyLab captures, not live. The exact Liven statement wording and order after #4 is partly inferred (unverified); the eight statements here are our own wording.
+- **Unverified.** Privacy claims ("chats stay private", "nothing is ever public") and in-app chat deletion are not confirmed; copy says "You choose what you share" and both stay behind `CONFIG.privacyVerified` / `CONFIG.deletion` (off) until confirmed (the demo FAQ says the Privacy Policy explains how chats are handled). Calmio's real in-app onboarding, the free-tier scope (the demo assumes one practice and the short chat stay free), the app-store rating, the refund window and the review texts were not viewable; rating, reviews and refund blocks are token-gated and hidden until real values exist. Competitor flows are verified from AdSpyLab captures, not live. The exact Liven statement wording and order after #4 is partly inferred (unverified); the eight statements here are our own wording.
 - **Profile mapping is our own design,** not taken from a competitor: the average of each dimension's answers picks one of four reflective styles; it needs clinical review. It is never shown as a number or a severity label.
 - **Images:** `gen_images.py` is ready, but no `IKAME_AI_KEY` was available when this demo was built, so `img/` holds calm stand-in photos copied from `mental-health/calmio` and `calmio-stress` under the names `gen_images.py` writes. Run `IKAME_AI_KEY=... python3 gen_images.py --force` to replace them. Mara is drawn in CSS/SVG, not a generated photo.
 - **Drop-off risk:** #3 age gate · #5-#12 eight taps in a row (one tap each, auto-advance, no bridge, so keep the progress bar visible) · #18 email · #20 paywall. Keep #16 at 6-8 s.
 - **Measure separately:** paywall CVR at #20 · offer CVR at #21 (apart from #20) · free-mode to subscribe later · D1/D7 return · refund and chargeback rate (the honesty metric).
-- **A/B first:** (1) #1 "I used to people-please too." vs "Saying yes got tiring." (2) #19 chat before vs after #18. (3) #17 with vs without the Mara note. (4) #20 4-week pre-selected vs 12-week pre-selected.
+- **A/B first:** (1) #1 "Saying yes got tiring." vs "I used to people-please too." (B only after legal/clinical sign-off) (2) #19 chat before vs after #18. (3) #17 with vs without the Mara note. (4) #20 4-week pre-selected vs 12-week pre-selected.
 - **Demo (private Artifact):** https://claude.ai/artifact/EDYPpHw57KdUiQ5i9ykqaK

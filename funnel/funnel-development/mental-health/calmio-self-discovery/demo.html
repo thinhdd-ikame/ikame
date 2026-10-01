@@ -585,6 +585,10 @@ const CONFIG={funnel:'calmio-self-discovery',brand:'Calmio',
      Paid once, 3 days (shorter and narrower than the 1-week tier), NO renewal. compareAt stays null (no same-length plan to strike).
      expiresMin stays null: no timer. Never shown after a safety event (crisis sheet, crisis chat). */
   offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  /* Unverified claims stay off until legal/product confirm them. */
+  deletion:false,            /* true only if in-app chat deletion ships */
+  privacyVerified:false,     /* true only with a sourced privacy statement in privacyLine */
+  privacyLine:'{{verified_privacy_statement}}',
   refundDays:'{{refund_days}}',refundTerms:'{{refund_terms}}',company:'{{legal_entity}}',
   termsUrl:'',privacyUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -786,9 +790,9 @@ const V={
   <div class="scr" style="align-items:center;text-align:center;gap:12px;justify-content:flex-end">
   <div style="margin-bottom:-2px">${mara(104)}</div>
   ${guideChip()}
-  <div class="bubble ai fadein" style="align-self:center;animation-delay:.6s">I used to people-please too.</div>
+  <div class="bubble ai fadein" style="align-self:center;animation-delay:.6s">Let’s find your pattern.</div>
   ${flower('breathe',104)}
-  <h1 class="display" style="font-size:30px;margin-top:0">${t('I used to people-please too.','Saying yes got tiring.')}</h1>
+  <h1 class="display" style="font-size:30px;margin-top:0">${t('Saying yes got tiring.','I used to people-please too.')}</h1>
   <p class="lead">${t('Meet Mara, an illustrative guide. Find your pattern.','A short quiz, a pattern profile, a chat.')}</p></div>
   <div class="foot">${cta('Get started')}<div class="note">18+ · Mara is a fictional AI guide, not a person or an expert · Calmio is AI, not a substitute for professional care</div></div>`,
 2:()=>`<div class="scr center">
@@ -820,7 +824,7 @@ const V={
    <div class="rowi"><span class="w">${ic('msg',18)}</span><span>Mara is an illustrative guide, a fictional AI character</span></div>
    <div class="rowi"><span class="w">${ic('user',18)}</span><span>She is not a real person, a coach or an expert</span></div>
    <div class="rowi"><span class="w">${ic('life',18)}</span><span>In crisis? Call or text 988 (US) or visit findahelpline.com</span></div>
-   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
+   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>You choose what you share</span></div>
   </div></div>
   <p class="hint" style="text-align:center;margin:0">Calmio is a self-reflection companion. It does not provide medical advice, diagnosis or treatment.</p></div>
   <div class="foot">${cta('I understand')}</div>`,
@@ -832,13 +836,14 @@ const V={
   <div class="foot">${cta('Continue',true,'name')}<button class="link" data-a="skipname">Skip for now</button></div>`,
 15:()=>{const RV=reviewsReal();
   return `<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
-  <h1 class="display" style="text-align:center">${t('Private. Judgment-free. Yours.','Your answers stay yours.')}</h1>
-  <p class="lead" style="text-align:center">${t('Your chats stay private. Nothing is ever public.','No judging, no streak guilt.')}</p>
+  <h1 class="display" style="text-align:center">${t('Judgment-free. Yours to share.','You choose what to share.')}</h1>
+  <p class="lead" style="text-align:center">${t('You choose what you share. No judging.','No judging, no streak guilt.')}</p>
   ${ratingReal()?`<div class="rate"><div class="sc">${esc(CONFIG.rating.score)}★</div><div><div class="stars2">★★★★★</div><div class="hint">${esc(CONFIG.rating.count)} ratings on the store</div></div></div>${RV.slice(0,1).map(r=>`<div class="rev">${esc(r.text)}<small>${esc(r.name)} · ${esc(r.meta)}</small></div>`).join('')}`:''}
   <div class="card" style="padding:4px 16px"><div class="rows">
-   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
-   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Nothing is ever public</span></div>
-   <div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your chats anytime <span class="hint">(ships only if in-app deletion exists)</span></span></div></div></div></div>
+   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>You choose what you share</span></div>
+   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>No judging, no streak guilt</span></div>
+   ${CONFIG.privacyVerified?`<div class="rowi"><span class="w">${ic('shield',18)}</span><span>${esc(CONFIG.privacyLine)}</span></div>`:''}
+   ${CONFIG.deletion?`<div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your chats anytime</span></div>`:''}</div></div></div>
   <div class="foot">${cta('Continue')}</div>`},
 16:()=>{const rows=['Reading your answers…','Spotting your pattern…','Choosing small practices…','Almost ready, your profile awaits…'];
   const chips=[goalLabel(),'People-pleasing','Inner critic','Boundaries'];
@@ -873,7 +878,7 @@ const V={
    ['Will it fix my patterns?','No promises. You get small practices and a place to talk them through. It isn’t treatment.'],
    ['How do I cancel?','Any time in your account settings, before the next renewal. No calls, no forms.'],
    ['Will I be charged again?','Yes, unless you cancel. The plan renews at the price and period on the card you pick, and we email you before every renewal.'],
-   ['Are my chats private?','Yes. They stay private and are never public.'],
+   ['How are my chats handled?',CONFIG.privacyVerified?esc(CONFIG.privacyLine):'You choose what you share. The Privacy Policy explains how chats are handled.'],
    ['What if I’m in crisis?','Crisis resources are always free. Tap “Need help now?” any time.']];
   const toc=[...P.weeks.map((w,i)=>[`Week ${i+1} · ${w}`,i===0?'check':'lock']),['Chats with Mara to practise','msg'],['Your three practices, each week','pen']];
   return `<div class="wp" id="wp">
