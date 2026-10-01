@@ -63,16 +63,20 @@ class LintTest(unittest.TestCase):
         self.assertIn("placeholder text (TBD/TODO/lorem)", errs)
 
     def test_placeholder_variations(self):
-        """Test that placeholder detection is case-insensitive and matches variations."""
+        """TBD/TODO are case-sensitive; lorem ipsum is case-insensitive."""
         test_cases = [
             ("TODO fix this", "placeholder text (TBD/TODO/lorem)"),
-            ("todo: implement", "placeholder text (TBD/TODO/lorem)"),
+            ("TBD: implement", "placeholder text (TBD/TODO/lorem)"),
             ("lorem ipsum dolor", "placeholder text (TBD/TODO/lorem)"),
             ("Lorem Ipsum text", "placeholder text (TBD/TODO/lorem)"),
         ]
         for text_addition, expected_err in test_cases:
             errs = lint(GOOD + f"\n{text_addition}\n")
             self.assertIn(expected_err, errs, f"Failed for: {text_addition}")
+
+    def test_spanish_todo_passes(self):
+        self.assertEqual(lint(GOOD + "\nUsa la app todo el día\n"), [])
+        self.assertIn("placeholder text (TBD/TODO/lorem)", lint(GOOD + "\nTODO\n"))
 
     def test_offer_not_paywall(self):
         """Test that 'Paywall — special offer' is not accepted as the offer screen."""

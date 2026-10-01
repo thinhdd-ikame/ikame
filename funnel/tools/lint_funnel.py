@@ -43,7 +43,7 @@ def lint(text):
     has_offer = any(re.search(r"offer|upsell|last.chance", h) and "paywall" not in h for h in screen_heads)
     if not has_offer:
         errs.append("no fallback/last-chance offer screen")
-    if re.search(r"\b(TBD|TODO|lorem ipsum)\b", text, re.I):
+    if re.search(r"\b(TBD|TODO)\b", text) or re.search(r"\blorem ipsum\b", text, re.I):
         errs.append("placeholder text (TBD/TODO/lorem)")
     return errs
 
