@@ -6,7 +6,7 @@ subject: person
 input: daily screen time, biggest time app, after-scroll feeling, subject, level, 2 knowledge-check answers, scroll moment, reminder time, swap minutes, email
 output: hours of scrolling redirected per month + 4-week plan slotted into the user's scroll window
 screens: 23
-monetization: web subscription (3 plans, 1-week intro / 4-week pre-selected / 12-week anchor, renewal shown beside every intro price); store paid 7-day intro as the last-chance offer; activation (install + sign-in) measured separately
+monetization: web subscription (3 plans, 1-week intro / 4-week pre-selected / 12-week anchor, renewal shown beside every intro price); one-time single-subject pass (7 lessons, paid once through the store) as the last-chance offer; activation (install + sign-in) measured separately
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -23,7 +23,7 @@ motion: >
 
 Same app and brand as `learning/mygrowth` (MyGrowth, EXTRAMILE LIMITED: 5-15 minute lessons in History, Biology, Psychology & habits, Communication, Everyday math, Art). This variant is the "swap doomscrolling for learning" angle. **References (adspylab, captured 2026-09-28):** Headway `/onboarding/start` (61 screens, paywall copy "Swap doomscrolling for bite-sized learning"), Deepstash `/growth-plan` (48 screens, doomscrolling in screen text), Nibble ads "Replace scrolling with <topic>" and the healthpost advertorial into Playa. The structure follows the shared learning-plan shape and reuses the `learning/mygrowth` quiz, knowledge checks, palette and verified store rating. **Deliberate differences from the competitors:** (1) the result is *calculated from the screen time the user states*, not a stock "72% ready" percentage; (2) no pseudo-science: no "dopamine detox", "brain rot" or "attention is broken" claims, and no shaming of the user's habit; (3) knowledge checks show the right answer and a fact straight away; (4) no fake discount, timer or "-60% applied" banner: plans show intro and renewal prices together; (5) the plan is built around the user's own scroll moment, one swap per day, not "quit scrolling". **Look:** identical to `learning/mygrowth`: white background, lavender panels `#EBE9F7`, violet gradient `#8488F4 → #7D73E3`, blue `#007BFF` chart line, orange `#FF9F00` accent. Copy rules apply throughout: headline ≤6 words, body ≤12 words, A/B on every screen.
 
-Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_line}}`, `{{scroll_window}}`, `{{reminder_time}}`, `{{swap_minutes}}`, `{{hours_month}}`, `{{hours_week}}`, `{{email}}`, `{{price_1w}}`, `{{renewal_1w}}`, `{{price_4w}}`, `{{renewal_4w}}`, `{{price_12w}}`, `{{renewal_12w}}`, `{{offer_price}}`, `{{offer_renew_price}}`, `{{app_rating}}`, `{{rating_count}}`. Unset personal tokens fall back to: name "you", screen_hours "3", top_app "your feed", subject "History".
+Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_line}}`, `{{scroll_window}}`, `{{reminder_time}}`, `{{swap_minutes}}`, `{{hours_month}}`, `{{hours_week}}`, `{{email}}`, `{{price_1w}}`, `{{renewal_1w}}`, `{{price_4w}}`, `{{renewal_4w}}`, `{{price_12w}}`, `{{renewal_12w}}`, `{{offer_price}}`, `{{app_rating}}`, `{{rating_count}}`. Unset personal tokens fall back to: name "you", screen_hours "3", top_app "your feed", subject "History".
 
 ---
 
@@ -361,15 +361,15 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 **CTA:** Start my plan
 
 ### 22. Last-chance offer (on close)
-**Purpose:** Second chance for users who close the page without paying: a paid 7-day intro plan sold through the store app, terms shown. Not free, no extra discount. Shown once per session, then never again.
-**Headline A:** Wait, {{name}}: try 7 days first
-**Headline B:** Try 7 days of your plan
-**Body A:** Start with 7 days in the app.
-**Body B:** Seven days of lessons, one clear price.
-**Plans:** One offer card: **7-day intro plan in the app**, billed by the store; {{offer_price}} for 7 days, then {{offer_renew_price}} / week until cancelled. Benefits: 7 days of full access, read or listen to every lesson, quizzes, games and streaks. No "free" wording, no struck-through price.
-**Visual:** Same web look as #21: sticky bar with logo and ✕, eyebrow "One-time offer · shown once", one violet-bordered card with course thumbnail, checks, store badges, renewal line, text link "No thanks, back to my plan".
-**Microcopy:** "{{offer_price}} for 7 days, then {{offer_renew_price}} / week until you cancel. Cancel anytime in your store subscriptions." Shown once (sessionStorage `ikf_offer_mygrowth-scroll-swap`); `CONFIG.offer.expiresMin` is `null`, no timer; `CONFIG.offer.period` is `week`.
-**CTA:** Start 7 days
+**Purpose:** Second chance for users who close the page without paying: a smaller one-time pass sold through the store app: 7 lessons in one subject, paid once, no renewal. Not a copy of the 1-week tier, no extra discount. Shown once per session, then never again.
+**Headline A:** {{name}}, try one subject first
+**Headline B:** Start with 7 lessons
+**Body A:** One subject, 7 lessons, paid once.
+**Body B:** No subscription. Nothing to cancel.
+**Plans:** One offer card, a different and smaller product than any paywall tier: **Single-subject pass**, billed once by the store; {{offer_price}} paid once, no renewal. Includes 7 lessons in the user's chosen subject, read or listen, at their own pace. Not included (stated on the card): other subjects, quizzes and games, streaks, the 4-week plan. No "free" wording, no struck-through price.
+**Visual:** Same web look as #21: sticky bar with logo and ✕, eyebrow "One-time offer · shown once", one violet-bordered card with course thumbnail, checks, a "Not included" line, store badges, a "paid once" line, text link "No thanks, back to my plan".
+**Microcopy:** "{{offer_price}} paid once. No renewal, nothing to cancel." Shown once (sessionStorage `ikf_offer_mygrowth-scroll-swap`); `CONFIG.offer.expiresMin` is `null`, no timer.
+**CTA:** Get the pass
 
 ---
 

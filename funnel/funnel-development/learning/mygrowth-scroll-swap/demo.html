@@ -484,13 +484,13 @@ const PLANS={
 };
 const TK=n=>`<span class="tok">{{${n}}}</span>`;
 
-/* Last-chance offer: once per session, on paywall close. Store-app paid 7-day intro, terms shown, no free claim, no extra discount, no timer.
-   price / renews stay tokens until the growth team sets them. compareAt null = nothing struck. expiresMin null = no timer. */
+/* Last-chance offer: once per session, on paywall close. One-time "Single-subject pass" (7 lessons in one subject), paid once through the store, no renewal, no strike-through, no timer.
+   price stays a token until the growth team sets it. expiresMin null = no timer. */
 const CONFIG={funnel:'mygrowth-scroll-swap',
  refundDays:'{{refund_days}}',      /* set to a number once the real guarantee is confirmed; every guarantee line stays hidden while it is a token */
  rating:'{{app_rating}}',ratingCount:'{{rating_count}}',   /* real store data only; rating strips and the rating hero stay hidden while unset */
  reviews:[],                        /* [{q:'verbatim review',by:'First name'}] real store reviews only; review blocks stay hidden while empty */
- offer:{enabled:true,name:'7-day intro plan in the app',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'week',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+ offer:{enabled:true,name:'Single-subject pass',price:'{{offer_price}}',oneTime:true,badge:'',checkoutUrl:'',expiresMin:null}};
 const isTok=x=>/^\{\{.*\}\}$/.test(String(x));
 const refundOn=()=>!isTok(CONFIG.refundDays);
 const ratingOn=()=>!isTok(CONFIG.rating)&&!isTok(CONFIG.ratingCount);
@@ -625,8 +625,8 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
   tick();window.__oiv=setInterval(tick,1000)}
 function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
 function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
-  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
-  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('offer_accept',{price:o.price,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:o.price,oneTime:true,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
@@ -762,17 +762,18 @@ const V={
   return `<div class="scr owrap">
   <div class="obar"><div class="logo"><i>🌱</i>MyGrowth</div><button class="oclose" data-a="offerno" aria-label="No thanks">✕</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="h1 c">${t(nmT()==='you'?'Wait: try 7 days first':`Wait, ${nm()}: try 7 days first`,'Try 7 days of your plan')}</h1>
-   <p class="lead c">${t('Start with 7 days in the app.','Seven days of lessons, one clear price.')}</p>
+   <h1 class="h1 c">${t(nmT()==='you'?'Not ready? Try one subject':`${nm()}, try one subject first`,'Start with 7 lessons')}</h1>
+   <p class="lead c">${t('One subject, 7 lessons, paid once.','No subscription. Nothing to cancel.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">
    <div class="pwtop"><span class="thumb" style="background:${s.bg};overflow:hidden">${thumbSubj(sk())}</span><div><div class="eyebrow">Your course</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${courseT()}</div></div></div>
-   <div class="oname"><b>${esc(o.name)}</b><span>Billed by the store, renews weekly until you cancel</span></div>
-   <div class="oprice"><b>${tv(o.price)}</b><span>for 7 days</span></div>
-   <div class="ochecks">${['7 days of full access','Read or listen to every lesson','Quizzes, games and streaks'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
-   ${cta('Start 7 days',true,'offerbuy')}
+   <div class="oname"><b>${esc(o.name)}</b><span>Billed once by the store. No renewal.</span></div>
+   <div class="oprice"><b>${tv(o.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${['7 lessons in '+courseT().toLowerCase(),'Read or listen to every lesson','Yours to finish at your pace'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
+   <p class="ofine" style="text-align:left"><b>Not included:</b> other subjects, quizzes and games, streaks, the 4-week plan.</p>
+   ${cta('Get the pass',true,'offerbuy')}
    <div class="opays"><span>App Store</span><span>Google Play</span></div>
-   <p class="ofine">${tv(o.price)} for 7 days, then ${tv(o.renews)} until you cancel. Cancel anytime in your store subscriptions.</p></div>
+   <p class="ofine">${tv(o.price)} paid once. No renewal, nothing to cancel.</p></div>
   <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
 23:()=>`<div class="scr" style="padding-top:14px"><div class="okhead"><span class="lg">🌱</span><span class="gc">✓</span></div>
   <h1 class="h1 c">${t(nmT()==='you'?"You're in!":`You're in, ${nm()}!`,'Last step: open the app')}</h1>
@@ -833,7 +834,7 @@ function renderPanel(){
     ['Email',S.email?(S.acct?`${S.email} (via ${S.acct})`:S.email):'—'],
     ['Marketing emails',S.mkt?'Opted in':'Not opted in'],
     ['Plan',S.paid?`${PLANS[S.plan].n} (demo, not charged)`:S.i>=PW_N?`${PLANS[S.plan].n} selected`:'—'],
-    ['Offer',S.offer?'Accepted (7-day intro)':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
+    ['Offer',S.offer?'Accepted (one-time pass)':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 }
@@ -862,7 +863,7 @@ phone.addEventListener('click',e=>{
     case 'faq':{const y=cur().querySelector('.scr').scrollTop;S.faq=S.faq===+v?-1:+v;render();cur().querySelector('.scr').scrollTop=y;break}
     case 'buy':S.paid=true;toast('Demo only — no charge made');go(23);break;
     case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('Would leave the funnel (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast("Would open the store app's 7-day intro (demo)");break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast("Would open the store app's one-time pass (demo)");break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast('Would open the store (demo)');break;
     case 'open':toast('Would deep-link into the app (demo)');break;
