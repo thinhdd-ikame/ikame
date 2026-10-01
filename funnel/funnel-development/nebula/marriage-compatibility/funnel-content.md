@@ -75,7 +75,7 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Headline A:** I am…
 **Headline B:** Who's asking?
 **Body A:** Used to read your chart.
-**Body B:** One tap, then we begin.
+**Body B:** It only shapes your chart.
 **Options:** 👨 Male · 👩 Female · ✨ Non-binary
 **Visual:** Pill options, auto-advance.
 **CTA:** (tap, auto-advances)
@@ -312,26 +312,26 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": the window open, then locked rows: Peak season, Values axis (kids, home, money), Bond axis, What each chart needs (couple) or Your partner profile (single), Your next step, Daily guide in the app.
 4. "How it works": checkout, read it now, keep going in the app.
-5. Rating and reviews (placeholders until real).
-6. Money-back seal (only if the refund policy exists).
+5. Rating and reviews (hidden until real ratings are supplied; placeholder reviews carry no "verified" label).
+6. Money-back seal (rendered only once a real refund policy and period exist; hidden while `{{refund_days}}` is unresolved, also in the offer).
 7. FAQ accordion: When will I get it? · How do I cancel? · Will I be charged again? · Can you predict my wedding date? (No) · What happens to my palm photo?
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
 **Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your window is ready". FAQ answer on dates: "No. A chart shows a window of tendencies for reflection. It cannot name a day or promise an outcome."
-**Fallback offer:** #23, shown once. Declining it goes to #24 with the window and one section open.
+**Fallback offer:** #23, shown once. Declining it goes to #24 with the window and one section open. Buying the pass opens only the window and peak season in #24; the rest stays locked behind the subscription.
 **CTA:** Get my reading
 
 ### 23. Last-chance offer (on close)
 **Purpose:** One second chance after a paywall close, shown once per session.
-**Headline A:** Wait, keep your window
+**Headline A:** Not ready? Get the window
 **Headline B:** One-time offer, shown once
-**Body A:** Unlock everything at a lower first price.
-**Body B:** Your window is ready and waiting.
-**Plans:** One offer card: {{offer_name}} (1 week). {{offer_price}} today with the regular {{price_1w}} struck, then {{renewal_1w}}/week. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the wheels thumbnail, price row, 3 checks, CTA, payment badges, renewal line.
+**Body A:** A smaller pass, paid once. No subscription.
+**Body B:** Just your window and peak season.
+**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (window pass), {{offer_price}} paid once, no renewal, no strike-through price. Includes the full window, the peak season and the reading saved to the email. Not included (stated on the card): three axes, partner profile or what each chart needs, next step, daily guide. Optional {{offer_badge}}.
+**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the wheels thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
 **Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Decline link: "No thanks, show my free reading".
-**CTA:** Claim my offer
+**CTA:** Get the window pass
 
 ---
 
@@ -353,7 +353,7 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 
 - **Drop-off risk:** #7 and #9 (place and partner data) and #10 (name). Mitigations: skip links with fallbacks, #4 reassurance first, #15 as a break. Measure completion per screen and skip rate for #6, #7, #9, #10.
 - **Branches:** status (#2) drives #4 copy, skipping #8 (couple) or #9 (single), the result label (match vs timing), the reading card (what each chart needs vs partner profile) and the next-step card. Single and couple readings get the same depth.
-- **Honesty:** the window is a range of years and a peak season, never a date. Score, window and axis percentages in the demo are deterministic placeholders; production needs the host's chart engine. The hoped timeline (#17) must not simply echo back into the window in production.
+- **Honesty:** the window is a range of years and a peak season, never a date. Score, window and axis percentages in the demo are deterministic placeholders; production needs the host's chart engine. The hoped timeline (#17) is collected for tone only; the demo window does not depend on it, and production must not echo it back into the window.
 - **Monetization:** one subscription layer. Pay-per-minute chat credits exist in Nebula's app; they are not sold here. Measure paywall-to-checkout and offer acceptance separately.
 - **Unverified:** Nebula's and Hint's paywall pricing ladders, promo codes (MARRIAGE93) and the EUR 3.99 "speed up" bump were not copied and not verified here.
 - **Policy:** Meta relationship and personal-attribute rules. Ad copy: no "guaranteed", no "Are you still single?", no "your husband's name". Use "When will you marry?" and the window framing.

@@ -333,12 +333,12 @@ const CONFIG={
   /* Last-chance offer shown ONCE when the paywall is closed without paying.
      Real terms only. compareAt = the regular plan it undercuts (its real price is struck).
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
-  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',renews:'{{renewal_1w}}/week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}  /* one-time Window pass: no renewal, not the 1-week SKU; compareAt only if same plan length */,
   termsUrl:'',privacyUrl:'',subscriptionTermsUrl:'',
   appUrl:'',appStoreUrl:'',playStoreUrl:'',
   onPalmPhoto:null,   /* optional async (blob)=>void; null = the photo never leaves the device */
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
-  reviews:[{name:'{{reviewer}}',meta:'{{country}} · verified',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}} · verified',text:'{{real review text}}'}],
+  reviews:[{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'}],
   company:'{{legal_entity}}',
   maxUploadMB:15
 };
@@ -402,7 +402,7 @@ const nm=()=>(S.name||'').trim();
 const seed=()=>hash([S.dob.y,S.dob.m,S.dob.d,S.xdob.y,S.xdob.m,S.xdob.d,S.status,S.kids,S.live,S.money,S.love,S.feel,S.hope].join('|'));
 const score=()=>52+seed()%40;
 const ax=k=>55+hash(seed()+k)%40;
-const winStart=()=>new Date().getFullYear()+1+(seed()+({y1:0,y3:1,some:2}[S.hope]||0))%3;
+const winStart=()=>new Date().getFullYear()+1+seed()%3; /* demo placeholder: depends on birth data and values only, NOT on the hoped timeline (S.hope) */
 const winTxt=()=>`${winStart()} - ${winStart()+1}`;
 const peakTxt=()=>['Spring','Summer','Autumn','Winter'][seed()%4]+' '+winStart();
 const verdictKey=()=>score()>=70?'soon':'steady';
@@ -524,7 +524,7 @@ const V={
   <div class="trio"><span>${ic('clock',15)} 2-min quiz</span><span>${ic('moon',15)} Birth chart</span><span>${ic('ring',15)} Marriage window</span></div></div>
   <div class="foot">${cta('Start reading')}<p class="note">By continuing you confirm you're 18+ and agree to our Terms of Use and Privacy Policy. For entertainment and reflection only. No date or outcome is guaranteed.</p></div>`,
 2:()=>`<div class="scr">${q(t('Where are you in love?','Your love life now'),t('It shapes which reading we draw.','One tap, then we begin.'))}${opts('status',STATUS)}</div>`,
-3:()=>`<div class="scr">${q(t('I am…','Who\'s asking?'),t('Used to read your chart.','One tap, then we begin.'))}${opts('gender',GENDER)}</div>`,
+3:()=>`<div class="scr">${q(t('I am…','Who\'s asking?'),t('Used to read your chart.','It only shapes your chart.'))}${opts('gender',GENDER)}</div>`,
 4:()=>{const H={single:'Good timing starts with you',dating:'Two charts, one honest look',engaged:'Congratulations, let\'s look closer'};
   return `<div class="scr center tc"><div class="bigwell">${ic('ring',38)}</div><h1 class="display">${t(H[S.status||'single'],'A window, not a date')}</h1><p class="lead">${t('Charts show tendencies, not wedding dates.','Astrology for reflection, never a promise.')}</p></div><div class="foot">${cta('Next')}</div>`},
 5:()=>`<div class="scr">${q(t('Your date of birth','Born on which day?'),t('Your Sun sign anchors the chart.','Needed to draw your chart.'))}${dobRow('dob',true)}
@@ -596,26 +596,27 @@ const V={
    <div class="toc"><div class="open"><span class="n">1</span><span>Marriage window: ${esc(winTxt())}</span><span class="l">${ic('check',16,2.4)}</span></div>${['Peak season and what it means','Values axis: kids, home, money','Bond axis: how you love',partner()?'What each chart needs':'Your partner profile',NEXTTXT[nextKey()][0],'Daily guide in the app'].map((x,i)=>`<div><span class="n">${i+2}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From your answers to your guide</h2>
    <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Read it now','Your full reading opens on this page.'],['Keep going in the app','Log in with your email for your daily guide.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  ${R&&R.score?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
+  ${R&&R.score&&!/\{\{/.test(R.score)?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
    <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${/\{\{/.test(r.name)?'?':esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div><span class="stars" style="margin-left:auto;font-size:12px">★★★★★</span></div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
-  <div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>
+  ${/\{\{/.test(CONFIG.refundDays)?'':`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
   <div class="wfoot">${legal()}<div>For entertainment purposes only. ${tok(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
-23:()=>{const o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price:'';
+23:()=>{const o=CONFIG.offer,refund=/\{\{/.test(CONFIG.refundDays)?'':` ${esc(CONFIG.refundDays)}-day money-back.`;
   return `<div class="wp"><div class="wbar"><div class="brand">${ic('spark',16)} Nebula</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Wait, keep your <em>window</em>','One-time offer, <em>shown once</em>')}</h1>
-   <p class="lead" style="margin-top:8px">${t('Unlock everything at a lower first price.','Your window is ready and waiting.')}</p>
+  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Not ready? Get the <em>window</em>','One-time offer, <em>shown once</em>')}</h1>
+   <p class="lead" style="margin-top:8px">${t('A smaller pass, paid once. No subscription.','Just your window and peak season.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th" style="background:#0E111A">${wheels(8,{anim:false})}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Full reading · 1 week</div></div></div>
-   <div class="oprice">${was?`<s>${tok(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
-   <div class="checks" style="margin:14px 0">${['Peak season and three axes','Your next step','Daily guide in the app'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="orow"><div class="th" style="background:#0E111A">${wheels(8,{anim:false})}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Window pass · one payment</div></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>once</span></div>
+   <div class="checks" style="margin:14px 0">${['Your marriage window, in full','Your peak season','Reading saved to your email'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
+   <p class="hint" style="margin-bottom:10px">Not included: the three axes, partner profile, next step and daily guide.</p>
+   ${cta('Get the window pass',true,'offerbuy')}
    <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-   <p class="fine">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account. ${tok(CONFIG.refundDays)}-day money-back.</p></div></div>
+   <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.${refund}</p></div></div>
   <div class="wsec tc" style="padding-bottom:calc(var(--sab) + 30px)"><button class="link" data-a="offerno">No thanks, show my free reading</button><div class="note" style="margin-top:6px">For entertainment purposes only.</div></div></div>`},
 24:()=>{const vk=verdictKey(),open=(k)=>S.paid||k===0;
   const ac=axisCards(),cards=[['Marriage window: '+winTxt(),`Peak season looks like ${peakTxt()}. A steadier stretch for a big yes, not a date to wait for.`],ac[0],ac[1],ac[2],profileCard(),NEXTTXT[nextKey()]];
