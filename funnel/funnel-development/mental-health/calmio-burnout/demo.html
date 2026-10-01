@@ -521,11 +521,11 @@ const bgph=(name,alt,scrim,eager,cls='')=>`<div class="bgph ${cls}" style="--scr
 const SRC=[['load','💼','Workload'],['team','👥','Team or boss'],['care','🏠','Caregiving'],['off','🔁','No off-switch']];
 const SCALE=[['🌿','Never'],['🌤️','Rarely'],['⛅','Sometimes'],['🌥️','Often'],['🪫','Always']];
 const AXES={
-  ex:{label:'Drained',chip:'Energy',weeks:['Protecting your energy','Small, real rests','Saying a smaller yes','Your recovery rhythm'],
+  ex:{label:'Drained',chip:'Energy',weeks:['Goal: protect your energy','Goal: take small, real rests','Goal: try a smaller yes','Goal: find your recovery rhythm'],
     script:'I’m at capacity this week. I can take this on Monday, not today.',prompt:'What is one thing you can say “not today” to?'},
-  cy:{label:'Detached',chip:'Connection',weeks:['Noticing what wore care down','Reconnecting in small ways','A kinder distance','Your recovery rhythm'],
+  cy:{label:'Detached',chip:'Connection',weeks:['Goal: notice what wore care down','Goal: reconnect in small ways','Goal: try a kinder distance','Goal: find your recovery rhythm'],
     script:'I’m pulling back from extra threads for now. Please send me only what’s urgent.',prompt:'Who is one person you can check in with today?'},
-  ef:{label:'Doubting',chip:'Confidence',weeks:['Naming what went well','Smaller, clearer goals','Trusting your judgment','Your recovery rhythm'],
+  ef:{label:'Doubting',chip:'Confidence',weeks:['Goal: name what went well','Goal: set smaller, clearer aims','Goal: trust your judgment','Goal: find your recovery rhythm'],
     script:'Before I commit, can we agree which one comes first? I’ll do that well.',prompt:'What is one thing you did well this week?'}
 };
 const LIKERT=[
@@ -705,8 +705,8 @@ function chipGrid(k,items){const m=MU[k];
 function weeks(){const A=AX();
   const w1=['Check-in chat · 2 min','One boundary script, in your words','A daily reminder at '+REMIND];
   return `<div class="weeks">
-   <div class="wk"><span class="fi">${f2(true,32,.2)}</span><div class="sub">Week 1 · open</div><h4>${esc(A.weeks[0])}</h4><ul>${w1.map(l=>`<li><i></i>${esc(l)}</li>`).join('')}</ul></div>
-   ${A.weeks.slice(1).map((w,i)=>`<div class="wk dim"><span class="fi">${f2(false,30)}</span><div class="sub">Week ${i+2}</div><h4>${esc(w)}</h4></div>`).join('')}</div>`}
+   <div class="wk"><span class="fi">${f2(true,32,.2)}</span><div class="sub">Week 1 goal · open</div><h4>${esc(A.weeks[0])}</h4><ul>${w1.map(l=>`<li><i></i>${esc(l)}</li>`).join('')}</ul></div>
+   ${A.weeks.slice(1).map((w,i)=>`<div class="wk dim"><span class="fi">${f2(false,30)}</span><div class="sub">Week ${i+2} goal</div><h4>${esc(w)}</h4></div>`).join('')}</div>`}
 
 /* ---------- web paywall blocks ---------- */
 const todayLine=()=>`${tok(CONFIG.plans[S.plan].price)} today`;
@@ -726,6 +726,7 @@ const legal=()=>`<div class="legal"><a>Terms of Use</a><a>Privacy Policy</a><a>S
 function updatePlan(){
   const c=cur();if(!c)return;
   c.querySelectorAll('.wplan').forEach(b=>{const on=b.dataset.v===S.plan;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('.rd').innerHTML=on?ic('check',12,'currentColor',3):''});
+  c.querySelectorAll('[data-planlen]').forEach(e=>e.textContent=CONFIG.plans[S.plan].name);
   c.querySelectorAll('[data-today]').forEach(e=>e.innerHTML=todayLine());
   c.querySelectorAll('[data-renew]').forEach(e=>e.innerHTML=renewLine());
   const sl=c.querySelector('#sumline');if(sl)sl.innerHTML=todayLine();
@@ -745,7 +746,7 @@ const V={
   <div class="scr" style="align-items:center;text-align:center;gap:14px;justify-content:flex-end">
   ${flower('breathe',150)}
   <div class="bubble ai fadein" style="align-self:center;animation-delay:.6s">Long week? I’m here.</div>
-  <h1 class="display" style="font-size:31px;margin-top:6px">${t('Running on empty?','Burnt out, still going?')}</h1>
+  <h1 class="display" style="font-size:31px;margin-top:6px">${t('Running on empty?','Tired, but still going on?')}</h1>
   <p class="lead">${t('A calm companion for when work wears you down.','Short chats and small boundaries, any time.')}</p></div>
   <div class="foot">${cta('Get started')}<div class="note">18+ · Calmio is AI and not a substitute for professional care</div></div>`,
 2:()=>{
@@ -796,10 +797,10 @@ const V={
   <div class="foot">${cta('Continue')}</div>`
   :`<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
   <h1 class="display" style="text-align:center">Private. Judgment-free. Yours.</h1>
-  <p class="lead" style="text-align:center">Your chats stay private. Nothing is ever public.</p>
+  <p class="lead" style="text-align:center">Your chats stay private.</p>
   <div class="card" style="padding:4px 16px"><div class="rows">
    <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
-   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Nothing is ever public</span></div>
+   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Sharing is always your choice <span class="hint">(unverified: confirm with product)</span></span></div>
    <div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your chats anytime <span class="hint">(ships only if in-app deletion exists)</span></span></div></div></div></div>
   <div class="foot">${cta('Continue')}</div>`,
 17:()=>{const rows=['Listening back to your answers…','Weighing energy, care and confidence…','Shaping your four-week recovery plan…','Almost ready, your stage awaits…'];
@@ -817,7 +818,7 @@ const V={
   <h1 class="display" style="font-size:25px">${t(`Your burnout stage: ${esc(G.label)}`,'Where you are right now')}</h1>
   <p class="lead" style="margin-top:-6px">${t(G.line,'A reflection, not a diagnosis. You can change it.')}</p>
   <div class="prompt"><small>One boundary script, for this week</small>“${esc(A.script)}”<button class="link" data-a="copyscript" style="margin-top:8px;padding:0">Copy script</button></div>
-  <div class="eyebrow" style="margin-bottom:-6px">Your 4-week recovery plan</div>${weeks()}
+  <div class="eyebrow" style="margin-bottom:-6px">Goals for your 4-week plan</div>${weeks()}
   <p class="hint" style="text-align:center;margin:0">Not a diagnosis. A starting point you can change.</p></div>
   <div class="foot">${cta('Continue')}</div>`},
 19:()=>`<div class="scr center" style="align-items:center;text-align:center">${flower('float',110,0.42)}
@@ -841,7 +842,7 @@ const V={
   <div class="wsec tight"><span class="eyebrow">${nameOK()?nm()+', your':'Your'} plan is ready</span><h1 class="display" style="font-size:29px">${t('Your recovery plan is ready',nameOK()?`${nm()}, start your recovery`:'Start your recovery')}</h1>
    <p class="lead">${t('Four weeks of check-ins and boundaries, made for you.','Price shown upfront. We remind you before renewing.')}</p>
    <div class="pcard" style="padding:14px 16px"><span class="pill">Your burnout stage</span><h2 style="font-size:26px">${esc(G.label)}</h2>${f2(true,50).replace('class="f2 bloom"','class="f2 bloom pm"')}</div>
-   <div class="facts"><div class="fact">Stage<b>${esc(G.label)}</b></div><div class="fact">Weighs most<b>${esc(A.label)}</b></div><div class="fact">Last break<b>${esc(REST_ALL())}</b></div><div class="fact">Plan<b>4 weeks</b></div></div></div>
+   <div class="facts"><div class="fact">Stage<b>${esc(G.label)}</b></div><div class="fact">Weighs most<b>${esc(A.label)}</b></div><div class="fact">Last break<b>${esc(REST_ALL())}</b></div><div class="fact">Plan<b data-planlen>${esc(CONFIG.plans[S.plan].name)}</b></div></div></div>
   <div class="wsec" id="plans1">${planBlock('a')}</div>
   <div class="wsec"><span class="eyebrow">Inside your plan</span><h2 class="wh2">Everything for your recovery</h2><p class="lead">Week 1 opens today.</p>
    <div class="toc">${toc.map(([l,i],n)=>`<div><span class="n">${n+1}</span><span>${esc(l)}</span><span class="l">${ic(i,16)}</span></div>`).join('')}</div></div>
