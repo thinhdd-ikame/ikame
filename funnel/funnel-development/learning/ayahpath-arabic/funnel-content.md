@@ -173,13 +173,13 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 **CTA:** See my result
 
 ### 13. Your % of Al-Fatiha
-**Purpose:** The aha. A real percentage computed from the six answers: each of the 29 words of the surah that belongs to a correctly answered word is counted (repeats count each time, "Not sure" counts as unknown, unchecked words are not counted). The number is therefore a floor, and the screen says so.
+**Purpose:** The aha. A real percentage computed from the six answers: each of the 29 words of the surah that belongs to a correctly answered word is counted (repeats count each time, "Not sure" counts as unknown, unchecked words are not counted). It is an estimate from six answers, not a measurement: a lucky guess counts, so the screen says "from your 6 answers" and the footnote says guesses may count.
 **Headline A:** You know {{pct}}% of Al-Fatiha
 **Headline B:** Your starting point: {{pct}}%
-**Body A:** At least {{known}} of {{total}} words, from six checked.
+**Body A:** {{known}} of {{total}} words, from your 6 answers.
 **Body B:** Your path covers the rest, word by word.
 **Visual:** Big emerald percentage number, then the full surah in right-to-left lines as live Arabic text; the words the user knows light up gold one by one, the rest stay faded. Below, six rows (Arabic word, transliteration, meaning, "× in the surah", a "You know it" or "To learn" tag).
-**Microcopy:** Footnote: "{{known}} of 29 words counted from your answers. Repeats count each time. Unchecked words aren't counted." Zero-correct variant: Headline A "A fresh start, {{name}}" / Headline B "Starting point: 0%", Body A "Every one of 29 words is a new door." / Body B "Your path starts with the first one." The largest possible value from these six words is 38% (11 of 29); never say more than what was counted.
+**Microcopy:** Footnote: "{{known}} of 29 words counted from your answers. Repeats count each time. Guesses may count; unchecked words aren't counted." Zero-correct variant: Headline A "A fresh start, {{name}}" (no name: "A fresh start") / Headline B "Starting point: 0%", Body A "Every one of 29 words is a new door." / Body B "Your path starts with the first one." The largest possible value from these six words is 38% (11 of 29); never say more than what was counted.
 **CTA:** Build my plan
 
 ### 14. Minutes a day
@@ -219,6 +219,7 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 ### 16. Building your path (loading)
 **Purpose:** Short, honest anticipation; rows name the user's own answers.
 **Headline A:** Building {{name}}'s path…
+**No-name Headline A:** Building your path…
 **Headline B:** Reading your six answers…
 **Steps:**
 - Counting the words you know…
@@ -236,6 +237,7 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 **Purpose:** Capture identity before the plan is revealed; on web the email doubles as the app sign-in (magic link) so there is no separate password to forget.
 **Headline A:** Where should we send it?
 **Headline B:** Save your path, {{name}}
+**No-name Headline B:** Save your path
 **Body A:** Your email signs you in to the app.
 **Body B:** You'll sign in with this email later.
 **Field:** Apple and Google buttons, then an email field (validated), and an optional unchecked "Send me learning tips and offers" checkbox. Marketing opt-in is never pre-checked.
@@ -246,7 +248,7 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 
 ---
 
-## D. Reveal
+## F. Reveal
 
 ### 18. Your path
 **Purpose:** The dated plan, computed from the answers: words left (23 distinct words minus the ones the user knows) ÷ words per day (minutes ÷ 2.5) plus letter days if they cannot read yet. The user sees the words they will actually learn first.
@@ -260,7 +262,7 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 
 ---
 
-## F. Monetization
+## G. Monetization
 
 ### 19. Paywall
 **Purpose:** The single ask, as a long-scroll web sales page. The personalised hero shows the user's own number and goal date; every price shows its renewal price beside it.
@@ -293,7 +295,7 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 
 ---
 
-## G. Payoff
+## H. Payoff
 
 ### 21. Get the app
 **Purpose:** Hand-off after purchase: install, same email, open word lesson 1. The last cliff in web2app is "paid but cannot log in", so the screen names the exact steps.
@@ -317,6 +319,7 @@ A web2app funnel for a Quranic-Arabic learner. The user tells us how well they r
 - The post-Al-Fatiha stages on screen 18 (short surahs, reading practice, memorization, family) must match the app's real catalog.
 - The Al-Fatiha pass is a new product: access length, whether it exists in the store and the billing setup are product decisions, not in the app today.
 - The research spine (ewa-ayahpath.md §9) lists Allah, Rabb, Rahman, kitab, salat, yawm as the test words and a "300 words = 70% of the Quran" claim, both tagged [I] (inferred). This brief deliberately tests Al-Fatiha words only (kitab and salat are not in the surah) and drops the 300-word claim. No Kalaam rating is reused.
+- "We email you before every renewal" (paywall line and FAQ) is a commitment the billing setup must actually fulfil; confirm before launch.
 - No rating, review or guarantee is stated anywhere; they are gated behind `store_rating`, `rating_count`, `store_name`, `refund_days` and hidden while those are tokens.
 
 **Blocks deliberately skipped:** gender/age (analytics only); guilt or closeness-to-God questions (never asked); "now vs after 4 weeks" chart (outcome promise, replaced by the dated word plan labelled as a goal); in-quiz commitment "Yes/No" prompts and pledge screens; spin or scratch rewards; commitment add-ons; a separate lesson micro-demo (the six-word test is the first taste).

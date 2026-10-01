@@ -389,7 +389,7 @@ button{font:inherit;color:inherit;cursor:pointer}
       <dl class="data" id="data"></dl>
     </div>
     <div>
-      <p class="foot-note"><b>Computed from your answers:</b> the % counts every word of Al-Fatiha (29, repeats counted each time, Bismillah included) that belongs to a word you answered correctly (#7-#12); unchecked words are not counted, so it is a floor. Words to learn = distinct words left (23 minus the ones you know). Days = words left / words per day (minutes / 2.5, an assumption) plus letter days if you cannot read yet. Dates are goals, not promised outcomes.</p>
+      <p class="foot-note"><b>Computed from your answers:</b> the % counts every word of Al-Fatiha (29, repeats counted each time, Bismillah included) that belongs to a word you answered correctly (#7-#12); unchecked words are not counted, and lucky guesses may count. Words to learn = distinct words left (23 minus the ones you know). Days = words left / words per day (minutes / 2.5, an assumption) plus letter days if you cannot read yet. Dates are goals, not promised outcomes.</p>
       <p class="foot-note"><b>Needs review before launch:</b> every Arabic string, transliteration, meaning and the word counts must be checked by a qualified scholar and an Arabic linguist. Arabic is live text (Amiri Quran), never baked into images.</p>
       <p class="foot-note"><b>Placeholders:</b> prices, renewals, the offer price, rating and review blocks and the guarantee are gated in <code>CONFIG</code> and stay hidden until real values are set. Pictures are generated placeholders until gen_images.py runs; QR is a placeholder.</p>
       <p class="foot-note">Pick "Other" on screen 4 to see the empty-input state (CTA disabled). Try <code>taken@example.com</code> on #17. No purchase, sign-in or email is made.</p>
@@ -617,14 +617,14 @@ const V={
   <div class="foot">${cta('Begin')}</div>`,
 7:()=>word(0),8:()=>word(1),9:()=>word(2),10:()=>word(3),11:()=>word(4),12:()=>word(5),
 13:()=>{const p=pct(),K=KNOWN(),kt=knownTok(),ok=answered()>0;
-  const head=p>0?t(`You know ${p}% of Al-Fatiha`,`Your starting point: ${p}%`):t(`A fresh start, ${nmT()}`,'Starting point: 0%');
-  const body=p>0?t(`At least ${kt} of ${TOTAL} words, from six checked.`,'Your path covers the rest, word by word.'):t(`Every one of ${TOTAL} words is a new door.`,'Your path starts with the first one.');
+  const head=p>0?t(`You know ${p}% of Al-Fatiha`,`Your starting point: ${p}%`):t(S.name?`A fresh start, ${nm()}`:'A fresh start','Starting point: 0%');
+  const body=p>0?t(`${kt} of ${TOTAL} words, from your 6 answers.`,'Your path covers the rest, word by word.'):t(`Every one of ${TOTAL} words is a new door.`,'Your path starts with the first one.');
   return `<div class="scr"><div class="big">${p}<small>%</small></div>
   <h1 class="h1 c" style="margin-top:-4px">${esc(head)}</h1>
   <p class="lead c" style="margin-top:-6px">${esc(body)}</p>
   ${surah(K)}
   <div class="chk">${TESTS.map((x,k)=>{const y=K.has(x.k);return `<div><span class="ar" lang="ar" dir="rtl">${x.ar}</span><span class="m">${esc(x.tr)}<small>${esc(x.o.find(o=>o[1])[0])} · ${occ(x.k)}× in the surah</small></span><i class="${y?'y':''}">${y?'You know it':'To learn'}</i></div>`}).join('')}</div>
-  <p class="hint" style="text-align:center;margin:0">${kt} of ${TOTAL} words counted from your answers. Repeats count each time. Unchecked words aren't counted.</p></div>
+  <p class="hint" style="text-align:center;margin:0">${kt} of ${TOTAL} words counted from your answers. Repeats count each time. Guesses may count; unchecked words aren't counted.</p></div>
   <div class="foot">${cta('Build my plan')}</div>`},
 14:()=>`<div class="scr"><h1 class="h1">${t('How many minutes daily?','Your daily pace')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Short and steady beats long and rare.','You can change it anytime.')}</p>
@@ -641,10 +641,10 @@ const V={
   <div class="foot">${cta('Continue')}</div>`},
 16:()=>{const rows=['Counting the words you know…','Choosing your first lessons…',`Fitting lessons to ${mins()} minutes…`,'Setting your goal date…'];
   return `<div class="scr" style="gap:14px;padding-top:6px">${hero('img/lantern-path.jpg',150,'A lantern at the end of a winding path of stones')}
-  <h1 class="h1 c" id="h16" style="font-size:24px">${t(`Building ${nm()}'s path…`,'Reading your six answers…')}</h1>
+  <h1 class="h1 c" id="h16" style="font-size:24px">${t(S.name?`Building ${nm()}'s path…`:'Building your path…','Reading your six answers…')}</h1>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct">0%</span></div><div class="bar"><span></span></div></div>`).join('')}</div></div>`},
 17:()=>`<div class="gatebg"><div style="display:flex;flex-direction:column;gap:10px;padding:18px">${hero('img/lantern-path.jpg',150,'')}<div class="stage1"><b>1</b><div class="t">Al-Fatiha, word by word</div></div></div></div><div class="scr" style="padding:0;gap:0"><div class="gsheet">
-  <h1 class="h1">${t('Where should we send it?','Save your path, '+nmT())}</h1>
+  <h1 class="h1">${t('Where should we send it?',S.name?'Save your path, '+nm():'Save your path')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Your email signs you in to the app.',"You'll sign in with this email later.")}</p>
   <button class="btn dark" data-a="acct" data-v="Apple">${APL(18)} Continue with Apple</button>
   <button class="btn white" data-a="acct" data-v="Google"><b style="color:#4285F4">G</b> Continue with Google</button>
@@ -799,7 +799,7 @@ phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INP
 /* panel controls */
 document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);go(n)});
 const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');
-  if(S.i===LOAD_N){const h=document.getElementById('h16');if(h)h.innerHTML=t(`Building ${nm()}'s path…`,'Reading your six answers…')}else render()};
+  if(S.i===LOAD_N){const h=document.getElementById('h16');if(h)h.innerHTML=t(S.name?`Building ${nm()}'s path…`:'Building your path…','Reading your six answers…')}else render()};
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
 document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v;S=INIT();S.v=v;render(true)};
