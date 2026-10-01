@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Check Funnel Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* page (control panel) tokens */
+:root{
+  color-scheme:light;
+  --page:#ECEFF4;--pt1:#15233F;--pt2:#4B5875;--pt3:#77829A;
+  --psurf:#FFFFFF;--psurf2:#E1E6EE;--pborder:#D2D9E3;--pacc:#A8650A;--pacc-ink:#FFFFFF;
+  --k:1;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+    --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+  --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--pt1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+code{font-size:.92em;overflow-wrap:anywhere}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:32px 16px 48px}
+.phonebox{width:calc(390px * var(--k));height:calc(812px * var(--k));flex:none}
+
+/* phone: app brand tokens, fixed in both page themes */
+.phone{
+  --bg:#FFFFFF;--paper:#F6F7F9;--ink:#15233F;--ink-2:#243557;--t2:#4B5875;--t3:#838DA3;
+  --line:#DCE1E9;--line2:#EDF0F4;--acc:#E39B2D;--acc-dim:#E39B2D1F;--acc-ink:#9A5F0C;--err:#C23B22;--ok:#2F7D5B;
+  color-scheme:light;
+  width:390px;height:812px;border-radius:52px;overflow:hidden;position:relative;isolation:isolate;
+  transform:scale(var(--k));transform-origin:0 0;
+  background:#fff linear-gradient(#F1F4F8 1px,transparent 1px) 0 18px/100% 32px;
+  color:var(--ink);border:1px solid #C9D0DB;
+  box-shadow:0 0 0 10px #1A2230,0 0 0 11px #3A4456,0 40px 80px -24px #0A1020aa;
+}
+.phone button:focus-visible,.phone input:focus-visible,.phone summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--ink)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--ink)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--ink);border-radius:1px}
+
+/* simple screen change: fade + small slide */
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+.view.in.b{animation-name:vinb}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes vinb{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--line2)}
+.navspacer{width:36px;flex:none}
+.navlabel{flex:1;text-align:center;font:600 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.segs{flex:1;display:flex;gap:4px}
+.segs span{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.segs span i{display:block;height:100%;background:var(--ink);transition:width .3s ease}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:16px;position:relative}
+.scr.center{justify-content:center}
+.scr>*{flex-shrink:0}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;background:linear-gradient(to top,#fff 70%,#ffffff00)}
+.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+
+.display{font:700 29px/1.14 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
+.display.sm{font-size:25px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.ph{font:500 .82em/1.3 ui-monospace,"Cascadia Mono",Consolas,monospace;border:1px dashed #C98A2A;color:#94600F;background:#FFF7EA;border-radius:6px;padding:0 5px;white-space:nowrap;letter-spacing:0;text-transform:none}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--ink);color:#fff;font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;flex:none}
+.btn:hover{background:var(--ink-2)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:#E4E8EF;color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:4px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.link:hover{color:var(--ink)}
+
+.wm{display:flex;align-items:center;gap:8px;font:700 17px/1 var(--sans);color:var(--ink);letter-spacing:-.01em}
+.wm i{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 11px/1 var(--sans);font-style:normal}
+.hero1{position:relative;height:172px;border-radius:20px;overflow:hidden;background:#F6F4EF;border:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.hero1>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:18% 45%}
+.hero1 .bell3d{margin:0;z-index:1}
+.banner{display:block;width:100%;height:150px;object-fit:cover;border-radius:18px;background:#F6F4EF;border:1px solid var(--line)}
+.banner.pw{height:118px;object-position:50% 52%}
+.tpop{transform-box:fill-box;transform-origin:center;animation:tpop .4s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes tpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+
+.pills{display:flex;flex-direction:column;gap:8px}
+.pill{height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;border-radius:14px;border:1.5px solid var(--ink);background:#fff;text-align:left;width:100%;font-weight:600;font-size:16px;color:var(--ink);transition:background .15s,color .15s}
+.pill:hover{background:var(--paper)}
+.pill.on{background:var(--ink);color:#fff}
+.pill .em{width:24px;text-align:center;font-size:18px}
+.disc{font-size:15px;color:var(--t2);text-align:center;margin:0}
+.disc b{color:var(--ink);font-weight:600}
+.flinks{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:11.5px;color:var(--t3)}
+.flinks span{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+.err{font-size:13px;color:var(--err)}
+.hint{font-size:13px;color:var(--t3)}
+
+.rows{display:flex;flex-direction:column}
+.irow{display:flex;gap:14px;align-items:center;padding:14px 2px;border-top:1px solid var(--line2);font-size:16px;font-weight:500}
+.irow:first-child{border-top:none}
+.irow .em{width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:19px;flex:none}
+.rule{height:1px;background:var(--line)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--t2)}
+.secchip{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font:600 12px/1 var(--sans);color:var(--t2)}
+.box{min-width:0;height:52px;border-radius:14px;background:#fff;border:1.5px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--ink)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--ink);font:400 16px var(--sans)}
+.box.bad{border-color:var(--err)}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:500 13px/1 var(--sans);color:var(--t2)}
+
+/* test */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 1px 0 var(--line),0 10px 24px -18px #15233F66;min-height:120px}
+.seq{font:700 28px/1.2 var(--serif);letter-spacing:.02em;color:var(--ink);text-align:center}
+.seq .gap{display:inline-block;min-width:44px;border-bottom:3px solid var(--acc);color:transparent}
+.wq{font:600 21px/1.35 var(--serif);text-align:center;color:var(--ink);text-wrap:balance}
+.wq b{color:var(--ink);text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:3px;text-underline-offset:4px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.tile{position:relative;border-radius:14px;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;padding:0;transition:border-color .15s,background .15s}
+.tiles.img .tile{height:84px}
+.tiles.txt .tile{height:60px}
+.tile:hover{border-color:#AEB8C9}
+.tile.on{border:2px solid var(--ink);background:#EEF1F6}
+.tile .tl{position:absolute;left:7px;top:6px;font:600 10px/1 var(--sans);color:var(--t3)}
+.tile .tv{font:600 19px/1 var(--sans);color:var(--ink)}
+.cpring{display:grid;place-items:center;position:relative;margin:4px auto 0}
+.cpring .mid{position:absolute;inset:0;display:grid;place-items:center;color:var(--acc)}
+.cpring .mid span{width:64px;height:64px;border-radius:50%;background:var(--acc-dim);display:grid;place-items:center}
+.minitype{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+.minitype .t{font-size:13px;color:var(--t2)}
+.minitype b{display:block;font-size:14px;color:var(--ink)}
+.tip{padding:12px 14px;border-radius:14px;border-left:3px solid var(--acc);background:#FFF9EF;font-size:14px;color:var(--ink)}
+
+/* trust */
+.bignum{font:700 44px/1 var(--serif);text-align:center;color:var(--ink)}
+.bignum .ph{font-size:24px}
+.stars{display:flex;gap:3px;justify-content:center;color:var(--acc)}
+.quote{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px -20px #15233F80}
+.quote q{font:600 17px/1.4 var(--serif);quotes:none;color:var(--ink)}
+.quote .by{font-size:12px;color:var(--t3)}
+.quote.dash{border-style:dashed;background:var(--paper);box-shadow:none}
+.quote.dash q{color:var(--t3);font-weight:500;font-size:15px}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--ink)}
+.step.done .pct{color:var(--ok)}
+.bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ink);width:0}
+.qrot{min-height:92px}
+.qrot .quote{animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fadein{animation:fi .35s ease}
+
+
+/* gate */
+.sum{padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t2)}
+.sum .r{display:flex;justify-content:space-between;gap:10px}
+.sum .r b{color:var(--ink);font-weight:600}
+.blurv{filter:blur(6px);user-select:none}
+.soc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.soc .btn{height:48px;font-size:14px}
+.orline{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t3)}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+.certo{position:relative;border:1.5px dashed #C6CEDA;border-radius:14px;padding:22px 18px 18px;text-align:center;background:#FBFCFD}
+.certo .cl{font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.certo .nl{margin:14px auto 6px;min-height:34px;font:700 24px/1.3 var(--serif);color:var(--ink);border-bottom:2px solid var(--acc);max-width:230px;background:var(--acc-dim);border-radius:6px 6px 0 0}
+.certo .nl.empty{color:#C6CEDA}
+.certo .ls{height:8px;border-radius:4px;background:#E9EDF2;margin:8px auto 0;width:60%}
+
+/* preview + result */
+.pv{padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.pv h4{margin:0;font-size:13px;font-weight:600;color:var(--t2);display:flex;justify-content:space-between;align-items:center}
+.flatbell{position:relative}
+.flatbell .lbl{position:absolute;right:6px;top:4px;font:700 18px/1 var(--serif);color:var(--ink)}
+.sbars{display:flex;flex-direction:column;gap:9px}
+.sbar{display:grid;grid-template-columns:74px 1fr 34px;gap:10px;align-items:center;font-size:13px;color:var(--t2);background:none;border:none;padding:2px 0;text-align:left;width:100%}
+.sbar .trk{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}
+.sbar .trk i{display:block;height:100%;border-radius:4px;background:#8E9AB2}
+.sbar.top{color:var(--ink);font-weight:600}
+.sbar.top .trk i{background:var(--acc)}
+.sbar .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.sbar .tag{font-size:10px;color:var(--acc-ink)}
+.sbar.blur .trk,.sbar .val.blur{filter:blur(3px)}
+.bens{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)}
+.bens div{display:flex;gap:10px;align-items:center}
+.minicert{display:flex;gap:12px;align-items:center}
+.minicert .mc{width:92px;height:64px;border-radius:6px;border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:-5px;display:grid;place-items:center;text-align:center;font:700 10px/1.2 var(--serif);color:var(--ink);background:#fff;flex:none;padding:6px}
+.band{align-self:flex-start;display:inline-flex;gap:6px;align-items:center;padding:6px 11px;border-radius:999px;font:600 13px/1 var(--sans);background:var(--acc-dim);color:var(--acc-ink)}
+.band.b{background:#E9EDF3;color:var(--t2)}
+.method{font-size:12.5px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.stip{font-size:13px;color:var(--ink);background:#FFF9EF;border-radius:10px;padding:8px 10px;min-height:34px}
+.goaltips{padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.goaltips h4{margin:0 0 8px;font-size:14px}
+.goaltips ul{margin:0;padding-left:18px;color:var(--t2);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* paywall + checkout */
+.closex{position:absolute;top:56px;right:16px;z-index:3;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--t2)}
+.pstrip{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--paper);border:1px solid var(--line);margin-right:40px}
+.pstrip b{display:block;font-size:14px}
+.plan{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:16px;border:1.5px solid var(--line);background:#fff;text-align:left;width:100%}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid #AEB8C9;display:grid;place-items:center;flex:none;margin-top:1px}
+.plan.on{border:2px solid var(--ink);padding:12.5px 13.5px}
+.plan.on .radio{border:6.5px solid var(--ink)}
+.plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--ink)}
+.plan .pl{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.plan .pl span:nth-child(odd){color:var(--t3)}
+.plan .pd{font-size:12.5px;color:var(--t2);margin-top:5px}
+.badge{font:700 10px/1 var(--sans);letter-spacing:.05em;background:var(--acc);color:#2A1A02;padding:4px 7px;border-radius:6px}
+.stack{display:flex;flex-direction:column;gap:9px}
+.today{font-size:13.5px;color:var(--ink);text-align:center;text-wrap:balance;font-variant-numeric:tabular-nums}
+.pays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pays span{font:600 11px/1 var(--sans);color:var(--t2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff}
+.checks{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.checks div{display:flex;gap:9px;align-items:flex-start}
+.checks svg{color:var(--ok);flex:none;margin-top:2px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:12px 2px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--t3);font-weight:500}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:0 2px 12px;font-size:13.5px;color:var(--t2)}
+.small{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance;margin:0}
+.ordr{padding:4px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.ordr .r{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line2);font-size:15px;font-variant-numeric:tabular-nums}
+.ordr .r:first-child{border-top:none}
+.ordr .r span{color:var(--t2)}
+.ordr .r b{font-weight:600}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--ink);cursor:pointer;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:#fff}
+.consent.bad{border-color:var(--err)}
+.consent input{width:22px;height:22px;margin:0;flex:none;accent-color:#15233F}
+.pmeth{display:flex;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:3px}
+.pmeth button{flex:1;border:none;background:none;border-radius:9px;padding:9px 0;font-size:13px;font-weight:600;color:var(--t2)}
+.pmeth button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #15233F26}
+.cardrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* certificate */
+.cert{position:relative;padding:22px 18px 16px;border-radius:8px;background:#fff;border:3px double var(--ink);box-shadow:0 18px 30px -20px #15233F80;text-align:center;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.cert::before{content:"";position:absolute;inset:6px;border:1px solid #C6CEDA;border-radius:4px;pointer-events:none}
+.cert .ct{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--t3)}
+.cert .cn{font:700 28px/1.2 var(--serif);color:var(--ink);margin-top:6px}
+.cert .cs{font:700 40px/1 var(--serif);color:var(--ink)}
+.cert .cs small{display:block;font:500 11px/1.4 var(--sans);color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.cert .cb{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;font-size:11px;color:var(--t2);text-align:left}
+.seal{width:52px;height:52px;border-radius:50%;border:2px solid var(--acc);display:grid;place-items:center;font:700 13px/1 var(--serif);color:var(--acc-ink);background:#FFF9EF;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #E39B2D66}
+.cert .cf{font-size:10.5px;color:var(--t3);margin-top:6px}
+.share{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.share button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--t2)}
+.share button:hover{border-color:var(--ink)}
+.sharetxt{font-size:13px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px dashed var(--line)}
+
+/* next tests */
+.lib{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:2px 20px 8px;scroll-snap-type:x mandatory}
+.lcard{flex:none;width:170px;scroll-snap-align:start;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;text-align:left}
+.lcard .ei{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;font-size:20px}
+.lcard .lt{display:block;width:100%;height:96px;object-fit:cover;border-radius:12px;background:#F6F4EF}
+.lcard b{font-size:15px}
+.lcard span{font-size:12px;color:var(--t3)}
+
+.wbar{display:flex;align-items:center;justify-content:space-between;padding:2px 0 4px;margin-right:44px}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:20px;border:2px solid var(--ink);background:#fff;box-shadow:0 0 0 5px var(--acc-dim),0 22px 36px -24px #15233F66}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 11px;border-radius:999px;background:var(--acc);color:#2A1A02;font:700 10.5px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{display:block;font:700 18px/1.2 var(--serif);color:var(--ink)}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:14px;background:var(--paper);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:700 28px/1 var(--serif);color:var(--ink)}.oprice span{color:var(--t2);font-size:13px}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc-ink);font-variant-numeric:tabular-nums}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:9;background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.6s ease forwards;pointer-events:none}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* side panel */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:700 30px/1.1 var(--serif);margin:0 0 8px}
+.panel .intro{color:var(--pt2);margin:0;font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--pborder);border-radius:999px;padding:3px;background:var(--psurf)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--pt2);font-weight:500}
+.seg button.on{background:var(--pt1);color:var(--page)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--pborder);background:none;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--pt2)}
+.ctrls .restart:hover{color:var(--pt1)}
+.panel button:focus-visible{outline:2px solid var(--pacc);outline-offset:2px}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pt3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12px;color:var(--pacc);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--pt2);font-size:13px;width:100%}
+.flow button:hover{background:var(--psurf);color:var(--pt1)}
+.flow button.on{background:var(--psurf2);color:var(--pt1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--pt3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--pt3);border:1px solid var(--pborder);border-radius:4px;padding:1px 5px;flex:none}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--pt3)}
+.data dd{margin:0;color:var(--pt1);overflow-wrap:anywhere}
+.callout{font-size:13px;color:var(--pt2);border:1px solid var(--pborder);background:var(--psurf);border-radius:12px;padding:10px 12px;margin:0}
+.callout b{color:var(--pt1)}
+.foot-note{font-size:12px;color:var(--pt3);margin:0;display:flex;flex-direction:column;gap:6px}
+.foot-note p{margin:0}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:36px;padding-block:24px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+/* personality-specific */
+.pills.lk .pill{height:44px;font-size:15px;border-width:1.5px}
+.stmt{font:700 25px/1.25 var(--serif);margin:0;text-wrap:balance;color:var(--ink);min-height:96px;display:flex;align-items:center}
+.letters{display:flex;gap:8px}
+.ltr{flex:1;aspect-ratio:1;max-height:76px;border-radius:16px;border:2px solid var(--ink);background:#fff;display:grid;place-items:center;font:700 34px/1 var(--serif);color:var(--ink);transition:transform .35s,background .25s}
+.ltr.q{border-style:dashed;border-color:#C6CEDA;color:#C6CEDA;background:var(--paper)}
+.ltr.flip{animation:flipin .5s ease both}
+@keyframes flipin{from{transform:rotateX(90deg)}to{transform:none}}
+.ltr.big{max-height:84px;font-size:38px}
+.nick{font:600 15px/1.3 var(--serif);color:var(--acc-ink);text-align:center}
+.tbars{display:flex;flex-direction:column;gap:12px}
+.tb .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--t2);margin-bottom:5px;gap:8px}
+.tb .top b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.tb .trk{height:10px;border-radius:5px;background:var(--line2);overflow:hidden}
+.tb .trk i{display:block;height:100%;border-radius:5px;background:var(--ink);transition:width .5s ease}
+.tb.hot .trk i{background:var(--acc)}
+.tb.blur .trk,.tb.blur .top b{filter:blur(4px)}
+.tb .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:3px}
+.lockrow{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;border:1px dashed #C6CEDA;background:var(--paper);font-size:14px;color:var(--t2)}
+.lockrow svg{flex:none;color:var(--t3)}
+.str{display:flex;gap:10px;align-items:center;padding:11px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:500}
+.str i{width:26px;height:26px;border-radius:50%;background:var(--acc-dim);color:var(--acc-ink);display:grid;place-items:center;font:700 12px var(--sans);font-style:normal;flex:none}
+.sec{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.sec h4{margin:0;font:700 17px/1.2 var(--serif)}
+.sec p{margin:0;font-size:14px;color:var(--t2)}
+.sec ul{margin:0;padding-left:18px;font-size:14px;color:var(--t2);display:flex;flex-direction:column;gap:4px}
+/* long-scroll paywall */
+.pwbar{display:flex;align-items:center;justify-content:space-between;margin-right:44px;padding-bottom:2px}
+.pwhero{padding:16px;border-radius:20px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 26px -20px #15233F80}
+.pwsec{display:flex;flex-direction:column;gap:10px;padding-top:6px}
+.pwsec>h2{margin:0;font:700 21px/1.2 var(--serif);color:var(--ink)}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.how b{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px;flex:none}
+.guar{padding:14px;border-radius:16px;background:#F3F8F5;border:1px solid #CFE3D8;font-size:14px;color:var(--ink);display:flex;gap:10px}
+.guar svg{color:var(--ok);flex:none;margin-top:2px}
+.mcard{width:150px;height:96px;border-radius:12px;background:#fff;border:2px solid var(--ink);padding:8px;display:flex;flex-direction:column;gap:6px;flex:none}
+.mcard .ml{display:flex;gap:3px}.mcard .ml i{flex:1;height:22px;border-radius:5px;background:#EEF1F6;border:1px solid var(--line);font:400 11px/20px var(--sans);text-align:center;font-style:normal}
+.mcard .mb{height:6px;border-radius:3px;background:var(--line)}.mcard .mb.b{filter:blur(2px)}
+.phimg{display:block;width:100%;height:120px;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#F6F4EF}
+.demo-skip{align-self:center;font-size:12px}
+/* autism-traits specific */
+.atiles{display:flex;gap:6px}
+.atile{flex:1;min-width:0;min-height:68px;border-radius:14px;border:2px solid var(--ink);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink)}
+.atile .te{font-size:22px;line-height:1}.atile .tn{font:600 10px/1 var(--sans);color:var(--t2)}
+.atile.q{border-style:dashed;border-color:#C6CEDA;color:#C6CEDA;background:var(--paper);font:700 26px var(--serif)}
+.atile.flip{animation:flipin .5s ease both}
+.atile.big{min-height:78px}
+.helpbar{flex:none;height:30px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--t3);background:#fff;border-top:1px solid var(--line2);position:relative;z-index:3}
+.helpbar button{background:none;border:none;padding:4px 2px;font:600 12px var(--sans);color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sheet{position:absolute;inset:0;z-index:30;background:#15233F99;display:flex;align-items:flex-end}
+.sheet .sc{background:#fff;border-radius:24px 24px 0 0;padding:22px 20px 28px;width:100%;display:flex;flex-direction:column;gap:12px}
+.sheet h2{margin:0;font:700 22px/1.2 var(--serif)}
+.sheet p{margin:0;font-size:15px;color:var(--t2)}
+.supbox{padding:14px;border-radius:16px;background:#F3F8F5;border:1px solid #CFE3D8;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)}
+.supbox b{font-size:15px}
+.notinc{font-size:13px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px dashed #C6CEDA}.notinc b{display:block;color:var(--ink);margin-bottom:2px}
+/* memory-check specific */
+.gwrap{display:flex;flex-direction:column;gap:12px}
+.gbox{min-height:300px;border-radius:20px;background:#fff;border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:12px;align-items:stretch;justify-content:center;box-shadow:0 10px 24px -20px #15233F80}
+.gcount{height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.gcount i{display:block;height:100%;width:100%;background:var(--acc);transition:width linear}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wcard{padding:12px 6px;border-radius:12px;background:var(--paper);border:1px solid var(--line);text-align:center;font:700 19px/1.1 var(--serif);color:var(--ink)}
+.wchips{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.wchip{min-height:44px;padding:0 2px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font:600 13px var(--sans);color:var(--ink)}
+.wchip.on{border:2px solid var(--ink);background:#EEF1F6}
+.dbig{height:120px;border-radius:16px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font:700 64px/1 var(--serif);color:var(--ink);font-variant-numeric:tabular-nums}
+.dbig.dim{color:#C6CEDA;font-size:22px}
+.dots{display:flex;gap:8px;justify-content:center;min-height:30px;font:700 26px/1 var(--serif);color:var(--ink);letter-spacing:.2em}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.keypad button{height:44px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font:600 19px var(--sans);color:var(--ink)}
+.keypad button:active{background:var(--paper)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:228px;margin:0 auto}
+.pcell{aspect-ratio:1;border-radius:14px;border:1.5px solid var(--line);background:#EEF1F6;transition:background .12s,border-color .12s}
+.pcell.lit{background:var(--acc);border-color:var(--acc)}
+.pcell:disabled{cursor:default}
+.rbtn{width:190px;height:190px;border-radius:50%;margin:0 auto;border:none;background:#C9D0DB;color:var(--ink);font:700 22px var(--serif);display:grid;place-items:center}
+.rbtn.go{background:#2F9E6E;color:#fff}
+.gmsg{min-height:22px;text-align:center;font-size:14px;color:var(--t2)}
+.gmsg.bad{color:var(--err)}
+.fcards{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fcard{padding:10px;border-radius:14px;background:var(--paper);border:1px solid var(--line);text-align:center;display:flex;flex-direction:column;gap:2px;font:600 15px var(--sans)}
+.fcard .fe{font-size:46px;line-height:1.1}
+.fbig{font-size:80px;line-height:1;text-align:center}
+.fopts{display:grid;gap:8px}
+.gres{padding:12px 14px;border-radius:14px;background:#F3F8F5;border:1px solid #CFE3D8;font-size:14px;color:var(--ink);display:flex;gap:10px;align-items:center}
+.gres svg{color:var(--ok);flex:none}
+.gbtn{height:46px;border-radius:12px;border:none;background:var(--ink);color:#fff;font:600 15px var(--sans);width:100%}
+.gbtn[disabled]{background:#E4E8EF;color:var(--t3)}
+.gtiles{display:flex;gap:6px}
+.gt{flex:1;min-width:0;min-height:60px;border-radius:14px;border:2px solid var(--ink);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:21px}
+.gt small{font:600 9.5px/1 var(--sans);color:var(--t2)}
+.gt.q{border-style:dashed;border-color:#C6CEDA;background:var(--paper);color:#C6CEDA;font:700 22px var(--serif)}
+.ring{position:relative;display:inline-grid;place-items:center}
+.ring svg circle.fg{transition:stroke-dasharray .8s ease}
+.ring .rv{position:absolute;inset:0;display:grid;place-items:center;font:700 20px var(--serif);color:var(--ink)}
+.rings5{display:flex;justify-content:space-between;gap:4px}
+.rings5 .rc{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:18px}
+.rings5 .rc small{font:600 9.5px/1.1 var(--sans);color:var(--t2);text-align:center}
+.bigscore{display:flex;align-items:center;gap:16px;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.bigscore b{font:700 44px/1 var(--serif);color:var(--ink);font-variant-numeric:tabular-nums}
+.bigscore b small{font:500 15px var(--sans);color:var(--t3)}
+.bigscore span{font-size:13px;color:var(--t2)}
+.bigscore>div{display:flex;flex-direction:column;gap:4px}
+.arow2{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:#fff}
+.arow2.hot{border:2px solid var(--acc);padding:11px 13px}
+.arow2 .ae{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;font-size:20px;flex:none}
+.arow2 .at{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.arow2 .at b{font-size:15px}.arow2 .at span{font-size:12.5px;color:var(--t2)}
+.arow2 .ap{font:700 20px var(--serif);font-variant-numeric:tabular-nums}
+.arow2.blur .ap,.arow2.blur .at{filter:blur(4px)}
+.arow2 .tg{font:700 10px/1 var(--sans);letter-spacing:.05em;color:var(--acc-ink);background:var(--acc-dim);padding:3px 6px;border-radius:5px;align-self:flex-start;margin-bottom:2px}
+.plan4{display:flex;flex-direction:column;gap:10px}
+.wk{display:flex;gap:12px;padding:13px 14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.wk b.n{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+.wk div{display:flex;flex-direction:column;gap:3px;font-size:14px}
+.wk div span{font-size:12.5px;color:var(--t2)}
+.wk .goal{color:var(--acc-ink);font-weight:600}
+.circ0{width:120px;height:120px;border-radius:50%;border:3px solid var(--ink);margin:0 auto;display:grid;place-items:center;font:700 24px var(--serif);background:#fff;box-shadow:0 0 0 8px var(--acc-dim)}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>Memory check funnel</h1>
+      <p class="intro">An ikame prototype of the 16-screen funnel in <code>testlibrary/brain-memory/funnel-content.md</code>, in the sibling briefs' light "exam paper" look. Health-adjacent niche: for curiosity and training, not a medical test, with a support link on every screen. The five mini-games are playable.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant">
+        <button id="vA" class="on" aria-pressed="true">Copy A</button><button id="vB" aria-pressed="false">Copy B</button>
+      </div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <p class="callout"><b>Play it for real.</b> All five games work: word recall, digit span, pattern, reaction and faces. Use "Demo: fill the rest" or "Skip this game" under a game to move faster. Checkpoints appear after games 2 and 4. Tap "Need help now?" on any screen to see the support sheet.</p>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <div class="foot-note">
+      <p><b>Faked:</b> the loading steps, Google/Apple sign-in, checkout, and share/calendar buttons are simulated, and no charge is made. <b>Real:</b> game scores are computed from what you actually do (formulas in the brief, screen 5). Overall is the mean of games played. No norm, no percentile, no age adjustment.</p>
+      <p><b>Real:</b> the plan structure only. Every price is a token ({{price_*}}, {{renewal_*}}). Review text and the refund window on the paywall are placeholders (dashed). Fill them from real data only. The 5-minute estimate and game settings are guesses until measured.</p>
+      <p><b>Images</b> in <code>img/</code> are placeholder art. Run <code>gen_images.py</code> with <code>IKAME_AI_KEY</code> set to replace them under the same names.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const IMG=/*IMG-START*/{'img/hero.jpg':'img/hero.jpg','img/howto.jpg':'img/howto.jpg','img/report.jpg':'img/report.jpg','img/plan.jpg':'img/plan.jpg','img/next.jpg':'img/next.jpg'}/*IMG-END*/;
+const im=p=>IMG[p]||p;
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-dasharray="2 2"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const starRow=(n=5,s=18)=>`<div class="stars" aria-label="${n} stars">${Array.from({length:n},()=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${IC.star}</svg>`).join('')}</div>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* price/renewal/offer/refund/review tokens keep their {{braces}}; every other placeholder shows as [name] */
+const ph=s=>/price|renew|offer|refund|review/.test(s)?`<span class="ph">{{${s}}}</span>`:`<span class="ph">[${s.replace(/_/g,' ')}]</span>`;
+const tok=v=>esc(v).replace(/\{\{(\w+)\}\}/g,(_,k)=>ph(k));
+
+/* ---------- the five games and their domains ---------- */
+const DM=[
+ {k:'word',gn:'Word recall',n:'Word recall',a:'Verbal memory',e:'📝',what:'How many words you can hold and pick out after a short look.',ex:'Everyday: a shopping list without the paper.',tip:'Say your list out loud once before you leave.'},
+ {k:'digit',gn:'Digit span',n:'Digit span',a:'Working memory',e:'🔢',what:'How long a number string you can hold and repeat back.',ex:'Everyday: a phone number or a code.',tip:'Chunk numbers in twos or threes when you read them.'},
+ {k:'pattern',gn:'Pattern',n:'Pattern',a:'Visual memory',e:'🔷',what:'How long a sequence of positions you can repeat.',ex:'Everyday: finding your way back down a new route.',tip:'Name landmarks on a new route as you pass them.'},
+ {k:'react',gn:'Reaction',n:'Reaction',a:'Processing speed',e:'⚡',what:'How quickly you tap when the signal appears.',ex:'Everyday: reacting to a green light.',tip:'A short break and a glass of water help your focus.'},
+ {k:'faces',gn:'Faces',n:'Faces',a:'Face-name memory',e:'🙂',what:'How well you link a new face with a name.',ex:'Everyday: names at a party.',tip:'Use the name out loud in your first sentence.'}
+];
+const NG=5;
+const GTXT=[
+ [['Remember these words','Eight words. Ten seconds.','Memorize the list','Then pick them out of 16.'],['Which words did you see?','Tap them, then tap Done.','Pick out the words','Tap the ones you saw.']],
+ [['Watch the digits','Then type them back.','Hold the numbers','Longer each time you get it.'],['Now type them back','Use the keypad below.','Your turn','Type the digits in order.']],
+ [['Watch the pattern','Tap it back in order.','Copy the sequence','Tiles light up. You repeat.'],['Now tap it back','Same order as shown.','Your turn','Tap the tiles in order.']],
+ [['Tap on green','Three quick taps.','Be quick','Wait for the green circle.'],['Tap on green','Three quick taps.','Be quick','Wait for the green circle.']],
+ [['Match faces to names','Four faces. Eight seconds.','Faces and names','Remember who is who.'],['Who is this?','Pick the right name.','Name the face','Pick the right name.']]
+];
+const WPOOL=['apple','chair','river','candle','pencil','garden','window','ladder','button','orange','pillow','bridge','hammer','ticket','basket','mirror','cloud','spoon','table','lemon','paper','stone','guitar','bottle'];
+const FPOOL=[['👩🏻‍🦰','Priya'],['👨🏾','Omar'],['👩🏼‍🦳','Lena'],['🧔🏽','Ravi'],['👱🏿‍♀️','Zoe'],['👨🏻‍🦳','Hugo'],['👩🏽‍🦱','Nia'],['👦🏼','Finn']];
+/* panel-jump prefill: a believable mix, so no screen shows an empty result */
+const PRE=[88,60,50,72,75];
+const PREDET=['7 of 8 words','longest 5 digits','longest 4 tiles','average 328 ms','3 of 4 faces'];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- scoring: deterministic, from the user's own games only ---------- */
+const played=()=>S.res.map((r,i)=>typeof r==='number'?i:-1).filter(i=>i>=0);
+const gamesDone=()=>S.res.filter(r=>r!==null).length;
+const overall=()=>{const p=played();return p.length?Math.round(p.reduce((s,i)=>s+S.res[i],0)/p.length):0};
+const strongest=()=>{const p=played();let b=p[0];p.forEach(i=>{if(S.res[i]>S.res[b])b=i});return b===undefined?0:b};
+const asc=()=>played().sort((a,b)=>S.res[a]-S.res[b]||b-a);
+const lowest=()=>asc()[0]??0;
+const second=()=>asc()[1]??lowest();
+const sc=i=>typeof S.res[i]==='number'?S.res[i]:null;
+const scTxt=i=>sc(i)===null?'Skipped':String(sc(i));
+const goalTxt=i=>sc(i)===null?'Goal: play it once to set a baseline':sc(i)>=100?'Goal: hold your score':`Goal: reach ${goalOf(i)}, up from ${sc(i)}`;
+const goalOf=i=>Math.min(100,(sc(i)??0)+10);
+const fmtDur=ms=>{const s=Math.max(1,Math.round(ms/1000));return `${Math.floor(s/60)}m ${String(s%60).padStart(2,'0')}s`};
+const dstr=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return dstr(d)};
+const renewal=p=>addDays(p==='t4'?28:7);
+
+const AGES=[['18-24','🌱'],['25-34','🚀'],['35-44','🧭'],['45-59','🌿'],['60+','🦉']];
+const REASONS=[['stay','🧠','Stay sharp'],['study','📚','Study or work'],['train','🧩','Train my memory'],['curious','🔍','Just curious'],['other','✏️','Other']];
+const reasonKey=()=>S.reason||'curious';
+const LIBR={stay:[['🕰️','Mental Age','5 min'],['💛','EQ Test','8 min']],study:[['💪','Strengths Finder','8 min'],['💼','Career Test','5 min']],train:[['🧠','IQ Test','20 min'],['🕰️','Mental Age','5 min']],curious:[['🌊','Big Five','10 min'],['🕰️','Mental Age','5 min']],other:[['🌊','Big Five','10 min'],['🕰️','Mental Age','5 min']]};
+const PLANS={
+  one:{n:'One-time report',today:'{{price_report}}',then:'Nothing renews',d:'This report and plan. Nothing renews.'},
+  t1:{n:'1-week Full Access',today:'{{price_trial}}',then:'{{renewal_trial}} every 4 weeks',badge:'ALL TESTS'},
+  t4:{n:'4-week Full Access',today:'{{price_4week}}',then:'{{renewal_4week}} every 4 weeks',d:'Renews at {{renewal_4week}} every 4 weeks.'}
+};
+const CONFIG={
+  funnel:'testlibrary-brain-memory',
+  /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
+  reminder:true,
+  /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
+     Smaller than every paywall tier: score summary only, no subscription. Prices are tokens: real values come from checkout config.
+     compareAt:null = nothing struck. renews:null = one payment, nothing renews. expiresMin:null = no timer (the brief promises none). */
+  offer:{enabled:true,name:'Score summary',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  /* refund window in days. Keep the token until it is a real policy: the guarantee line is hidden while it is a token. */
+  refundDays:'{{refund_days}}',
+  /* real, current reviews only: {items:[{q:'...',n:'First name',c:'Country',p:'Platform'}], rating:{value:'4.x',source:'...'}}.
+     null = no stars, no cards, no "reviews" claims anywhere. */
+  reviews:null
+};
+const isTok=v=>v===null||v===undefined||/\{\{/.test(String(v));
+const REV=()=>Array.isArray(CONFIG.reviews&&CONFIG.reviews.items)?CONFIG.reviews.items:[];
+const hasRev=()=>REV().length>0;
+PLANS.offer={n:esc(CONFIG.offer.name),today:CONFIG.offer.price,then:CONFIG.offer.renews||'Nothing renews',later:CONFIG.offer.renews||''};
+const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
+
+const INIT=()=>({v:'A',i:1,hist:[],age:'',under:false,reason:'',reasonOther:'',g:0,gph:0,gdone:false,res:Array(NG).fill(null),det:Array(NG).fill(''),cp:0,t0:null,dur:null,email:'',name:'',nameSkipped:false,plan:'t1',offerSeen:false,offerEnd:null,consent:false,pay:'card',cardNo:'',cardExp:'',cardCvc:'',paid:false,paidPlan:null,upsell:false,err:'',errKind:''});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nameOk=()=>S.name.trim();
+const nm=()=>esc(nameOk()||'you');
+/* name-led headings fall back cleanly when the name was skipped */
+const lead_=txt=>nameOk()?`${esc(S.name.trim())}, ${txt}`:txt.charAt(0).toUpperCase()+txt.slice(1);
+const tail=txt=>nameOk()?`${txt}, ${esc(S.name.trim())}`:txt;
+
+const SCREENS=[
+ {n:1,g:'A. Hook',l:'Lander - how sharp is your memory'},{n:2,g:'A. Hook',l:'Your score is just yours'},{n:3,g:'A. Hook',l:'Why are you here',tag:'Other'},{n:4,g:'A. Hook',l:'Before you play'},
+ {n:5,g:'B. Investment',l:'Mini-game',tag:'×5'},{n:6,g:'B. Investment',l:'Checkpoint',tag:'×2'},
+ {n:7,g:'C. Trust',l:'Trust beat'},{n:8,g:'D. Anticipation',l:'Scoring',tag:'auto'},
+ {n:9,g:'E. Gate',l:'Email gate'},{n:10,g:'E. Gate',l:'Name for your report'},
+ {n:11,g:'D. Anticipation (tease)',l:'Score preview'},
+ {n:12,g:'F. Monetization',l:'Paywall',tag:'long page'},{n:13,g:'F. Monetization',l:'Last-chance offer',tag:'once'},{n:14,g:'F. Monetization',l:'Order summary + consent',tag:'consent'},
+ {n:15,g:'G. Payoff',l:'Your memory report'},{n:16,g:'G. Payoff',l:'4-week training plan',tag:'2nd layer'}];
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let GT=[],timer=null,timer2=null,pend=null,gid=0;
+const later=(fn,ms)=>{const id=setTimeout(fn,ms);GT.push(id);return id};
+function clearTimers(){clearInterval(timer);clearTimeout(timer);clearInterval(timer2);clearTimeout(pend);timer=timer2=pend=null;GT.forEach(clearTimeout);GT=[];gid++}
+
+function go(n,push=true){clearTimers();fillTo(n);const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.errKind='';render(dir)}
+window.go=go;
+let backing=false;
+function back(){clearTimers();let p=S.hist.pop();if(p===13&&S.offerSeen)p=S.hist.pop();if(p===13&&S.offerSeen)p=12;if(p){S.i=p;S.err='';S.errKind='';backing=true;try{render('b')}finally{backing=false}}}
+window.back=back;
+const EVENTS=window.__ikfEvents=[];
+function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p)}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+
+/* fills whatever earlier screens would have collected, so a panel jump (or a direct go()) always renders realistically */
+function fillTo(n){
+  if(n>1&&!S.age)S.age='25-34';
+  if(n>3&&!S.reason)S.reason='curious';
+  if(n>7){S.res=S.res.map((r,i)=>r===null?PRE[i]:r);S.det=S.det.map((d,i)=>d||PREDET[i]);if(S.dur===null)S.dur=240000}
+  if(n===6){const k=Math.max(0,Math.min(1,S.cp||0));S.cp=k;const upto=k?4:2;for(let i=0;i<upto;i++)if(S.res[i]===null){S.res[i]=PRE[i];S.det[i]=PREDET[i]}if(S.t0===null)S.t0=Date.now()}
+  if(n===5&&S.t0===null)S.t0=Date.now();
+  if(n>9&&!S.email)S.email='maya@example.com';
+  if(n>10&&!S.name&&!S.nameSkipped)S.name='Maya';
+  if(n>14&&!S.paid){S.paid=true;S.paidPlan=S.plan}
+}
+
+/* ---------- nav bar per screen ---------- */
+function segs(){return `<div class="segs" aria-label="Game progress">${DM.map((_,j)=>`<span><i style="width:${S.res[j]!==null?100:0}%"></i></span>`).join('')}</div>`}
+function nav(){
+  const b=`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`,sp='<div class="navspacer"></div>';
+  switch(S.i){
+    case 2:case 3:case 4:case 10:case 11:case 14:return `<div class="nav">${b}<div style="flex:1"></div>${sp}</div>`;
+    case 5:return `<div class="nav"><button class="iconbtn" data-a="tback" aria-label="Back">${ic('back',22)}</button>${segs()}${sp}</div>`;
+    case 6:return `<div class="nav">${sp}${segs()}${sp}</div>`;
+  }
+  return '';
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+
+/* ---------- shared pieces ---------- */
+const wordmark=()=>`<div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>TestLibrary</div>`;
+const gtiles=(done=NG,q=false)=>`<div class="gtiles" role="img" aria-label="Five memory games">${DM.map((d,i)=>q||i>=done?`<div class="gt q">?</div>`:`<div class="gt">${d.e}</div>`).join('')}</div>`;
+function ring(p,s=54,color='#15233F',inner='',w=6){const r=(s-w-2)/2,C=2*Math.PI*r,c=s/2;
+  return `<span class="ring" style="width:${s}px;height:${s}px"><svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="#DCE1E9" stroke-width="${w}"/><circle class="fg" data-c="${C.toFixed(1)}" cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${(C*p/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/></svg><span class="rv">${inner}</span></span>`}
+function setRing(el,p,color){const f=el.querySelector('circle.fg');if(!f)return;const C=+f.dataset.c;f.style.strokeDasharray=`${(C*p/100).toFixed(1)} ${C}`;if(color)f.setAttribute('stroke',color)}
+const bigScore=(blur=false)=>`<div class="bigscore">${ring(overall(),84,'#E39B2D',`<span style="font-size:11px;color:var(--t3)">/100</span>`,8)}<div><b>${overall()}<small> / 100</small></b><span>${played().length?'Based on today’s '+(played().length===NG?'five':played().length)+' game'+(played().length===1?'':'s'):'No games played'}</span></div></div>`;
+function areaRow(i,{blur=false,hot=false,tag=''}={}){const D=DM[i];
+  return `<div class="arow2 ${hot?'hot':''} ${blur?'blur':''}"><span class="ae">${D.e}</span><div class="at">${tag?`<span class="tg">${tag}</span>`:''}<b>${D.n}</b><span>${D.a}</span></div><b class="ap">${blur?'00':scTxt(i)}</b></div>`}
+const otherAreas=L=>[...Array(NG).keys()].filter(i=>i!==L);
+const reviewCard=r=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${esc(r.q||'')}”</q><span class="by">— ${esc(r.n||'')}${r.c?', '+esc(r.c):''}${r.p?' · '+esc(r.p):''}</span></div>`;
+const quoteBlock=i=>hasRev()?reviewCard(REV()[i%REV().length]):'';
+const miniCard=()=>`<div class="mcard"><div style="font:700 28px/1 var(--serif);color:var(--ink)">${overall()}<small style="font:500 11px var(--sans);color:var(--t3)"> / 100</small></div><div class="mb"></div><div class="mb b" style="width:70%"></div><div class="mb b" style="width:85%"></div></div>`;
+const pays=`<div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>`;
+const DISC='For curiosity and training. Not a medical test, not a diagnosis. Talk to a doctor about any health concern.';
+const helpbar=()=>`<div class="helpbar"><button data-a="help">Need help now?</button><span>· Not a medical test</span></div>`;
+const SUPPORT=`<h2>Need help now?</h2><p><b>Worried about your memory or health?</b> A doctor or GP can help, and you don’t need a result to ask.</p><p><b>In danger now?</b> Call your local emergency number.</p><p>Outside the US: <b>findahelpline.com</b>.</p>`;
+const supbox=()=>`<div class="supbox"><b>Need help now?</b><span>Support is free and never behind a paywall.</span><button class="btn ghost" data-a="help" style="height:44px;font-size:14px">Open support options</button></div>`;
+const todayLine=p=>p==='one'?`One payment of ${tok(PLANS.one.today)}. Nothing renews.`:`Today: ${tok(PLANS[p].today)}. On ${renewal(p)}: ${tok(p==='t1'?'{{renewal_trial}}':'{{renewal_4week}}')}, then every 4 weeks until you cancel.`;
+function planBlock(tag){const p=S.plan;
+  return `<div class="stack" role="radiogroup" aria-label="Plans ${tag}">${['one','t1','t4'].map(k=>{const P=PLANS[k];return `<button class="plan ${p===k?'on':''}" data-a="plan" data-v="${k}" role="radio" aria-checked="${p===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${P.n}${P.badge?`<span class="badge">${P.badge}</span>`:''}</span><span class="pl"><span>Today</span><b style="font-weight:600">${tok(P.today)}</b><span>Then</span><b style="font-weight:600">${tok(P.then)}</b></span>${P.d?`<span class="pd" style="display:block">${tok(P.d)}</span>`:''}</span></button>`}).join('')}</div>
+  <div class="today">${todayLine(p)}</div>
+  <button class="btn" data-a="checkout">Continue to checkout</button>`}
+const reasonTxt=()=>{const k=reasonKey();return k==='other'?(S.reasonOther.trim()?esc(S.reasonOther.trim()):'your own reason'):REASONS.find(r=>r[0]===k)[2]};
+
+/* ---------- the games (all playable) ---------- */
+let GS={};
+const gEl=()=>document.getElementById('gbox');
+const gtxt=(g,ph,k)=>GTXT[g][ph][(S.v==='B'?2:0)+k];
+function gtitle(ph){S.gph=ph;const h=document.getElementById('gt'),b=document.getElementById('gb');if(h)h.textContent=gtxt(S.g,ph,0);if(b)b.textContent=gtxt(S.g,ph,1)}
+function gfinish(score,detail){
+  S.res[S.g]=score;S.det[S.g]=detail;S.gdone=true;
+  const b=gEl();if(b)b.innerHTML=`<div class="gres">${ic('check',20,'currentColor',2.4)}<span><b>${DM[S.g].gn} done.</b> ${esc(detail)}.</span></div>`;
+  const v=cur();if(v){const f=v.querySelector('.foot .btn');if(f)f.disabled=false;v.querySelector('.gskip')?.remove();v.querySelector('.demo-skip')?.remove()}
+  renderPanel();
+}
+const gmsg=(m,bad=false)=>{const e=document.getElementById('gm');if(e){e.textContent=m;e.classList.toggle('bad',bad)}};
+function startGame(){
+  clearTimers();const id=gid;S.gdone=false;
+  ({0:gWord,1:gDigit,2:gPattern,3:gReact,4:gFaces}[S.g])(id);
+}
+/* 1. word recall */
+function gWord(id){
+  const seen=shuf(WPOOL).slice(0,8),dis=shuf(WPOOL.filter(w=>!seen.includes(w))).slice(0,8);
+  GS={seen,opts:shuf(seen.concat(dis)),sel:new Set()};gtitle(0);
+  gEl().innerHTML=`<div class="gcount"><i id="gcnt"></i></div><div class="wgrid">${seen.map(w=>`<div class="wcard">${w}</div>`).join('')}</div><div class="gmsg">Study them. The list hides soon.</div>`;
+  const c=document.getElementById('gcnt');if(c)requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.transitionDuration='10s';c.style.width='0%'}));
+  later(()=>{if(id!==gid||!gEl())return;gtitle(1);
+    gEl().innerHTML=`<div class="wchips">${GS.opts.map(w=>`<button class="wchip" data-a="gw" data-v="${w}" aria-pressed="false">${w}</button>`).join('')}</div><button class="gbtn" id="gwd" data-a="gwdone" disabled>Done</button>`},10000);
+}
+function gWordToggle(b){const w=b.dataset.v;GS.sel.has(w)?GS.sel.delete(w):GS.sel.add(w);b.classList.toggle('on');b.setAttribute('aria-pressed',GS.sel.has(w));const d=document.getElementById('gwd');if(d)d.disabled=!GS.sel.size}
+function gWordDone(){if(!GS.sel||!GS.sel.size)return;const hits=[...GS.sel].filter(w=>GS.seen.includes(w)).length,wrong=GS.sel.size-hits;S.wordHits=hits;
+  gfinish(Math.round(Math.max(0,hits-wrong)/8*100),`You recalled ${hits} of 8 words`+(wrong?`, and ${wrong} that weren’t on the list`:''))}
+/* 2. digit span */
+function gDigit(id){GS={len:3,strikes:0,best:2,seq:[],typed:''};dRound(id)}
+function dRound(id){
+  if(id!==gid||!gEl())return;
+  GS.seq=Array.from({length:GS.len},()=>Math.floor(Math.random()*10));GS.typed='';gtitle(0);
+  gEl().innerHTML=`<div class="dbig dim" id="dsh">Get ready…</div><div class="gmsg" id="gm">${GS.len} digits</div>`;
+  let k=0;
+  const step=()=>{if(id!==gid)return;const el=document.getElementById('dsh');if(!el)return;
+    if(k>=GS.seq.length){dInput(id);return}
+    el.className='dbig';el.textContent=GS.seq[k++];
+    later(()=>{const e2=document.getElementById('dsh');if(e2)e2.textContent='';later(step,250)},650)};
+  later(step,900);
+}
+function dDots(){const e=document.getElementById('dd');if(e)e.textContent=Array.from({length:GS.len},(_,i)=>GS.typed[i]||'_').join(' ')}
+function dInput(id){gtitle(1);
+  gEl().innerHTML=`<div class="dots" id="dd" aria-live="polite"></div><div class="gmsg" id="gm">${GS.len} digits</div><div class="keypad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-a="gk" data-v="${n}">${n}</button>`).join('')}<button data-a="gk" data-v="del" aria-label="Delete">⌫</button><button data-a="gk" data-v="0">0</button><span></span></div>`;dDots()}
+function dKey(v){
+  if(S.gdone||!document.getElementById('dd')||GS.locked)return;
+  if(v==='del')GS.typed=GS.typed.slice(0,-1);else if(GS.typed.length<GS.len)GS.typed+=v;
+  dDots();
+  if(GS.typed.length===GS.len){GS.locked=true;const id=gid;
+    if(GS.typed===GS.seq.join('')){GS.best=GS.len;gmsg('Right.');
+      if(GS.len>=7){later(()=>{GS.locked=false;gfinish(Math.round(Math.max(0,GS.best-2)/5*100),`Longest string: ${GS.best} digits`)},700)}
+      else{GS.len++;later(()=>{GS.locked=false;dRound(id)},800)}}
+    else{GS.strikes++;gmsg('Not quite.',true);
+      if(GS.strikes>=2)later(()=>{GS.locked=false;gfinish(Math.round(Math.max(0,GS.best-2)/5*100),GS.best>=3?`Longest string: ${GS.best} digits`:'No full string this time')},800);
+      else later(()=>{GS.locked=false;dRound(id)},900)}}
+}
+/* 3. pattern */
+function gPattern(id){GS={len:3,strikes:0,best:2,seq:[],idx:0};pRound(id)}
+function pRound(id){
+  if(id!==gid||!gEl())return;
+  const seq=[];while(seq.length<GS.len){const c=Math.floor(Math.random()*9);if(c!==seq[seq.length-1])seq.push(c)}
+  GS.seq=seq;GS.idx=0;GS.locked=true;gtitle(0);
+  gEl().innerHTML=`<div class="pgrid">${Array.from({length:9},(_,i)=>`<button class="pcell" data-a="gc" data-v="${i}" aria-label="Tile ${i+1}" disabled></button>`).join('')}</div><div class="gmsg" id="gm">${GS.len} tiles</div>`;
+  let k=0;
+  const step=()=>{if(id!==gid)return;const cells=gEl()&&gEl().querySelectorAll('.pcell');if(!cells||!cells.length)return;
+    if(k>=seq.length){cells.forEach(c=>c.disabled=false);GS.locked=false;gtitle(1);return}
+    const c=cells[seq[k++]];c.classList.add('lit');later(()=>{c.classList.remove('lit');later(step,250)},550)};
+  later(step,800);
+}
+function pTap(i){
+  if(S.gdone||GS.locked||!gEl())return;const id=gid,cells=gEl().querySelectorAll('.pcell'),c=cells[i];
+  c.classList.add('lit');later(()=>c.classList.remove('lit'),160);
+  if(i!==GS.seq[GS.idx]){GS.locked=true;GS.strikes++;gmsg('Not quite.',true);cells.forEach(x=>x.disabled=true);
+    if(GS.strikes>=2)later(()=>gfinish(Math.round(Math.max(0,GS.best-2)/4*100),GS.best>=3?`Longest sequence: ${GS.best} tiles`:'No full sequence this time'),800);
+    else later(()=>pRound(id),900);return}
+  GS.idx++;
+  if(GS.idx>=GS.seq.length){GS.locked=true;GS.best=GS.len;gmsg('Right.');cells.forEach(x=>x.disabled=true);
+    if(GS.len>=6)later(()=>gfinish(Math.round(Math.max(0,GS.best-2)/4*100),`Longest sequence: ${GS.best} tiles`),700);
+    else{GS.len++;later(()=>pRound(id),800)}}
+}
+/* 4. reaction */
+function gReact(id){GS={n:0,ms:[],state:'ready'};gtitle(0);
+  gEl().innerHTML=`<button class="rbtn" id="rb" data-a="gr">Tap to begin</button><div class="gmsg" id="gm">Round 1 of 3</div>`}
+function rTap(){
+  const b=document.getElementById('rb');if(!b||S.gdone)return;const id=gid;
+  if(GS.state==='ready'){GS.state='wait';b.className='rbtn';b.textContent='Wait…';gmsg(`Round ${GS.n+1} of 3`);
+    GS.wt=later(()=>{if(id!==gid||GS.state!=='wait')return;GS.state='go';GS.t=performance.now();b.className='rbtn go';b.textContent='Tap!'},1000+Math.random()*2000)}
+  else if(GS.state==='wait'){clearTimeout(GS.wt);GS.state='ready';b.textContent='Tap to retry';gmsg('Too early. Wait for green.',true)}
+  else if(GS.state==='go'){const ms=Math.round(performance.now()-GS.t);GS.ms.push(ms);GS.n++;b.className='rbtn';
+    if(GS.n>=3){GS.state='done';const avg=Math.round(GS.ms.reduce((a,x)=>a+x,0)/3);gfinish(Math.round(Math.max(0,Math.min(1,(600-avg)/400))*100),`Average tap: ${avg} ms`)}
+    else{GS.state='ready';b.textContent='Tap for next';gmsg(`${ms} ms. Round ${GS.n+1} of 3`)}}
+}
+/* 5. faces */
+function gFaces(id){
+  const faces=shuf(FPOOL).slice(0,4);GS={faces,q:0,ok:0,order:shuf([0,1,2,3])};gtitle(0);
+  gEl().innerHTML=`<div class="gcount"><i id="gcnt"></i></div><div class="fcards">${faces.map(f=>`<div class="fcard"><span class="fe">${f[0]}</span>${f[1]}</div>`).join('')}</div><div class="gmsg">Match each face to its name.</div>`;
+  const c=document.getElementById('gcnt');if(c)requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.transitionDuration='8s';c.style.width='0%'}));
+  later(()=>{if(id===gid)fQ(id)},8000);
+}
+function fQ(id){
+  if(id!==gid||!gEl())return;gtitle(1);
+  const f=GS.faces[GS.order[GS.q]],others=shuf(FPOOL.filter(x=>x[1]!==f[1])).slice(0,2).map(x=>x[1]),opts=shuf([f[1],...others]);GS.cor=f[1];GS.locked=false;
+  gEl().innerHTML=`<div class="fbig" aria-label="Face ${GS.q+1} of 4">${f[0]}</div><div class="gmsg">Face ${GS.q+1} of 4</div><div class="fopts">${opts.map(n=>`<button class="pill" data-a="gf" data-v="${n}">${n}</button>`).join('')}</div>`;
+}
+function fTap(b){
+  if(S.gdone||GS.locked||!GS.cor)return;GS.locked=true;const id=gid;b.classList.add('on');
+  if(b.dataset.v===GS.cor)GS.ok++;GS.q++;
+  later(()=>{if(GS.q>=4)gfinish(Math.round(GS.ok/4*100),`You matched ${GS.ok} of 4 faces`);else fQ(id)},350);
+}
+function gnextAct(){
+  clearTimers();
+  if(S.g===1){S.cp=0;go(6,false)}
+  else if(S.g===3){S.cp=1;go(6,false)}
+  else if(S.g===4){S.dur=Date.now()-(S.t0||Date.now());go(7,false)}
+  else{S.g++;render('f')}
+}
+function startTest(){if(S.t0===null)S.t0=Date.now();S.g=0;go(5)}
+
+/* ---------- screens ---------- */
+const V={
+1:()=>`<div class="scr" style="gap:14px">${wordmark()}
+  <img class="banner" src="${im('img/hero.jpg')}" alt="Five soft paper tiles for five memory games" width="720" height="480" fetchpriority="high" style="height:112px">
+  <h1 class="display">${t('How sharp is your memory?','Play 5 quick memory games')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Five mini-games, about 5 minutes. Free to play.','Pick your age to start. Free to play.')}</p>
+  <div class="pills" role="group" aria-label="Your age">${AGES.map(([a,e])=>`<button class="pill ${S.age===a?'on':''}" data-a="age" data-v="${a}" aria-pressed="${S.age===a}"><span class="em">${e}</span>${a}</button>`).join('')}</div>
+  <p class="disc"><b>Free to play · Full report is a paid unlock</b></p>
+  <p class="small" style="margin-top:-8px">For curiosity and training. Not a medical test.</p>
+  ${S.under?`<div class="err" style="text-align:center">You must be 18 or older to play.</div>`:`<button class="link" data-a="under" style="font-size:13px">I’m under 18</button>`}
+  <div class="flinks"><span>Cancel subscription</span><span>Subscription policy</span><span>FAQ</span><span>Terms</span><span>Privacy</span></div></div>`,
+2:()=>`<div class="scr center" style="gap:16px"><div class="circ0" aria-hidden="true">0-100</div>
+  <h1 class="display" style="text-align:center">${t('Your score is just yours','No age scale here')}</h1>
+  <p class="lead" style="text-align:center">${t('Age doesn’t change it. Nothing compares you to others.','Your number is only about today’s games.')}</p>
+  <div class="rows"><div class="irow"><span class="em">🎮</span>Scored from your own results</div><div class="irow"><span class="em">🙅</span>Not compared with other people</div></div>
+  <p class="small">Age only picks examples in your plan.</p></div>
+  <div class="foot">${cta('Continue')}</div>`,
+3:()=>`<div class="scr"><h1 class="display">${t('What brings you here?','Why check your memory?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('We’ll shape your plan around it.','Pick the closest. No wrong answer.')}</p>
+  <div class="pills" role="group" aria-label="Your reason">${REASONS.map(([k,e,l])=>`<button class="pill ${S.reason===k?'on':''}" data-a="reason" data-v="${k}" aria-pressed="${S.reason===k}"><span class="em">${e}</span>${l}</button>`).join('')}</div>
+  ${S.reason==='other'?`<div class="box fadein"><input id="ro" data-f="reasonOther" maxlength="40" placeholder="Your reason" value="${esc(S.reasonOther)}" aria-label="Your reason"></div>`:''}</div>
+  <div class="foot">${S.reason==='other'?cta('Continue',!!S.reasonOther.trim(),'reasonnext'):'<div class="note">Tap one to continue</div>'}</div>`,
+4:()=>`<div class="scr" style="gap:14px"><img class="banner" src="${im('img/howto.jpg')}" alt="Paper tiles for five memory games" width="720" height="480" loading="lazy" style="height:104px"><h1 class="display">${t('Before you play','Here’s how it goes')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Five short games for curiosity and training.','Go at your pace. Skip back anytime.')}</p>
+  <div class="rows">
+    <div class="irow"><span class="em">🎮</span>5 mini-games · about 5 minutes</div>
+    <div class="irow"><span class="em">🧠</span><span>Scored from your own results</span></div>
+    <div class="irow"><span class="em">🔓</span>Free to play, report is paid</div></div>
+  <div class="tip"><b>Not a medical test.</b> It can’t tell you anything about your health.</div>${gtiles(NG,true)}</div>
+  <div class="foot">${cta('Play game 1',true,'start')}<div class="note">Free to play · Full report is a paid unlock</div></div>`,
+5:()=>`<div class="scr" style="gap:12px"><h1 class="display sm" id="gt" style="margin-top:2px">${gtxt(S.g,0,0)}</h1>
+  <p class="lead" id="gb" style="margin-top:-2px">${gtxt(S.g,0,1)}</p>
+  <div class="gwrap"><div class="gbox" id="gbox" aria-live="polite"></div></div>
+  <div class="note">Game ${S.g+1} of ${NG} · Your score is just yours</div>
+  <button class="link gskip" data-a="gskip" style="font-size:13px">Skip this game</button>
+  <button class="link demo-skip" data-a="gfill">Demo: fill the rest</button></div>
+  <div class="foot">${cta(S.g<NG-1?'Next game':'Continue',false,'gnext')}</div>`,
+6:()=>{const a=S.cp?4:2,pc=a*20,R=42,C=2*Math.PI*R;
+  return `<div class="scr center" style="align-items:stretch"><div class="cpring" style="width:160px;height:160px"><svg viewBox="0 0 100 100" width="160" height="160" aria-hidden="true"><circle cx="50" cy="50" r="${R}" fill="none" stroke="#DCE1E9" stroke-width="8"/><circle cx="50" cy="50" r="${R}" fill="none" stroke="#15233F" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(C*pc/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/></svg><div class="mid" style="color:var(--ink);font:700 30px var(--serif)">${pc}%</div></div>
+  <h1 class="display" style="text-align:center">${t(`You’re ${pc}% done`,`${NG-a} game${NG-a===1?'':'s'} to go`)}</h1>
+  <p class="lead" style="text-align:center">${t(`${a} of ${NG} played. Your results are saved.`,'Keep going at your own pace.')}</p>
+  ${gtiles(a)}
+  <div class="tip">${S.cp?'Tip: last two. Take a breath first.':'Tip: a quiet spot helps. No score for rushing.'}</div></div>
+  <div class="foot">${cta('Keep going',true,'nextsec')}</div>`},
+7:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${hasRev()?t('See what players say','Real players, real words'):t('Your games are in','Almost there')}</h1>
+  <p class="lead" style="text-align:center">${hasRev()?t('Reviews from people who took a TestLibrary test.','Your results are almost ready.'):t('Next, we score all five.','Your results are almost ready.')}</p>
+  ${hasRev()?quoteBlock(0):gtiles()}</div>
+  <div class="foot">${cta('See my results')}</div>`,
+8:()=>{const rows=['Reading your five games…','Scoring each memory area…','Working out your overall score…','Writing your report, almost ready…'];
+  return `<div class="scr" style="gap:12px"><h1 class="display" style="text-align:center;margin-top:6px">${t('Scoring your games…','Working out your score…')}</h1>
+  <p class="lead" style="text-align:center;margin-top:-8px">Scored from your games only.</p>
+  <div class="rings5" id="ltr">${DM.map((d,i)=>`<div class="rc" id="rg${i}">${ring(0,54,'#15233F',d.e)}<small>${d.a}</small></div>`).join('')}</div>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
+  ${hasRev()?`<div class="qrot" id="qrot">${quoteBlock(0)}</div>`:''}</div>
+  <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
+9:()=>`<div class="scr"><h1 class="display">${t('Your results are ready','Where should we save them?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Enter your email to save your report.','Your report lives in your account, anytime.')}</p>
+  <div class="sum"><div class="r"><span>Completed in</span><b>${fmtDur(S.dur||0)}</b></div><div class="r"><span>Games played</span><b>${played().length} of ${NG}</b></div><div class="r"><span>Words recalled</span><b>${S.res[0]==='skip'?'Skipped':(S.wordHits??0)+' of 8'}</b></div><div class="r"><span>Your overall score</span><b class="blurv">00 / 100</b></div></div>
+  <div class="soc"><button class="btn ghost" data-a="sso" data-v="Google">${ic('google',17)} Google</button><button class="btn ghost" data-a="sso" data-v="Apple">${ic('apple',17)} Apple</button></div>
+  <div class="orline">or</div>
+  <div class="field"><label for="em">Email</label><div class="box ${S.err?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" data-f="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Save my results',true,'email')}<div class="note">No spam. We never sell your email. · Terms · Privacy</div></div>`,
+10:()=>`<div class="scr"><h1 class="display">${t('What’s your first name?','Whose report is this?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('It appears on your report and plan.','Printed exactly as you type it.')}</p>
+  <div class="field"><label for="nm">First name</label><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <div class="certo" aria-hidden="true"><div class="cl">TestLibrary · memory report</div><div class="nl ${nameOk()?'':'empty'}" id="certname">${nameOk()?esc(S.name.trim()):'Your name'}</div><div class="ls"></div><div class="ls" style="width:40%"></div></div></div>
+  <div class="foot">${cta('Continue',true,'name')}<button class="link" data-a="skipname" style="font-size:13px">Skip for now</button></div>`,
+11:()=>`<div class="scr" style="gap:13px"><h1 class="display sm">${t(lead_('your score is ready'),tail('Here’s your score'))}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Overall score and strongest area are free.','The rest unlocks with your full report.')}</p>
+  ${bigScore()}
+  ${areaRow(strongest(),{hot:true,tag:'YOUR STRONGEST'})}
+  ${otherAreas(strongest()).map(i=>areaRow(i,{blur:true})).join('')}
+  <div class="lockrow">${ic('lock',18)}<span>Your 4-week training plan</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Where to focus first</span></div>
+  <p class="small">For curiosity and training. Not a medical test.</p></div>
+  <div class="foot">${cta('Unlock my report')}</div>`,
+12:()=>{const hb=lead_('read your full report'),p=S.plan,L=strongest();
+  return `<button class="closex" data-a="exit" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:16px">
+  <div class="pwbar">${wordmark()}</div>
+  <div class="pwhero">${bigScore()}${areaRow(L,{hot:true,tag:'YOUR STRONGEST'})}
+   <div class="lockrow">${ic('lock',18)}<span>Four more areas · Plan · Focus</span></div></div>
+  <h1 class="display sm">${t('Unlock your full report',hb)}</h1>
+  <p class="lead" style="margin-top:-8px">${t('One report, or every test in the library.','Choose one report or full library access.')}</p>
+  ${planBlock('top')}
+  ${CONFIG.reminder?'<p class="small">We’ll email you 2 days before your trial ends.</p>':''}${pays}
+  <div class="pwsec"><h2>What’s inside</h2><div class="checks">${['All five area scores, side by side','Where to focus first','Your 4-week training plan (goals)','A retest idea for week 4','Full Access plans: every test in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
+  <div class="pwsec"><h2>How it works</h2><div class="how"><div><b>1</b><span>Unlock your report in one step.</span></div><div><b>2</b><span>Read it any time in your account.</span></div><div><b>3</b><span>Follow the plan and replay the games.</span></div></div></div>
+  ${hasRev()?`<div class="pwsec"><h2>What players say</h2>${CONFIG.reviews.rating&&!isTok(CONFIG.reviews.rating.value)?`<p class="small" style="text-align:left">${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}Rated ${esc(CONFIG.reviews.rating.value)}${CONFIG.reviews.rating.source?' on '+esc(CONFIG.reviews.rating.source):''}</p>`:''}${REV().slice(0,2).map(reviewCard).join('')}</div>`:''}
+  ${isTok(CONFIG.refundDays)?'':`<div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Ask for a refund within ${esc(CONFIG.refundDays)} days. Cancel a plan any time in your account.</span></div>`}
+  <div class="pwsec"><h2>Questions</h2><div class="faq">${[['Is this a medical test?','No. It is a set of memory games for curiosity and training. It can’t tell you anything about your health. If you are worried, talk to a doctor.'],['How is my score worked out?','Each game gives a 0-100 score from what you did. Your overall score is the average of the games you played. It is not compared with other people.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','In your account, in two clicks.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
+  <div class="pwsec"><h2>Ready when you are</h2>${planBlock('bottom')}</div>
+  ${supbox()}
+  <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel</p>
+  <p class="small" style="margin-bottom:8px">${DISC}</p></div>
+  <div class="foot"><div class="today">${todayLine(p)}</div>${cta('Continue to checkout',true,'checkout')}</div>`},
+13:()=>{const o=CONFIG.offer;
+  return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
+  <div class="wbar">${wordmark()}</div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display sm">${t(lead_('just want your score?'),'Want a smaller option?')}</h1>
+   <p class="lead" style="margin:0">${t('Get your score summary. No subscription.','One payment. Nothing renews, nothing to cancel.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow">${miniCard()}<div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">${o.renews?'Full report + library trial':'One payment · nothing renews'}</span></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>today</span></div>
+   <div class="checks">${['Your overall score','Your strongest area in detail','A 3-day starter practice'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   <p class="hint" style="margin:0">Not included: the other four areas, the 4-week plan, the retest idea.</p>
+   ${cta('Claim my offer',true,'offerbuy')}${pays}
+   <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
+  <p class="small">${DISC}</p>
+  <button class="link" data-a="offerno" style="margin-bottom:24px">No thanks, back to my free preview</button></div>`},
+14:()=>{const p=S.plan,P=PLANS[p],rec=recurring(p),rd=renewal(p);
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t('Review your order','Confirm your plan')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Here’s exactly what you pay, today and later.','Check the details before you pay.')}</p>
+  <div class="ordr"><div class="r"><span>Plan</span><b>${P.n}</b></div><div class="r"><span>Today</span><b>${tok(P.today)}</b></div>
+  ${rec?`<div class="r"><span>${rd}</span><b>${tok(P.later||P.then)}</b></div><div class="r" style="font-size:13px"><span>Cancel anytime before ${rd} to pay nothing more.</span></div>`:`<div class="r"><span>Later</span><b>Nothing renews</b></div>`}</div>
+  ${rec?`<label class="consent ${S.errKind==='consent'?'bad':''}"><input type="checkbox" id="consent" data-f="consent" ${S.consent?'checked':''}><span>I understand my plan renews at ${tok(P.later||P.then)} until I cancel.</span></label>${S.errKind==='consent'?`<div class="err" style="margin-top:-6px">${S.err}</div>`:''}`:''}
+  <div class="pmeth" role="group" aria-label="Payment method">${[['card','Card'],['apple','Apple Pay'],['google','Google Pay']].map(([k,l])=>`<button class="${S.pay===k?'on':''}" data-a="pay" data-v="${k}" aria-pressed="${S.pay===k}">${l}</button>`).join('')}</div>
+  ${S.pay==='card'?`<div class="box"><input data-f="cardNo" inputmode="numeric" placeholder="Card number" aria-label="Card number" value="${esc(S.cardNo)}"></div><div class="cardrow"><div class="box"><input data-f="cardExp" placeholder="MM / YY" aria-label="Expiry" value="${esc(S.cardExp)}"></div><div class="box"><input data-f="cardCvc" inputmode="numeric" placeholder="CVC" aria-label="CVC" value="${esc(S.cardCvc)}"></div></div>`:`<p class="hint" style="margin:0;text-align:center">${S.pay==='apple'?'Apple Pay':'Google Pay'} sheet opens on pay.</p>`}
+  ${S.errKind==='card'?`<div class="err">${S.err}</div>`:''}
+  <p class="small">Receipt with cancel link sent to ${esc(S.email||'your email')}.</p>
+  <p class="small">Refund terms are in the Subscription policy.</p>
+  <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
+  <div class="foot">${cta('Pay and see report',true,'paynow')}</div>`},
+15:()=>{const L=strongest(),lo=lowest(),off=S.paidPlan==='offer',nmx=nameOk()?`${nm()}, here’s your report`:'Here’s your report';
+  const skipNote=played().length<NG?`<p class="small">Skipped games are left out of the overall.</p>`:'';
+  if(off)return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`Your memory score: ${overall()}`,nmx)}</h1><p class="lead" style="margin-top:-6px">${t('Your score summary.','Your strongest area, in detail.')}</p>${bigScore()}${areaRow(L,{hot:true,tag:'YOUR STRONGEST'})}
+   <div class="sec"><h4>${DM[L].e} ${DM[L].n}</h4><p>${DM[L].what}</p><p>${DM[L].ex}</p></div>
+   <div class="lockrow">${ic('lock',18)}<span>Other four areas, focus and the 4-week plan are in the full report</span></div>
+   <div class="method">Each score is 0-100 from your own results today. It is not compared with other people. ${DISC}</div>${skipNote}</div><div class="foot">${cta('See my starter practice')}</div>`;
+  return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`Your memory score: ${overall()}`,nmx)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Five areas, from your own games.','Your strongest area and where to focus.')}</p>
+  ${bigScore()}
+  <div class="stack">${DM.map((_,i)=>areaRow(i,{hot:i===L&&played().length>1,tag:played().length>1?(i===L?'YOUR STRONGEST':i===lo?'MOST ROOM TO TRAIN':''):''})).join('')}</div>
+  <div class="sec"><h4>Where to focus first</h4><p>${played().length?`${DM[lo].e} ${DM[lo].n} (${DM[lo].a.toLowerCase()}) has the most room to train. ${DM[lo].tip}`:'Play at least one game to see where to focus.'}</p></div>
+  ${DM.map((d,i)=>`<div class="sec"><h4>${d.e} ${d.n} · ${scTxt(i)}</h4><p>${d.what}</p><p>${d.ex}${S.det[i]&&sc(i)!==null?` Today: ${esc(S.det[i])}.`:''}</p></div>`).join('')}
+  ${supbox()}
+  <div class="method">Each score is 0-100 from your own results today. It is not compared with other people. ${DISC}</div>${skipNote}</div>
+  <div class="foot">${cta('See my training plan')}</div>`},
+16:()=>{const off=S.paidPlan==='offer',one=!recurring(S.paidPlan||S.plan),list=LIBR[reasonKey()],rd=renewal(S.paidPlan||S.plan),L=strongest(),lo=lowest(),s2=second();
+  const head=`<h1 class="display" style="margin-top:4px">${t(off?'Your 3-day starter':'Your 4-week training plan',nameOk()?`${nm()}, here’s your plan`:'Here’s your plan')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Short practice goals, built from your results.','Adjust them to your week.')}</p>
+  <p class="small" style="text-align:left">Your reason: <b>${reasonTxt()}</b>. Age band: ${esc(S.age||"18+")}.</p>`;
+  const wk=(n,ttl,goal,tip)=>`<div class="wk"><b class="n">${n}</b><div><b>${ttl}</b>${goal?`<span class="goal">${goal}</span>`:''}<span>${tip}</span></div></div>`;
+  const plan=off?`<div class="plan4">${wk('1',`Replay ${DM[L].gn.toLowerCase()}`,`Try to beat your own ${scTxt(L)}`,DM[L].tip)}${wk('2','Use the everyday tip','',DM[L].tip)}${wk('3',`Replay ${DM[L].gn.toLowerCase()} once more`,'Compare it with day 1','Notice how it felt, not just the number.')}</div><div class="lockrow">${ic('lock',18)}<span>The 4-week plan is in the full report</span></div>`
+   :`<div class="plan4">${wk('1',`Week 1: ${DM[lo].gn}, 3 sessions of 5 min`,goalTxt(lo),DM[lo].tip)}${wk('2',`Week 2: ${DM[s2].gn}, 3 sessions of 5 min`,goalTxt(s2),DM[s2].tip)}${wk('3',`Week 3: keep ${DM[L].gn} warm, 2 sessions`,'Goal: hold your score',DM[L].tip)}${wk('4','Week 4: replay all five games','Goal: compare with today, in your own numbers','Retest on '+addDays(28)+'.')}</div>`;
+  return `<div class="scr" style="gap:13px">${head}
+  <img class="banner" src="${im('img/plan.jpg')}" alt="A paper plan card" width="720" height="480" loading="lazy" style="height:90px">
+  ${plan}
+  <p class="small">Goals are suggestions, not promises. Skip or change any of them.</p>
+  <h2 style="margin:6px 0 0;font:700 19px var(--serif)">Next tests</h2>
+  <div class="lib">${list.map(([e,n,m],i)=>`<div class="lcard"><img class="lt" style="object-position:${25+i*40}% 50%" src="${im('img/next.jpg')}" alt="" width="400" height="267" loading="lazy"><b>${e} ${n}</b><span>${m}</span></div>`).join('')}</div>
+  ${one?`<div class="tip">Unlock all tests - ${tok('{{price_trial}}')} for 1 week, then ${tok('{{renewal_trial}}')} every 4 weeks.</div>`:`<div class="sum"><div class="r"><span>Included until ${rd}</span><b style="text-decoration:underline;text-underline-offset:3px">Manage plan</b></div></div>`}
+  <button class="link" data-a="cal" style="font-size:13px">${ic('cal',15)} Add my retest to my calendar</button>
+  <p class="small">Log in anytime with ${esc(S.email||'your email')}. Your report stays in your dashboard.</p>
+  <p class="small">${DISC}</p></div>
+  <div class="foot">${cta('Start next test',true,'nexttest')}</div>`}
+};
+
+function runLoading(){
+  let row=0,pct_=0;
+  timer=setInterval(()=>{
+    pct_+=3;const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    el.querySelector('.bar span').style.width=Math.min(pct_,100)+'%';
+    el.querySelector('.pct span').textContent=Math.min(pct_,100)+'%';
+    if(pct_>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.5)}<span>100%</span>`;
+      /* real scores are known already: rings fill when the areas are scored, the strongest turns amber last */
+      if(row===1)DM.forEach((_,i)=>{const r=document.querySelector('#rg'+i+' .ring');if(r&&sc(i)!==null)setRing(r,sc(i))});
+      if(row===3){const r=document.querySelector('#rg'+strongest()+' .ring');if(r)setRing(r,sc(strongest())||0,'#E39B2D')}
+      row++;pct_=0;
+      if(row>3){clearInterval(timer);timer=setTimeout(()=>go(9,false),1300)}}
+  },45);
+  let qi=0;
+  if(hasRev())timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi++;q.innerHTML=quoteBlock(qi)},2300);
+}
+
+function render(dir){
+  const n=S.i,html=nav()+V[n]()+helpbar(),old=cur();phone.querySelector('#sheet')?.remove();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in'+(dir==='b'?' b':'');nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);
+    setTimeout(()=>nv.classList.remove('in','b'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{if(dir)old.scrollTop=0;old.innerHTML=html}
+  const v=cur();
+  if(n===5)startGame();
+  if(n===8)runLoading();
+  if(n===13&&dir&&!backing)runOffer();
+  const f=v.querySelector('#em,#nm,#ro');
+  if(f&&dir!==undefined){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  renderPanel();
+}
+
+function renderPanel(){
+  const groups=[];SCREENS.forEach(s=>{let g=groups.find(x=>x[0]===s.g);if(!g){g=[s.g,[]];groups.push(g)}g[1].push(s)});
+  document.getElementById('flow').innerHTML=groups.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(s=>`<button class="${S.i===s.n?'on':''}" data-j="${s.n}" ${S.i===s.n?'aria-current="step"':''}><span class="n">${s.n}</span><span>${s.l}</span>${s.tag?`<span class="tag">${s.tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const all=S.res.every(r=>r!==null);
+  const d=[
+    ['Copy',`Variant ${S.v}`],
+    ['Age',S.age||'—'],
+    ['Reason',S.reason?(S.reason==='other'?`Other: ${S.reasonOther||'(empty)'}`:REASONS.find(r=>r[0]===S.reason)[2]):'—'],
+    ...DM.map((D,i)=>[D.gn,S.res[i]===null?'—':S.res[i]==='skip'?'Skipped':`${S.res[i]}/100 · ${S.det[i]}`]),
+    ['Overall',all?`${overall()} / 100`:'—'],
+    ['Strongest',all&&played().length?DM[strongest()].n:'—'],
+    ['Most room',all&&played().length?DM[lowest()].n:'—'],
+    ['Time',S.dur!==null?fmtDur(S.dur):'—'],
+    ['Email',S.email||'—'],
+    ['Name',S.name||'—'],
+    ['Plan',S.i>=12?PLANS[S.plan].n:'—'],
+    ['Consent',!recurring(S.plan)?'n/a (one-time)':S.consent?'Ticked':'Not ticked'],
+    ['Paid',S.paid?`${PLANS[S.paidPlan||S.plan].n} (demo, no charge)`:'—']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+const pick=(b,sel)=>b.parentElement.querySelectorAll(sel).forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':go(S.i+1);break;
+    case 'back':if(S.i===12)exitPaywall();else back();break;
+    case 'age':S.age=v;S.under=false;pick(b,'.pill');renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===1)go(2)},280);break;
+    case 'under':S.under=true;render();break;
+    case 'reason':S.reason=v;if(v==='other'){render();setTimeout(()=>document.getElementById('ro')?.focus(),30)}else{pick(b,'.pill');renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===3)go(4)},280)}break;
+    case 'reasonnext':if(S.reasonOther.trim())go(4);break;
+    case 'start':startTest();break;
+    case 'gnext':if(S.gdone||S.res[S.g]!==null)gnextAct();break;
+    case 'gskip':clearTimers();S.res[S.g]='skip';S.det[S.g]='skipped';S.gdone=true;gnextAct();break;
+    case 'gfill':clearTimers();S.res=S.res.map((r,i)=>r===null?PRE[i]:r);S.det=S.det.map((x,i)=>x||PREDET[i]);S.dur=Date.now()-(S.t0||Date.now());go(7,false);break;
+    case 'tback':clearTimers();if(S.g===0)back();else{S.g--;render('b')}break;
+    case 'nextsec':S.g=S.cp?4:2;go(5,false);break;
+    case 'gw':gWordToggle(b);break;
+    case 'gwdone':gWordDone();break;
+    case 'gk':dKey(v);break;
+    case 'gc':pTap(+v);break;
+    case 'gr':rTap();break;
+    case 'gf':fTap(b);break;
+    case 'help':{const sh=document.createElement('div');sh.className='sheet';sh.id='sheet';sh.innerHTML=`<div class="sc" role="dialog" aria-label="Support">${SUPPORT}<button class="btn" data-a="helpclose">Close</button></div>`;phone.appendChild(sh);break}
+    case 'helpclose':phone.querySelector('#sheet')?.remove();break;
+    case 'sso':S.email=`${v} account (demo)`;toast(`Signed in with ${v} (demo)`);go(10);break;
+    case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;go(10)}break}
+    case 'name':{const x=S.name.trim();if(!x||!/^[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ \-]*$/.test(x)){S.err='Please enter your first name.';render();document.getElementById('nm')?.focus()}else{S.name=x;go(11)}break}
+    case 'skipname':S.name='';S.nameSkipped=true;go(11);break;
+    case 'plan':{const sc_=cur().querySelector('.scr'),y=sc_?sc_.scrollTop:0;S.plan=v;S.consent=false;render();const n2=cur().querySelector('.scr');if(n2)n2.scrollTop=y;break}
+    case 'checkout':emit('checkout_click',{plan:S.plan});go(14);break;
+    case 'exit':exitPaywall();break;
+    case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      else{S.plan='offer';S.consent=false;go(14)}break}
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(11);break;
+    case 'pay':S.pay=v;render();break;
+    case 'decline':S.err='Card declined. Try another card or PayPal.';S.errKind='card';render();break;
+    case 'paynow':if(recurring(S.plan)&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
+      S.paid=true;S.paidPlan=S.plan;toast('Demo only — no charge made');{const dest=S.upsell?16:15;S.upsell=false;go(dest)}break;
+    case 'cal':toast('Calendar event would be added (demo)');break;
+    case 'nexttest':if(!recurring(S.paidPlan||S.plan)){S.plan='t1';S.consent=false;S.upsell=true;go(14)}else toast(`${LIBR[reasonKey()][0][1]} would open (demo)`);break;
+  }
+});
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  clearInterval(window.__oiv);
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==13)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');toast('This offer has ended');go(11);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* Every exit from the paywall (close X, nav back) goes to the offer first, once; after that, back to the free preview. */
+function exitPaywall(){emit('paywall_close');if(offerOpen())go(13);else if(S.hist.length)back();else go(11,false)}
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f||e.target.type==='checkbox')return;
+  S[f]=e.target.value;
+  if(f==='reasonOther'){const btn=cur().querySelector('.foot .btn');if(btn)btn.disabled=!S.reasonOther.trim()}
+  if(f==='name'){const c=document.getElementById('certname');if(c){const x=S.name.trim();c.textContent=x||'Your name';c.classList.toggle('empty',!x)}}
+  if((f==='email'||f==='name')&&S.err){S.err='';const box=e.target.closest('.box');box.classList.remove('bad');box.parentElement.querySelector('.err')?.remove()}
+  renderPanel();
+});
+phone.addEventListener('change',e=>{if(e.target.dataset.f==='consent'){S.consent=e.target.checked;if(S.consent&&S.errKind==='consent'){S.err='';S.errKind='';render()}else renderPanel()}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){const b=cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;go(+b.dataset.j)});
+const setV=v=>{S.v=v;['A','B'].forEach(x=>{const el=document.getElementById('v'+x);el.classList.toggle('on',v===x);el.setAttribute('aria-pressed',v===x)});if(S.i===5)gtitle(S.gph);else if(S.i!==8)render();else renderPanel()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{clearTimers();const v=S.v;S=INIT();S.v=v;render('b')};
+
+function fit(){const k=Math.min(1,(document.documentElement.clientWidth-32-24)/390);document.documentElement.style.setProperty('--k',k.toFixed(4))}
+fit();addEventListener('resize',fit);
+
+{const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){const n=+m[1];fillTo(n);S.i=n}
+ const vb=location.hash.match(/v=?([AB])/);if(vb){S.v=vb[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
+render();
+</script>
+</body>
+</html>
