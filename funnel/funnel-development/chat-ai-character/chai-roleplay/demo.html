@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0911">
+<title>Chai · AI Roleplay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#06050B;
+  --bg:#0A0911;--bg-elev:#12101B;--surface:#17151F;--surface-2:#221F2D;--border:#2D293B;
+  --t1:#F4F2F8;--t2:#A7A2B7;--t3:#6F6A82;
+  --pink:#B62CB5;--pink-hi:#DA5FD9;--pink-dim:#B62CB52E;--pink-deep:#261230;
+  --grad-a:#9A2ACB;--grad-b:#D82F99;--grad:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+  --amber:#F5B83D;--negative:#F0705F;--positive:#7FD1A8;
+  --head:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--pink-hi);outline-offset:2px}
+
+.phone{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;background:var(--bg);background-image:radial-gradient(ellipse 70% 35% at 50% 0%,#240F2C 0%,transparent 70%);overflow:hidden;isolation:isolate;--top:calc(env(safe-area-inset-top,0px) + 6px)}
+@media (min-width:520px){.phone{border-inline:1px solid #2A2536}}
+.view{position:absolute;inset:0;padding-top:var(--top);display:flex;flex-direction:column}
+.view.in{animation:vin .3s ease both}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Honey-style top bar: back · title · segmented progress */
+.nav{flex:none;padding:0 12px;position:relative;z-index:3}
+.nav .row{height:44px;display:flex;align-items:center}
+.nav .ttl{flex:1;text-align:center;font:700 15px var(--head);margin-right:44px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.segs{display:flex;gap:4px;padding:0 20px 6px}
+.segs i{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}
+.segs i.on{background:var(--grad)}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 16px 16px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.foot{flex:none;padding:10px 16px max(18px,calc(env(safe-area-inset-bottom,0px) + 10px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;background:linear-gradient(180deg,transparent,var(--bg) 30%)}
+.q{font:800 22px/1.2 var(--head);letter-spacing:-.01em;margin:4px 0 0;text-align:center;text-wrap:balance}
+.sub{margin:-6px 0 0;text-align:center;color:var(--t2);font-size:13.5px}
+.h1{font:800 30px/1.1 var(--head);letter-spacing:-.02em;margin:0;text-align:center;text-wrap:balance}
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--pink);color:#fff;font:700 16px/1 var(--head);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;flex:none;transition:transform .12s,opacity .2s;position:relative;overflow:hidden;box-shadow:0 10px 30px -12px #B62CB5cc}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);box-shadow:none}
+.btn:not([disabled])::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff45,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.btn.ghost{background:var(--surface);border:1px solid var(--border);color:var(--t1);box-shadow:none;height:48px}
+.btn.ghost::after{display:none}
+.link{background:none;border:none;color:var(--t2);font-size:14px;min-height:44px}
+.legal{font-size:11.5px;color:var(--t3);text-align:center;line-height:1.5}
+.legal a{color:var(--t2);text-decoration:underline;text-underline-offset:2px}
+
+/* photo cards (Honey's core element) */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{position:relative;border-radius:16px;overflow:hidden;border:2px solid var(--border);background:var(--surface);padding:0;aspect-ratio:3/3.4;display:block;text-align:left;transition:border-color .15s,box-shadow .2s,transform .12s}
+.card.tall{aspect-ratio:3/4.1}
+.card:active{transform:scale(.97)}
+.card .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;background:var(--fb,linear-gradient(160deg,#2a1838,#0d0a18))}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.card .lb{position:absolute;left:0;right:0;bottom:0;padding:9px 10px;background:#0A0911e0;font:700 14px/1.2 var(--head);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px}
+.card .ck{width:20px;height:20px;border-radius:6px;border:1.5px solid #ffffff55;flex:none;display:grid;place-items:center;position:absolute;right:9px;bottom:10px}
+.card.multi .lb{justify-content:flex-start;padding-right:36px;text-align:left}
+.card.on{border-color:transparent;box-shadow:0 0 0 2px var(--grad-b),0 0 24px -4px #B62CB5aa}
+.card.on::before{content:"";position:absolute;inset:-2px;border-radius:16px;padding:2px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:2;pointer-events:none}
+.card.on .ck{background:var(--grad);border-color:transparent}
+.ck svg{opacity:0;transition:opacity .15s}.on .ck svg{opacity:1}
+.collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr}
+.collage img{position:static;width:100%;height:100%}
+
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--surface);border:1.5px solid var(--border);text-align:left;width:100%;min-height:54px}
+.opt .em{font-size:19px;width:24px;text-align:center}
+.opt .lbl{flex:1;font-weight:600}
+.opt .ck{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--border);display:grid;place-items:center}
+.opt.on{border-color:var(--pink);background:linear-gradient(0deg,var(--pink-dim),var(--pink-dim)),var(--surface)}
+.opt.on .ck{background:var(--grad);border-color:transparent}
+.box{height:50px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 14px}
+.box input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+
+/* sliders */
+.sls{display:flex;flex-direction:column;gap:6px;padding:8px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.sl{padding:12px 0;border-top:1px solid var(--border)}
+.sl:first-child{border-top:none}
+.sl .top{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.sl .top .gi{width:30px;height:30px;border-radius:9px;background:var(--pink-dim);display:grid;place-items:center}
+.sl .top b{margin-left:auto;font:600 13px var(--sans);padding:4px 9px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-variant-numeric:tabular-nums}
+.sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:linear-gradient(90deg,var(--grad-a),var(--grad-b) var(--p,50%),var(--surface-2) var(--p,50%));background-clip:content-box;padding:19px 0;outline:none;margin:0}
+.sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--pink);box-shadow:0 2px 10px #0008}
+.sl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--pink)}
+.hint{font-size:12.5px;color:var(--t3);text-align:center}
+
+/* bridge */
+.bridge{flex:1;position:relative;margin:0 -16px -16px;min-height:0}
+.bridge img,.bridge .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.bridge .ph{display:grid;place-items:center;font-size:80px;background:linear-gradient(160deg,#2a1838,#0d0a18)}
+.bridge::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 18%,transparent 70%,var(--bg) 100%)}
+
+/* loader */
+.ldimg{position:relative;flex:1;min-height:180px;margin:0 -16px;overflow:hidden}
+.ldimg img,.ldimg .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;filter:blur(var(--bl,18px)) saturate(1.1);transform:scale(1.08);transition:filter .3s linear}
+.ldimg .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.ldimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 25%,transparent 60%,var(--bg) 100%)}
+.steps{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.step .top{display:flex;justify-content:space-between;font-size:14px;color:var(--t2);margin-bottom:6px}
+.step.done .top{color:var(--t1)}
+.step .top b{font-variant-numeric:tabular-nums;font-weight:600}
+.step.done .top b{color:var(--pink-hi)}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--grad);width:0}
+.iq{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:20px 16px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));background:linear-gradient(180deg,transparent,var(--bg) 22%);display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.iq b{font:800 20px/1.25 var(--head);text-align:center}
+.iq .row{display:flex;gap:10px}
+.iq .row .btn{flex:1}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+
+/* paywall (long scroll) */
+.pw{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;background:var(--bg)}
+.pw::-webkit-scrollbar{display:none}
+.pwx{position:fixed;z-index:9;top:calc(var(--top) + 6px);width:36px;height:36px;border-radius:50%;background:#0A0911aa;border:1px solid #ffffff22;color:var(--t2);display:grid;place-items:center;margin-left:12px;backdrop-filter:blur(6px)}
+.sec{padding:26px 16px 0}
+.pwhero{position:relative;height:430px;overflow:hidden}
+.pwhero img,.pwhero .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.pwhero .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.pwhero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,var(--bg) 96%)}
+.pwhero .txt{position:absolute;left:16px;right:16px;bottom:8px;z-index:1}
+.pwhero .h1{text-align:left;font-size:34px}
+.pwhero p{margin:6px 0 0;color:var(--t2)}
+.plans{display:flex;flex-direction:column;gap:10px}
+.plan{position:relative;padding:14px 16px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);text-align:left;display:grid;grid-template-columns:24px 1fr auto;gap:2px 12px;align-items:center;width:100%}
+.plan .rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);grid-row:1/3;display:grid;place-items:center}
+.plan.on{border-color:var(--pink);background:var(--pink-deep);box-shadow:0 0 20px -8px #B62CB5}
+.plan.on .rd{background:var(--grad);border-color:transparent}
+.plan .pn{font:800 17px var(--head)}
+.plan .pp{font:800 19px/1.1 var(--head);text-align:right}
+.plan .pp small{font:500 11px var(--sans);color:var(--t2)}
+.plan .rn{font-size:11.5px;color:var(--t2);grid-column:2/4}
+.plan .bv{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--head);letter-spacing:.06em;background:var(--grad);color:#fff;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.ph2{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.45}
+.h2{font:800 26px/1.15 var(--head);margin:0 0 14px;letter-spacing:-.01em}
+.match{display:flex;gap:16px;align-items:center}
+.ring{width:118px;height:118px;flex:none;border-radius:50%;background:conic-gradient(var(--grad-b) calc(var(--m)*1%),var(--grad-a) calc(var(--m)*1%),var(--surface-2) 0);display:grid;place-items:center;position:relative}
+.ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--bg)}
+.ring span{position:relative;text-align:center;font:800 26px/1 var(--head)}
+.ring small{display:block;font:500 12px var(--sans);color:var(--t2);margin-top:4px}
+.traits{display:flex;flex-direction:column;gap:10px;font-weight:600}
+.traits div{display:flex;gap:10px;align-items:center}
+.gw{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#fff;flex:none}
+.pcard{margin-top:16px;border-radius:20px;overflow:hidden;position:relative;aspect-ratio:3/3.6;border:1px solid var(--border)}
+.pcard img,.pcard .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.pcard .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.pcard .cap{position:absolute;left:0;right:0;bottom:0;padding:40px 14px 12px;background:linear-gradient(180deg,transparent,#0A0911f0);display:flex;justify-content:space-between;align-items:flex-end}
+.pcard .cap b{font:800 24px var(--head)}
+.pcard .cap small{font-size:11px;color:var(--t3)}
+.bens{display:flex;flex-direction:column;gap:9px}
+.ben{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.ben b{display:block;font:700 15px var(--head)}
+.ben small{color:var(--t2);font-size:12.5px}
+.ben .tg{margin-left:auto;font:700 10px var(--sans);letter-spacing:.05em;padding:3px 7px;border-radius:6px;background:var(--pink-dim);color:var(--pink-hi)}
+.stats{display:flex;flex-direction:column;gap:10px}
+.stat{display:flex;gap:14px;align-items:center;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font-size:14px}
+.stat .n{font:800 22px var(--head);flex:none;min-width:64px;text-align:center}
+.mock{border-radius:26px;border:1px solid var(--border);background:var(--bg-elev);padding:12px;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+.mock .hd{display:flex;gap:10px;align-items:center;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.mock .hd b{font:700 15px var(--head)}
+.mock .hd small{display:block;color:var(--positive);font-size:11.5px}
+.rev{padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--t2)}
+.rev .who{display:flex;gap:10px;align-items:center;color:var(--t1)}
+.rev .who i{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font:700 12px var(--head);font-style:normal;color:#fff}
+.rev .st{margin-left:auto;color:var(--amber);letter-spacing:2px;font-size:13px}
+.guar{margin:26px 16px 0;padding:18px;border-radius:18px;border:1.5px solid var(--pink);background:var(--pink-deep);font-size:13.5px;color:var(--t2)}
+.guar b{display:block;font:800 20px var(--head);color:var(--t1);margin-bottom:6px}
+
+/* chat */
+.chat{position:absolute;inset:0;top:var(--top);display:flex;flex-direction:column}
+.chead{flex:none;display:flex;align-items:center;gap:10px;padding:4px 12px 8px;border-bottom:1px solid var(--border);background:var(--bg);z-index:2}
+.chead b{font:700 17px/1.1 var(--head);display:block}
+.chead small{font-size:12px;color:var(--positive)}
+.av{position:relative;border-radius:50%;overflow:hidden;flex:none;background:var(--grad);display:grid;place-items:center;font-size:18px}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.cbody{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.cbg{position:absolute;inset:0;background:var(--scene) center/cover no-repeat,linear-gradient(160deg,#2a1838,#0d0a18);opacity:.4}
+.cbg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg),transparent 30%,transparent 55%,var(--bg))}
+.disclose{position:relative;z-index:1;margin:10px 16px 0;padding:8px 12px;border-radius:12px;background:#17151FE6;color:var(--t3);font-size:11.5px;text-align:center}
+.msgs{position:relative;z-index:1;flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.msgs .sp{flex:1}
+.bub{padding:11px 14px;border-radius:18px;max-width:82%;font-size:15px;line-height:1.4;animation:fi .3s ease}
+.bub.c{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:6px}
+.bub.u{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:6px}
+.bub.sys{align-self:center;background:none;color:var(--t3);font-size:12px;padding:2px}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.3}}
+.ideas{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;padding:0 16px 10px}
+.ideas button{min-height:44px;padding:11px 14px;border-radius:14px;background:#17151FE6;border:1px solid var(--border);text-align:left;font-size:14px;color:var(--t2)}
+.cfoot{flex:none;border-top:1px solid var(--border);padding:10px 14px max(14px,calc(env(safe-area-inset-bottom,0px) + 8px));display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.counter{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
+.counter.out{color:var(--negative)}
+.composer{display:flex;gap:8px}
+.composer .box{flex:1;border-radius:999px;height:48px}
+.send{width:48px;height:48px;border-radius:50%;border:none;background:var(--pink);color:#fff;display:grid;place-items:center;flex:none}
+.send[disabled]{background:var(--surface-2);color:var(--t3)}
+.limit{padding:18px 16px;border-radius:18px;border:1.5px solid var(--pink);background:#17151FF2;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;animation:fi .4s ease}
+.limit h3{margin:0;font:800 20px/1.2 var(--head)}
+.limit p{margin:0;color:var(--t2);font-size:14px}
+.limit .crown *{stroke:url(#cgrad)}
+.toast{position:absolute;left:50%;top:calc(var(--top) + 6px);transform:translateX(-50%);z-index:20;background:var(--t1);color:#0A0911;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:fade 2.8s ease forwards}
+@keyframes fade{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0}}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.gicon *{stroke:url(#cgrad)}
+.logo{display:flex;align-items:center;justify-content:center;gap:8px;font:800 17px var(--head)}
+svg .lg{fill:url(#cgrad-logo)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+/* last-chance offer (shown once, after a paywall decline) */
+.ofr .pwtop .logo{font-size:16px}
+.oeye{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font:600 12px/1 var(--sans);letter-spacing:.02em}
+.ocard{position:relative;margin-top:6px;padding:22px 16px 16px;border-radius:24px;border:1.5px solid var(--pink);background:radial-gradient(ellipse at 50% 0%,var(--pink-dim),transparent 65%),var(--surface);box-shadow:0 0 0 4px var(--pink-dim),0 30px 60px -30px #000;display:flex;flex-direction:column;gap:14px;flex:none}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad,var(--pink));color:#fff;font:700 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.obadge .otk{color:#fff;border-color:#ffffffaa;background:transparent}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{font:700 17px/1.2 var(--head)}
+.osub{font-size:12.5px;color:var(--t3);margin-top:3px}
+.oth{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:none;position:relative;display:block;box-shadow:0 0 0 2px var(--pink),0 0 24px var(--pink-dim)}
+.oth>img,.oth .pimg{width:100%;height:100%;object-fit:cover;display:block}
+.oth>.av,.oth>.cav{width:100%!important;height:100%!important}
+.ocov{flex:none;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}
+.oprice s .otk{text-decoration:line-through;opacity:.75}
+.oprice b{font:800 28px/1 var(--head);color:var(--t1)}
+.oprice span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:center;font-size:14.5px;font-weight:500}
+.ochecks svg{color:var(--pink-hi);flex:none}
+.ochecks svg *{stroke:url(#cgrad)}
+.ofine{font-size:12px;color:var(--t3);text-align:center;line-height:1.45;margin:0}
+.odis{font-size:11.5px;color:var(--t3);text-align:center;margin:0;line-height:1.4}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pink-hi);font-variant-numeric:tabular-nums}
+.otk{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+.ofr .obar{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:calc(var(--top,8px) + 4px) 16px 10px;background:linear-gradient(180deg,var(--bg) 75%,transparent)}
+.ofr .obx{width:36px;height:36px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);color:var(--t2);display:grid;place-items:center}
+.ofr .olead{color:var(--t2);margin:0;font-size:14.5px;line-height:1.45}
+
+/* chai-roleplay additions */
+.fan{position:relative;height:250px;margin:6px 0 0}
+.fan .fc{position:absolute;left:50%;top:10px;width:116px;height:176px;margin-left:-58px;border-radius:16px;overflow:hidden;border:2px solid var(--border);box-shadow:0 18px 40px -16px #000;transform-origin:50% 120%;display:grid;place-items:center;font-size:40px}
+.fan .fc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fan .fc span{position:relative}
+.gc{position:absolute;inset:0;display:grid;place-items:center;font-size:46px;background:var(--gbg)}
+.card.gen{aspect-ratio:3/3.8}
+.card.dash{border-style:dashed;background:transparent}
+.card.dash .ph{background:transparent}
+.card.wide{aspect-ratio:auto;height:112px;grid-column:1/-1}
+.card.wide .lb{justify-content:space-between;padding:10px 14px;text-align:left;min-height:48px}
+.cardsc{display:grid;grid-template-columns:1fr;gap:10px}
+.comp{display:flex;gap:14px;align-items:center;padding:12px;border-radius:18px;border:2px solid var(--border);background:var(--surface);width:100%;text-align:left}
+.comp.on{border-color:var(--pink);box-shadow:0 0 22px -6px #B62CB5aa}
+.comp .pt{width:68px;height:68px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:30px;background:var(--gbg);border:2px solid var(--gacc)}
+.comp b{font:800 17px var(--head);display:block}
+.comp small{display:block;color:var(--t2);font-size:12.5px}
+.comp i{display:block;color:var(--t1);font-size:13.5px;font-style:italic;margin-top:4px;font-family:Georgia,serif}
+.sel{width:100%;height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t1);font:600 17px var(--sans);padding:0 14px;appearance:none;-webkit-appearance:none}
+.cover{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--border);aspect-ratio:3/3.9;background:var(--gbg);box-shadow:0 30px 60px -30px #000}
+.cover .gc{position:absolute;inset:0;font-size:90px;opacity:.55}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#0A0911f2)}
+.cover .ct{position:absolute;left:16px;right:16px;bottom:14px;z-index:1}
+.cover .ct h2{font:700 30px/1.05 Georgia,serif;margin:0 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{font-size:11.5px;padding:5px 9px;border-radius:999px;background:#17151Fcc;border:1px solid var(--border)}
+.cover .pill{position:absolute;top:12px;left:12px;z-index:1;font:600 11px var(--sans);padding:5px 10px;border-radius:999px;background:#0A0911cc;border:1px solid var(--border)}
+.cover .cav{position:absolute;top:12px;right:12px;z-index:1;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--gbg);border:2px solid var(--gacc)}
+.ribbon{position:relative;z-index:1;margin:8px 16px 0;font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:8px}
+.ribbon .rb{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.ribbon .rb span{display:block;height:100%;background:var(--grad)}
+.cbg{background:var(--scene) center/cover no-repeat,var(--gbg)}
+.cbg.tn-playful{filter:saturate(1.3) brightness(1.15)}.cbg.tn-dark{filter:brightness(.7) contrast(1.1)}.cbg.tn-epic{filter:sepia(.25) saturate(1.2)}
+.frozen{font:700 26px/1.3 Georgia,serif;text-align:center;text-wrap:balance;padding:6px 4px}
+.scard{position:relative;height:120px;perspective:600px;margin:4px auto 0;width:200px}
+.scard>div{position:absolute;inset:0;border-radius:16px;display:grid;place-items:center;backface-visibility:hidden;transition:transform 1.1s}
+.scard .bk{background:var(--surface-2);border:1px dashed var(--border);color:var(--t3)}
+.scard .fr{background:var(--gbg);border:2px solid var(--gacc);box-shadow:0 0 26px -6px var(--gacc);transform:rotateY(180deg);font-size:44px}
+.scard.flip .bk{transform:rotateY(-180deg)}.scard.flip .fr{transform:rotateY(0)}
+.err{color:var(--negative);font-size:13px;margin:-4px 2px 0}
+.stick{position:sticky;bottom:0;z-index:6;padding:10px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 8px));background:linear-gradient(180deg,transparent,var(--bg) 26%);display:flex;flex-direction:column;gap:6px}
+.stick .fine{margin:0}
+.faq details{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:0 14px;margin-bottom:8px}
+.faq summary{min-height:48px;display:flex;align-items:center;font:700 15px var(--head);cursor:pointer}
+.faq p{margin:0 0 12px;color:var(--t2);font-size:13.5px}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.how b{display:block;font:700 15px var(--head)}.how small{color:var(--t2);font-size:12.5px}
+.how .nn{width:30px;height:30px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font:800 14px var(--head);flex:none}
+.brandbar{display:flex;justify-content:center;padding:calc(var(--top) + 10px) 0 6px}
+.pwhero.cv{height:auto;padding:0 16px}
+.blocked{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;text-align:center}
+</style>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cgrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient><linearGradient id="cgrad-logo" gradientUnits="userSpaceOnUse" x1="3" y1="4" x2="37" y2="36"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient></defs></svg>
+<main class="phone" id="phone" aria-live="polite"></main>
+
+<script>
+/* ============================================================
+   CONFIG - edit before launch. Everything in {{...}} is a placeholder, never a real price or claim.
+   ============================================================ */
+const CONFIG={
+  slug:'chai-roleplay',
+  brand:'Chai',
+  plans:{
+    w1: {label:'1 week',  price:'{{price_1w}}', per:'week',    renew:'{{renew_1w}}', renews:'every week',    badge:''},
+    w4: {label:'4 weeks', price:'{{price_4w}}', per:'4 weeks', renew:'{{renew_4w}}', renews:'every 4 weeks', badge:'MOST POPULAR'},
+    w12:{label:'12 weeks',price:'{{price_12w}}',per:'12 weeks',renew:'{{renew_12w}}',renews:'every 12 weeks',badge:''}
+  },
+  defaultPlan:'w4',
+  fairUseCap:300,          // TODO confirm
+  freeMessagesPerDay:10,   // TODO confirm
+  checkoutUrl:{w1:'',w4:'',w12:''},
+  /* Last-chance offer, shown ONCE per session when a paywall is declined. Real terms only.
+     expiresMin: null = no timer; a number = a real deadline. */
+  offer:{enabled:true,name:'Chai Plus - 1 week',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'w1',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  app:{deepLink:'',iosUrl:'https://apps.apple.com/app/idTODO',androidUrl:'https://play.google.com/store/apps/details?id=TODO'},
+  legal:{termsUrl:'',privacyUrl:''},
+  /* Proof blocks: must be real, sourced numbers/reviews before launch. */
+  stats:[['{{app_rating}}','store rating'],['{{app_users}}','people play stories on Chai']],
+  reviews:[['{{reviewer}}','{{country}}','{{review_text}}'],['{{reviewer}}','{{country}}','{{review_text}}']],
+  refundDays:'{{refund_days}}',   // guarantee block is hidden until this is a real number
+  refundText:''
+};
+/* ============================================================ */
+const QS=new URLSearchParams(location.search);
+const DEBUG=QS.get('debug')==='1';
+const IMG=/*IMG-START*/{'img/hook.jpg':'img/hook.jpg','img/genre-fantasy.jpg':'img/genre-fantasy.jpg','img/genre-mystery.jpg':'img/genre-mystery.jpg','img/genre-scifi.jpg':'img/genre-scifi.jpg','img/genre-romance.jpg':'img/genre-romance.jpg','img/genre-horror.jpg':'img/genre-horror.jpg'}/*IMG-END*/;
+const src=p=>IMG[p]||p;
+const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 19v3"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  crown:'<path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.3l4.27-3.67a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.67a1 1 0 0 0 1.52-.3z"/><path d="M5 21h14"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+  spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+  dice:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  note:'<path d="M5 3h14v18l-7-4-7 4z"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const gic=(n,s=20)=>`<span class="gicon">${ic(n,s)}</span>`;
+const logo=(s=26)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4C10.6 4 3 10.3 3 18.2c0 5 3 9.3 7.6 11.8L9.5 36l7.4-4c1 .1 2 .2 3.1.2 9.4 0 17-6.3 17-14S29.4 4 20 4Z" fill="#B62CB5" class="lg"/><path d="M26 15.6c0 3.4-6 7.4-6 7.4s-6-4-6-7.4a3.3 3.3 0 0 1 6-1.9 3.3 3.3 0 0 1 6 1.9Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ph=s=>/\{\{.*\}\}/.test(s)?`<span class="ph2">${esc(s)}</span>`:esc(s);
+const im=(p,cls='')=>`<img class="${cls}" src="${src(p)}" alt="" decoding="async" draggable="false" onerror="this.remove()">`;
+
+/* ---- story data: five genres, SFW. {{name}} {{comp}} {{setting}} are filled at render time ---- */
+const GENRES={
+ fantasy:{l:'Fantasy',e:'🐉',acc:'#F5A83D',bg:'linear-gradient(160deg,#5a3410,#150c06)',title:'The Last Ember',
+  set:[['🏰','Ember Keep'],['🌲','Whisperwood'],['🌊','Drowned Harbour']],
+  comps:[['Kael','🛡️','Sworn knight','Notices more than he says.'],['Mira','🔮','Rogue mage','Never gives a straight answer.'],['Fenn','🐺','Shapeshifter','Loyal. Mostly.']],
+  open:'{{name}}. You came. Stay close, the walls of {{setting}} listen.',
+  t1:['🗡️ Draw your blade','🕯️ Step into the light','🤐 Say nothing'],
+  r1:["Easy. Steel won't help where we're going, {{name}}.",'Brave. Or foolish. I like both.','Silence. Good. This place hates loud guests.'],
+  t2:['🚪 Open the door','🗣️ Ask what they know','🏃 Run for cover'],
+  r2:['It opens. Cold air, and a staircase that was not there before.','Fine. The ember went out three nights ago. Someone put it out.','Wait. That was not thunder. Something is awake below.'],
+  t3:['⚔️ Stand your ground','🤝 Trust {{comp}}','🔥 Strike first'],
+  r3:["Steady. Hold the line, {{name}}. I'm right behind you.",'Then follow me. Do not look at the walls.','Reckless. Magnificent. Go.'],
+  cliff:"{{comp}} lowers the lantern. 'The ember was not stolen, {{name}}. It was fed to...' The bell rings."},
+ mystery:{l:'Mystery',e:'🔍',acc:'#3FC1C9',bg:'linear-gradient(160deg,#0f3a40,#071114)',title:'Rain on Glass',
+  set:[['🌧️','Harbor Street'],['🏨','Hotel Lumen'],['📚','the Closed Library']],
+  comps:[['Nora','🕵️','Sharp detective','Trusts nothing, writes everything.'],['Vic','🎩','Charming informant',"Knows everyone's secrets."],['Ash','🔦','Rookie partner','Eager. Too eager?']],
+  open:"{{name}}. You're late. The case at {{setting}} just got worse.",
+  t1:['🔎 Study the scene','🗣️ Question the witness','🚬 Wait in the shadows'],
+  r1:['Good eye. The window, {{name}}. Locked from the inside.','Careful. Their story changed twice already.',"Patience. Someone is watching us from across the street."],
+  t2:['📂 Open the file','📞 Take the call','👣 Follow the footsteps'],
+  r2:['Photos. One of them is dated tomorrow.','A voice you know. It says your name, then hangs up.','Quiet. Two sets of prints. One leaving, one not.'],
+  t3:['🕵️ Confront {{comp}}','🤝 Share what you know','🔦 Check the basement'],
+  r3:["Fair question. I'll answer, if you can handle it.","Then we're even. Here is what I held back.",'Do not. Some doors stay shut for a reason.'],
+  cliff:"{{comp}} slides a photo across the table. 'That is you, {{name}}, at the scene. Taken last night...' The lights die."},
+ scifi:{l:'Sci-fi',e:'🚀',acc:'#4FA8FF',bg:'linear-gradient(160deg,#0f2850,#070b18)',title:'Dead Orbit',
+  set:[['🛰️','Station Vega'],['🚀','the Halcyon'],['🪐','Titan Outpost']],
+  comps:[['Juno','🤖','Ship AI','Calm. Slightly sarcastic.'],['Rook','🧑‍🚀','Weary pilot','Has seen worse. Maybe.'],['Zed','👽','Stranded envoy','Curious about everything.']],
+  open:'{{name}}. Wake up. {{setting}} just lost contact with Earth.',
+  t1:['🔧 Check the systems','📡 Hail the surface','🚪 Seal the hatch'],
+  r1:["Systems are fine. That's the strange part, {{name}}.",'Static. Then one word, repeated: Do not.','Sealed. But something knocked from the other side.'],
+  t2:['🧭 Trace the signal','🛠️ Reboot the core','🚀 Prep the escape pod'],
+  r2:['Source: inside the ship. Deck four.','Rebooting. Lights out for ten seconds. Stay put.','One pod left. Two seats. Your call.'],
+  t3:['👁️ Go to deck four','🤝 Trust {{comp}}','⚡ Cut the power'],
+  r3:["Brave. I'll light the corridor. Stay near.",'Then listen closely. I have not told you everything.','Cutting power. Last thing I say before the dark...'],
+  cliff:"{{comp}} whispers: 'The signal is not calling for help, {{name}}. It is calling for you...' The lights go out."},
+ romance:{l:'Romance',e:'💘',acc:'#FF5E9E',bg:'linear-gradient(160deg,#5a1535,#14070d)',title:'The Midnight Waltz',
+  set:[['💃','the Grand Ballroom'],['🌹','the Rooftop Garden'],['☕','a Rainy Cafe']],
+  comps:[['Elio','🎻','Charming violinist','Plays only for you.'],['Ines','🌹','Mysterious guest','Smiles like a secret.'],['Theo','🎩','Old rival','Hates how much he cares.']],
+  open:'{{name}}. There you are. Dance with me, or I tell all of {{setting}} you ran.',
+  t1:['💃 Take their hand','😏 Make them ask','🚪 Slip away'],
+  r1:["Finally. Don't look at the crowd. Look at me.",'Ha. Please, {{name}}? I do not say that twice.','Wait. At least tell me where you are going.'],
+  t2:['🎶 Ask about the song','💬 Be honest','🌙 Step outside'],
+  r2:['I wrote it the night we met. You did not notice.','Honest. Rarer than you would think. Say more.','Cool air, a sky full of stars. Walk with me.'],
+  t3:['💌 Open the letter','🤝 Stay by {{comp}}','🌹 Say it first'],
+  r3:['It is addressed to you. In my handwriting.','Good. I was afraid you would leave.','You, first? Then I will answer, and mean it.'],
+  cliff:"{{comp}} steps closer. 'There is something I never told you, {{name}}. The letter was not...' The clock strikes midnight."},
+ horror:{l:'Horror',e:'👻',acc:'#E0453F',bg:'linear-gradient(160deg,#4a0f12,#0d0506)',title:"The Keeper's Light",
+  set:[['🗼','the Lighthouse'],['🏚️','Hollow Manor'],['🌲','Pine Hollow Camp']],
+  comps:[['Wick','🕯️','Nervous caretaker',"Pretends he isn't scared."],['Sable','🐈‍⬛','Odd local','Knows the story. All of it.'],['Doc','🔦','Skeptical guide','Believes in nothing. Yet.']],
+  open:"{{name}}. Don't turn the light off. Not here, not at {{setting}}.",
+  t1:['🔦 Check the noise','🚪 Lock the door','🫢 Hold your breath'],
+  r1:['Okay. Slowly. It came from upstairs, {{name}}.','Locked. Though it sounded like it was already inside.',"Shh. Listen. That's not the wind."],
+  t2:['📖 Read the journal','🕯️ Light a candle','🏃 Back to the exit'],
+  r2:["Last entry: 'It learns your voice.' Do not answer if it calls.",'Better. See that? The shadow is a step too late.','The exit is gone. Only a wall, still warm.'],
+  t3:['🔦 Climb the stairs','🤝 Stay with {{comp}}','🗣️ Call out'],
+  r3:['Together then. Count the steps with me. Eleven.','Smart. We stay in the light, whatever it says.','Do not. It has been waiting for someone to ask.'],
+  cliff:"{{comp}} freezes. 'That voice, {{name}}. That is my voice. But I am right here...' The light flickers out."}
+};
+const GORDER=['fantasy','mystery','scifi','romance','horror'];
+const ROLES={hero:['🦸','The hero','the hero'],rival:['⚔️','The rival','the rival'],stranger:['🧳','A stranger','a stranger']};
+const TONES={playful:['😄','Playful'],dark:['🌑','Dark'],epic:['⚡','Epic']};
+const NAMES=['Wren','Ash','Juno','Sloane','Rowan','Indigo','Marlow','Sage'];
+const FREE=CONFIG.freeMessagesPerDay;
+const MORE=['I hear you. Tell me more.','Hm. Go on, I am listening.','Interesting. And then?'];
+const THIS_YEAR=new Date().getFullYear();
+
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',blocked:false,genre:'',gOther:'',role:'',roleOther:'',set:'',comp:'',tone:'',name:'',mem:true,picks:[],chat:[],typing:false,turn:0,msgs:FREE,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,offerSeen:false,offerRet:19,flip:false});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const SCREENS={1:'hook',2:'age_gate',3:'genre',4:'role',5:'setting',6:'companion',7:'tone',8:'character_name',9:'trust',10:'loader',11:'story_reveal',12:'scene_turn_1',13:'scene_turn_2',14:'scene_turn_3',15:'cliffhanger',16:'save_story',17:'paywall',18:'last_chance_offer',19:'back_in_scene'};
+function matchGenre(s){s=(s||'').toLowerCase();
+  if(/detective|crime|spy|noir|murder|case|heist/.test(s))return 'mystery';
+  if(/space|alien|robot|cyber|future|apocalypse|mars|android/.test(s))return 'scifi';
+  if(/love|date|wedding|romance|royal|ball/.test(s))return 'romance';
+  if(/ghost|haunt|zombie|vampire|monster|scary|horror|dark/.test(s))return 'horror';
+  return 'fantasy'}
+const gk=()=>S.genre==='other'?matchGenre(S.gOther):(S.genre||'fantasy');
+const G=()=>GENRES[gk()];
+const setI=()=>{const n=S.set===''?0:+S.set;return G().set[n]||G().set[0]};
+const compI=()=>{const n=S.comp===''?0:+S.comp;return G().comps[n]||G().comps[0]};
+const nm=()=>S.name.trim()||'Traveler';
+const roleL=()=>S.role==='other'?(S.roleOther.trim()||'the hero'):(ROLES[S.role]||ROLES.hero)[2];
+function fill(s){return esc(s).replace(/\{\{name\}\}/g,esc(nm())).replace(/\{\{comp\}\}/g,esc(compI()[0])).replace(/\{\{setting\}\}/g,esc(setI()[1])).replace(/\{\{role\}\}/g,esc(roleL())).replace(/\{\{story_title\}\}/g,esc(G().title)).replace(/\{\{genre\}\}/g,esc(G().l))}
+const accStyle=()=>`--gbg:${G().bg};--gacc:${G().acc}`;
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers=[],LD=null;
+const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id};
+const clearT=()=>{timers.forEach(clearTimeout);timers=[];if(LD)clearInterval(LD.t);LD=null;S.typing=false};
+
+/* ---------- tracking (no free text) ---------- */
+function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,genre:S.genre||null,role:S.role||null,setting:S.set===''?null:S.set,companion:S.comp===''?null:S.comp,tone:S.tone||null,memory:S.mem,actions:S.picks.map(p=>p.idx),plan:S.plan,premium:S.premium,messagesSent:S.sent}}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({},detail||{},{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.slug,event:name,detail:d},'*')}catch(e){}
+  const flat=Object.assign({funnel:CONFIG.slug},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,flat)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,flat)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel] '+name,d)}catch(e){}
+}
+const answer=(key,value)=>emit('answer',{key,value});
+function navTop(href){try{window.top.location.href=href}catch(e){location.href=href}}
+function checkout(plan){
+  const p=CONFIG.plans[plan],url=CONFIG.checkoutUrl[plan]||'';
+  emit('checkout_click',{plan,price:p.price,url});
+  if(!url)return;
+  let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  navTop(u.toString());
+}
+function openApp(){const ua=navigator.userAgent||'';const u=CONFIG.app.deepLink||(/android/i.test(ua)?CONFIG.app.androidUrl:CONFIG.app.iosUrl);emit('app_handoff',{url:u});if(u)navTop(u)}
+const lnk=(txt,url)=>url?`<a href="${esc(url)}" target="_blank" rel="noopener">${txt}</a>`:`<a>${txt}</a>`;
+
+function viewed(){
+  emit('screen_view',{index:S.i,name:SCREENS[S.i]});
+  if(S.i===17)emit('paywall_view',{placement:'onboarding'});
+  if(S.i===19&&!S.completed){S.completed=true;emit('complete',{premium:S.premium})}
+}
+const stripEmoji=s=>s.replace(/^[^\w*"'‘“{]+\s*/u,'');
+const turnN=()=>S.i>=12&&S.i<=14?S.i-12:null;
+/* keep the chat thread consistent with the screen (go() may jump or step back) */
+function syncChat(){
+  const n=S.i===19?(S.turn<3?3:null):turnN();
+  if(n===null||S.turn===n&&(n>0||S.chat.length||S.typing))return;
+  if(n===0){S.chat=[];S.picks=[];S.turn=0;S.msgs=S.premium?FREE:FREE;return}
+  const g=G();S.picks=S.picks.slice(0,n);
+  S.chat=[{w:'c',x:g.open}];
+  for(let k=0;k<n;k++){const p=S.picks[k]||{idx:0,text:stripEmoji(g['t'+(k+1)][0])};S.picks[k]=p;S.chat.push({w:'u',x:p.text},{w:'c',x:g['r'+(k+1)][p.idx]})}
+  S.turn=n;S.msgs=S.premium?FREE:FREE-n;
+}
+function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.sheet=null;syncChat();render(true);viewed();if(n===13)later(memToast,600)}
+const next=()=>go(S.i+1);
+function back(){if(S.blocked)return;clearT();const p=S.hist.pop();if(p){S.i=p;S.sheet=null;syncChat();render(true);viewed()}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
+function memToast(){if(S.i!==13)return;const p=S.picks[0],lbl=p?p.text:stripEmoji(G().t1[0]);toast(S.mem?`${compI()[0]} will remember: ${lbl}`:'This scene only. Nothing is saved.')}
+
+/* ---------- building blocks ---------- */
+const QN=[3,4,5,6,7,8];
+function nav(){
+  if(S.blocked||!QN.includes(S.i))return '';
+  const k=QN.indexOf(S.i);
+  return `<div class="nav"><div class="row"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="ttl">Build my story</div></div>
+  <div class="segs" role="progressbar" aria-valuemin="0" aria-valuemax="${QN.length}" aria-valuenow="${k+1}">${QN.map((_,j)=>`<i class="${j<=k?'on':''}"></i>`).join('')}</div></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const q=(a,s)=>`<h1 class="q">${a}</h1>${s?`<p class="sub">${s}</p>`:''}`;
+const gimg=k=>im('img/genre-'+k+'.jpg');
+const compAv=(c,sz=68)=>`<span class="pt" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.44)}px;${accStyle()}">${c[1]}</span>`;
+
+/* ---------- paywall (long-scroll web sales page) ---------- */
+const PLANS=CONFIG.plans;
+const realRefund=()=>/^\d+$/.test(String(CONFIG.refundDays));
+const plansHTML=()=>`<div class="plans">${Object.entries(PLANS).map(([k,p])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="bv">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,'#fff',3.2):''}</span><span class="pn">${p.label}</span><span class="pp">${ph(p.price)} <small>/ ${p.per}</small></span><span class="rn">Renews at ${ph(p.renew)} ${p.renews}. Cancel anytime.</span></button>`).join('')}</div>`;
+const stickHTML=()=>{const p=PLANS[S.plan];return `<div class="stick" id="stick"><button class="btn" data-a="buy">Continue with ${p.label}</button><div class="fine">${ph(p.price)} today, renews at ${ph(p.renew)} ${p.renews}. Cancel anytime.</div></div>`};
+const legalFine=()=>`<div class="fine">Auto-renews at the price and period shown until cancelled. Cancel anytime in account or store settings.<br>Unlimited means normal use, capped at ${CONFIG.fairUseCap} messages a day.</div>`;
+function coverHTML(extra=''){const g=G(),c=compI();
+  return `<div class="cover" style="${accStyle()}"><span class="gc">${g.e}</span>${gimg(gk())}<span class="pill">Chapter 1 · live scene</span><span class="cav">${c[1]}</span>
+  <div class="ct"><h2>${esc(g.title)}</h2><div class="chips"><span>${esc(g.l)}</span><span>You: ${esc(roleL())}</span><span>${esc(setI()[1])}</span>${S.tone?`<span>${esc(TONES[S.tone][1])}</span>`:''}</div></div></div>`;
+}
+function pwHTML(mode){
+  const quota=mode==='quota',g=G(),c=compI();
+  const bens=[['chat','Unlimited chat','Fair-use cap applies.','PLUS'],['layers','Every genre and scene','Switch whenever you like.',''],['note','Companion memory','Your choices are kept.',''],['mic','Voice notes','Hear your companion.','NEW'],['spark','Change role and tone','Rewrite how it feels.','']];
+  const how=[['Pick','Genre, role, companion, tone.'],['Play','Act or type. The scene answers.'],['It remembers','Your choices shape every scene.']];
+  const faq=[['Is it free to start?',`Yes. Free: this scene and ${FREE} messages a day.`],['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],['Is this safe and private?','Chats are never public. Delete your story anytime. Characters are AI and fictional.'],['How do I cancel?','Anytime in your account or store settings.'],['Is it explicit?','No. Chai stories here are SFW.']];
+  return `<div class="pw" id="pw" role="dialog" aria-label="Chai Plus">
+  <button class="pwx" data-a="${quota?'closeq':'closepw'}" aria-label="Close">${ic('x',16)}</button>
+  <div class="brandbar"><div class="logo">${logo(22)} Chai</div></div>
+  <div class="sec" style="padding-top:8px">${coverHTML()}
+   <h1 class="h1" style="margin-top:16px;text-align:left;font-size:30px">${quota?t(`You've used today's ${FREE}.`,'Your scene is paused.'):t('Your story, <span class="gt">unlocked</span>','Keep playing <span class="gt">'+esc(g.title)+'</span>')}</h1>
+   <p style="margin:6px 0 0;color:var(--t2)">${quota?'Resets at midnight. Or chat without limits.':t('Chat without counting. Every genre, every scene.','One plan. No coins. No per-message charges.')}</p></div>
+  <div class="sec" id="plans1">${plansHTML()}<div style="height:12px"></div>${legalFine()}</div>
+  <div class="sec"><h2 class="h2">Everything in<br><span class="gt">Chai Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
+  <div class="sec"><h2 class="h2">How it <span class="gt">works</span></h2><div class="how">${how.map(([a,b],j)=>`<div><span class="nn">${j+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</div></div>
+  ${CONFIG.stats?`<div class="sec"><h2 class="h2">Loved by <span class="gt">players</span></h2><div class="stats">${CONFIG.stats.map(([n,l])=>`<div class="stat"><span class="n gt">${ph(n)}</span><span>${esc(l)}</span></div>`).join('')}</div>
+   ${CONFIG.reviews?`<div class="stats" style="margin-top:10px">${CONFIG.reviews.map(([n,cn,x])=>`<div class="rev"><div class="who"><i>${/\{\{/.test(n)?'?':esc(n.slice(0,2).toUpperCase())}</i><div><b>${ph(n)}</b><div style="font-size:11.5px;color:var(--t3)">${ph(cn)}</div></div><span class="st">★★★★★</span></div>${ph(x)}</div>`).join('')}</div>`:''}</div>`:''}
+  ${realRefund()?`<div class="guar"><b>${CONFIG.refundDays}-day money-back guarantee</b>${esc(CONFIG.refundText)}</div>`:''}
+  <div class="sec faq"><h2 class="h2">Questions</h2>${faq.map(([a,b])=>`<details><summary>${a}</summary><p>${esc(b)}</p></details>`).join('')}</div>
+  <div class="sec">${plansHTML()}<div style="height:12px"></div>${legalFine()}</div>
+  <div class="sec" style="padding-bottom:12px">${quota?'':`<button class="link" style="width:100%" data-a="freeplan">Continue free · ${FREE} messages a day</button>`}
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
+   <p class="odis" style="margin-top:10px">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</p></div>
+  ${stickHTML()}</div>`;
+}
+
+/* ---------- chat ---------- */
+function chatView(){
+  const g=G(),c=compI(),n=turnN(),out=!S.premium&&S.msgs<=0,last=S.chat[S.chat.length-1];
+  let chips=null;
+  if(!S.typing&&last&&last.w==='c'&&!out){
+    if(n!==null&&S.turn===n)chips=g['t'+(n+1)];
+    else if(S.i===19)chips=['💬 Keep going','🤔 Say that again','👀 What happens now?'];
+  }
+  const head=n!==null?[['The scene begins.',`${c[0]} speaks first.`],['',''],['','']]:[];
+  const hl=[t('The scene begins.',c[0]+' speaks first.'),t(c[0]+' will remember that.','Your choice changed things.'),t('The stakes just rose.',c[0]+' leans in.')];
+  const bd=[t('Pick an action, or type your own.','Three ways forward. Or write yours.'),t('Each action reshapes what happens next.','Turn two. The scene already shifted.'),t('One more move before the scene turns.','Choose carefully. This one sticks.')];
+  const lim=!S.premium&&S.msgs<=0&&S.i===19?`<div class="limit"><span class="crown">${ic('crown',26)}</span><h3>${t(`You've used today's ${FREE}.`,'Your scene is paused.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to Chai Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`:'';
+  const pct=n!==null?Math.round((S.turn/3)*100):100;
+  return `<div class="chat" style="${accStyle()}"><div class="chead"><span class="av" style="width:40px;height:40px;background:var(--gbg);border:2px solid var(--gacc)">${c[1]}</span><div style="flex:1"><b>${esc(c[0])}</b><small>● online · ${esc(g.title)}</small></div></div>
+  <div class="cbody"><div class="cbg tn-${S.tone||'epic'}" style="--scene:url(${src('img/genre-'+gk()+'.jpg')})"></div>
+   <div class="disclose">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</div>
+   ${n!==null?`<div class="ribbon"><span>${S.mem?'Story path':'This scene only'}</span><div class="rb"><span style="width:${pct}%"></span></div></div><div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${hl[n]}</div><div style="color:var(--t2);font-size:13px">${bd[n]}</div></div>`:`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${t('Right where you left off.',c[0]+' is waiting.')}</div><div style="color:var(--t2);font-size:13px">${S.premium?'Unlimited chat is on.':t('The scene picks up mid-sentence.',`Free: ${Math.max(S.msgs,0)} messages left today.`)}</div></div>`}
+   <div class="msgs" id="msgs"><div class="sp"></div>${S.chat.map(m=>`<div class="bub ${m.w}">${fill(m.x)}</div>`).join('')}${S.typing?'<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>':''}${lim}</div>
+   ${chips?`<div class="ideas">${chips.map((x,j)=>`<button data-a="say" data-v="${esc(x)}" data-j="${j}">${fill(x)}</button>`).join('')}</div>`:''}</div>
+  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the Chai app</button>`:`<div class="counter ${out?'out':''}">${out?'Out of messages · resets at midnight':S.msgs+' message'+(S.msgs===1?'':'s')+' left today'}</div>`}
+   <div class="composer"><div class="box"><input id="msg" maxlength="300" placeholder="Message ${esc(c[0])}…" ${out?'disabled':''}></div><button class="send" id="sendb" data-a="send" aria-label="Send" disabled>${ic('send',18)}</button></div></div></div>`;
+}
+function say(text,idx){
+  if(S.typing||(!S.premium&&S.msgs<=0))return;
+  const n=turnN(),g=G();
+  text=stripEmoji(fill(text).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"'));
+  S.sent++;emit('chat_message',{count:S.sent});
+  S.chat.push({w:'u',x:text.replace(/\{\{/g,'')});if(!S.premium)S.msgs--;
+  const scripted=n!==null&&S.turn===n;
+  if(scripted){S.picks[n]={idx,text};S.turn++;answer('action_'+(n+1),idx)}
+  S.typing=true;render();
+  later(()=>{S.typing=false;
+    S.chat.push({w:'c',x:scripted?g['r'+(n+1)][idx]:MORE[S.sent%MORE.length]});render();
+    if(scripted)later(()=>go(n===2?15:S.i+1),1500)},1200);
+}
+
+/* ---------- screens ---------- */
+const years=()=>{let o='<option value="">Birth year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
+const otherRow=(on)=>`<button class="opt ${on?'on':''}" data-a="pick" data-f="role" data-v="other" aria-pressed="${on}"><span class="em">✏️</span><span class="lbl">Other</span></button>`;
+const V={
+1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} Chai</div>
+  <h1 class="h1">${t('Step into <span class="gt">any story</span>','Play the story. <span class="gt">Live.</span>')}</h1>
+  <p class="sub" style="margin-top:-4px">${t('Pick a genre. Your companion plays the rest.','AI roleplay where your choices change the scene.')}</p>
+  <div class="fan">${GORDER.map((k,j)=>`<div class="fc" style="--gbg:${GENRES[k].bg};background:var(--gbg);border-color:${GENRES[k].acc}66;transform:translateX(${(j-2)*54}px) rotate(${(j-2)*11}deg);z-index:${5-Math.abs(j-2)}"><span>${GENRES[k].e}</span>${gimg(k)}</div>`).join('')}</div></div>
+  <div class="foot">${cta('Start my story')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
+2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Adults only. Quick check.','When were you born?'),t('Chai roleplay is for people 18 and older.','We only use this to confirm your age.'))}
+  <select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select>
+  <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Continue',!!S.year,'age')}</div>`,
+3:()=>`<div class="scr">${q(t('Pick your genre.','What kind of story?'),t('It sets the world, the cast, the stakes.','You can switch genres anytime later.'))}
+  <div class="cards">${GORDER.map(k=>{const g=GENRES[k],on=S.genre===k;return `<button class="card gen ${on?'on':''}" data-a="pick" data-f="genre" data-v="${k}" aria-pressed="${on}" style="--gbg:${g.bg}"><span class="gc">${g.e}</span>${gimg(k)}<span class="lb" style="border-top:2px solid ${g.acc}">${g.l}</span></button>`}).join('')}
+   <button class="card gen dash ${S.genre==='other'?'on':''}" data-a="pick" data-f="genre" data-v="other" aria-pressed="${S.genre==='other'}"><span class="gc">✏️</span><span class="lb">Other</span></button></div>
+  ${S.genre==='other'?`<div class="box"><input data-f="gOther" maxlength="40" placeholder="pirates, post-apocalypse…" value="${esc(S.gOther)}" aria-label="Your genre"></div>`:''}</div>
+  ${S.genre==='other'?`<div class="foot">${cta('Continue',!!S.gOther.trim())}</div>`:''}`,
+4:()=>`<div class="scr">${q(t('Who are you here?','Pick your role.'),t('The scene is written around you.','Change it anytime in the app.'))}
+  <div class="opts">${Object.entries(ROLES).map(([k,[e,l]])=>`<button class="opt ${S.role===k?'on':''}" data-a="pick" data-f="role" data-v="${k}" aria-pressed="${S.role===k}"><span class="em">${e}</span><span class="lbl">${l}</span></button>`).join('')}${otherRow(S.role==='other')}</div>
+  ${S.role==='other'?`<div class="box"><input data-f="roleOther" maxlength="30" placeholder="the detective, stowaway…" value="${esc(S.roleOther)}" aria-label="Your role"></div>`:''}</div>
+  ${S.role==='other'?`<div class="foot">${cta('Continue',!!S.roleOther.trim())}</div>`:''}`,
+5:()=>`<div class="scr" style="${accStyle()}">${q(t('Where does it begin?','Choose your opening scene.'),t('Three places. Each starts differently.','Tap a card to set the scene.'))}
+  <div class="cards">${G().set.map(([e,l],j)=>`<button class="card wide ${S.set===String(j)?'on':''}" data-a="pick" data-f="set" data-v="${j}" aria-pressed="${S.set===String(j)}"><span class="gc" style="background:var(--gbg)">${e}</span>${im('img/genre-'+gk()+'.jpg').replace('<img ','<img style="object-position:'+[8,50,92][j]+'% 50%" ')}<span class="lb" style="font-family:Georgia,serif;font-size:17px"><span>${esc(l)}</span><span>${e}</span></span></button>`).join('')}</div></div>`,
+6:()=>`<div class="scr" style="${accStyle()}">${q(t("Who's by your side?",'Meet your companion.'),t('They stay with you and remember everything.','Pick one. They play the story with you.'))}
+  <div class="opts">${G().comps.map((c,j)=>`<button class="comp ${S.comp===String(j)?'on':''}" data-a="pick" data-f="comp" data-v="${j}" aria-pressed="${S.comp===String(j)}">${compAv(c)}<span><b>${c[0]} · ${c[2]}</b><small>${c[1]} AI character</small><i>“${c[3]}”</i></span></button>`).join('')}</div>
+  <p class="hint">AI characters. Illustrations only.</p></div>`,
+7:()=>`<div class="scr">${q(t('Set the tone.','How should it feel?'),t('Last choice before your name.','It changes how your companion speaks.'))}
+  <div class="opts">${Object.entries(TONES).map(([k,[e,l]])=>`<button class="opt ${S.tone===k?'on':''}" data-a="pick" data-f="tone" data-v="${k}" aria-pressed="${S.tone===k}" style="min-height:76px"><span class="em" style="font-size:26px">${e}</span><span class="lbl" style="font-size:18px">${l}</span></button>`).join('')}</div></div>`,
+8:()=>`<div class="scr" style="${accStyle()}">${q(t("What's your name here?",'Name your character.'),t('Your companion will use it. Change it anytime.','Real name or a character name. Your call.'))}
+  <div style="display:flex;justify-content:center"><span class="pt" style="width:84px;height:84px;font-size:38px;border-radius:50%;display:grid;place-items:center;background:var(--gbg);border:2px solid var(--gacc)">${compI()[1]}</span></div>
+  <div style="display:flex;gap:8px"><div class="box" style="flex:1"><input id="name" data-f="name" maxlength="20" placeholder="Your character name" value="${esc(S.name)}" aria-label="Character name"></div><button class="btn ghost" style="width:54px;height:50px" data-a="shuffle" aria-label="Shuffle name">${gic('dice',20)}</button></div>
+  ${S.emailErr==='name'?'<div class="err">Add a name so your companion can use it</div>':''}</div>
+  <div class="foot">${cta('Continue',!!S.name.trim())}<button class="link" data-a="nameskip">Choose one for me</button></div>`,
+9:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Fiction. Private. Yours.','Your story stays yours.'),t('No one else reads your choices. Delete anytime.','Every line is written by AI, for you.'))}
+  <div class="opts" style="margin-top:6px">${[['lock','Your chats are never public'],['trash','Delete your story anytime'],['spark','Characters are AI and fictional']].map(([i,l])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><b style="font:700 15px var(--head)">${l}</b></div>`).join('')}</div>
+  <p class="legal">${lnk('Terms',CONFIG.legal.termsUrl)} · ${lnk('Privacy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Write my story')}</div>`,
+10:()=>`<div class="scr" style="padding-top:18px;gap:16px;${accStyle()}"><h1 class="q" style="font-size:24px">${t('Writing <span class="gt">'+esc(nm())+'</span>’s scene…','Your story is taking shape…')}</h1>
+  <div class="ldimg" id="ldimg"><span class="ph" style="background:var(--gbg)"></span>${gimg(gk())}</div>
+  <div class="steps">${['Reading your genre and role…',"Casting your companion's voice…",'Building the opening scene…','Almost ready, curtain rising…'].map((l,j)=>`<div class="step" id="st${j}"><div class="top"><span>${l}</span><b>0%</b></div><div class="bar"><span></span></div></div>`).join('')}</div><div style="height:8px"></div></div>`,
+11:()=>`<div class="scr">${q(t(esc(G().title),'Meet '+esc(compI()[0])+'.'),t('You are '+esc(roleL())+'. '+esc(compI()[0])+' plays opposite you.','Built from your genre, role and tone.'))}
+  ${coverHTML()}<p class="legal">Illustration. ${esc(compI()[0])} is an AI character.</p></div>
+  <div class="foot">${cta('Begin the scene')}</div>`,
+12:()=>chatView(),13:()=>chatView(),14:()=>chatView(),
+15:()=>`<div class="scr" style="${accStyle()};padding-top:24px">${q(t('The scene stops here.',esc(compI()[0])+' left something unsaid.'),t('Your next scene is written from your choices.','Pick up exactly where you left off.'))}
+  <p class="frozen">${fill(G().cliff)}</p>
+  <div class="scard ${S.flip?'flip':''}" id="scard"><div class="bk">…</div><div class="fr">${G().e}</div></div>
+  <p class="hint">Scene card 1 saved to your story · Scene 1 of 12</p></div>
+  <div class="foot">${cta('Save my story')}</div>`,
+16:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} Chai</div>${q(t('Save '+esc(G().title)+'.','Keep your place in the story.'),t('Add your email so the scene finds you.','Guest stories live only on this device.'))}
+  <div class="box"><input id="email" data-f="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" value="${esc(S.email)}" aria-label="Email"></div>
+  ${S.emailErr==='email'?'<div class="err">That email doesn’t look right. Check it?</div>':''}
+  <button class="btn ghost" data-a="social" data-v="apple">Continue with Apple</button><button class="btn ghost" data-a="social" data-v="google">Continue with Google</button>
+  <p class="legal">By continuing you agree to the Terms and Privacy Policy. We only email about your story.<br>${lnk('Terms',CONFIG.legal.termsUrl)} | ${lnk('Privacy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Continue',true,'email')}<button class="link" data-a="guest">Continue as guest</button></div>`,
+17:()=>pwHTML('onb'),
+19:()=>chatView()+(S.sheet==='pw'?pwHTML('quota'):'')
+};
+
+/* loader: 4 rows, row 2 pauses at 50% for one inline question */
+function runLoader(){
+  const stops=[null,50,null,null];
+  LD={row:0,pct:0,asked:false,t:0};
+  const img=document.getElementById('ldimg');
+  const tick=()=>{
+    const el=document.getElementById('st'+LD.row);if(!el){clearInterval(LD.t);return}
+    if(!LD.asked&&stops[LD.row]!==null&&LD.pct>=stops[LD.row]){clearInterval(LD.t);ask();return}
+    LD.pct=Math.min(100,LD.pct+3);
+    el.querySelector('.bar span').style.width=LD.pct+'%';el.querySelector('b').textContent=LD.pct+'%';
+    if(img)img.style.setProperty('--bl',(18-(LD.row*100+LD.pct)/400*16).toFixed(1)+'px');
+    if(LD.pct>=100){el.classList.add('done');LD.row++;LD.pct=0;if(LD.row>3){clearInterval(LD.t);later(()=>go(11),900)}}
+  };
+  LD.go=()=>{clearInterval(LD.t);LD.t=setInterval(tick,RM?5:45)};
+  LD.go();
+}
+function ask(){
+  cur().insertAdjacentHTML('beforeend',`<div class="iq" id="iq" role="dialog" aria-label="Quick question"><b>Should ${esc(compI()[0])} remember your choices?</b><div class="row"><button class="btn" data-a="iq" data-v="yes">Yes, remember</button><button class="btn ghost" style="height:54px" data-a="iq" data-v="no">Fresh each time</button></div></div>`);
+}
+const cur=()=>phone.querySelector('.view');
+
+/* ---------- last-chance offer (fallback), shown ONCE per session ---------- */
+const OFFER_ID=18,OFFER_FREE=19;
+const OKEY='ikf_offer_'+CONFIG.slug;
+const otok=s=>esc(s).replace(/\{\{[^}]+\}\}/g,m=>`<span class="otk">${m}</span>`);
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}return true};
+function openOffer(ret,placement){const o=CONFIG.offer;S.offerSeen=true;S.offerRet=ret;S.offerEnd=o.expiresMin?Date.now()+o.expiresMin*60000:0;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  go(OFFER_ID);emit('offer_view',{placement,price:o.price,compareAt:o.compareAt})}
+function offerOr(ret,placement){if(offerOpen())openOffer(ret,placement);else go(ret)}
+function offerLeave(){go(S.offerRet||OFFER_FREE)}
+function offerTimer(){const o=CONFIG.offer;clearInterval(window.__oiv);if(!o.expiresMin||S.i!==OFFER_ID)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(S.i!==OFFER_ID||!el){clearInterval(window.__oiv);return}const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);emit('offer_expired');offerLeave();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,was=(CONFIG.plans[o.compareAt]||{}).price||'',c=compI();
+  return `<div class="pw ofr" role="dialog" aria-label="One-time offer" style="${accStyle()}">
+  <div class="obar"><div class="logo">${logo(22)} Chai</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time offer · shown once</span>
+   <h1 class="h2" style="margin:14px 0 8px">${t('Keep the scene going, <span class="gt">for less</span>','One offer <span class="gt">before you go</span>')}</h1>
+   <p class="olead">${t(esc(c[0])+' is mid-sentence. Here’s a lower first price, once.','Same plan, lower first price. Shown once only.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="sec"><div class="ocard">${o.badge?`<span class="obadge">${otok(o.badge)}</span>`:''}
+   <div class="orow"><span class="oth" style="display:grid;place-items:center;font-size:26px;background:var(--gbg)">${c[1]}</span><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><div class="osub">With ${esc(c[0])} · ${esc(G().title)}</div></div></div>
+   <div class="oprice">${was?`<s>${otok(was)}</s>`:''}<b>${otok(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${[`Unlimited chat with ${esc(c[0])}`,'Every genre and scene','Companion memory'].map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <p class="ofine">${otok(o.price)} today, then ${otok(o.renews)} until you cancel. Cancel anytime in account or store settings.</p></div></div>
+  <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="offerno">No thanks, continue free · ${FREE} messages a day</button>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
+   <p class="odis" style="margin-top:10px">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</p></div></div>`};
+
+function render(anim){
+  const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');
+  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, Chai is for adults</h1><p class="sub">You must be 18 or older to continue.</p></div>`:nav()+V[S.i]();
+  const old=cur();if(old)old.replaceWith(v);else phone.appendChild(v);
+  if(S.blocked)return;
+  if(S.i===10)runLoader();
+  if(S.i===15&&!S.flip)later(()=>{S.flip=true;document.getElementById('scard')?.classList.add('flip')},700);
+  if(S.i===12&&!S.chat.length&&!S.typing){S.typing=true;render();later(()=>{S.typing=false;S.chat=[{w:'c',x:G().open}];render()},1300);return}
+  const m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;
+}
+
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v,f=b.dataset.f;
+  switch(a){
+    case 'next':
+      if(S.i===8){answer('name_set',!!S.name.trim());S.name=S.name.trim()}
+      next();break;
+    case 'back':back();break;
+    case 'age':{const age=THIS_YEAR-(+S.year);if(age<18){S.blocked=true;emit('age_block');render();break}emit('age_confirm',{method:'year'});next();break}
+    case 'pick':{
+      S[f]=v;
+      if(f==='genre'&&v==='other'){render();cur().querySelector('input[data-f="gOther"]')?.focus();break}
+      if(f==='role'&&v==='other'){render();cur().querySelector('input[data-f="roleOther"]')?.focus();break}
+      answer({genre:'genre',role:'role',set:'setting',comp:'companion',tone:'tone'}[f],v);
+      if(f==='genre'){S.set='';S.comp=''}
+      cur().querySelectorAll(`[data-f="${f}"]`).forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+      later(next,RM?0:300);break}
+    case 'shuffle':{S.name=NAMES[Math.floor(Math.random()*NAMES.length)];const i=document.getElementById('name');if(i)i.value=S.name;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=false;break}
+    case 'nameskip':S.name=NAMES[Math.floor(Math.random()*NAMES.length)];answer('name_set',false);next();break;
+    case 'iq':S.mem=v==='yes';answer('memory',v);document.getElementById('iq')?.remove();if(LD)LD.asked=true,LD.go();break;
+    case 'email':{const ok=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.email.trim());if(!ok){S.emailErr='email';const i=document.getElementById('email'),keep=S.email;render();const n=document.getElementById('email');if(n){n.focus()}break}S.emailErr='';emit('email_captured');next();break}
+    case 'social':emit('social_signin',{provider:v});toast('Demo only. No sign-in made');next();break;
+    case 'guest':emit('guest_continue');next();break;
+    case 'plan':S.plan=v;emit('plan_select',{plan:v,price:CONFIG.plans[v].price});
+      document.querySelectorAll('.plan').forEach(p=>{const on=p.dataset.v===v;p.classList.toggle('on',on);p.setAttribute('aria-pressed',on);p.querySelector('.rd').innerHTML=on?ic('check',12,'#fff',3.2):''});
+      {const st=document.getElementById('stick');if(st)st.outerHTML=stickHTML()}break;
+    case 'buy':checkout(S.plan);toast('Demo only. No charge made');break;
+    case 'offerbuy':{const o=CONFIG.offer,u=o.checkoutUrl||'';emit('offer_accept',{price:o.price,url:u});emit('checkout_click',{plan:'offer',price:o.price,url:u});
+      if(u)try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');PASS.forEach(k=>{const q=QS.get(k);if(q&&!x.searchParams.has(k))x.searchParams.set(k,q)});navTop(x.toString())}catch(e){}
+      else toast('Demo only. No charge made');break}
+    case 'offerno':emit('offer_decline');offerLeave();break;
+    case 'closepw':case 'freeplan':emit('paywall_close',{placement:'onboarding',via:a==='freeplan'?'continue_free':'close'});offerOr(19,'onboarding');break;
+    case 'say':say(b.textContent,+b.dataset.j||0);break;
+    case 'send':{const m=document.getElementById('msg');if(m&&m.value.trim())say(m.value.trim(),1);else m?.focus();break}
+    case 'upgrade':S.sheet='pw';render();emit('paywall_view',{placement:'limit'});break;
+    case 'closeq':S.sheet=null;emit('paywall_close',{placement:'limit',via:'close'});if(offerOpen())openOffer(19,'limit');else render();break;
+    case 'midnight':emit('come_back_midnight');toast(`Your ${FREE} messages come back at midnight`);break;
+    case 'openapp':openApp();break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;
+  if(e.target.id==='msg'){const s=document.getElementById('sendb');if(s)s.disabled=!e.target.value.trim();return}
+  if(!f)return;
+  if(f==='year'){S.year=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.year;return}
+  S[f]=e.target.value;
+  if(['gOther','roleOther','name'].includes(f)){const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S[f].trim()}
+});
+phone.addEventListener('change',e=>{if(e.target.id==='year'){S.year=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.year}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='msg')cur().querySelector('[data-a="send"]')?.click()});
+
+/* Host API: the page embedding this funnel can complete a purchase or read the picks. */
+window.go=go;
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
+  completePurchase:(plan)=>{if(plan&&CONFIG.plans[plan])S.plan=plan;S.premium=true;S.sheet=null;emit('purchase_complete',{plan:S.plan});go(19);later(()=>toast('Unlimited chat is on. Enjoy.'),1600)}});
+{let ref='';try{ref=document.referrer?new URL(document.referrer).hostname:''}catch(e){}emit('funnel_start',{referrer:ref})}
+render();viewed();
+</script>
+</body>
+</html>
