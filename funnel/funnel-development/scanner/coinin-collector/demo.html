@@ -442,6 +442,7 @@ const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',name:'',src:'',srcOther
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const SCREENS={1:'hook',2:'meet',3:'name',4:'q_source',5:'q_count',6:'q_types',7:'q_want',8:'bridge',9:'game_1',10:'game_2',11:'primer',12:'scan_front',13:'scan_back',14:'identifying',15:'id_card',16:'badge',17:'email',18:'paywall',19:'offer',20:'result'};
+const DEMO_NOTE="Demo only: this prototype can't identify real photos, so it shows a sample result";
 const nm=()=>(S.name||'').trim()||'friend';
 const sfx=()=>(S.name||'').trim()?', '+esc(S.name.trim()):'';
 const typeKey=()=>['cent','quarter','foreign','silver'].find(k=>S.types.includes(k))||'cent';
@@ -597,7 +598,8 @@ const V={
   return `<div class="scr" style="gap:14px;padding-top:24px">${ed(`Here's your coin, ${esc(nm())}.`)}
   <div><h1 class="display sm">${t("It's a "+esc(c.name),'We found your coin')}</h1><p class="lead" style="margin-top:8px">${t(esc(c.country)+', '+c.year+', '+esc(c.metal)+'.','Value and grade are one tap away.')}</p></div>
   ${cardBlock(`<div class="hint tc">Match confidence: ${S.backSkipped?'Medium':'High'} · <button class="link" style="min-height:0;padding:0" data-a="retake12">Not right? Try another photo</button></div>`)}
-  <span class="chipd">${S.sample||!(S.front)?'Sample coin result':'Demo result: the live app matches your photo'}</span>
+  <span class="chipd">Sample data: this demo can't identify real photos</span>
+  <p class="note" style="margin:0">${DEMO_NOTE}</p>
   ${lockRows(false)}</div><div class="foot">${cta('See my badge')}</div>`},
 16:()=>{const l=lvl(),c=coin();
   return `<div class="scr center tc" style="gap:16px"><div class="medal"><div><div class="st">${'★'.repeat(l.i+1)}${'☆'.repeat(3-l.i)}</div><b>${esc(l.n)}</b></div></div>
@@ -623,8 +625,9 @@ const V={
   return `<div class="wp" id="wp">
   <div class="wbar"><div class="brand">${ic('coin',16)} CoinIn</div><button class="mini" data-a="toplans">Unlock my coin</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
   <div class="wsec tight"><span class="eyebrow">Your coin card is ready</span><h1 class="display" style="font-size:31px">${heroH}</h1>
-   <p class="lead" style="margin:8px 0 16px">${esc(c.name)}, ${c.year}. Three parts are still locked.</p>
-   <div class="whero"><div class="pv" style="aspect-ratio:1;border-radius:50%"><div class="roundph" style="width:100%;height:100%;border:none">${face('front')}</div></div><div class="facts"><div class="fact">Coin<b>${esc(c.name)}</b></div><div class="fact">Level<b>${esc(l.n)}</b></div><div class="fact">Locked<b>3 of 3 parts</b></div></div></div>
+   <p class="lead" style="margin:8px 0 16px">${esc(c.name)}, ${c.year} <span class="chipd" style="display:inline-flex;vertical-align:middle;padding:4px 8px;font-size:10.5px">Sample data</span>. Three parts are still locked.</p>
+   <p class="note" style="margin:-8px 0 14px;text-align:left">${DEMO_NOTE}</p>
+   <div class="whero"><div class="pv" style="aspect-ratio:1;border-radius:50%"><div class="roundph" style="width:100%;height:100%;border:none">${face('front')}</div></div><div class="facts"><div class="fact">Coin · sample data<b>${esc(c.name)}</b></div><div class="fact">Level<b>${esc(l.n)}</b></div><div class="fact">Locked<b>3 of 3 parts</b></div></div></div>
    <div style="margin-top:14px">${lockRows(true)}</div>
    <div style="margin-top:14px">${ed('Edward is an illustrated guide, not an appraiser.')}</div></div>
   <div class="wsec" id="plans1">${planBlock()}</div>
@@ -645,7 +648,7 @@ const V={
    <p class="lead" style="margin-top:8px">${t("Pay once for this coin's full report.",'No subscription, no renewal.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard">${o.badge&&!isTok(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
-   <div class="orow"><div class="roundph" style="width:64px;height:64px">${face('front')}</div><div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(coin().name)}, ${coin().year}</div></div></div>
+   <div class="orow"><div class="roundph" style="width:64px;height:64px">${face('front')}</div><div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(coin().name)}, ${coin().year} · sample data</div></div></div>
    <div class="oprice"><b>${tok(o.price)}</b><span>one time</span></div>
    <div class="checks" style="margin:14px 0 8px">${["This coin's value range by grade",'Condition grade estimate','Error and variety check'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
    <div class="checks" style="margin:0 0 14px;color:var(--t3)"><div style="color:var(--t2);font-weight:600;font-size:12.5px">Not included</div>${['Unlimited coin scans','Collection tracker','Other coins'].map(x=>`<div>${ic('x',16,2.2)}<span>${x}</span></div>`).join('')}</div>

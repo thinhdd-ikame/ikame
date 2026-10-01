@@ -223,7 +223,7 @@ A web2app funnel for the CoinIn coin identifier, led by a persona host: **Edward
 3. Checking known errors and varieties… (0 to 100%, check)
 4. Edward is preparing your card… (0 to 100%, check)
 **Visual:** The user's front photo (or the sample coin) fills a round frame, tilts slowly in 3D (the only 3D in the funnel) with a gold scanning ring sweeping its rim. Four rows beneath: label, percent, check, gold bar.
-**Microcopy:** Under headline: "Two sides scanned". Honest-demo note in the panel footnote: the demo cannot identify real photos and shows the sample result.
+**Microcopy:** Under headline: "Two sides scanned". Demo-only disclosure (prototype, not production copy): on screen 15 and the paywall hero show "Demo only: this prototype can't identify real photos, so it shows a sample result", and label the seeded coin name and metal "Sample data" on screen 15, the paywall hero and the offer card.
 **CTA:** (auto-advances when the result returns, minimum ~5 seconds)
 
 ### 15. Your coin — free ID card
@@ -233,7 +233,7 @@ A web2app funnel for the CoinIn coin identifier, led by a persona host: **Edward
 **Body A:** {{country}}, {{year}}, {{metal}}.
 **Body B:** Value and grade are one tap away.
 **Visual:** Coin card with the captured photos side by side, coin name in serif, fact rows (country, year, mint, metal, denomination). Below, three locked rows with a gold lock: "Estimated value range", "Condition grade", "Errors and varieties check". Neutral grey blur, no fake "$$$" shapes. Edward bubble: "Here's your coin, {{name}}."
-**Microcopy:** "Match confidence: {{confidence}}" with link "Not right? Try another photo." Beginner tooltip on "mint": "Where the coin was made, shown as a tiny letter." No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photos" / "Use a sample coin".
+**Microcopy:** Demo chip (all paths): "Sample data: this demo can't identify real photos". "Match confidence: {{confidence}}" with link "Not right? Try another photo." Beginner tooltip on "mint": "Where the coin was made, shown as a tiny letter." No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photos" / "Use a sample coin".
 **CTA:** See my badge
 
 ### 16. Collector level badge
