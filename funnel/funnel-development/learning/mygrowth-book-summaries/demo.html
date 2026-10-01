@@ -460,6 +460,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   <div class="phonebox" id="pbox"><div class="phone" id="phone" aria-live="polite"></div></div>
   <aside class="panel">
     <div>
+      <div class="concept" style="display:inline-block;padding:5px 10px;border-radius:999px;background:#FFF1D6;color:#7A4B00;font:700 12px/1.2 var(--disp,Inter);margin-bottom:8px">Concept: library unverified</div>
       <h1>MyGrowth key ideas funnel</h1>
       <p class="intro">Prototype of the 20-screen brief in <code>learning/mygrowth-book-summaries/funnel-content.md</code>: "one big idea a day". Pick up to three public-domain books, tap a real one-minute idea, and get a shelf and a 4-week reading plan. Tap through in the phone or jump to any screen below.</p>
     </div>
@@ -524,7 +525,10 @@ const reviewCard=r=>`<div class="rcard"><span class="stars">★★★★★</spa
 
 /* Last-chance offer: once per session, on paywall close. A single-book pass paid once (no renewal, not "free"), different from the 1/4/12-week plans, no timer.
    price / name stay tokens until the growth team sets them. compareAt null = nothing struck. expiresMin null = no timer. oneTime = no renewal. */
-const CONFIG={funnel:'mygrowth-book-summaries',proof:{rating:'{{app_rating}}',count:'{{rating_count}}',reviews:[],refundDays:'{{refund_days}}'},offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,period:'once',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+const CONFIG={funnel:'mygrowth-book-summaries',proof:{rating:'{{app_rating}}',count:'{{rating_count}}',reviews:[],refundDays:'{{refund_days}}'},offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,period:'once',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null},features:{readListen:false,streaks:false}};
+/* Feature claims stay hidden until product confirms they ship (set true then). */
+const FEAT=k=>CONFIG.features&&CONFIG.features[k]===true;
+const stars=r=>{const v=Math.max(0,Math.min(5,Math.round(parseFloat(r)||0)));return '★'.repeat(v)+`<span style="opacity:.45">${'★'.repeat(5-v)}</span>`};
 
 const INIT=()=>({v:'A',i:1,hist:[],topics:[],topicsO:'',last:'',fmt:'',reason:'',reasonO:'',books:[],booksO:'',beats:[false,false,false],react:'',mins:0,remind:'',remindO:'',name:'',email:'',mkt:false,acct:'',plan:'w4',paid:false,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,faq:-1,err:''});
 let S=INIT();
@@ -666,11 +670,11 @@ const V={
   ${pill('multi','other','✏️','Other',hasOther('topics'),true,'','topics')}${hasOther('topics')?otherBox('topicsO','e.g. Parenting'):''}</div>
   <div class="foot">${hint(OKF[3](),'Pick at least one to continue')}${cta('Continue',!!OKF[3]())}</div>`,
 4:()=>`<div class="scr"><h1 class="h1">${t('Last book you finished?','When did you last finish one?')}</h1>
-  <p class="lead" style="margin-top:-6px">${t('No judgement. Most people lose the habit.','It helps us set a gentle start.')}</p>
+  <p class="lead" style="margin-top:-6px">${t('No judgement. A long gap is fine.','It helps us set a gentle start.')}</p>
   <div class="pills">${one('last',LASTS,r=>r[2])}</div></div>
   <div class="foot">${cta('Continue',!!OKF[4]())}</div>`,
 5:()=>`<div class="scr"><h1 class="h1">${t('Read or listen?','How do you like ideas?')}</h1>
-  <p class="lead" style="margin-top:-6px">${t('Pick your default. Switch anytime.','Every lesson works both ways.')}</p>
+  <p class="lead" style="margin-top:-6px">${t('Pick your default. Switch anytime.',(FEAT('readListen')?'Every lesson works both ways.':"We'll tune your plan to it."))}</p>
   <div class="pills">${one('fmt',FORMATS,r=>r[2])}</div></div>
   <div class="foot">${cta('Continue',!!OKF[5]())}</div>`,
 6:()=>`<div class="scr"><h1 class="h1">${t('Why ideas, why now?',"What's pulling you in?")}</h1>
@@ -713,7 +717,7 @@ const V={
   <div class="foot">${cta('Continue',true,'name')}</div>`,
 13:()=>{const hr=hasRating(),rv=reviews();
   return `<div class="scr center" style="align-items:center;text-align:center">
-  ${hr?`<div style="display:flex;align-items:center;gap:4px">${laurel(false)}<div><div style="font:800 34px/1.2 var(--disp)">${esc(CONFIG.proof.rating)}</div><div class="stars" style="font-size:20px">★★★★<span style="opacity:.45">★</span></div></div>${laurel(true)}</div>`:`<div class="avt" style="width:72px;height:72px;font-size:34px">📚</div>`}
+  ${hr?`<div style="display:flex;align-items:center;gap:4px">${laurel(false)}<div><div style="font:800 34px/1.2 var(--disp)">${esc(CONFIG.proof.rating)}</div><div class="stars" style="font-size:20px">${stars(CONFIG.proof.rating)}</div></div>${laurel(true)}</div>`:`<div class="avt" style="width:72px;height:72px;font-size:34px">📚</div>`}
   <h1 class="h1 c">${hr?t(`Rated ${esc(CONFIG.proof.rating)} on the App Store`,`Learners give it ${esc(CONFIG.proof.rating)} stars`):t('Small ideas add up','One idea a day')}</h1>
   <p class="lead c" style="margin-top:-6px">${hr?t(`From ${esc(CONFIG.proof.count)} ratings by people like `+nmT()+'.','Lessons short enough to finish over coffee.'):t('A few minutes of reading a day.','Short enough to keep going, day after day.')}</p>
   <div style="width:100%">${stores()}</div>
@@ -758,7 +762,7 @@ const V={
   <div class="sec" id="plans1">${planBlock()}</div>
   <div class="payrow"><span>${APL(15)} Pay</span><span style="color:#003087">PayPal</span><span>💳 Card</span></div>
   <div class="trust">🔒 Secure checkout · Cancel online anytime</div>
-  <div class="lav sec"><h2>What's inside</h2><div class="get">${['Short lessons, 5-15 minutes','Read or listen','Idea cards for your three picks',`A daily reminder at ${remindChip()}`,'Streaks'].map(x=>`<div>${x}</div>`).join('')}</div></div>
+  <div class="lav sec"><h2>What's inside</h2><div class="get">${['Short lessons, 5-15 minutes',FEAT('readListen')&&'Read or listen','Idea cards for your three picks',`A daily reminder at ${remindChip()}`,FEAT('streaks')&&'Streaks'].filter(Boolean).map(x=>`<div>${x}</div>`).join('')}</div></div>
   <div class="sec"><h2>How it works</h2><div class="how"><div><b>1</b>Pick your plan</div><div><b>2</b>Sign in with ${esc(S.email||'your email')}</div><div><b>3</b>Open your first idea card</div></div></div>
   ${reviews().length?`<div class="sec"><h2>What learners say</h2><div style="display:flex;flex-direction:column;gap:10px">${reviews().map(reviewCard).join('')}</div></div>`:''}
   ${real(CONFIG.proof.refundDays)?`<div class="sec"><h2>Our guarantee</h2><div class="gbox"><span>🛡️</span><span><b>${esc(CONFIG.proof.refundDays)}-day money-back guarantee.</b> Conditions in plain words go here.</span></div></div>`:''}
@@ -778,7 +782,7 @@ const V={
    <div class="pwtop"><span class="thumb" style="background:${b[5]};color:#fff">${b[1]}</span><div><div class="eyebrow">Your book</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${bt}</div></div></div>
    <div class="oname"><b>${tv(o.name)}</b><span>Single-book pass · ${esc(b[3])}</span></div>
    <div class="oprice"><b>${tv(o.price)}</b><span>paid once</span></div>
-   <div class="ochecks">${[`Idea cards for ${bt}`,'Read or listen','Yours to keep, nothing to cancel'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
+   <div class="ochecks">${[`Idea cards for ${bt}`,FEAT('readListen')&&'Read or listen','Yours to keep, nothing to cancel'].filter(Boolean).map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
    <p class="ofine" style="text-align:left"><b>Not included:</b> your other two picks, the daily reminder plan, new picks later, streaks.</p>
    ${cta('Get the book pass',true,'offerbuy')}
    <div class="opays"><span>Apple Pay</span><span>PayPal</span><span>Card</span></div>

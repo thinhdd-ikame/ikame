@@ -74,7 +74,7 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 **Purpose:** Calibrates the pace without judgement; a long gap is a normal answer.
 **Headline A:** Last book you finished?
 **Headline B:** When did you last finish one?
-**Body A:** No judgement. Most people lose the habit.
+**Body A:** No judgement. A long gap is fine.
 **Body B:** It helps us set a gentle start.
 **Options:**
 - 📗 This month
@@ -83,7 +83,7 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 - 🙈 Not since school
 **Field:** Single-select, nothing pre-selected.
 **Visual:** Four stacked pills with a small book-stack icon that shrinks as the gap grows.
-**Microcopy:** Body A's "Most people lose the habit" is soft copy, not a stat; no percentage is shown.
+**Microcopy:** No population claim about reading habits ("most people…") is made; Body A only reassures.
 **CTA:** Continue
 
 ### 5. Read or listen
@@ -96,7 +96,7 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 - 📖 Read
 - 🎧 Listen
 - 🔀 A bit of both
-**Field:** Single-select. "Every lesson works both ways" must be confirmed against the shipped app before launch (see Notes).
+**Field:** Single-select. Body B's "works both ways" (fallback Body B while unconfirmed: "We'll tune your plan to it.") and the "Read or listen" / "Streaks" lines on #18-#19 sit behind `CONFIG.features` flags (`readListen`, `streaks`, default false) and are hidden or softened until product confirms them (see Notes).
 **Visual:** Three wide cards, an open book, headphones, and both side by side.
 **Microcopy:** None
 **CTA:** Continue
@@ -299,7 +299,7 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 **Microcopy:**
 - Line above the sticky CTA: "{{price_4w}} today. Then {{renewal_4w}} every 4 weeks until you cancel." (follows the selected plan)
 - Trust row: "🔒 Secure checkout · Cancel online anytime"
-- What's inside (shipped features only, confirm against the app): "Short lessons, 5-15 minutes" · "Read or listen" · "Idea cards for your three picks" · "A daily reminder at {{reminder}}" · "Streaks"
+- What's inside (shipped features only; "Read or listen" and "Streaks" render only when `CONFIG.features` confirms them): "Short lessons, 5-15 minutes" · "Read or listen" · "Idea cards for your three picks" · "A daily reminder at {{reminder}}" · "Streaks"
 - How it works: 1 "Pick your plan" · 2 "Sign in with {{email}}" · 3 "Open your first idea card"
 - Guarantee: hidden while `refundDays` is a token; shown only once the real terms are filled in.
 - FAQ: "How do I cancel?" → "Profile → Settings → Manage subscription, or the link in your receipt." · "Will it renew?" → "Yes, at the renewal price shown, until you cancel. We email you before every renewal." · "Is it the full book?" → "No. Key ideas are an introduction; read the full book to go deeper."
@@ -312,7 +312,7 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 **Headline B:** One book, paid once
 **Body A:** A single-book pass. No subscription.
 **Body B:** Just your first book, nothing to cancel.
-**Plans:** One offer card, a different product from the 1/4/12-week plans: {{offer_name}} (single-book pass), `{{offer_price}}` paid once, no renewal, not labelled "free", no struck-through price. Covers the first library pick (`{{book_1}}`; a typed Other title falls back to the first library pick) and includes its idea cards only (about five ideas) and the read-or-listen format. Not included (stated on the card): your other two picks, the daily reminder plan, new picks later, streaks.
+**Plans:** One offer card, a different product from the 1/4/12-week plans: {{offer_name}} (single-book pass), `{{offer_price}}` paid once, no renewal, not labelled "free", no struck-through price. Covers the first library pick (`{{book_1}}`; a typed Other title falls back to the first library pick) and includes its idea cards only (about five ideas) and the read-or-listen format. Not included (stated on the card): your other two picks, the daily reminder plan, new picks later.
 **Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer · shown once", one violet-bordered card with the book spine thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
 **Microcopy:** "`{{offer_price}}` once. No renewal, nothing to cancel." Shown once (sessionStorage `ikf_offer_mygrowth-book-summaries`); `CONFIG.offer.expiresMin` is `null`, no timer. Decline link: "No thanks, back to my plan".
 **CTA:** Get the book pass
@@ -337,6 +337,7 @@ Tokens: `{{name}}`, `{{topics}}`, `{{book_1}}`, `{{book_2}}`, `{{book_3}}`, `{{r
 
 - **Verification of the niche (required by the task):** the research (`mygrowth.md` §1, §5) shows MyGrowth selling 5-15 minute lessons in six subjects (History, Psychology, Communication and others); the only book-summary funnel captured is **Headway** (a different app). Nothing in the captures confirms that MyGrowth ships a library of book summaries or key ideas, and a third-party listing shows only locked onboarding steps. This brief therefore treats "Key Ideas" as a proposed MyGrowth track: **unverified**, and it must not launch until product confirms that (a) a book/key-idea library exists, (b) the titles on #8 are in it, and (c) lessons can be read and listened to. Until then the demo's titles are public-domain placeholders.
 - **Unverified:** the 77K ads figure and the Headway spine are research-observed (V); the idea beats on #9, the shelf, the single-book offer and the 20-idea ramp are this brief's own design, not a competitor's. The sample ideas are our own paraphrases of well-known public-domain themes, to be checked by editors; no book text is quoted. Prices are tokens; the 1/4/12-week structure mirrors the sibling briefs, not MyGrowth's live plans, so confirm with growth before launch.
+- **Demo banner:** the demo panel shows "Concept: library unverified". Star row on #13 is drawn from the real rating value.
 - **Honesty guardrails:** no "read a book in 15 minutes" or "save X hours" claims; no "most people" stats; plan weeks are goals; key ideas are framed as a doorway to the book; no rating, count or review is shown until real store data is set in CONFIG.
 - **Dropped competitor mechanics:** sensitive profiling (sex life, boundaries), "72% / 94% ready" scores, role-model match, "55M downloads" and "5M in your location" claims, live masked-email learner feed, anchor prices equal to the renewal, recycled reviews, "Does this book seem interesting?" cards with no content.
 - **Copyright:** only public-domain titles (Meditations, Walden, The Art of War, Self-Reliance, The Wealth of Nations, As a Man Thinketh); any modern bestseller needs a licence before it can appear in the picker.
