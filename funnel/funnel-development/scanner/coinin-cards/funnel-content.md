@@ -220,7 +220,7 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 ## E. Gate
 
 ### 15. Email gate
-**Purpose:** Capture the email before the value reveal, framed as saving the card and collection.
+**Purpose:** Capture the email before the grade reveal, framed as saving the card and collection.
 **Headline A:** Where should we send it?
 **Headline B:** Save your card report
 **Body A:** Get your result and keep your scans safe.
@@ -246,7 +246,7 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 - **4-week: pre-selected**, "MOST POPULAR", price and renewal tokens.
 - 12-week: anchor, price and renewal tokens.
 - Every plan shows its own renewal price and period next to the price.
-**Visual:** Sticky brand bar with a close X. Hero: the user's card with three locked rows glowing gold as "unlocking". Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
+**Visual:** Sticky brand bar with a close X. Hero: the user's card with its raw range (demo: marked "Sample data") and three locked rows glowing gold as "unlocking". Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
 **Microcopy:**
 - Under the selected plan: "{{price}} today, then {{renewal}} every period until you cancel."
 - What's inside: "Grade potential estimate" · "Top cards to grade" · "Collection value" · "Unlimited card scans" · "Rare-card flags" · "Sorted collection".
