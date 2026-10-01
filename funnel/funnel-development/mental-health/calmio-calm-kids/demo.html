@@ -554,6 +554,7 @@ const CONFIG={funnel:'calmio-calm-kids',brand:'Calmio',
      A genuinely smaller one-time product (5 calm scripts, paid once, no renewal, no strike-through). Price must be what checkout charges.
      expiresMin stays null: no timer in this category. Never shown after a safety event (crisis sheet in any free-text field). */
   offer:{enabled:true,name:'Starter script pack',price:'{{offer_price}}',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  deletion:false,  /* true only when in-app data deletion really exists */
   refundDays:'{{refund_days}}',refundTerms:'{{refund_terms}}',company:'{{legal_entity}}',
   termsUrl:'',privacyUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -813,11 +814,11 @@ const V={
   <div class="foot">${cta('Continue')}</div>`
   :`<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
   <h1 class="display" style="text-align:center">Private. Gentle. Yours.</h1>
-  <p class="lead" style="text-align:center">Only a first name and age band. Nothing is public.</p>
+  <p class="lead" style="text-align:center">Only a first name and age band. Sharing is always your choice.</p>
   <div class="card" style="padding:4px 16px"><div class="rows">
    <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Only a first name and an age band</span></div>
-   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Nothing is ever public</span></div>
-   <div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your data anytime <span class="hint">(ships only if in-app deletion exists)</span></span></div></div></div></div>
+   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Sharing is always your choice</span></div>
+   ${CONFIG.deletion?`<div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your data anytime</span></div>`:''}</div></div></div>
   <div class="foot">${cta('Continue')}</div>`,
 14:()=>{const rows=['Listening back to your answers…','Finding the hardest moment…','Writing a calm script for you…','Almost ready, your plan awaits…'];
   const chips=[sitLabel(),S.goal?goalLabel():'',ageLabel()?'Age '+ageLabel():'',S.tried.includes('routine')?'Routines':''].filter(Boolean).slice(0,5);
