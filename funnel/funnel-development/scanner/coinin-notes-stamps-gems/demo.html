@@ -491,7 +491,7 @@ const COLLECT={
       bridge:{cap:'Same color, different clarity',line:'Color alone never proves a gem is real.',worn:()=>gemArt({k:'cloudy'}),good:()=>gemArt()},
       game:{h:['Which blue stone is glass?','Can you spot the glass?'],b:['Look inside each one closely.','Tap the one you think is glass.'],
         opts:[['a','🫧','Round bubbles inside',()=>gemArt({k:'bubbles'})],['b','🪡','Fine needle lines inside',()=>gemArt({k:'needles'})]],right:'a',
-        says:'Round bubbles. Gas bubbles often point to glass; natural sapphire usually shows fine needle-like lines.',tail:'Never judge by eye alone. A scan gives an indication, a gem lab confirms.'},
+        says:'Round bubbles. Round bubbles can point to glass or a lab-grown stone; natural sapphire usually shows fine needle-like lines.',tail:'Never judge by eye alone. A scan gives an indication, a gem lab confirms.'},
       tips:[['layers','Loose stone'],['sun','Daylight'],['hand','Plain surface'],['scan','No flash glare']],
       s1:[['Top view first','Show us the top'],['Center it and hold steady.','Lay it on a plain surface.']],
       s2:[['Now the side view','One more angle'],['The side shows depth and cut.','Two views make the match sharper.']],
@@ -619,9 +619,11 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
   tick();window.__iv=setInterval(tick,1000)}
 
 /* ---------- screens ---------- */
-const cardBlock=(extra='')=>{const c=item();return `<div class="cardid"><div class="faces">${fz('front')}${S.backSkipped?'':fz('back')}</div>
+const cardBlock=(extra='')=>{const c=item();return `<div class="cardid"><div style="display:flex;justify-content:center">${SD}</div><div class="faces">${fz('front')}${S.backSkipped?'':fz('back')}</div>
   <h2 class="cname">${esc(c.name)}</h2>
   <div>${c.rows.map(([a,b])=>`<div class="frow"><span>${a}</span><b>${esc(b)}</b></div>`).join('')}</div>${extra}</div>`};
+const SD='<span class="chipd" style="padding:4px 8px;font-size:11px">Sample data</span>';
+const demoNote='<p class="note" style="margin:0">Demo only: photos are not analyzed. Results are sample data.</p>';
 const indRow=txt=>`<div class="indrow">${ic('shield',18)}<span>${txt}</span></div>`;
 const V={
 1:()=>`<div class="scr" style="padding-top:0;gap:14px"><div class="hero3" role="img" aria-label="A banknote, a stamp and a cut blue gem on dark cloth"><div class="h1">${noteArt()}</div><div class="h2">${stampArt({jenny:0})}</div><div class="h3">${gemArt()}</div></div>
@@ -651,15 +653,15 @@ const V={
 11:()=>scanScreen('back'),
 12:()=>`<div class="scr center tc" style="gap:16px"><h1 class="display sm">${t('Identifying your item…','Checking the database…')}</h1>
   <div class="spin3d"><div class="fr lg" style="width:210px;height:150px;position:relative;animation:tilt 5s ease-in-out infinite;transform-style:preserve-3d">${S.front?`<img src="${S.front.url}" alt="Your first photo">`:ob().face(ob().view[0])}<span class="scan" style="position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,#0000,#E8CB8A,#0000);box-shadow:0 0 18px #D2AE67;animation:scanl 2.2s ease-in-out infinite"></span></div></div>
-  <p class="note" style="margin:0">${S.backSkipped?'One view scanned':'Two views scanned'}</p>
+  <p class="note" style="margin:0">${S.backSkipped?'One view scanned':'Two views scanned'}</p>${demoNote}
   <div class="tasks">${['Reading the design and details…','Matching series, year or material…','Looking for known errors and flaws…','Preparing your ID card…'].map((x,i)=>`<div class="task" id="tk${i}"><i></i><span style="flex:1;text-align:left">${x}</span><span id="pc${i}" style="font-variant-numeric:tabular-nums">0%</span></div>`).join('')}</div></div>`,
 13:()=>{const c=item(),nomatch=QS.get('nomatch')==='1';
   if(nomatch)return `<div class="scr center tc" style="gap:14px"><h1 class="display sm">We couldn't match this one yet</h1><p class="lead">Try brighter light and a plain background.</p></div><div class="foot">${cta('Retake photos',true,'retake10')}<button class="link" data-a="sample">Use a sample</button></div>`;
   return `<div class="scr" style="gap:14px;padding-top:24px">
   <div><h1 class="display sm">${t("It's a "+esc(c.name),'We found your item')}</h1><p class="lead" style="margin-top:8px">${t(esc(c.origin)+', '+esc(c.year)+'.','Real-or-fake and value are one tap away.')}</p></div>
   ${cardBlock(`<div class="hint tc">Match confidence: ${S.backSkipped?'Medium':'High'} · <button class="link" style="min-height:0;padding:0" data-a="retake10">Not right? Try another photo</button></div>`)}
-  <span class="chipd">${S.sample||!(S.front)?'Sample result':'Demo result: the live app matches your photo'}</span>
-  ${lockRows(false)}</div><div class="foot">${cta('See my badge')}</div>`},
+  <span class="chipd">Sample data: this demo can't identify real photos</span>
+  ${lockRows(false)}${demoNote}</div><div class="foot">${cta('See my badge')}</div>`},
 14:()=>{const l=lvl();
   return `<div class="scr center tc" style="gap:16px"><div class="medal"><div><div class="st">${'★'.repeat(l.i+1)}${'☆'.repeat(3-l.i)}</div><b>${esc(l.n)}</b></div></div>
   <div><h1 class="display sm">${t("You're a "+esc(l.n),'Your collector level')}</h1><p class="lead" style="margin-top:8px">${t('Based on your answers and your guess.','A fun badge, not an appraisal.')}</p></div>
@@ -683,7 +685,7 @@ const V={
     ['Will I be charged again?','Yes, unless you cancel. The plan renews at the price and period shown on the card you pick.']];
   return `<div class="wp" id="wp">
   <div class="wbar"><div class="brand">${ic('coin',16)} CoinIn</div><button class="mini" data-a="toplans">Unlock my item</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
-  <div class="wsec tight"><span class="eyebrow">Your ID card is ready</span><h1 class="display" style="font-size:31px">${heroH}</h1>
+  <div class="wsec tight"><span class="eyebrow">Your ID card is ready</span><div style="margin-bottom:10px">${SD}</div><h1 class="display" style="font-size:31px">${heroH}</h1>
    <p class="lead" style="margin:8px 0 16px">${esc(c.name)}, ${esc(c.year)}. Three parts are still locked.</p>
    <div class="whero"><div class="pv" style="aspect-ratio:1;border:none;box-shadow:none;overflow:visible">${fz('front','lg').replace('class="fr lg"','class="fr" style="height:100%;width:100%"')}</div><div class="facts"><div class="fact">Item<b>${esc(c.name)}</b></div><div class="fact">Level<b>${esc(l.n)}</b></div><div class="fact">Locked<b>3 of 3 parts</b></div></div></div>
    <div style="margin-top:14px">${lockRows(true)}</div>
@@ -706,7 +708,7 @@ const V={
    <p class="lead" style="margin-top:8px">${t("Pay once for this item's full report.",'No subscription, no renewal.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard">${o.badge&&!isTok(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
-   <div class="orow">${fz('front','sm')}<div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(c.name)}, ${esc(c.year)}</div></div></div>
+   <div class="orow">${fz('front','sm')}<div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(c.name)}, ${esc(c.year)}</div>${SD}</div></div>
    <div class="oprice"><b>${tok(o.price)}</b><span>one time</span></div>
    <div class="checks" style="margin:14px 0 8px">${oc.inc3.map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
    <div class="checks" style="margin:0 0 14px;color:var(--t3)"><div style="color:var(--t2);font-weight:600;font-size:12.5px">Not included</div>${['Unlimited scans','Collection tracker','Other items'].map(x=>`<div>${ic('x',16,2.2)}<span>${x}</span></div>`).join('')}</div>
@@ -718,10 +720,10 @@ const V={
   return `<div class="scr" style="gap:14px;padding-top:26px">${paid?`<span class="badge">${ic('check',13,2.6)} Unlocked</span>`:''}
   <div><h1 class="display sm">${t('Your ID card'+sfx(),'Your item, decoded')}</h1><p class="lead" style="margin-top:8px">${t('Saved to your collection.','Scan your next one any time.')}</p></div>
   ${cardBlock(`<div class="hint tc">${ic('check',13,2.6)} Level: ${esc(l.n)}</div>`)}
-  ${paid?`${indRow('<b>Looks consistent with a genuine item.</b><br><span class="hint">An indication from your photos, not a certificate.</span>')}
-    <div class="card"><h4>Looks like: ${esc(c.grade)}</h4><div class="rbar"><i style="left:${c.pos}%">Looks like</i></div><div class="rlab">${sc.map(x=>`<span>${x}</span>`).join('')}</div><p style="margin-top:10px">Your estimated range for this condition appears here.</p><p class="hint" style="margin-top:6px">Estimate only. For a possibly valuable item, get a professional opinion before selling.</p></div>
-    <div class="card"><h4>Rare and error check</h4><p>${esc(c.flag)}</p></div>
-    <div class="card"><h4>History</h4><p>${esc(c.hist)}</p></div>`:lockRows(false)}
+  ${paid?`${indRow(SD+'<br><b>Looks consistent with a genuine item.</b><br><span class="hint">An indication from your photos, not a certificate.</span>')}
+    <div class="card"><h4>${SD} Looks like: ${esc(c.grade)}</h4><div class="rbar"><i style="left:${c.pos}%">Looks like</i></div><div class="rlab">${sc.map(x=>`<span>${x}</span>`).join('')}</div><p style="margin-top:10px">Sample data: your estimated range for this condition appears here.</p><p class="hint" style="margin-top:6px">Estimate only. For a possibly valuable item, get a professional opinion before selling.</p></div>
+    <div class="card"><h4>${SD} Rare and error check</h4><p>${esc(c.flag)}</p></div>
+    <div class="card"><h4>${SD} History</h4><p>${esc(c.hist)}</p></div>`:lockRows(false)}
   <div class="gridc"><div class="f">${fz('front').replace('class="fr "','class="fr" style="border:none;border-radius:0;height:100%"')}</div><div></div><div></div><div></div></div><p class="note" style="margin:-6px 0 0">Collection: 1 item</p></div>
   <div class="foot">${paid?`${cta('Scan next item',true,'scannext')}<button class="btn ghost" data-a="app">Open the app</button><div class="stores"><span class="store">${ic('apple',18)}<span>Download on the<b>App Store</b></span></span><span class="store">${ic('play',16)}<span>Get it on<b>Google Play</b></span></span></div>`:`${cta('Unlock my item',true,'topw')}<button class="link" data-a="scannext">Scan next item</button>`}</div>`}
 };

@@ -181,7 +181,7 @@ A web2app funnel for the CoinIn identifier, built as **one funnel with three obj
 **Microcopy:** Reveal text per object, no dollar figure on this screen:
 - Banknote: "The note with different serials. A note should print the same number twice, so a mismatch is a known collectible error." / "A scan checks details like this for you."
 - Stamp: "The upside-down plane. On the 1918 24-cent airmail stamp, one sheet of 100 slipped out with the plane flipped: the Inverted Jenny." / "A scan checks details like this for you."
-- Gem: "Round bubbles. Gas bubbles often point to glass; natural sapphire usually shows fine needle-like lines." / "Never judge by eye alone. A scan gives an indication, a gem lab confirms."
+- Gem: "Round bubbles. Round bubbles can point to glass or a lab-grown stone; natural sapphire usually shows fine needle-like lines." / "Never judge by eye alone. A scan gives an indication, a gem lab confirms."
 **CTA:** Next (scan my item once answered)
 
 ---
@@ -247,7 +247,7 @@ A web2app funnel for the CoinIn identifier, built as **one funnel with three obj
 3. Looking for known errors and flaws... (0 to 100%, check)
 4. Preparing your ID card... (0 to 100%, check)
 **Visual:** The user's first photo (or the sample drawing) fills a frame, tilts slowly in 3D (the only 3D in the funnel) with a gold scanning line sweeping it. Four rows beneath: label, percent, check, gold bar.
-**Microcopy:** Under headline: "Two views scanned". Honest-demo note in the panel footnote: the demo cannot identify real photos and shows the sample result.
+**Microcopy:** Under headline: "Two views scanned". Demo only: a footnote on this screen and on screen 13 says photos are not analyzed and results are sample data.
 **CTA:** (auto-advances when the result returns, minimum about 5 seconds)
 
 ### 13. Your item - free ID card
@@ -261,7 +261,7 @@ A web2app funnel for the CoinIn identifier, built as **one funnel with three obj
 - Stamp: Country, Year, Denomination, Series, Perforation. Locked: "Real or fake indication", "Estimated value range", "Condition and centering".
 - Gem: Type, Material, Hardness, Color, Cut. Locked: "Real or fake indication", "Estimated value range", "Clarity and cut estimate".
 **Visual:** Card with the captured photos side by side, item name in serif, five fact rows. Below, three locked rows with a gold lock. Neutral grey blur, no fake "$$$" shapes.
-**Microcopy:** "Match confidence: {{confidence}}" with link "Not right? Try another photo." No-match state: headline "We couldn't match this one yet" - body "Try brighter light and a plain background." - buttons "Retake photos" / "Use a sample".
+**Microcopy:** Demo only: chip "Sample data: this demo can't identify real photos" plus a "Sample data" label on the card. "Match confidence: {{confidence}}" with link "Not right? Try another photo." No-match state: headline "We couldn't match this one yet" - body "Try brighter light and a plain background." - buttons "Retake photos" / "Use a sample".
 **CTA:** See my badge
 
 ### 14. Collector level badge
@@ -325,7 +325,7 @@ A web2app funnel for the CoinIn identifier, built as **one funnel with three obj
 **Plans:** One card: "One-item report", one-time price token, **paid once, never renews**, no strike price. It lists what it includes (this item's real-or-fake indication, value range by condition, condition grade) and what it does **not** include (unlimited scans, collection tracker, other items).
 **Visual:** Web page in the paywall's look: brand bar with a close X, gold eyebrow "One-time offer, shown once", then one gold-bordered card with the item thumbnail, price row, three checks, a muted "Not included" list, CTA, payment badges and a one-line terms note.
 **Microcopy:**
-- Terms line: "{{offer_price}} once. No renewal. Cancel nothing."
+- Terms line: "{{offer_price}} once. No renewal. Nothing to cancel."
 - No timer (`expiresMin` is null; none until a real deadline exists).
 - Decline link: "No thanks, keep the free ID card"
 - Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`.
@@ -369,6 +369,6 @@ A web2app funnel for the CoinIn identifier, built as **one funnel with three obj
 
 **Verify before build.** Real plan periods and prices; refund terms; rating and reviews; the real identify API per object; licensed photos for the three game screens and samples; a gem expert's review of the bubbles vs needle-lines claim and of "real or fake" wording; that the sample items match real catalog entries.
 
-**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the seeded sample for the picked object (1957 US $1 Silver Certificate, 1932 Washington 3-cent stamp, an oval blue sapphire), and the footnote says so. Pictures are drawn SVG art wired through the `IMG` map; `gen_images.py` is ready to produce the photos (hero, cloth, three samples) and the demo picks them up when the files exist.
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the seeded sample for the picked object (1957 US $1 Silver Certificate, 1932 Washington 3-cent stamp, an oval blue sapphire), and "Sample data" labels sit on the ID card, paywall hero, offer card and the result's card, verdict, grade and value block. Pictures are drawn SVG art wired through the `IMG` map; `gen_images.py` is ready to produce the photos (hero, cloth, three samples) and the demo picks them up when the files exist.
 
 **Demo (Artifact, private):** https://claude.ai/artifact/Fdimi8jevrUFYRdf2Ufzbg
