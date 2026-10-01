@@ -6,7 +6,7 @@ subject: person
 input: your gender, 8 agree/disagree statements, whether witches run in your family, one image test, birth date (18+), birth time and birth city
 output: your witch power type (Seer / Healer / Dreamwalker / Moon Weaver / Earth Keeper), your free Sun, Moon and Rising signs, and a full reading with a 30-day ritual and a moon-timed practice
 screens: 24
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance offer, then your power type plus one open section for free
+monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance offer (a smaller one-time Power pack, no renewal), then your power type plus one open section for free
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -302,7 +302,7 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": the power type open, then locked rows: Your 30-day ritual, Moon-timed practice, What your Moon says about your craft, Your lineage line, Daily moon guide in the app.
 4. "How it works": checkout, read it now, keep going in the app.
-5. Rating and reviews (placeholders until real).
+5. Rating and reviews: shown only when a real rating and real reviews are configured (hidden while the CONFIG values are tokens).
 6. Money-back seal (only shown when the refund policy is real; hidden while `refundDays` is a token).
 7. FAQ accordion: When will I get it? · How do I cancel? · Will I be charged again? · Is this real magic or prediction? · Do I need candles or supplies?
 8. Plan block again.
@@ -313,15 +313,15 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 **CTA:** Get my reading
 
 ### 23. Last-chance offer (on close)
-**Purpose:** One second chance after a paywall close, shown once per session.
-**Headline A:** Wait, keep your reading
+**Purpose:** One second chance after a paywall close, shown once per session. A smaller, different product from the subscription tiers.
+**Headline A:** Not ready? Get the pack
 **Headline B:** One-time offer, shown once
-**Body A:** Unlock everything at a lower first price.
-**Body B:** Your power type is ready and waiting.
-**Plans:** One offer card: {{offer_name}} (1 week). {{offer_price}} today with the regular {{price_1w}} struck, then {{renewal_1w}}/week. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with a chart-wheel thumbnail, price row, 3 checks, CTA, payment badges, renewal line.
-**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Money-back line only when the refund policy is real. Decline link: "No thanks, show my free reading".
-**CTA:** Claim my offer
+**Body A:** A smaller pack, paid once. No subscription.
+**Body B:** Just your power and moon practice.
+**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (Power pack), {{offer_price}} paid once, no renewal, no strike-through price. Includes your power type in full, your moon-timed practice and the reading saved to your email. Not included (stated on the card): the 30-day ritual, what your Moon says about your craft, your lineage line, the daily moon guide. Optional {{offer_badge}}.
+**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with a chart-wheel thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
+**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Money-back line only when the refund policy is real. Buying the pack opens only the power type and the moon practice in #24; the rest stays locked behind the subscription. Decline link: "No thanks, show my free reading".
+**CTA:** Get the power pack
 
 ---
 
@@ -344,6 +344,7 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 - **Replaces `nebula/funnel-content.md`.** The old 25-screen generic horoscope brief (never demoed) is superseded by this one for the witch/birth-chart angle. Do not build a demo from the old file.
 - **Scoring (demo, deterministic).** Five axes, each scaled to its own maximum: Seer (#3, #5, #6, image eye), Dreamwalker (#4, #6, image butterfly), Moon Weaver (#7, image moon), Earth Keeper (#8), Healer (#10, #11). Options score 3/2/1/0. Highest wins; an exact tie goes to the Sun element (water Healer, earth Earth Keeper, air Seer, fire Moon Weaver). "Other" on #14 adds nothing, so Other never blocks or skews.
 - **Branch:** #12 any answer except "None I know" opens #13; "None I know" jumps to #14. Lineage only affects one line of the reading.
+- **Ephemeris required.** No copy may claim a "real chart" in production until the host's ephemeris and house engine replace the demo's Moon and Rising approximations (the demo tags Moon and Rising "Estimate" when the birth time is unknown).
 - **Real vs placeholder.** Sun sign is exact from the birth date. The demo estimates the Moon sign from the Moon's mean orbit and the Rising sign from birth time (about one sign per two hours); production must use the host's ephemeris. The "next new moon" date in #24 uses the real 29.53-day cycle. Score weights and section copy are placeholders.
 - **Drop-off risk:** #16 and #17 (birth time and city), plus the length of the statement run (#3-#8). Mitigations: skip links with fallbacks, #9 as a break, and the free reveal at #19 as the reward. Measure completion per screen and skip rate for #16 and #17.
 - **No accuracy meter, no "lying detection".** Both are dark patterns in the references (a rising accuracy %, Likert trap questions). Not used.

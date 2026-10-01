@@ -359,7 +359,7 @@ const CONFIG={
   /* Last-chance offer shown ONCE when the paywall is closed without paying.
      Real terms only. compareAt = the regular plan it undercuts (its real price is struck).
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
-  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',renews:'{{renewal_1w}}/week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}  /* one-time Power pack: no renewal, not the 1-week SKU; compareAt only if same plan length */,
   termsUrl:'',privacyUrl:'',subscriptionTermsUrl:'',
   appUrl:'',appStoreUrl:'',playStoreUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -428,6 +428,7 @@ function risingSign(){const m=+S.dob.m,d=+S.dob.d,y=+S.dob.y;if(!m||!d||!y)retur
   const doy=Math.round((Date.UTC(y,m-1,d)-Date.UTC(y,0,0))/864e5);let sl=((doy-80)*360/365.25+360)%360;
   const lon=(((sl+(hr24()-6)*15)%360)+360)%360;return SIGNN[Math.floor(lon/30)]}
 const moon=()=>moonSign(), rise=()=>risingSign();
+const roughMoon=()=>!timeKnown();
 const roughRise=()=>!timeKnown()||S.placeSkip||!S.place.trim();
 const gOf=s=>GLY[SIGNN.indexOf(s)]||'✦';
 /* power type: five axes, each normalised to its own max; ties go to the Sun element, then fixed order */
@@ -547,6 +548,7 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
     const m=Math.floor(ms/60000),sec=Math.floor(ms/1000)%60;el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
   tick();window.__iv=setInterval(tick,1000)}
 const refundReal=()=>!isTok(CONFIG.refundDays);
+const ratingReal=()=>{const R=CONFIG.rating;return !!(R&&R.score&&R.count&&!isTok(R.score)&&!isTok(R.count)&&(CONFIG.reviews||[]).some(r=>r&&r.text&&!isTok(r.text)&&!isTok(r.name)))};
 
 /* ---------- screens ---------- */
 const stmt=n=>{const s=STM[n];return `<div class="scr"><span class="stag">${s[4]}</span>${q(t(s[0],s[1]),t(s[2],s[3]))}${opts('a'+n,AGREE)}</div>`};
@@ -585,11 +587,11 @@ const V={
 19:()=>{const s=sun(),m=moon(),r=rise(),el=ELEM[s];
   return `<div class="scr" style="gap:16px"><div class="tc"><h1 class="display sm">${t('Your Big Three','Your sky, revealed')}</h1><p class="lead" style="margin-top:8px">${t('Drawn from your birth date, time and place.','This is the sky you were born under.')}</p></div>
   <div class="art sm" style="margin:0 -20px;height:130px">${sky('b')}<img src="${im('img/reveal-sky.jpg')}" alt="" onerror="this.remove()"></div>
-  <div class="b3"><div class="c"><span class="g">${gOf(s)}</span><span class="k">Sun</span><b>${esc(s||'Your Sun')}</b></div><div class="c"><span class="g">${gOf(m)}</span><span class="k">Moon</span><b>${esc(m||'Your Moon')}</b></div><div class="c">${roughRise()?'<span class="est">ESTIMATE</span>':''}<span class="g">${gOf(r)}</span><span class="k">Rising</span><b>${esc(r||'Your Rising')}</b></div></div>
+  <div class="b3"><div class="c"><span class="g">${gOf(s)}</span><span class="k">Sun</span><b>${esc(s||'Your Sun')}</b></div><div class="c">${timeKnown()?'':'<span class="est">ESTIMATE</span>'}<span class="g">${gOf(m)}</span><span class="k">Moon</span><b>${esc(m||'Your Moon')}</b></div><div class="c">${roughRise()?'<span class="est">ESTIMATE</span>':''}<span class="g">${gOf(r)}</span><span class="k">Rising</span><b>${esc(r||'Your Rising')}</b></div></div>
   <div class="stack"><div class="card"><h4>${ic('sun',14)} Sun in ${esc(s||'your sign')}</h4><p>${SUNLINE[el]||'your core self'}: how you shine.</p></div>
   <div class="card"><h4>${ic('moon',14)} Moon in ${esc(m||'your sign')}</h4><p>How you feel, heal and recharge.</p></div>
   <div class="card"><h4>${ic('spark',14)} Rising in ${esc(r||'your sign')}</h4><p>The first thing people sense in you.</p></div></div>
-  ${roughRise()?'<p class="note">Rising is an estimate without your birth time and city.</p>':''}</div>
+  ${roughRise()?'<p class="note">Moon and Rising are estimates without your birth time and city.</p>':''}</div>
   <div class="foot">${cta('Next')}</div>`},
 20:()=>`<div class="scr">${q(t('Where should we send it?','Save your reading'),t('Get your reading and log in to the app.','One email, no spam.'))}
   <div class="box white ${S.emailErr?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" placeholder="Your email" value="${esc(S.email)}" data-f="email"></div>
@@ -602,7 +604,7 @@ const V={
   <div class="stack">${lockedRows()}</div>
   <p class="note">A reflective reading for entertainment. No outcome is promised.</p></div>
   <div class="foot">${cta('See full reading')}</div>`},
-22:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text),p=P(),L=LINEAGE();
+22:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text&&!isTok(r.text)&&!isTok(r.name)),p=P(),L=LINEAGE();
   const FAQ=[['When will I get my reading?','Right after checkout, on this page and in the Nebula app. Log in with '+esc(S.email||'your email')+'.'],
     ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
     ['Will I be charged again?','Yes, unless you cancel: the plan renews at the price and period shown on the card you pick.'],
@@ -619,7 +621,7 @@ const V={
    <div class="toc"><div class="open"><span class="n">1</span><span>Your power: ${p.name}</span><span class="l">${ic('check',16,2.4)}</span></div>${['Your 30-day ritual','Your moon-timed practice','What your Moon says about your craft'].concat(L?[L[0]]:[]).concat(['Daily moon guide in the app']).map((x,i)=>`<div><span class="n">${i+2}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From your answers to your practice</h2>
    <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Read it now','Your full reading opens on this page.'],['Keep going in the app','Log in with your email for your daily moon guide.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  ${R&&R.score?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
+  ${ratingReal()?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
    <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${isTok(r.name)?'?':esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div><span class="stars" style="margin-left:auto;font-size:12px">★★★★★</span></div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${esc(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
@@ -627,23 +629,24 @@ const V={
   <div class="wfoot">${legal()}<div>For entertainment purposes only. ${tok(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
-23:()=>{const o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price:'';
+23:()=>{const o=CONFIG.offer,p=P(),refund=refundReal()?` ${esc(CONFIG.refundDays)}-day money-back.`:'';
   return `<div class="wp"><div class="wbar"><div class="brand">${ic('spark',16)} Nebula</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Wait, keep your <em>reading</em>','One-time offer, <em>shown once</em>')}</h1>
-   <p class="lead" style="margin-top:8px">${t('Unlock everything at a lower first price.','Your power type is ready and waiting.')}</p>
+  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Not ready? Get the <em>pack</em>','One-time offer, <em>shown once</em>')}</h1>
+   <p class="lead" style="margin-top:8px">${t('A smaller pack, paid once. No subscription.','Just your power and moon practice.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th" style="background:#0E111A">${sky('o')}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Full reading · 1 week</div></div></div>
-   <div class="oprice">${was?`<s>${tok(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
-   <div class="checks" style="margin:14px 0">${['Your 30-day ritual','Your moon-timed practice','Daily moon guide in the app'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="orow"><div class="th" style="background:#0E111A">${sky('o')}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Power pack · one payment</div></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>once</span></div>
+   <div class="checks" style="margin:14px 0">${['Your power: '+p.name+', in full','Your moon-timed practice','Reading saved to your email'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
+   <p class="hint" style="margin-bottom:10px">Not included: the 30-day ritual, what your Moon says about your craft, your lineage line and the daily moon guide.</p>
+   ${cta('Get the power pack',true,'offerbuy')}
    <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-   <p class="fine">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.${refundReal()?' '+esc(CONFIG.refundDays)+'-day money-back.':''}</p></div></div>
+   <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.${refund}</p></div></div>
   <div class="wsec tc" style="padding-bottom:calc(var(--sab) + 30px)"><button class="link" data-a="offerno">No thanks, show my free reading</button><div class="note" style="margin-top:6px">For entertainment purposes only.</div></div></div>`},
-24:()=>{const p=P(),m=moon(),el=ELEM[sun()]||'water',L=LINEAGE(),open=k=>S.paid||k===0;
+24:()=>{const p=P(),m=moon(),el=ELEM[sun()]||'water',L=LINEAGE(),open=k=>S.paid||k===0||(S.pack&&k===3);
   const cards=[['Your power: '+p.name,p.txt],['What your Moon says about your craft',(m?'Moon in '+m+'. ':'')+MOONCRAFT[el]],['Your 30-day ritual','One 10-minute practice a day: grounding in week one, then sensing, then moon work, then release. No supplies needed.'],['Your moon-timed practice','Next new moon: '+nextNewMoon()+'. Set one intention then, and release one thing at the next full moon.']];
   if(L)cards.push(L);
-  return `<div class="scr" style="gap:14px;--pc:${p.color}">${S.paid?'<span class="badge">'+ic('check',13,2.6)+' Unlocked</span>':''}<h1 class="display sm">${t('Your witch power reading','Here is your craft')}</h1>
+  return `<div class="scr" style="gap:14px;--pc:${p.color}">${S.paid?'<span class="badge">'+ic('check',13,2.6)+' Unlocked</span>':S.pack?'<span class="badge">'+ic('check',13,2.6)+' Power pack unlocked</span>':''}<h1 class="display sm">${t('Your witch power reading','Here is your craft')}</h1>
   <p class="lead">${t('Your chart, your answers, your practice.','Power first, then what to do next.')}</p>
   <div class="tc"><div class="disc" style="width:92px;height:92px;font-size:42px">${p.glyph}</div><div class="pname" style="margin-top:8px">${p.name}</div><p class="lead" style="margin-top:6px">${p.line}</p><div style="margin-top:10px">${signChips()}</div></div>
   ${cards.map(([h,tx],i)=>{const o=open(i);return `<div class="card"><h4>${o?'':ic('lock',14)} ${o?esc(h):'<span class="blurred">'+esc(h)+'</span>'}</h4><p class="${o?'':'blurred'}">${esc(tx)}</p></div>`}).join('')}
@@ -722,7 +725,7 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(24)}});
+  completeOffer:()=>{S.pack=true;emit('offer_complete');go(24)},completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(24)}});
 if(QS.get('paid')){S.paid=true;S.plan=QS.get('paid')}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{gender:S.gender||'f',a3:S.a3||'tot',a4:S.a4||'mos',a5:S.a5||'tot',a6:S.a6||'mos',a7:S.a7||'uns',a8:S.a8||'no',a10:S.a10||'mos',a11:S.a11||'mos',fam:S.fam||'yes',side:S.side||'mother',img:S.img||'eye',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},bt:S.bt.h?S.bt:{h:'9',mi:'30',ap:'PM'},place:S.place||'London',email:S.email||'demo@example.com'});go(n)}}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
