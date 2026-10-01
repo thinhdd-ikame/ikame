@@ -88,7 +88,7 @@ Mở file, tìm `const CONFIG` ở đầu phần script. Mọi giá trị dạng
 - **calmio-nervous-system:** toàn bộ flow là suy luận (không có capture); ba profile và bài thở là thiết kế của mình, cần review; `{{offer_price}}` là SKU không gia hạn.
 - **calmio-burnout:** khớp SKU; `{{offer_price}}` là SKU không gia hạn; free tier (check-in 2 phút) giả định; mốc tuần là mục tiêu, không phải cam kết kết quả.
 - **calmio-self-discovery:** claim riêng tư và xoá chat chưa xác nhận: nằm sau `CONFIG.privacyVerified` và `CONFIG.deletion` (đang tắt), chỉ bật khi thật sự có; `{{offer_price}}` là SKU không gia hạn.
-- **ewa-latam:** chưa duyệt từng màn sau màn 2 của Praktika; refund days chưa rõ (ẩn sau `{{refund_days}}`); "4.7 · 196K" và hai review là unverified; ES dùng `{{price_mxn_*}}`, PT dùng `{{price_brl_*}}`, lint headline PT riêng.
+- **ewa-latam:** chưa duyệt từng màn sau màn 2 của Praktika; refund days chưa rõ (ẩn sau `{{refund_days}}`); rating, số review và các review nay là token trống (`{{app_rating}}`, `{{rating_count}}`, `{{review_1}}`, `{{review_2}}`) và tự ẩn tới khi có số thật; offer là "Pase de falsos amigos" trả một lần (SKU không gia hạn); ES dùng `{{price_mxn_*}}`, PT dùng `{{price_brl_*}}`, lint headline PT riêng.
 - **ewa-movies:** tên phim chỉ là text, không poster/clip; claim "same genre as {{show}}" cần legal duyệt trước khi nói "from {{show}}"; số mục tiêu tuần cần content team xác nhận.
 - **ewa-speak-ai:** tính năng AI tutor và feedback phát âm của EWA phải xác nhận với product (paywall/FAQ có chữ "verify"); demo chấm bằng so khớp từ trên trình duyệt, không phải model phát âm; cách giữ audio phải nêu đúng sự thật.
 - **ewa-books:** danh mục sách và audio narration chưa xác nhận; chỉ dùng bản chuyển thể gốc/public-domain, legal duyệt; mục tiêu tuần cần xác nhận.
@@ -122,7 +122,9 @@ Riêng Calmio: nếu user vừa gõ nội dung khủng hoảng, `completePurchas
 - **Event của offer:** `offer_view`, `offer_accept`, `offer_decline`.
 - `funnel_start` bắn ngay khi tải trang, nên listener phải gắn trước khi script của funnel chạy.
 
-Không event nào gửi email thô, nội dung chat hay ảnh. Lưu ý: offer checkout URL của Coursiv vẫn kèm tham số email prefill; bỏ nếu không muốn email nằm trên URL.
+Không event nào gửi email thô, nội dung chat hay ảnh, và không funnel nào đưa email vào URL checkout (URL chỉ có `funnel`, `plan` và các tham số `utm_*`/pass-through, không có email).
+
+**Email nhắc gia hạn (Testlibrary):** `CONFIG.reminder` mặc định `false` ở cả 6 funnel testlibrary nên dòng "We'll email you 2 days before your trial ends" bị ẩn. Chỉ đặt `true` khi email nhắc thật sự được gửi.
 
 ## Lưu ý
 
