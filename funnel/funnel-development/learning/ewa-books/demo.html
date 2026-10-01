@@ -612,7 +612,7 @@ img.cov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;displa
     </div>
     <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div>
     <div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div>
-    <p class="foot-note"><b>Faked for the demo:</b> the book covers, hook photo and passage illustration are wordless stand-ins copied from <code>learning/ewa</code> (run <code>gen_images.py</code> for books-specific art); book titles are generic sample titles, not real books. The two passages, translations (Spanish, Portuguese, Turkish, Vietnamese; other languages show a stand-in) and the level estimate are demo content: the level starts from your self-rating and moves one step with "How did that read?", and plan length uses demo values. Audio uses the browser voice if one exists. Apple/Google sign-in, purchases and the offer are simulated and no charge is made; an email containing "taken" shows the "already has a plan" error. The funnel UI doesn't switch into the native language. <b>Hidden while unset, not faked:</b> app rating, review count, reviews, refund days and the guarantee stay out of the page until real values are set in <code>CONFIG</code> (screen 13 shows a dashed internal placeholder instead). Every price (<code>{{price_4w}}</code>...) and the legal entity stay as dashed tokens. The brief cites EWA's own figures (4.7 stars / 196K ratings) as unverified reference only.</p>
+    <p class="foot-note"><b>Faked for the demo:</b> the book covers, hook photo and passage illustration are wordless stand-ins copied from <code>learning/ewa</code> (run <code>gen_images.py</code> for books-specific art); book titles are generic sample titles, not real books. The two passages, translations (Spanish, Portuguese, Turkish, Vietnamese; other languages show a stand-in) and the level estimate are demo content: the level starts from your self-rating and moves one step with "How did that read?", and plan length uses demo values. Audio uses the browser voice if one exists. Apple/Google sign-in, purchases and the offer are simulated and no charge is made; an email containing "taken" shows the "already has a plan" error. The funnel UI doesn't switch into the native language. <b>Hidden while unset, not faked:</b> app rating, review count, reviews, refund days and the guarantee stay out of the page until real values are set in <code>CONFIG</code> (screen 13 shows a neutral progress headline instead). Every price (<code>{{price_4w}}</code>...) and the legal entity stay as dashed tokens. The brief cites EWA's own figures (4.7 stars / 196K ratings) as unverified reference only.</p>
   </aside>
 </div>
 <script>
@@ -718,7 +718,7 @@ const CONFIG={
   /* unverified until the store listing is confirmed: blocks stay hidden while a value is still a {{token}} */
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],
-  offer:{enabled:true,name:'1-week starter',sub:'Your 3 books, one week',price:'{{offer_price}}',renews:'{{renew_1w}}',period:'week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+  offer:{enabled:true,oneTime:true,name:'Books starter pass',sub:'Your 3 books, paid once',price:'{{offer_price}}',renews:null,period:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
 };
 const isTok=v=>/^\{\{/.test(String(v==null?'':v));
 const refundReal=()=>!isTok(CONFIG.refundDays)&&/^\d+$/.test(String(CONFIG.refundDays));
@@ -832,8 +832,8 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
 /* decline / close: back to the plan screen (#18), never back into the paywall, never a loop */
 function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
 function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
-  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
-  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('offer_accept',{price:o.price,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:o.price,oneTime:true,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
@@ -915,10 +915,10 @@ const V={
 13:()=>{const real=ratingReal(),rv=reviewsReal();
   return `<div class="scr center">
   ${real?`<div class="rating"><b>${esc(CONFIG.rating.score)}</b><div class="srow">${stars(5,24)}</div></div>`:''}
-  <h1 class="display tc">${real?t(`Rated by ${esc(CONFIG.rating.count)} learners`,'What readers say'):'What readers say'}</h1>
-  <p class="lead tc">${t('Ratings from the App Store.','The feature reviewers mention most.')}</p>
+  <h1 class="display tc">${real?t(`Rated by ${esc(CONFIG.rating.count)} learners`,'What readers say'):t('Your plan is taking shape','Almost there, keep going')}</h1>
+  <p class="lead tc">${real?t('Ratings from the App Store.','The feature reviewers mention most.'):t('One quick question left before your plan.','Next: your pace, then your plan.')}</p>
   ${real?`<div class="stores"><span class="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></span><span class="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></span></div>`:''}
-  ${rv.length?rv.map(realReview).join(''):`<div class="rev ph" role="note"><div class="who">Internal placeholder</div><p>Real App Store rating and reviews go here. This block stays hidden until they are configured.</p></div>`}</div>
+  ${rv.map(realReview).join('')}</div>
   <div class="foot">${cta('Continue')}</div>`},
 14:()=>`<div class="scr"><h1 class="display">${t('How much time per day?','Your daily reading time?')}</h1>
   <p class="lead">${t('One chapter a day beats a weekend binge.','Be realistic. You can change it anytime.')}</p>
@@ -993,18 +993,18 @@ const V={
   return `<div class="scr owrap">
   <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">${CONFIG.brand}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display" style="font-size:28px">${t('Start smaller with one week',`Try ${GN()} books for a week`)}</h1>
-   <p class="lead">${t('Your three books, no long plan.','One-time starter, then weekly renewal.')}</p>
+   <h1 class="display" style="font-size:28px">${t('Start with a books pass',`Try ${GN()} books once`)}</h1>
+   <p class="lead">${t('Your three books, no subscription.','Pay once. No renewal.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${!isTok(o.badge)&&o.badge?`<span class="obadge">${esc(o.badge)}</span>`:''}
    <div class="sumc">${sumCard(true)}</div>
    <div class="oname"><b>${esc(o.name)}</b><span>${esc(o.sub)}</span></div>
-   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${[`All 3 adapted ${GN()} books`,'Tap-to-translate on every page','An email before your first renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>one time</span></div>
+   <div class="ochecks">${[`All 3 adapted ${GN()} books`,'Tap-to-translate on every page','One payment, no auto-renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
    <p class="notinc"><b>Not included:</b> audio narration, flashcards, AI tutor and the daily plan.</p>
    ${cta('Claim my offer',true,'offerbuy')}
    <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
-   <p class="ofine">${tv(o.price)} today, then ${tv(o.renews)} every ${esc(o.period)} until you cancel. We'll email you before. Cancel anytime, up to 24h before renewal.</p></div>
+   <p class="ofine">${tv(o.price)} one time. No renewal and nothing to cancel.</p></div>
   <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
 21:()=>{const sv=S.saved.length?S.saved:[savedWord()];
   return `<div class="scr" style="gap:14px"><h1 class="display">${t(`You're in, ${nm()}!`,'Your first chapter awaits')}</h1>
@@ -1062,7 +1062,7 @@ function bindPaywall(v){
   wp.addEventListener('scroll',()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{passive:true});
 }
 const streakSheet=()=>`<div class="dim"></div><div class="sheet" role="dialog" aria-label="Streak challenge"><span class="grab"></span><div style="font-size:40px;text-align:center">🔥</div>
-  <h2 class="display tc" style="font-size:25px">Want a free 7-day streak challenge?</h2>
+  <h2 class="display tc" style="font-size:25px">Want a 7-day streak challenge?</h2>
   <button class="btn" data-a="streak" data-v="1">Yes, I'm in</button><button class="link" data-a="streak" data-v="0">No thanks</button></div>`;
 
 function miniPlan(){return `<div style="font:800 15px var(--display);margin-bottom:8px">${cap1(nmP())} path to ${nextLevel()}</div><svg viewBox="0 0 300 90" width="100%" height="90"><path d="M10 80 C 100 76, 170 30, 290 12" stroke="#E04A1F" stroke-width="5" fill="none" stroke-linecap="round"/></svg><div style="display:flex;gap:6px;margin-top:8px"><span class="tagsug">Day 7</span><span class="tagsug">Day 14</span><span class="tagsug">Day 28</span></div>`}
@@ -1241,7 +1241,7 @@ phone.addEventListener('click',e=>{
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'buy':S.bought=CONFIG.plans[S.plan].name+' (demo)';emit('checkout_click',{plan:S.plan});toast('Demo only. No charge made.');go(LAST);break;
     case 'closepw':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('User leaves the funnel here (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: 1-week starter (demo)';toast('Demo only. No charge made.');go(LAST);break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: books starter pass (demo)';toast('Demo only. No charge made.');go(LAST);break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast(isAndroid?'Google Play would open (demo)':'App Store would open (demo)');break;
     case 'flip':{const f=b.querySelector('.hflip');if(!f)break;S.flipped=!S.flipped;f.classList.remove('on','off');void f.offsetWidth;f.classList.add(S.flipped?'on':'off');break}

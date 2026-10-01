@@ -220,7 +220,8 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 **Headline B:** What readers say
 **Body A:** Ratings from the App Store.
 **Body B:** The feature reviewers mention most.
-**Visual:** Large rating number with star row, App Store and Google Play badges, real review cards. All of it appears only when real values are configured. While unset, the screen shows a dashed internal placeholder ("Real App Store rating and reviews go here") that is never part of the shipped page.
+**Fallback (rating and reviews unset):** Headline "Your plan is taking shape" / "Almost there, keep going"; Body "One quick question left before your plan." / "Next: your pace, then your plan." No rating, review or placeholder card is shown.
+**Visual:** Large rating number with star row, App Store and Google Play badges, real review cards. All of it appears only when real values are configured. While unset, the screen uses the neutral fallback copy above and shows none of it.
 **Microcopy:** Numbers are tokens (`{{app_rating}}`, `{{rating_count}}`), hidden while unset. EWA reference (unverified for this funnel): 4.7 · 196K. Do not reuse these numbers for any other brand.
 **CTA:** Continue
 
@@ -253,7 +254,7 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 - Pacing it to your minutes daily…
 - Almost ready, your plan is waiting…
 **Visual:** The first saved word as a flashcard with three book covers orbiting it; four progress rows.
-**Microcopy:** One optional overlay at about 50%: "Want a free 7-day streak challenge?" with "Yes, I'm in" / "No thanks"; neither button adds anything paid.
+**Microcopy:** One optional overlay at about 50%: "Want a 7-day streak challenge?" with "Yes, I'm in" / "No thanks"; neither button adds anything paid.
 **CTA:** (auto-advances, ~6-8 seconds)
 
 ---
@@ -317,14 +318,14 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 **CTA:** Start reading
 
 ### 20. Last-chance offer
-**Purpose:** One second chance for users who close the paywall: a smaller 1-week starter (the three adapted books with tap-to-translate; no audio, flashcards, AI tutor or daily plan), then its weekly renewal. Not a discount on the same SKU. Shown once.
-**Headline A:** Start smaller with one week
-**Headline B:** Try {{genre}} books for a week
-**Body A:** Your three books, no long plan.
-**Body B:** One-time starter, then weekly renewal.
-**Plans:** One offer card: **1-week starter**, `{{offer_price}}` today with the real `{{price_1w}}` (same plan length) struck only if it is lower, then `{{renew_1w}}` every week until cancelled. Checks match its scope: the three adapted books, tap-to-translate on every page, an email before renewal. A "Not included" line lists audio narration, flashcards, AI tutor and the daily plan. Optional `{{offer_badge}}` only if true.
-**Visual:** Same web look as #19: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the plan name, price row (struck then offer price), three checks, the "Not included" line, CTA, payment badges and the renewal line; plain decline link.
-**Microcopy:** Renewal line: "{{offer_price}} today, then {{renew_1w}} every week until you cancel. We'll email you before. Cancel anytime." Shown once per session (sessionStorage `ikf_offer_ewa-books`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #18.
+**Purpose:** One second chance for users who close the paywall: a smaller one-time "Books starter pass" (the three adapted books with tap-to-translate; no audio, flashcards, AI tutor or daily plan), paid once with no renewal. Not a discount on any subscription plan. Shown once.
+**Headline A:** Start with a books pass
+**Headline B:** Try {{genre}} books once
+**Body A:** Your three books, no subscription.
+**Body B:** Pay once. No renewal.
+**Plans:** One offer card: **Books starter pass**, `{{offer_price}}` paid once (`oneTime: true`, `renews: null`, `compareAt: null`), no strike-through and no renewal token. Checks match its scope: the three adapted books, tap-to-translate on every page, one payment with no auto-renewal. A "Not included" line lists audio narration, flashcards, AI tutor and the daily plan. Optional `{{offer_badge}}` only if true.
+**Visual:** Same web look as #19: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the plan name, price row (offer price, "one time"), three checks, the "Not included" line, CTA, payment badges and a no-renewal line; plain decline link.
+**Microcopy:** Line under the CTA: "{{offer_price}} one time. No renewal and nothing to cancel." Shown once per session (sessionStorage `ikf_offer_ewa-books`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #18.
 **CTA:** Claim my offer
 
 ---
