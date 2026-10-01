@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EWA Speak Funnel Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* ---------- page (control panel) tokens: light + dark ---------- */
+:root{
+  color-scheme:light;
+  --pg-bg:#EFE9E1;--pg-surface:#FFFFFF;--pg-surface2:#F5EFE7;--pg-border:#DDD2C4;
+  --pg-t1:#241C15;--pg-t2:#5F5347;--pg-t3:#8A7D70;--pg-accent:#C4401A;--pg-on-accent:#FFFFFF;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --sans:"Nunito","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --pg-bg:#15120F;--pg-surface:#201B16;--pg-surface2:#2A231D;--pg-border:#3B332B;
+    --pg-t1:#F4ECE2;--pg-t2:#C4B6A7;--pg-t3:#908375;--pg-accent:#FF8157;--pg-on-accent:#2A1206;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --pg-bg:#15120F;--pg-surface:#201B16;--pg-surface2:#2A231D;--pg-border:#3B332B;
+  --pg-t1:#F4ECE2;--pg-t2:#C4B6A7;--pg-t3:#908375;--pg-accent:#FF8157;--pg-on-accent:#2A1206;
+}
+*{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden}
+body{background:var(--pg-bg);color:var(--pg-t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--ac,var(--pg-accent));outline-offset:2px}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:32px 16px 48px}
+.phonebox{width:390px;height:812px;margin:11px;flex:none;position:relative}
+
+/* ---------- phone: app brand tokens (same in light & dark page modes) ---------- */
+.phone{
+  --bg:#FFF8EF;--card:#FFFFFF;--s2:#F7EEE2;--bd:#ECE0D0;--bd2:#DCCDB9;
+  --t1:#2B2119;--t2:#6C5D50;--t3:#998A7C;
+  --ac:#E04A1F;--ac-d:#E04A1F14;--ac-s:#FFE6DB;--on-ac:#FFFFFF;
+  --hl:#FFD54D;--hl-s:#FFF1C2;--good:#2E9D69;--err:#C4331A;
+  color-scheme:light;
+  position:absolute;left:0;top:0;width:390px;height:812px;transform-origin:0 0;
+  border-radius:52px;background:var(--bg);color:var(--t1);overflow:hidden;isolation:isolate;
+  box-shadow:0 0 0 10px #1E1914,0 0 0 11px #3A3129,0 40px 80px -24px #0007;
+  font:15px/1.45 var(--sans)
+}
+.stage{position:absolute;inset:0;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column;background:var(--bg)}
+.view.out{animation:vout .22s ease forwards;pointer-events:none;z-index:1}
+.view.in{animation:vin .32s ease both;z-index:2}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.view.in.bk{animation-name:vinb}
+@keyframes vinb{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:800;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--t1)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid currentColor}
+.status .dots b{display:block;width:4px;height:10px;background:currentColor;border-radius:1px}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--s2)}
+.iconbtn[disabled]{opacity:.3;cursor:default}
+.prog{flex:1;height:6px;border-radius:3px;background:var(--s2);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--ac);border-radius:3px;transition:width .35s ease}
+.seg2{flex:1;display:flex;gap:6px;align-items:center;position:relative}
+.seg2 span{flex:1;height:6px;border-radius:3px;background:var(--s2)}
+.seg2 span.on{background:var(--ac)}
+.seg2 em{position:absolute;top:10px;left:0;right:0;text-align:center;font:700 11px/1 var(--sans);font-style:normal;color:var(--t3);letter-spacing:.04em}
+.navspacer{width:36px}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr.center{justify-content:center}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2}
+.note{font-size:12.5px;color:var(--t3);text-align:center;text-wrap:balance}
+
+.display{font:800 30px/1.1 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.display.xl{font-size:36px}
+.lead{color:var(--t2);margin:0;font-size:16px;text-wrap:pretty}
+.tc{text-align:center}
+.eyebrow{font:800 11.5px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--ac)}
+.hintline{font:700 12.5px/1 var(--sans);color:var(--t3);text-align:center}
+
+.btn{height:56px;border-radius:999px;border:none;background:var(--ac);color:var(--on-ac);font:800 17px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;position:relative;overflow:hidden;box-shadow:0 10px 24px -12px #E04A1Fcc}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--s2);color:var(--t3);cursor:not-allowed;box-shadow:none}
+.btn.dark{background:#1B1511;color:#fff;box-shadow:none}
+.btn.ghost{background:var(--card);color:var(--t1);border:1.5px solid var(--bd);box-shadow:none}
+.btn:not([disabled]):not(.dark):not(.ghost)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.link{background:none;border:none;color:var(--t2);font-size:14.5px;font-weight:700;padding:6px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--bd2)}
+.link:hover{color:var(--t1)}
+
+/* options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.pill{display:flex;align-items:center;gap:12px;min-height:58px;padding:10px 16px;border-radius:999px;background:var(--card);border:1.5px solid var(--bd);text-align:left;width:100%;transition:border-color .15s,background .15s,color .15s;box-shadow:0 2px 0 #0000000a}
+.pill:hover{border-color:var(--bd2)}
+.pill .li{width:30px;height:30px;display:grid;place-items:center;flex:none;font-size:22px;line-height:1}
+.pill .lbl{flex:1;font-weight:700;font-size:16.5px}
+.pill .chk{width:24px;height:24px;border-radius:50%;border:2px solid var(--bd2);display:grid;place-items:center;flex:none;color:var(--ac)}
+.pill.on{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}
+.pill.on .chk{background:#fff;border-color:#fff}
+.pill .sub{font-size:12px;font-weight:700;color:var(--t3)}
+.pill.on .sub{color:#ffffffcc}
+.pill.slim{min-height:48px}
+.tagsug{font:800 10.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--hl-s);color:#8A5A00}
+.pill.on .tagsug{background:#ffffff33;color:#fff}
+.meter{display:flex;gap:3px;align-items:flex-end;height:20px}
+.meter i{width:5px;border-radius:2px;background:var(--bd)}
+.pill.on .meter i{background:#ffffff55}
+.meter i.f{background:var(--ac)}
+.pill.on .meter i.f{background:#fff}
+.clockic{color:var(--ac);display:grid}
+.pill.on .clockic{color:#fff}
+svg.flag{border-radius:4px;display:block;box-shadow:0 0 0 1px #0000001a}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gcard{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;padding:14px;min-height:120px;border-radius:22px;background:var(--card);border:2px solid var(--bd);text-align:left;font-weight:800;font-size:15.5px;line-height:1.2}
+.gcard .emo{font-size:34px;line-height:1;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--s2)}
+.gcard.on{border-color:var(--ac);background:linear-gradient(0deg,var(--ac-d),var(--ac-d)),var(--card)}
+.gcard .ck{position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center}
+.gcard.thumb{padding:8px 8px 12px;min-height:0}
+.gcard.thumb .th{width:100%;height:84px;border-radius:14px;overflow:hidden;position:relative;background:var(--s2)}
+.gcard.thumb span.t{padding:0 4px}
+
+.field{display:flex;flex-direction:column;gap:7px}
+.box{height:56px;border-radius:16px;background:var(--card);border:1.5px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--ac)}
+.box.bad{border-color:var(--err)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:600 16.5px var(--sans)}
+.box input::placeholder{color:var(--t3);font-weight:600}
+.err{font-size:13.5px;color:var(--err);font-weight:700}
+.err .link{font-size:13.5px;padding:0;color:var(--err)}
+.hint{font-size:13px;color:var(--t3)}
+.results{border-radius:18px;background:var(--card);border:1.5px solid var(--bd);overflow:hidden;max-height:190px;overflow-y:auto}
+.results button{display:flex;gap:10px;align-items:center;width:100%;padding:11px 16px;background:none;border:none;border-top:1px solid var(--bd);text-align:left;font-weight:700}
+.results button:first-child{border-top:none}
+.results button:hover{background:var(--s2)}
+.fadein{animation:fi .35s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* hook */
+.fan{position:relative;height:300px;margin:4px -4px 0}
+.fan .book{position:absolute;width:74px;height:104px;border-radius:6px 10px 10px 6px;top:6px;box-shadow:0 8px 16px -8px #0005;overflow:hidden}
+.fan .book::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:#00000026}
+.fan .book i{position:absolute;left:14px;right:10px;height:5px;border-radius:3px;background:#ffffffaa}
+.still{position:absolute;border-radius:18px;overflow:hidden;background:#222;box-shadow:0 18px 30px -16px #3b1e0a88,0 0 0 4px #fff}
+img.sv{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#0000 45%,#00000059 72%,#000000a6)}
+img.cov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.fan .book img.cov{z-index:0}.fan .book::before{z-index:1}
+.subbars,.subtl{z-index:2}
+.subtl{position:absolute;left:0;right:0;bottom:12px;text-align:center;padding:0 10px}
+.subtl span{display:inline;background:#000000b3;color:#fff;font:800 15px/1.65 var(--sans);padding:3px 6px;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.subtl b{background:var(--hl);color:#2B2119;border-radius:5px;padding:1px 4px;box-shadow:0 0 16px #FFD54Dcc}
+.subbars{position:absolute;left:18%;right:18%;bottom:14px;display:flex;flex-direction:column;gap:5px;align-items:center}
+.subbars i{display:block;height:8px;border-radius:4px;background:#ffffffb0;width:100%}
+.subbars i+i{width:70%}
+.tbub{position:absolute;background:#fff;color:var(--t1);border-radius:14px;padding:8px 12px;font:800 15px/1.2 var(--sans);box-shadow:0 10px 24px -10px #0008;white-space:nowrap;display:flex;align-items:center;gap:8px;z-index:3}
+.tbub::after{content:"";position:absolute;bottom:-6px;left:50%;width:12px;height:12px;background:#fff;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.tbub small{display:block;font:700 11px/1 var(--sans);color:var(--t3);margin-bottom:3px}
+.trust{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 6px;font-weight:800;font-size:14px;color:var(--t2)}
+.trust .st{color:#F5A623}
+
+/* hook B */
+.bignum{font:800 88px/.9 var(--display);letter-spacing:-.04em;color:var(--ac);text-align:center;position:relative}
+.worldmap{position:absolute;inset:-6px -20px;background-image:radial-gradient(circle,#D9C7B0 1.3px,transparent 1.7px);background-size:9px 9px;
+  -webkit-mask-image:radial-gradient(ellipse 15% 26% at 18% 38%,#000 60%,transparent 64%),radial-gradient(ellipse 8% 22% at 28% 78%,#000 60%,transparent 64%),radial-gradient(ellipse 9% 14% at 50% 30%,#000 60%,transparent 64%),radial-gradient(ellipse 9% 24% at 53% 66%,#000 60%,transparent 64%),radial-gradient(ellipse 20% 22% at 74% 36%,#000 60%,transparent 64%),radial-gradient(ellipse 7% 9% at 86% 78%,#000 60%,transparent 64%);
+  mask-image:radial-gradient(ellipse 15% 26% at 18% 38%,#000 60%,transparent 64%),radial-gradient(ellipse 8% 22% at 28% 78%,#000 60%,transparent 64%),radial-gradient(ellipse 9% 14% at 50% 30%,#000 60%,transparent 64%),radial-gradient(ellipse 9% 24% at 53% 66%,#000 60%,transparent 64%),radial-gradient(ellipse 20% 22% at 74% 36%,#000 60%,transparent 64%),radial-gradient(ellipse 7% 9% at 86% 78%,#000 60%,transparent 64%)}
+.rev{padding:14px 16px;border-radius:20px;background:var(--card);border:1.5px solid var(--bd);display:flex;flex-direction:column;gap:8px}
+.rev .who{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
+.rev .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 15px var(--display);color:#fff;flex:none}
+.rev .stars{margin-left:auto;display:flex;gap:1px;color:#F5A623}
+.rev p{margin:0;color:var(--t2);font-size:14.5px}
+.rev.ph{border-style:dashed;background:transparent}
+.rev.ph p,.rev.ph .who{color:var(--t3)}
+.rev .src{font-size:11.5px;color:var(--t3)}
+.stack{display:flex;flex-direction:column;gap:10px}
+
+/* name */
+.tutor{display:flex;align-items:flex-end;gap:10px;margin-top:6px}
+.tutor .face{width:62px;height:62px;border-radius:50%;background:var(--ac-s);display:grid;place-items:center;flex:none;overflow:hidden;box-shadow:0 0 0 2px #fff,0 6px 14px -6px #8a3a1466}
+.tutor .face img{width:100%;height:100%;object-fit:cover;display:block}
+.bubble{background:var(--card);border:1.5px solid var(--bd);border-radius:20px 20px 20px 6px;padding:12px 16px;font:800 18px/1.2 var(--sans);min-width:92px;min-height:48px;color:var(--t1)}
+.bubble.empty{color:var(--t3)}
+.react{display:flex;gap:10px;align-items:flex-start;background:var(--hl-s);border-radius:18px;padding:12px 14px;font-weight:700;font-size:14.5px;color:#5A4200}
+
+/* bridge */
+.fix{display:flex;gap:14px;align-items:center;padding:12px;border-radius:22px;background:var(--card);border:1.5px solid var(--bd)}
+.fix .demo{width:96px;height:72px;border-radius:14px;flex:none;position:relative;overflow:hidden;background:var(--s2);display:grid;place-items:center}
+.fix b{display:block;font-size:15.5px;line-height:1.25}
+.mini-card{width:66px;height:44px;border-radius:9px;background:#fff;border:1.5px solid var(--ac);display:grid;place-items:center;font:800 13px var(--display);position:relative}
+.mini-card span{position:absolute;inset:0;display:grid;place-items:center;animation:swapA 3s ease-in-out infinite}
+.mini-card span+span{animation-name:swapB;color:var(--ac)}
+@keyframes swapA{0%,40%{opacity:1}50%,90%{opacity:0}100%{opacity:1}}
+@keyframes swapB{0%,40%{opacity:0}50%,90%{opacity:1}100%{opacity:0}}
+.chatb{background:var(--ac);color:#fff;font-size:11px;font-weight:800;padding:6px 8px;border-radius:10px 10px 10px 3px;position:absolute;left:8px;top:10px}
+.micdot{position:absolute;right:10px;bottom:9px;width:26px;height:26px;border-radius:50%;background:#1B1511;color:#fff;display:grid;place-items:center}
+.speed{position:absolute;right:6px;top:6px;background:#000a;color:#fff;font:800 10px/1 var(--sans);padding:4px 6px;border-radius:6px}
+.lesson{width:74px;height:54px;border-radius:10px;background:#fff;border:1.5px solid var(--bd);padding:7px;display:flex;flex-direction:column;gap:4px}
+.lesson i{display:block;height:5px;border-radius:3px;background:var(--bd)}
+.lesson i:first-child{background:var(--ac);width:60%}
+.lesson em{font:800 9.5px/1 var(--sans);font-style:normal;color:var(--t3);margin-top:auto}
+
+/* social proof */
+.rating{text-align:center}
+.rating b{display:block;font:800 104px/.9 var(--display);letter-spacing:-.04em}
+.rating .srow{display:flex;justify-content:center;gap:4px;color:#F5A623;margin:10px 0 4px}
+.stores{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.store{display:inline-flex;align-items:center;gap:8px;background:#1B1511;color:#fff;border-radius:12px;padding:7px 12px 7px 10px;font:800 14px/1.05 var(--sans);text-align:left;border:none}
+.store small{display:block;font:600 9.5px/1.2 var(--sans);opacity:.8}
+
+/* word check */
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.wchip{height:52px;border-radius:16px;background:var(--card);border:1.5px solid var(--bd);font:800 13.5px/1.1 var(--sans);padding:0 4px;display:flex;align-items:center;justify-content:center;gap:3px;position:relative;overflow-wrap:anywhere;text-align:center;transition:background .15s,border-color .15s,transform .1s;box-shadow:0 2px 0 #0000000a}
+.wchip:active{transform:scale(.96)}
+.wchip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.wchip .tk{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#fff;color:var(--ac);display:grid;place-items:center;box-shadow:0 2px 6px #0003}
+.contentnote{font-size:12px;color:var(--t3);text-align:center;border:1px dashed var(--bd2);border-radius:10px;padding:6px}
+
+/* first scene */
+.scene{position:relative;height:330px;border-radius:26px;overflow:visible;margin-top:2px;flex:none}
+.scene .frame{position:absolute;inset:0;border-radius:26px;overflow:hidden;background:#1C1422;box-shadow:0 18px 34px -18px #3b1e0a99}
+.scene .frame img.sv{object-position:50% 35%}
+.scene .frame .scrim{background:linear-gradient(180deg,#0000 40%,#00000066 70%,#000000b3)}
+.scene .sbar{position:absolute;left:10px;right:10px;bottom:16px;text-align:center;line-height:2.1;z-index:2}
+.scene .sbar button{background:#000000b8;color:#fff;border:none;font:800 19px/1 var(--sans);padding:6px 5px;margin:0 -1px;border-radius:7px;transition:background .15s,color .15s,box-shadow .2s}
+.scene .sbar button:hover{background:#000000e0}
+.scene .sbar button.on{background:var(--hl);color:#2B2119;box-shadow:0 0 22px 2px #FFD54Dcc}
+.scene .sbar button.saved{text-decoration:underline;text-decoration-color:var(--hl);text-underline-offset:4px}
+.scene .chip0{position:absolute;left:12px;top:12px;z-index:2;display:flex;gap:6px}
+.scene .chip0 span,.scene .chip0 button{background:#00000080;color:#fff;border:none;font:800 11.5px/1 var(--sans);padding:7px 10px;border-radius:999px;display:inline-flex;gap:5px;align-items:center;backdrop-filter:blur(6px)}
+.deck{position:absolute;right:12px;top:12px;z-index:3;width:44px;height:44px;border-radius:14px;background:#fff;color:var(--ac);display:grid;place-items:center;box-shadow:0 6px 16px -6px #0007}
+.deck b{position:absolute;top:-7px;right:-7px;min-width:22px;height:22px;border-radius:11px;background:var(--ac);color:#fff;font:800 12px/22px var(--sans);text-align:center;padding:0 5px}
+.deck.bump{animation:bump .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bump{40%{transform:scale(1.25)}}
+.flyw{position:absolute;z-index:20;background:var(--hl);color:#2B2119;font:800 17px/1 var(--sans);padding:6px 8px;border-radius:8px;pointer-events:none;box-shadow:0 8px 20px -6px #0006}
+.playb{width:30px;height:30px;border-radius:50%;border:none;background:var(--ac);color:#fff;display:grid;place-items:center;flex:none}
+
+/* month + time */
+.monthrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;margin:0 -20px;padding-inline:20px}
+.monthrow::-webkit-scrollbar{display:none}
+.mchip{flex:none;padding:10px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--bd);font-weight:800;font-size:14px}
+.mchip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.lock{border-radius:26px;padding:16px 14px 18px;background:linear-gradient(160deg,#FFB38A,#E27A8E 55%,#7F6BD8);color:#fff;display:flex;flex-direction:column;gap:10px;align-items:center}
+.lock .clk{font:800 44px/1 var(--display);letter-spacing:-.02em;text-shadow:0 2px 10px #0003}
+.lock .dt{font-size:12.5px;font-weight:700;opacity:.9;margin-top:-4px}
+.push{display:flex;gap:10px;padding:10px 12px;border-radius:18px;background:#ffffffd9;color:var(--t1);width:100%;align-items:center;box-shadow:0 8px 20px -10px #0006}
+.push .app{width:34px;height:34px;border-radius:9px;background:var(--ac);color:#fff;display:grid;place-items:center;flex:none;font:800 15px var(--display)}
+.push small{color:var(--t3);display:block;font-size:11.5px;font-weight:700}
+.push div{font-size:13.5px;font-weight:700;line-height:1.3}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14.5px;font-weight:700;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--t1)}
+.step.done .pct{color:var(--good)}
+.bar{height:7px;border-radius:4px;background:var(--s2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ac);width:0;border-radius:4px}
+.dim{position:absolute;inset:0;background:#2B211966;z-index:14;animation:fi .25s ease}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:15;background:var(--card);border-radius:30px 30px 0 0;padding:10px 20px 30px;display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--bd);align-self:center}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.revrot{min-height:92px}
+
+/* 3D hero: saved-word flashcard */
+.hero{position:relative;margin:0 auto;perspective:820px;perspective-origin:50% 40%;cursor:pointer;touch-action:pan-y;flex:none}
+.hscene{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.hscene>*{position:absolute;left:50%;top:50%}
+.hslab{border-radius:16px;border:1.5px solid var(--bd2);background:#fff}
+.hslab.a{background:#FFE3D6}.hslab.b{background:#FFF1C2}.hslab.c{background:#E3F1FF}
+.hpos{transform-style:preserve-3d}
+.hflip{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.hflip.on{animation:flipOn .8s cubic-bezier(.4,.1,.3,1) forwards}
+.hflip.off{animation:flipOff .8s cubic-bezier(.4,.1,.3,1) forwards}
+@keyframes flipOn{0%{transform:translateZ(0) rotateY(0)}50%{transform:translateZ(70px) rotateY(90deg)}100%{transform:translateZ(0) rotateY(180deg)}}
+@keyframes flipOff{0%{transform:translateZ(0) rotateY(180deg)}50%{transform:translateZ(70px) rotateY(90deg)}100%{transform:translateZ(0) rotateY(0)}}
+.hface{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px;text-align:center}
+.hface.front{background:linear-gradient(165deg,#FFFFFF,#FFF4EA);border:2px solid var(--ac);box-shadow:0 18px 30px -14px #8a3a1466}
+.hface.back{transform:rotateY(180deg);background:linear-gradient(165deg,#EF5A2E,#D23F16);color:#fff;border:2px solid #C43A14}
+.hface .k{position:absolute;top:10px;left:12px;font:800 9.5px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--ac)}
+.hface.back .k{color:#ffffffcc}
+.hface .w{font:800 28px/1.05 var(--display);letter-spacing:-.02em;overflow-wrap:anywhere}
+.hface .s{font:700 11.5px/1.2 var(--sans);color:var(--t3)}
+.hface.back .s{color:#ffffffd0}
+.hface .tapf{position:absolute;bottom:9px;right:12px;font:700 10px/1 var(--sans);color:var(--t3)}
+.hfloor{border-radius:50%;background:radial-gradient(closest-side,#5a2d1244,transparent);filter:blur(3px)}
+.hsat{border-radius:8px;overflow:hidden;box-shadow:0 8px 14px -8px #0007;border:2px solid #fff}
+.hsat.book{width:40px;height:56px;border-radius:4px 7px 7px 4px}
+.hsat.book::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#00000026}
+.hsat.book i{position:absolute;left:9px;right:7px;height:4px;border-radius:2px;background:#ffffffaa}
+.hsat.clip{width:62px;height:40px;background:#1C1422}
+.hsat.clip b{position:absolute;inset:0;display:grid;place-items:center;color:#fff;z-index:1}
+.hsat.book::before{z-index:1}
+
+/* email */
+.preview{position:relative;border-radius:24px;overflow:hidden;flex:none}
+.preview .pc{filter:blur(6px);opacity:.8;padding:14px;background:var(--card);border:1.5px solid var(--bd);border-radius:24px}
+.preview .frost{position:absolute;inset:0;background:#FFF8EF66;backdrop-filter:blur(2px);display:grid;place-items:center}
+.preview .frost span{display:inline-flex;gap:8px;align-items:center;background:var(--card);border:1.5px solid var(--bd);padding:9px 14px;border-radius:999px;font-weight:800;font-size:13.5px;color:var(--t2)}
+.or{display:flex;align-items:center;gap:10px;color:var(--t3);font-size:12.5px;font-weight:700}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--bd)}
+.cbx{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--t2);background:none;border:none;text-align:left;padding:0;font-weight:600}
+.cbx .bx{width:22px;height:22px;border-radius:7px;border:2px solid var(--bd2);flex:none;display:grid;place-items:center;background:#fff;color:#fff}
+.cbx.on .bx{background:var(--ac);border-color:var(--ac)}
+
+/* level result */
+.lvlcard{padding:18px 16px;border-radius:24px;background:var(--card);border:1.5px solid var(--bd);display:flex;flex-direction:column;gap:14px}
+.scale{position:relative;height:14px;border-radius:7px;display:flex;overflow:visible;margin:30px 4px 22px}
+.scale i{display:block;height:100%}
+.scale i:first-child{border-radius:7px 0 0 7px}.scale i:last-child{border-radius:0 7px 7px 0}
+.scale .tick{position:absolute;top:20px;transform:translateX(-50%);font:700 10.5px/1 var(--sans);color:var(--t3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.scale .mk{position:absolute;top:-30px;transform:translateX(-50%);left:var(--p);animation:mk 1.6s cubic-bezier(.2,.8,.2,1) .3s both;display:flex;flex-direction:column;align-items:center}
+.scale .mk span{background:#1B1511;color:#fff;font:800 11px/1 var(--sans);padding:5px 7px;border-radius:7px;white-space:nowrap}
+.scale .mk::after{content:"";width:3px;height:22px;background:#1B1511;border-radius:2px;margin-top:2px}
+@keyframes mk{from{left:0}}
+.bands{display:flex;flex-direction:column;gap:6px}
+.band{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;font-size:14px;font-weight:700;color:var(--t2)}
+.band .sw{width:12px;height:12px;border-radius:4px;flex:none}
+.band em{margin-left:auto;font-style:normal;font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
+.band.me{background:#1B1511;color:#fff}.band.me em{color:#ffffffaa}
+.band.nx{background:var(--ac-s);color:var(--t1);animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 3px #E04A1F33}}
+.band .lab{font:800 10px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:6px;background:#ffffff26}
+.band.nx .lab{background:var(--ac);color:#fff}
+
+/* plan chart */
+.chart{border-radius:24px;background:var(--card);border:1.5px solid var(--bd);padding:14px 12px 10px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .curve{fill:none;stroke:var(--ac);stroke-width:4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s ease .3s forwards}
+.chart .area{opacity:0;animation:fo 1s ease 1.4s forwards}
+.chart .md{opacity:0;animation:pop .4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fo{to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+.chart .md{transform-box:fill-box;transform-origin:center}
+.miles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mile{padding:9px 11px;border-radius:14px;border:1.5px solid var(--bd);font-size:13px;font-weight:700;color:var(--t3);background:var(--card);animation:lit .5s ease forwards;line-height:1.25}
+.mile b{display:block;font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+@keyframes lit{to{border-color:var(--ac);color:var(--t1);background:var(--ac-s)}}
+.sumcard{border-radius:20px;background:#1B1511;color:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.sumcard .lv{display:flex;align-items:center;gap:8px;font:800 16px/1.2 var(--display)}
+.sumcard .lv .ar{color:var(--hl)}
+.sumcard .row{display:flex;flex-wrap:wrap;gap:6px}
+.sumcard .row span{font-size:12px;font-weight:700;padding:5px 9px;border-radius:999px;background:#ffffff1a}
+
+/* paywall */
+.closex{position:absolute;top:54px;left:14px;z-index:5;width:36px;height:36px;border-radius:50%;background:var(--card);border:1.5px solid var(--bd);display:grid;place-items:center;color:var(--t2)}
+.plan{position:relative;display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:20px;border:2px solid var(--bd);background:var(--card);text-align:left;width:100%}
+.plan .radio{width:24px;height:24px;border-radius:50%;border:2px solid var(--bd2);display:grid;place-items:center;flex:none;color:#fff;margin-top:1px}
+.plan.on{border-color:var(--ac);background:linear-gradient(0deg,var(--ac-d),var(--ac-d)),var(--card)}
+.plan.on .radio{background:var(--ac);border-color:var(--ac)}
+.plan .pn{font-weight:800;font-size:16.5px}
+.plan .pp{font-size:14px;color:var(--t1);font-weight:600;margin-top:3px;line-height:1.35}
+.plan .pd{font-size:11.5px;color:var(--t3);margin-top:3px;font-weight:700}
+.badge2{position:absolute;top:-10px;right:14px;font:800 10.5px/1 var(--sans);letter-spacing:.05em;background:var(--ac);color:#fff;padding:5px 8px;border-radius:7px}
+.badge2.alt{background:#1B1511}
+.tok{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:.86em;font-weight:700;color:#8A3413;background:#FFE6DB;border:1px dashed #E7A186;border-radius:5px;padding:0 3px;white-space:nowrap}
+.tok.big{font-size:30px;letter-spacing:0;padding:2px 8px;border-radius:10px;display:inline-block}
+.disc{font-size:13.5px;color:var(--t1);font-weight:600;background:var(--s2);border-radius:14px;padding:10px 12px;line-height:1.45}
+.trustrow{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 10px;font-size:12.5px;font-weight:800;color:var(--t2)}
+.benefits{display:flex;flex-direction:column;gap:0;border-radius:20px;background:var(--card);border:1.5px solid var(--bd);padding:4px 14px}
+.benefits div{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--bd);font-weight:700;font-size:14.5px}
+.benefits div:first-child{border-top:none}
+.verify{margin-left:auto;font:800 9.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--t3);border:1px dashed var(--bd2);border-radius:5px;padding:3px 5px}
+.faq{border-radius:18px;background:var(--card);border:1.5px solid var(--bd);overflow:hidden}
+.faq button{display:flex;justify-content:space-between;align-items:center;width:100%;padding:13px 14px;background:none;border:none;font-weight:800;font-size:14.5px;text-align:left}
+.faq button svg{transition:transform .2s}
+.faq.open button svg{transform:rotate(180deg)}
+.faq p{margin:0;padding:0 14px 13px;color:var(--t2);font-size:14px}
+.legal{display:flex;justify-content:center;gap:14px;font-size:12px;color:var(--t3);font-weight:700}
+
+/* get app */
+.mock{border-radius:30px;background:#1B1511;padding:8px;flex:none}
+.mock .in{border-radius:24px;background:var(--bg);padding:12px 12px 14px;display:flex;flex-direction:column;gap:10px}
+.mock .hd{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px}
+.mock .d1{background:var(--ac);color:#fff;border-radius:16px;padding:10px 12px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px}
+.mock .d1 small{display:block;font-weight:700;font-size:11px;opacity:.85}
+.mock .mw{font:800 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.steps3{display:flex;flex-direction:column;gap:8px}
+.steps3 div{display:flex;gap:12px;align-items:center;font-weight:700;font-size:14.5px}
+.steps3 b{width:28px;height:28px;border-radius:50%;background:var(--ac-s);color:var(--ac);display:grid;place-items:center;flex:none;font-size:13px}
+
+.toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:30;background:#1B1511;color:#fff;font-size:13.5px;font-weight:700;padding:10px 16px;border-radius:999px;white-space:nowrap;animation:tfade 2.8s ease forwards;box-shadow:0 10px 24px -10px #0008}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,82%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* ---------- side panel ---------- */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:800 30px/1.1 var(--display);letter-spacing:-.02em;margin:0 0 8px}
+.panel .intro{color:var(--pg-t2);margin:0;font-size:14px}
+.panel code{font-size:12.5px;background:var(--pg-surface2);padding:1px 5px;border-radius:5px}
+.seg{display:inline-flex;border:1px solid var(--pg-border);border-radius:999px;padding:3px;background:var(--pg-surface)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--pg-t2);font-weight:700}
+.seg button.on{background:var(--pg-accent);color:var(--pg-on-accent)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.restart{border:1px solid var(--pg-border);background:var(--pg-surface);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--pg-t2);font-weight:700}
+.restart:hover{color:var(--pg-t1)}
+.plabel{font:800 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pg-t3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12.5px;color:var(--pg-accent);margin-bottom:4px;font-weight:800}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--pg-t2);font-size:13.5px;width:100%}
+.flow button:hover{background:var(--pg-surface);color:var(--pg-t1)}
+.flow button.on{background:var(--pg-surface);color:var(--pg-t1);font-weight:800;box-shadow:inset 3px 0 0 var(--pg-accent)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--pg-t3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--pg-t3);border:1px solid var(--pg-border);border-radius:4px;padding:1px 5px;flex:none;white-space:nowrap}
+.flow button.skip{opacity:.4}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--pg-t3)}
+.data dd{margin:0;color:var(--pg-t1);overflow-wrap:anywhere}
+.foot-note{font-size:12px;color:var(--pg-t3);margin:0;line-height:1.5}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:32px;padding-block:20px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:6px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.oclose{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--card);border:1.5px solid var(--bd);color:var(--t2)}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;font-size:13px;background:var(--s2);color:var(--t2)}
+.otimer b{font-variant-numeric:tabular-nums;color:var(--ac)}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:24px;background:var(--card);border:2px solid var(--ac);box-shadow:0 0 0 5px var(--ac-s),0 24px 44px -26px #E04A1F55}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;white-space:nowrap;background:var(--ac);color:var(--on-ac)}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font-size:18px;line-height:1.2}.oname span{font-size:13px;opacity:.8}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:16px;background:var(--s2);border:1px solid var(--bd)}
+.oprice s,.oprice s .tok{font-size:14px;opacity:.75;text-decoration:line-through;text-decoration-thickness:1.5px}
+.oprice b{font-size:26px;line-height:1;color:var(--ac)}.oprice>span{font-size:13px;opacity:.8}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.35}
+.ochecks i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;margin-top:1px;background:var(--good);color:#fff}
+.opays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.opays span{font-size:10.5px;font-weight:700;padding:5px 7px;border-radius:6px;background:var(--card);border:1px solid var(--bd);color:var(--t2)}
+.ofine{font-size:12px;line-height:1.45;text-align:center;margin:0;opacity:.85}
+.ocard .oname b{font-family:var(--display);font-weight:800}.ocard .oprice b{font-family:var(--display);font-weight:800}
+.obadge .tok{background:transparent;color:#fff;border-color:#ffffffaa}
+/* ---------- ewa-movies additions ---------- */
+.shows{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scard{position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:8px 8px 11px;border-radius:20px;background:var(--card);border:2px solid var(--bd);text-align:left;width:100%}
+.scard .tile{width:100%;height:58px;border-radius:13px;display:grid;place-items:center;font-size:30px;line-height:1}
+.scard b{font:800 15px/1.15 var(--display);padding:0 4px}
+.scard.on{border-color:var(--ac);background:linear-gradient(0deg,var(--ac-d),var(--ac-d)),var(--card)}
+.scard .ck{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center}
+.subg{display:flex;flex-direction:column;gap:3px;width:34px;flex:none}
+.subg i{display:block;height:5px;border-radius:3px;background:var(--bd2)}
+.pill.on .subg i{background:#ffffffcc}
+.night{position:absolute;inset:0;background:radial-gradient(circle at 74% 22%,#FFB36B 0,#FFB36B44 9%,transparent 28%),linear-gradient(180deg,#14394A,#0A1A22)}
+.night svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:70%}
+.sbar .idm{background:var(--hl)!important;color:#2B2119!important;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px #FFD54D55}}
+.showsub{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:3;background:#000000c0;color:#fff;border:none;font:800 14px/1 var(--sans);padding:10px 16px;border-radius:999px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
+.cardsheet .wd{font:800 30px/1 var(--display);letter-spacing:-.02em}
+.cardsheet .mn{color:var(--t2);font-size:15px;margin:0}
+.cardsheet .ex{background:var(--s2);border-radius:14px;padding:10px 12px;font-weight:700;font-size:14.5px}
+.wall{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wc{position:relative;padding:9px 11px;border-radius:14px;background:var(--card);border:1.5px solid var(--bd);min-height:58px}
+.wc b{display:block;font:800 14.5px/1.15 var(--display);padding-right:18px}
+.wc span{display:block;font-size:11.5px;color:var(--t2);line-height:1.25;margin-top:3px}
+.wc.lk span{filter:blur(4px);user-select:none}
+.wc .lkic{position:absolute;top:8px;right:8px;color:var(--t3)}
+.wc .sv2{position:absolute;right:6px;bottom:6px;font:800 9px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;background:var(--hl-s);color:#8A5A00;padding:3px 5px;border-radius:5px}
+.cap{font-size:12px;color:var(--t3);text-align:center}
+.mini-strip{display:flex;gap:6px;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.mini-strip i{font-style:normal;color:var(--ac)}
+.mini-strip span{padding:8px 12px;border-radius:999px;background:var(--card);border:1.5px solid var(--bd)}
+.tpill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--bd);font-weight:800;font-size:14px;align-self:center}
+
+.sbar span.w{background:#000000b8;color:#fff;font:800 19px/1 var(--sans);padding:6px 5px;margin:0 -1px;border-radius:7px}
+.wchip{font-size:12px;letter-spacing:-.01em;padding:0 2px;overflow-wrap:normal}
+.wc.hs b{padding-right:48px}
+.wc .sv2{top:8px;bottom:auto}
+/* ===== web paywall: long-scroll landing page, not an app sheet ===== */
+.wp{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-behavior:smooth;background:var(--bg)}
+.wp::-webkit-scrollbar{display:none}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:56px 16px 10px;margin-top:-50px;background:#FFF8EFee;backdrop-filter:blur(10px);border-bottom:1px solid var(--bd)}
+.wbar .brand{flex:1;font:800 17px var(--display);display:flex;gap:8px;align-items:center}
+.wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--ac);color:var(--on-ac);font:800 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
+.wbar .x{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--bd);background:var(--card);color:var(--t2);display:grid;place-items:center}
+.wsec{padding:28px 18px 0}
+.wsec.tight{padding-top:16px}
+.wh2{font:800 25px/1.15 var(--display);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.wh2+.lead{margin-bottom:16px}
+.wsec .eyebrow{display:block;margin-bottom:10px}
+.whero{display:flex;flex-direction:column;gap:12px}
+.whero .lvbox{border-radius:20px;background:#1B1511;color:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.whero .lvbox .lv{font:800 17px/1.2 var(--display)}.whero .lvbox .lv .ar{color:var(--hl)}
+.chipsrow{display:flex;flex-wrap:wrap;gap:6px}
+.chipsrow span{font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:999px;background:#ffffff1f}
+.chipsrow.lt span{background:var(--card);border:1.5px solid var(--bd);color:var(--t1)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact{padding:9px 11px;border-radius:14px;background:var(--card);border:1.5px solid var(--bd);font-size:12px;color:var(--t3);font-weight:700}
+.fact b{display:block;color:var(--t1);font-size:14px;margin-top:2px}
+.pick{border-radius:24px;padding:18px 14px 16px;background:var(--card);border:2px solid var(--ac);box-shadow:0 0 0 5px var(--ac-s),0 30px 50px -30px #E04A1F55}
+.pick .plans{display:flex;flex-direction:column;gap:12px}
+.wplan{position:relative;display:grid;grid-template-columns:24px 1fr auto;gap:2px 12px;align-items:center;padding:16px 14px;border-radius:16px;border:1.5px solid var(--bd);background:var(--bg);text-align:left;width:100%}
+.wplan .rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2);grid-row:1/3;display:grid;place-items:center;color:#fff}
+.wplan .nm{font:800 16px var(--sans)}
+.wplan .sub{font-size:12.5px;font-weight:700;color:var(--t1);grid-column:2;line-height:1.3}
+.wplan .pr{grid-row:1/3;grid-column:3;text-align:right;font:800 15px var(--sans)}
+.wplan .pr small{display:block;font:700 11.5px var(--sans);color:var(--t3);margin-top:3px}
+.wplan .rib{position:absolute;top:-11px;left:14px;font:800 10.5px/1 var(--sans);letter-spacing:.06em;padding:5px 9px;border-radius:999px;background:var(--ac);color:#fff}
+.wplan .rib.alt{background:#1B1511}
+.wplan.on{border-color:var(--ac);background:linear-gradient(0deg,var(--ac-d),var(--ac-d)),var(--card)}
+.wplan.on .rd{background:var(--ac);border-color:var(--ac)}
+.today{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:14px 4px 0;color:var(--t2);font-weight:700}
+.today b{color:var(--t1);text-align:right}
+.pay{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:var(--s2);border:1px solid var(--bd);color:var(--t2);font:800 10.5px/24px var(--sans);text-align:center}
+.secure{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--t2);font-weight:700}
+.secure span{display:flex;gap:5px;align-items:center}.secure svg{color:var(--good)}
+.fine{font-size:12px;color:var(--t2);text-align:center;margin:12px 4px 0;line-height:1.5}
+.toc{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:1.5px solid var(--bd)}
+.toc div{display:flex;gap:12px;align-items:center;padding:14px;background:var(--card);border-top:1px solid var(--bd);font-size:14px;font-weight:700}
+.toc div:first-child{border-top:none}
+.toc .n{width:26px;height:26px;border-radius:50%;background:var(--ac-s);display:grid;place-items:center;font:800 12px var(--sans);color:var(--ac);flex:none}
+.toc .l{margin-left:auto;color:var(--t3)}.toc .open .l{color:var(--good)}
+.rate{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--card);border:1.5px solid var(--bd)}
+.rate .sc{font:800 36px/1 var(--display)}.rate .sc .tok{font-size:13px}
+.how{display:flex;flex-direction:column}
+.how>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.how>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--bd)}
+.how i{width:34px;height:34px;border-radius:50%;background:var(--ac-s);color:var(--ac);display:grid;place-items:center;font:800 14px var(--sans);font-style:normal}
+.how b{display:block;margin-top:6px}.how span{font-size:13.5px;color:var(--t2)}
+.faq2 details{border-top:1px solid var(--bd);padding:4px 0}
+.faq2 details:last-child{border-bottom:1px solid var(--bd)}
+.faq2 summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:12px;padding:14px 2px;font-weight:800;font-size:15px}
+.faq2 summary::-webkit-details-marker{display:none}
+.faq2 summary::after{content:"+";color:var(--ac);font-size:20px;line-height:1;transition:transform .2s}
+.faq2 details[open] summary::after{transform:rotate(45deg)}
+.faq2 p{margin:0 2px 14px;color:var(--t2);font-size:14px}
+.guar{display:flex;gap:14px;align-items:center;padding:18px;border-radius:20px;border:1.5px solid var(--ac);background:var(--ac-s)}
+.guar .seal{width:62px;height:62px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--ac);color:#fff;font:800 11px/1.1 var(--sans);text-align:center}
+.wfoot{padding:28px 18px 120px;font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
+.sticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px 24px;background:var(--bg);box-shadow:0 -10px 26px -14px #2B211955;transform:translateY(110%);transition:transform .3s ease}
+.sticky.show{transform:none}
+.sticky .sum{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px;font-weight:700}
+.sticky .sum b{color:var(--t1);text-align:right}
+/* ---------- speak-ai additions ---------- */
+.orb{width:128px;height:128px;border-radius:50%;background:var(--ac);color:var(--on-ac);display:grid;place-items:center;position:relative;margin:0 auto;border:none;box-shadow:0 18px 34px -14px #E04A1F99;flex:none}
+.orb::before,.orb::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--ac);opacity:0;animation:ring 2.4s ease-out infinite}
+.orb::after{animation-delay:1.2s}
+.orb.rec::before,.orb.rec::after{animation-duration:1.2s}
+.orb.rec{background:#C4331A}
+.orb.sm{width:92px;height:92px}
+@keyframes ring{from{transform:scale(1);opacity:.55}to{transform:scale(1.9);opacity:0}}
+.orbstage{position:relative;display:grid;place-items:center;height:210px;flex:none}
+.bubble2{position:absolute;background:var(--card);border:1.5px solid var(--bd);border-radius:16px;padding:8px 12px;font:800 14px/1.2 var(--sans);box-shadow:0 8px 18px -10px #3b1e0a66;white-space:nowrap}
+.bubble2 small{display:block;font:700 10.5px/1 var(--sans);color:var(--t3);margin-bottom:3px}
+.sentline{background:var(--card);border:1.5px solid var(--bd);border-radius:20px;padding:14px 16px;font:800 17px/1.35 var(--display);text-align:center;width:100%}
+.sentline .hl{background:var(--hl);border-radius:7px;padding:1px 6px}
+.sentc{background:var(--card);border:1.5px solid var(--bd);border-radius:24px;padding:18px 18px 14px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.sentc .txt{font:800 25px/1.3 var(--display);letter-spacing:-.01em}
+.listen{display:inline-flex;align-items:center;gap:8px;background:var(--ac-s);color:var(--ac);border:none;border-radius:999px;padding:8px 14px;font:800 14px/1 var(--sans)}
+.live{min-height:62px;width:100%;border-radius:16px;background:var(--s2);padding:12px 14px;font-weight:700;color:var(--t2);font-size:15.5px}
+.live.empty{color:var(--t3)}
+.chipmode{align-self:flex-start;font:800 11px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;background:var(--hl-s);color:#8A5A00;padding:6px 9px;border-radius:999px}
+.wk{display:inline-block;padding:4px 9px;border-radius:10px;margin:3px 2px;font:800 19px/1.2 var(--sans);background:var(--s2);color:var(--t1)}
+.wk.ok{background:#DDF3E8;color:#1E6B49}
+.wk.no{background:#FFE0D1;color:#8A3413;box-shadow:inset 0 0 0 2px #E04A1F}
+.tipc{border-radius:24px;background:#1B1511;color:#fff;padding:18px;display:flex;flex-direction:column;gap:8px}
+.tipc .eyebrow{color:var(--hl)}
+.tipc .big{font:800 34px/1 var(--display)}
+.tipc .say{font:800 18px/1.2 var(--sans);color:var(--hl);letter-spacing:.02em}
+.tipc p{margin:0;color:#ffffffcc;font-size:14.5px}
+.tipc .listen{background:#ffffff1f;color:#fff;align-self:flex-start}
+.tcards{display:flex;flex-direction:column;gap:10px}
+.tcard{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:22px;background:var(--card);border:1.5px solid var(--bd);text-align:left;width:100%;position:relative}
+.tcard.on{border-color:var(--ac);background:var(--ac-s)}
+.tcard b{display:block;font:800 17px/1.2 var(--display)}
+.tcard span.st{display:block;font-size:13.5px;color:var(--t2)}
+.tcard .pv{margin-left:auto;width:38px;height:38px;border-radius:50%;border:none;background:var(--card);color:var(--ac);display:grid;place-items:center;flex:none;box-shadow:0 0 0 1.5px var(--bd)}
+.av2{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:30px;flex:none;overflow:hidden;box-shadow:0 0 0 2px #fff,0 6px 14px -6px #8a3a1466}
+.av2 img{width:100%;height:100%;object-fit:cover;display:block}
+.av2.sm{width:34px;height:34px;font-size:18px}
+.orbit{position:relative;height:210px;flex:none;display:grid;place-items:center}
+.orbit .oc{position:absolute;background:var(--card);border:1.5px solid var(--bd);border-radius:999px;padding:6px 11px;font:800 13px/1 var(--sans);animation:bob 3s ease-in-out infinite;box-shadow:0 8px 16px -10px #3b1e0a55}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.nota{border-radius:20px;border:1.5px dashed var(--bd2);padding:16px;text-align:center;color:var(--t2);font-weight:700;font-size:14.5px}
+.onot{font-size:12.5px;color:var(--t3);margin:2px 0 8px;font-weight:700}
+.trio{display:flex;gap:8px}
+.trio div{flex:1;border-radius:18px;background:var(--card);border:1.5px solid var(--bd);padding:12px 8px;text-align:center;font-weight:800;font-size:13px}
+.trio div i{display:block;font-style:normal;font-size:24px;margin-bottom:4px}
+@media (prefers-reduced-motion:reduce){.orb::before,.orb::after,.orbit .oc{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="phonebox" id="pbox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>EWA Speak funnel</h1>
+      <p class="intro">An ikame prototype of the 21-screen "speaking practice with an AI tutor" web funnel in <code>funnel-content.md</code>, in EWA's warm look. Tap through the phone or jump to any screen. The mic test (screens 10-12) works with the mic allowed, denied or unavailable.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div>
+    <div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div>
+    <p class="foot-note"><b>Faked for the demo:</b> feedback is browser word matching (Web Speech recognition when the browser has it, otherwise your typed sentence), not a pronunciation model; the model voice is the browser's built-in voice; audio is not recorded or sent by this page; the CEFR estimate uses the brief's rubric; plan length uses demo values; Apple/Google sign-in, purchases and the offer are simulated and no charge is made; an email containing "taken" shows the "already has a plan" error. <b>Placeholders, not faked:</b> every price (<code>{{price_4w}}</code>...) stays a dashed token; ratings, reviews, refund days and legal entity stay hidden until a real value is set in <code>CONFIG</code>. Tutor avatars are stand-ins (the fox is an AI-generated still; the owl and spark avatars are emoji until <code>gen_images.py</code> runs). Whether EWA ships an AI speaking tutor is unverified.</p>
+  </aside>
+</div>
+<script>
+/* ---------- icons ---------- */
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  play:'<path d="M7 4v16l13-8z" fill="currentColor" stroke="none"/>',
+  vol:'<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" fill="currentColor" stroke="none"/>',
+  mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/>',
+  stop:'<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/>',
+  kbd:'<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  gplay:'<path d="M5 3.5v17l14-8.5z"/><path d="M5 3.5 14 12l-9 8.5"/>',
+  google:'<path d="M20.5 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.6-3.9 2.6-6.6z"/><path d="M12 21c2.4 0 4.5-.8 5.9-2.2L15 16.6c-.8.5-1.8.9-3 .9-2.3 0-4.3-1.6-5-3.7H4v2.3A9 9 0 0 0 12 21z"/><path d="M7 13.8a5.4 5.4 0 0 1 0-3.6V7.9H4a9 9 0 0 0 0 8.2z"/><path d="M12 6.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 4 7.9l3 2.3c.7-2.1 2.7-3.6 5-3.6z"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
+  deck:'<rect x="3" y="7" width="14" height="14" rx="2.5"/><path d="M7 3.5h11.5A2.5 2.5 0 0 1 21 6v11.5"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>'
+};
+const ic=(n,s=20,c='currentColor',w=2)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const stars=(n=5,s=14)=>Array.from({length:n},()=>ic('star',s)).join('');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- images: palm-reading pattern so build.py can inline base64. Only files that exist are listed;
+   gen_images.py makes tutor-owl / tutor-spark / hero-speak, add them here to swap the stand-ins ---------- */
+const IMG=/*IMG-START*/{'img/tutor-fox.jpg':'img/tutor-fox.jpg'}/*IMG-END*/;
+const im=p=>IMG[p]||'';
+
+/* ---------- data ---------- */
+const FEARS={mistakes:['😬','Fear of mistakes'],freeze:['🧊','I freeze up'],slow:['🐢','Slow to find words'],follow:['👂','Can\'t follow replies']};
+const SITS={work:['💼','Work and meetings','work'],travel:['✈️','Travel','travel'],friends:['🧑‍🤝‍🧑','Friends and dating','social life'],study:['🎓','Study and exams','study']};
+const FREQ={never:['🚫','Almost never',0],monthly:['📆','A few times a month',1],weekly:['🗓️','Weekly',2],daily:['🔁','Most days',3]};
+const SELF={beginner:['🌱','Total beginner',1],basics:['🙂','I know the basics',2],chat:['💬','I can chat a bit',3],confident:['🚀','Pretty confident',4]};
+const MINS=[[5,'☕','5 min · Casual',.25],[10,'🚶','10 min · Steady',.5],[15,'🏃','15 min · Serious',.75],[20,'🔥','20+ min · Intense',1]];
+const TUT={fox:['🦊','Fox','Friendly and patient','linear-gradient(135deg,#FFD9A8,#F6A06B)'],owl:['🦉','Owl','Precise and calm','linear-gradient(135deg,#D8E6F7,#9DB9E0)'],spark:['⚡','Spark','Upbeat and quick','linear-gradient(135deg,#FFF1C2,#FFD54D)']};
+/* test sentences by situation; tip = the trickiest word (how to say it) */
+const SENT={
+ work:{text:'Could we schedule a meeting for Thursday?',tip:{w:'Thursday',say:'THURZ-day',how:'Tongue between your teeth for "th", then "ur" as in "her". Stress the first part.'}},
+ travel:{text:'Excuse me, where is the nearest pharmacy?',tip:{w:'pharmacy',say:'FAR-muh-see',how:'Three parts, stress on the first. "Ph" sounds like "f".'}},
+ friends:{text:'Nice to meet you, I\'ve heard a lot about you.',tip:{w:'heard',say:'HURD',how:'Rhymes with "bird". The "ea" is "ur", not "ee-ar".'}},
+ study:{text:'I think the answer is thirteen, not thirty.',tip:{w:'thirteen',say:'thur-TEEN',how:'Stress the end: thir-TEEN. For thirty, stress the start: THUR-dee.'}}
+};
+/* CEFR speaking bands */
+const BANDS=[['A1','Beginner','#F3D9C9'],['A2','Elementary','#F7C3A6'],['B1','Intermediate','#F39A6E'],['B2','Upper-intermediate','#E86E3F'],['C1','Advanced','#C9471C']];
+const lvlFull=i=>`${BANDS[Math.min(4,i)][0]} ${BANDS[Math.min(4,i)][1]}`;
+const NUMW={'13':'thirteen','30':'thirty','1':'one'};
+
+/* ---------- state ---------- */
+const CONFIG={
+  brand:'EWA',funnel:'ewa-speak-ai',defaultSit:'friends',
+  plans:{'1w':{name:'1 week',period:'week',sub:'Intro price, renews weekly'},'4w':{name:'4 weeks',period:'4 weeks',rib:'MOST POPULAR',sub:'Intro price, renews every 4 weeks'},'12w':{name:'12 weeks',period:'12 weeks',rib:'LOWEST PER WEEK',alt:1,sub:'Intro price, renews every 12 weeks'}},
+  defaultPlan:'4w',refundDays:'{{refund_days}}',legalEntity:'{{legal_entity}}',
+  rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
+  reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],
+  offer:{enabled:true,name:'1-week speaking starter',sub:'Daily sessions with feedback, one week',price:'{{offer_price}}',renews:'{{renew_1w}}',period:'week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+/* a token string is truthy: gates test "is not a {{token}}" */
+const isReal=v=>!!v&&!/^\{\{/.test(String(v));
+const refundReal=()=>/^\d+$/.test(String(CONFIG.refundDays));
+const ratingReal=()=>isReal(CONFIG.rating.score)&&isReal(CONFIG.rating.count);
+const reviewsReal=()=>(CONFIG.reviews||[]).filter(r=>isReal(r.text));
+const PW_N=19,OFFER_N=20,LAST=21;
+const SCREENS={1:'hook_a',2:'hook_b',3:'fears',4:'situation',5:'frequency',6:'level',7:'bridge',8:'name',9:'social_proof',10:'mic_check',11:'say_it',12:'ai_feedback',13:'tutor',14:'minutes',15:'loading',16:'email',17:'speaking_level',18:'plan',19:'paywall',20:'offer',21:'get_app'};
+
+const INIT=()=>({v:'A',i:1,hist:[],fears:[],fearOther:'',sit:'',sitOther:'',freq:'',self:'',name:'',
+  mic:'unknown',mode:null,said:'',recording:false,skipped:false,tutor:'fox',minutes:10,
+  streak:null,sheet:null,email:'',mkt:false,acct:null,plan:CONFIG.defaultPlan,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,bought:null,err:'',errTaken:false});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name.trim()||'friend');
+const nmP=()=>S.name.trim()?esc(S.name.trim())+'’s':'your';
+const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const minTok=()=>S.minutes===20?'20+':String(S.minutes);
+const tn=()=>TUT[S.tutor][1];
+const sitKey=()=>SITS[S.sit]?S.sit:CONFIG.defaultSit;
+const sitLabel=()=>S.sit==='other'?esc(S.sitOther.trim()||'everyday English'):esc(SITS[sitKey()][2]);
+const sent=()=>SENT[sitKey()];
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const mode=()=>S.mode||((SR&&S.mic!=='denied')?'mic':'typed');
+const fearList=()=>S.fears.map(f=>f==='other'?(S.fearOther.trim()||'Other'):FEARS[f][1]);
+
+/* word matching: transcript vs target, order-free (demo only) */
+const norm=w=>{w=String(w).toLowerCase().replace(/[^a-z0-9']/g,'').replace(/'/g,'');return NUMW[w]||w};
+const targetWords=()=>sent().text.split(/\s+/).map(w=>({raw:w.replace(/[?.,!]/g,''),k:norm(w)}));
+function marks(){const said=new Set(S.said.split(/\s+/).map(norm).filter(Boolean));return targetWords().map(w=>({w:w.raw,ok:said.has(w.k)}))}
+const matchStat=()=>{const m=marks();return{ok:m.filter(x=>x.ok).length,n:m.length}};
+const hasSaid=()=>S.said.trim().length>0&&!S.skipped;
+const micScored=()=>hasSaid()&&mode()==='mic';
+/* the tip: first missed word (mic), else the sentence's trickiest word */
+function tipFor(){
+  const T=sent().tip;
+  if(micScored()){const miss=marks().find(x=>!x.ok);if(miss&&norm(miss.w)!==norm(T.w))return{w:miss.w,say:miss.w,how:`We heard something different for "${miss.w}". Say it slowly in short parts, then at normal speed.`,missed:true}}
+  return Object.assign({missed:micScored()&&marks().some(x=>x.w===T.w&&!x.ok)},T);
+}
+/* CEFR estimate: self-rated base, one band down/up from a scored mic sentence (see Notes) */
+function levelIdx(){
+  let i={beginner:0,basics:1,chat:2,confident:3}[S.self];if(i===undefined)i=1;
+  if(micScored()){const {ok,n}=matchStat();if(ok/n<.6)i=Math.max(0,i-1);else if(ok===n&&(FREQ[S.freq]||[,,0])[2]>=2)i=Math.min(3,i+1)}
+  return i;
+}
+const lvlCode=()=>BANDS[levelIdx()][0];
+const nextCode=()=>BANDS[Math.min(4,levelIdx()+1)][0];
+const weeks=()=>{const base=[3,4,6,8][Math.min(3,levelIdx())],f={5:1.75,10:1,15:.8,20:.65}[S.minutes]||1;return Math.max(2,Math.round(base*f))};
+const sitChip=()=>S.sit==='other'?(S.sitOther.trim()||'Other'):SITS[sitKey()][1];
+const sitList=()=>S.sit?sitChip():'—';
+
+/* ---------- flow ---------- */
+const FLOW=[
+ ['A · Hooks',[[1,'Speak out loud'],[2,'Normalise the fear']]],
+ ['B · Investment: what holds you back',[[3,'Fears'],[4,'Situation'],[5,'How often you speak'],[6,'Level'],[7,'How AI practice helps','bridge'],[8,'Name']]],
+ ['C · Trust',[[9,'Social proof']]],
+ ['D · Investment: your sentence',[[10,'Microphone check','optional'],[11,'Say it','mic or type'],[12,'AI feedback'],[13,'Choose your tutor'],[14,'Minutes per day']]],
+ ['E · Anticipation',[[15,'Building the plan','auto']]],
+ ['F · Gate',[[16,'Email']]],
+ ['G · Reveal',[[17,'Speaking level + note'],[18,'Plan + goals']]],
+ ['H · Monetization',[[19,'Paywall','web page'],[20,'Last-chance offer','once']]],
+ ['I · Payoff',[[21,'Get the app']]]
+];
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let TM=[],REC=null;
+const later=(f,ms)=>{const id=setTimeout(f,ms);TM.push(id);return id};
+const stopRec=()=>{if(REC){try{REC.onend=null;REC.onerror=null;REC.onresult=null;REC.abort()}catch(e){}REC=null}S.recording=false};
+const clearT=()=>{TM.forEach(clearTimeout);TM.forEach(clearInterval);TM=[];stopRec()};
+
+function go(n,push=true){clearT();const dir=n<S.i?'b':'f';if(push&&S.i!==n&&S.i!==15)S.hist.push(S.i);S.i=n;S.err='';S.errTaken=false;S.sheet=null;render(dir)}
+function next(){go(S.i+1)}
+function back(){clearT();const p=S.hist.pop();if(p){S.i=p;S.err='';S.sheet=null;render('b')}}
+function toast(msg){phone.querySelectorAll('.toast').forEach(e=>e.remove());const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
+
+function fillTo(n){
+  if(n>3&&!S.fears.length)S.fears=['mistakes','freeze'];
+  if(n>4&&!S.sit)S.sit='work';
+  if(n>5&&!S.freq)S.freq='monthly';
+  if(n>6&&!S.self)S.self='basics';
+  if(n>8&&!S.name)S.name='Maya';
+  if(n>11&&!S.said&&!S.skipped){S.mode='mic';S.said=sent().text.replace(new RegExp(sent().tip.w,'i'),'').replace(/\s+/g,' ').trim()}
+  if(n>15&&S.streak===null)S.streak=true;
+  if(n>16&&!S.email)S.email='maya@example.com';
+}
+
+/* ---------- shared bits ---------- */
+const INV=[3,4,5,6,7,8,9,10,11,12,13,14];
+function nav(){
+  if([1,15,PW_N,OFFER_N,LAST].includes(S.i))return '';
+  let mid='<div style="flex:1"></div>';
+  if(INV.includes(S.i)){const p=Math.round((INV.indexOf(S.i)+1)/INV.length*100);mid=`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></div>`}
+  return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back" ${S.hist.length?'':'disabled'}>${ic('back',22)}</button>${mid}<div class="navspacer"></div></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const pill=(act,val,lead,label,on,multi,right='',cls='')=>`<button class="pill ${cls} ${on?'on':''}" data-a="${act}" data-v="${val}" aria-pressed="${on}"><span class="li">${lead}</span><span class="lbl">${label}</span>${right}${multi?`<span class="chk">${on?ic('check',13,'currentColor',3.2):''}</span>`:''}</button>`;
+const otherBox=(f,val,ph)=>`<div class="box fadein"><input id="oth" data-f="${f}" maxlength="40" placeholder="${ph}" value="${esc(val)}"></div>`;
+const meter=n=>`<span class="meter" aria-hidden="true">${[8,12,16,20].map((h,i)=>`<i class="${i<n?'f':''}" style="height:${h}px"></i>`).join('')}</span>`;
+const dots=n=>`<span class="meter" aria-hidden="true">${[10,10,10,10].map((h,i)=>`<i class="${i<=n?'f':''}" style="height:${h}px;width:8px;border-radius:50%"></i>`).join('')}</span>`;
+const clockFill=f=>{const a=f*2*Math.PI,x=12+8*Math.sin(a),y=12-8*Math.cos(a);return `<span class="clockic"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.6"/>${f>=1?'<circle cx="12" cy="12" r="8" fill="currentColor"/>':`<path d="M12 12V4A8 8 0 ${f>.5?1:0} 1 ${x.toFixed(2)} ${y.toFixed(2)}Z" fill="currentColor"/>`}</svg></span>`};
+const tok=n=>`<span class="tok">{{${n}}}</span>`;
+const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?tok(m[1]):esc(s)};
+const isAndroid=/android/i.test(navigator.userAgent);
+const storeBtn=()=>isAndroid?`<button class="store" data-a="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></button>`:`<button class="store" data-a="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></button>`;
+const realReview=r=>`<div class="rev"><div class="who"><span class="av" style="background:var(--ac)">${esc(String(r.name).charAt(0))}</span><span>${esc(r.name)}<small style="display:block;font-weight:700;color:var(--t3)">${esc(r.meta||'')}</small></span><span class="stars">${stars(5,13)}</span></div><p>${esc(r.text)}</p></div>`;
+const reviewBlock=()=>reviewsReal().length?`<div class="stack">${reviewsReal().map(realReview).join('')}</div>`:'';
+const av=(k,cls='')=>{const T=TUT[k],src=im('img/tutor-'+k+'.jpg');return `<span class="av2 ${cls}" style="background:${T[3]}" role="img" aria-label="${T[1]}, an AI tutor">${src?`<img src="${src}" alt="" decoding="async">`:T[0]}</span>`};
+const orbBtn=(cls='',act='',label='')=>act?`<button class="orb ${cls}" data-a="${act}" aria-label="${label}">${ic(cls.includes('rec')?'stop':'mic',cls.includes('sm')?34:46,'currentColor',2)}</button>`:`<span class="orb ${cls}" aria-hidden="true">${ic('mic',cls.includes('sm')?34:46,'currentColor',2)}</span>`;
+
+/* prototype event log */
+function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view',{price:CONFIG.offer.price})}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* decline / close: back to the plan screen (#18), never back into the paywall, never a loop */
+function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
+
+/* ---------- speech: model voice + recognition (all optional) ---------- */
+function speak(text){
+  try{if(!('speechSynthesis' in window))throw 0;const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){toast('Model voice would play here (demo)')}
+}
+function micFallback(msg){S.mode='typed';S.said='';S.recording=false;REC=null;if(msg)toast(msg);if(S.i===11)render()}
+function requestMic(){
+  emit('mic_prompt');
+  const done=()=>{if(S.i===10)go(11)};
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)){S.mic='unavailable';S.mode='typed';emit('mic_result',{status:'unavailable'});toast('No mic access here. You can type the sentence.');later(done,600);return}
+  later(()=>{if(S.i===10&&S.mic==='unknown')toast('Waiting for permission. You can also type instead.')},9000);
+  navigator.mediaDevices.getUserMedia({audio:true}).then(st=>{try{st.getTracks().forEach(x=>x.stop())}catch(e){}
+    S.mic='granted';S.mode=SR?'mic':'typed';emit('mic_result',{status:'granted',recognition:!!SR});if(!SR)toast('Speech recognition is not available here. Type instead.');done()})
+  .catch(()=>{S.mic='denied';S.mode='typed';emit('mic_result',{status:'denied'});toast('Mic is off. You can type the sentence.');done()});
+}
+function startRec(){
+  if(!SR){micFallback('Speech recognition is not available. Type instead.');return}
+  try{
+    const r=new SR();r.lang='en-US';r.interimResults=true;r.continuous=false;REC=r;S.said='';S.recording=true;
+    r.onresult=e=>{let s='';for(let i=0;i<e.results.length;i++)s+=e.results[i][0].transcript+' ';S.said=s.trim();const l=document.getElementById('live');if(l){l.textContent=S.said||'…';l.classList.toggle('empty',!S.said)}const b=cur()&&cur().querySelector('.foot .btn');if(b)b.disabled=!S.said.trim()};
+    r.onerror=e=>{const code=e&&e.error;REC=null;S.recording=false;
+      if(code==='not-allowed'||code==='service-not-allowed'){S.mic='denied';emit('mic_result',{status:'denied'});micFallback('Mic is off. You can type the sentence.')}
+      else if(code==='no-speech'){toast('Didn\'t catch that. Try again.');if(S.i===11)render()}
+      else micFallback('Mic didn\'t work. You can type the sentence.')};
+    r.onend=()=>{REC=null;S.recording=false;if(S.i===11)render()};
+    r.start();render();
+  }catch(e){micFallback('Mic didn\'t work. You can type the sentence.')}
+}
+
+/* ---------- screens ---------- */
+const V={
+1:()=>`<div class="scr" style="padding-top:8px">
+  <div class="orbstage" aria-hidden="true">${orbBtn()}
+    <div class="bubble2" style="left:0;top:18px"><small>Model voice</small>Nice to meet you</div>
+    <div class="bubble2" style="right:0;bottom:22px"><small>You</small>Nice to meet you!</div></div>
+  <div class="sentline" aria-hidden="true">Could we <span class="hl">schedule</span> a meeting?</div>
+  ${ratingReal()?`<div class="trust"><span class="st">★</span> ${esc(CONFIG.rating.score)} · ${esc(CONFIG.rating.count)} ratings on the App Store</div>`:''}
+  <h1 class="display xl">${t('Speak English out loud','Say it. Hear what to fix.')}</h1>
+  <p class="lead">${t('Practice with an AI tutor. Get feedback in minutes.','One sentence now. A plan built around you.')}</p>
+  <div class="note">AI tutor voices are not real people.</div></div>
+  <div class="foot">${cta('Get started')}</div>`,
+2:()=>`<div class="scr">
+  ${ratingReal()?`<div style="position:relative;padding:22px 0 6px"><div class="worldmap" aria-hidden="true"></div><div class="bignum">${esc(CONFIG.rating.score)}</div><div class="hintline" style="position:relative;margin-top:12px">on the App Store</div></div>`
+  :`<div class="stack" aria-hidden="true" style="padding-top:18px"><div class="bubble2" style="position:relative;align-self:flex-start;white-space:normal;font-size:13px">If I say it wrong, they will laugh. Was it "has went"? Wait, the tense, the article, the…</div><div class="bubble2" style="position:relative;align-self:flex-end;background:var(--ac);color:#fff;border-color:var(--ac);font-size:17px">Nice to meet you.</div></div>`}
+  <h1 class="display tc">${t('Knowing English is not speaking it','Freezing is normal')}</h1>
+  <p class="lead tc">${t('Speaking is a skill. It grows with practice.','An AI tutor never judges or sighs.')}</p>
+  ${reviewBlock()}</div>
+  <div class="foot">${cta('Continue')}</div>`,
+3:()=>{const oth=S.fears.includes('other'),ok=S.fears.length>0&&(!oth||S.fearOther.trim().length>0);
+  return `<div class="scr"><h1 class="display">${t('What stops you speaking?','What makes you freeze?')}</h1>
+  <p class="lead">${t('Pick all that apply. We\'ll train each.','Everyone has one. Pick all that fit.')}</p>
+  <div class="opts">${Object.entries(FEARS).map(([k,[e,l]])=>pill('fear',k,e,l,S.fears.includes(k),true)).join('')}
+  ${pill('fear','other','✏️','Other',oth,true)}
+  ${oth?otherBox('fearOther',S.fearOther,'What gets in the way?'):''}</div></div>
+  <div class="foot">${S.fears.length?'':'<div class="note">Pick at least one to continue</div>'}${cta('Continue',ok)}</div>`},
+4:()=>{const oth=S.sit==='other',ok=!!S.sit&&(!oth||S.sitOther.trim().length>0);
+  return `<div class="scr"><h1 class="display">${t('Where will you speak English?','What do you need it for?')}</h1>
+  <p class="lead">${t('We\'ll practice real moments like these.','Your first sentence comes from this.')}</p>
+  <div class="opts">${Object.entries(SITS).map(([k,[e,l]])=>pill('sit',k,e,l,S.sit===k)).join('')}
+  ${pill('sit','other','✏️','Other',oth)}
+  ${oth?otherBox('sitOther',S.sitOther,'Where do you need it?'):''}</div></div>
+  <div class="foot">${cta('Continue',ok)}</div>`},
+5:()=>`<div class="scr"><h1 class="display">${t('How often do you speak?','Speaking English right now?')}</h1>
+  <p class="lead">${t('Out loud, with a real person.','Honest answers give a better plan.')}</p>
+  <div class="opts">${Object.entries(FREQ).map(([k,[e,l,n]])=>pill('freq',k,e,l,S.freq===k,false,dots(n))).join('')}</div></div>
+  <div class="foot">${cta('Continue',!!S.freq)}</div>`,
+6:()=>`<div class="scr"><h1 class="display">${t('How\'s your English today?',`${nm()}, where do you start?`)}</h1>
+  <p class="lead">${t('A rough guess is fine. We\'ll check soon.','Honest answers get you the right first lesson.')}</p>
+  <div class="opts">${Object.entries(SELF).map(([k,[e,l,n]])=>pill('self',k,e,l,S.self===k,false,meter(n))).join('')}</div>
+  ${S.self==='beginner'?`<div class="react fadein"><span style="font-size:20px">🌱</span><span>Everyone starts somewhere. We'll begin with the basics.</span></div>`:''}</div>
+  <div class="foot">${cta('Continue',!!S.self)}</div>`,
+7:()=>{const picked=S.fears.filter(k=>FEARS[k]);const show=(picked.length?picked:['mistakes','freeze','slow']).slice(0,3);
+  const demo={mistakes:'🔒',freeze:'💬',slow:'⏳',follow:'🔁'};
+  const capt={mistakes:'😬 Mistakes stay private. Retry freely.',freeze:'🧊 Short prompts get you started.',slow:'🐢 Take your time, the tutor waits.',follow:'👂 Replies you can slow down and replay.'};
+  return `<div class="scr"><h1 class="display">${t('Practice without the pressure','That\'s exactly what we fix')}</h1>
+  <p class="lead">${t('Speak as often as you like. No audience.','Each session trains what you picked.')}</p>
+  <div class="stack">${show.map((k,i)=>`<div class="fix fadein" style="animation-delay:${i*.12}s"><span class="demo" style="font-size:34px">${demo[k]}</span><b>${capt[k]}</b></div>`).join('')}</div>
+  <div class="hintline">Step 1 of 3</div></div>
+  <div class="foot">${cta('Continue')}</div>`},
+8:()=>`<div class="scr"><h1 class="display">${t('What should we call you?','What\'s your first name?')}</h1>
+  <p class="lead">${t('Your tutor will greet you by name.','It goes on your speaking plan.')}</p>
+  <div class="tutor">${av(S.tutor)}
+  <div class="bubble ${S.name.trim()?'':'empty'}" id="hi">${S.name.trim()?`Hi, ${esc(S.name.trim())}!`:'…'}</div></div>
+  <div class="field"><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Continue',true,'name')}</div>`,
+9:()=>`<div class="scr center">
+  ${ratingReal()?`<div class="rating"><b>${esc(CONFIG.rating.score)}</b><div class="srow">${stars(5,24)}</div></div>`:''}
+  <h1 class="display tc">${t(ratingReal()?`Rated by ${esc(CONFIG.rating.count)} learners`:'Learners love instant feedback','Learners love the instant feedback')}</h1>
+  <p class="lead tc">${ratingReal()?t('Ratings from the App Store.','The feature reviewers mention most.'):t('Speak, listen, fix one thing.','Feedback on your own words.')}</p>
+  ${ratingReal()?'':`<div class="trio" aria-hidden="true"><div><i>🎙️</i>Speak</div><div><i>👂</i>Listen</div><div><i>🎯</i>Fix one thing</div></div>`}
+  <div class="stores"><span class="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></span><span class="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></span></div>
+  ${reviewBlock()}</div>
+  <div class="foot">${cta('Continue')}</div>`,
+10:()=>`<div class="scr center" style="gap:16px">
+  <div class="orbstage">${orbBtn('','','')}</div>
+  <h1 class="display tc">${t('Let\'s hear you speak','Ready for one sentence?')}</h1>
+  <p class="lead tc">${t('We use your mic only for this test.','Audio is not saved in this demo.')}</p>
+  <div class="stack" style="width:100%"><div class="react"><span style="font-size:18px">🔒</span><span>Only used for this one sentence</span></div>
+  <div class="react"><span style="font-size:18px">🎚️</span><span>You stay in control of the mic</span></div>
+  <div class="react"><span style="font-size:18px">⌨️</span><span>No mic? Typing works too</span></div></div>
+  <div class="hintline">No mic? You can type the sentence instead.</div></div>
+  <div class="foot">${cta('Allow microphone',true,'allowmic')}<button class="link" data-a="typeinstead">Type instead</button></div>`,
+11:()=>{const m=mode(),T=sent().text,ok=S.said.trim().length>0;
+  const body=m==='mic'
+   ?`<div class="orbstage" style="height:170px">${orbBtn(S.recording?'rec':'','rec',S.recording?'Stop recording':'Start recording')}</div>
+     <div class="live ${S.said?'':'empty'}" id="live" aria-live="polite">${S.said?esc(S.said):(S.recording?'Listening…':'Tap the mic and read the sentence.')}</div>
+     <div class="hint tc">Allowed the mic but nothing shows? Use Type instead.</div>
+     <button class="link" data-a="usetype" style="align-self:center">Type instead</button>`
+   :`<span class="chipmode">Typing mode</span>
+     <div class="field"><div class="box ${S.err?'bad':''}">${ic('kbd',18)}<input id="sa" data-f="said" maxlength="120" placeholder="Type the sentence" value="${esc(S.said)}" autocomplete="off"></div>
+     <div class="hint">We can't hear typing, so feedback will be about the trickiest word.</div></div>`;
+  return `<div class="scr" style="gap:14px"><h1 class="display" style="font-size:28px">${t('Say this sentence',`Read it out loud, ${nm()}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Tap the mic and read it. Take your time.','Slow and clear is better than fast.')}</p>
+  <div class="sentc"><div class="txt">${esc(T)}</div><button class="listen" data-a="sayt">${ic('vol',16)} Listen</button></div>
+  ${body}</div>
+  <div class="foot">${cta('Check it',ok)}<button class="link" data-a="skipsay">Skip this step</button></div>`},
+12:()=>{const hs=hasSaid(),sc=micScored(),tp=tipFor(),m=marks(),st=matchStat();
+  const chips=m.map(x=>`<span class="wk ${sc?(x.ok?'ok':'no'):''}">${esc(x.w)}</span>`).join(' ');
+  const note=sc?`Matched ${st.ok} of ${st.n} words.`:hs?'You typed this, so we can\'t judge sound. Tip is for the trickiest word.':'Say the sentence in the step before to get word marks. Tip is for the trickiest word.';
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t('Here\'s what we heard',`Your first feedback, ${nm()}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Green words matched. One tip to try.','Listen, then say the word again.')}</p>
+  <div class="sentc" style="padding:12px 14px"><div>${chips}</div><div class="hint">${note}</div></div>
+  <div class="tipc"><span class="eyebrow">${tp.missed?'Word to fix':'Word to polish'}</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p>
+   <button class="listen" data-a="sayw" data-v="${esc(tp.w)}">${ic('vol',16)} Hear it</button></div>
+  <p class="hint tc">Demo uses word matching. Production uses a pronunciation model (unverified).</p></div>
+  <div class="foot">${cta('Continue')}</div>`},
+13:()=>`<div class="scr"><h1 class="display">${t('Pick your AI tutor','Who should coach you?')}</h1>
+  <p class="lead">${t('Same lessons, different style. Change anytime.','These are AI voices, not real people.')}</p>
+  <div class="tcards">${Object.entries(TUT).map(([k,T])=>`<div class="tcard ${S.tutor===k?'on':''}" data-a="tutor" data-v="${k}" role="button" tabindex="0" aria-pressed="${S.tutor===k}">${av(k)}<span><b>${T[1]}</b><span class="st">${T[2]}</span></span><button class="pv" data-a="prev" data-v="${k}" aria-label="Preview ${T[1]}">${ic('play',15)}</button></div>`).join('')}</div>
+  <div class="hintline">AI voices, not real people.</div></div>
+  <div class="foot">${cta('Continue')}</div>`,
+14:()=>`<div class="scr"><h1 class="display">${t('How much time per day?','Your daily speaking time?')}</h1>
+  <p class="lead">${t('A few minutes aloud beat one long session.','Be realistic. You can change it anytime.')}</p>
+  <div class="opts">${MINS.map(([m,e,l,f])=>pill('min',m,e,l,S.minutes===m,false,(m===10?'<span class="tagsug">Suggested</span>':'')+clockFill(f))).join('')}</div>
+  <div class="hintline">Step 3 of 3</div></div>
+  <div class="foot">${cta('Continue',!!S.minutes)}</div>`,
+15:()=>{const rows=[`Setting up ${sitLabel()} practice…`,'Matching it to your level…',`Pacing it to ${minTok()} minutes daily…`,'Almost ready, your plan is waiting…'];
+  const wd=(sent().text.split(' ').slice(0,4));const pos=[['left:6px;top:20px'],['right:4px;top:44px'],['left:20px;bottom:18px'],['right:18px;bottom:10px']];
+  return `<div class="scr" style="gap:14px;padding-top:6px"><div class="orbit" aria-hidden="true">${orbBtn('sm')}${wd.map((w,i)=>`<span class="oc" style="${pos[i][0]};animation-delay:${i*.4}s">${esc(w.replace(/[?.,!]/g,''))}</span>`).join('')}<span style="position:absolute;right:50%;bottom:0;margin-right:-130px">${av(S.tutor,'sm')}</span></div>
+  <h1 class="display tc" style="font-size:27px">${t(`Building ${nmP()} speaking plan…`,`Tuning ${tn()} for ${nm()}…`)}</h1>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div></div>
+  ${S.sheet==='streak'?streakSheet():''}`},
+16:()=>`<div class="scr" style="gap:14px"><div class="preview" aria-hidden="true"><div class="pc">${miniPlan()}</div><div class="frost"><span>${ic('lock',15)} Your plan</span></div></div>
+  <h1 class="display" style="font-size:28px">${t(`Your plan is ready, ${nm()}`,'Where should we send it?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Enter your email to see it and log in.','You\'ll log into the app with this email.')}</p>
+  <div class="stack"><button class="btn dark" data-a="acct" data-v="Apple">${ic('apple',18)} Continue with Apple</button><button class="btn ghost" data-a="acct" data-v="Google">${ic('google',18)} Continue with Google</button></div>
+  <div class="or">or</div>
+  <div class="field"><div class="box ${S.err?'bad':''}">${ic('mail',18)}<input id="em" type="email" data-f="email" autocomplete="email" placeholder="you@email.com" value="${esc(S.email)}"></div>
+  ${S.err?`<div class="err">${S.errTaken?`This email already has a plan. <button class="link" data-a="login">Log in instead?</button>`:S.err}</div>`:''}
+  <div class="hint">No spam. We only send your plan and account emails.</div></div>
+  <button class="cbx ${S.mkt?'on':''}" data-a="mkt" aria-pressed="${S.mkt}"><span class="bx">${S.mkt?ic('check',13,'currentColor',3.2):''}</span><span>Send me learning tips and offers (optional)</span></button></div>
+  <div class="foot">${cta('See my plan',true,'email')}<div class="note">By continuing, you agree to our Terms and Privacy Policy.</div></div>`,
+17:()=>{const li=levelIdx(),tp=tipFor(),sc=micScored();
+  const tipLine=hasSaid()?`One sentence to polish: ${esc(tp.w)}.`:'Say your first sentence in the app.';
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t(`Your speaking level: ${lvlCode()}`,`You're at ${lvlCode()}, ${nm()}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t(tipLine,`Next up: ${nextCode()}, one session at a time.`)}</p>
+  <div class="lvlcard"><div class="eyebrow">English speaking · CEFR estimate</div>
+    <div class="scale">${BANDS.map(b=>`<i style="width:20%;background:${b[2]}"></i>`).join('')}
+      ${BANDS.map((b,i)=>`<span class="tick" style="left:${i*20+10}%">${b[0]}</span>`).join('')}
+      <span class="mk" style="--p:${li*20+10}%"><span>${lvlCode()}</span></span></div>
+    <div class="hint tc" style="margin-top:-6px">${esc(lvlFull(li))} <b>→</b> ${esc(lvlFull(li+1))}</div></div>
+  ${hasSaid()?`<div class="tipc"><span class="eyebrow">Your pronunciation note</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p><button class="listen" data-a="sayw" data-v="${esc(tp.w)}">${ic('vol',16)} Hear it</button></div>`
+    :`<div class="nota">Say a sentence in the app to get your first pronunciation note.</div>`}
+  <p class="hint tc">Estimate from your self-rating and one sentence. It updates as you practice.${sc?` Your sentence matched ${matchStat().ok} of ${matchStat().n} words.`:''}</p></div>
+  <div class="foot">${cta('See my plan')}</div>`},
+18:()=>`<div class="scr" style="gap:14px"><h1 class="display">${t(`${cap1(nmP())} path to ${nextCode()}`,'Your first speaking weeks')}</h1>
+  <p class="lead" style="margin-top:-4px">${t('Goals set from your answers. Results vary.',`Built around ${sitLabel()} and your minutes.`)}</p>
+  ${planChart()}
+  <div class="miles">${planGoals().map(([w,l],i)=>`<div class="mile" style="animation-delay:${1+i*.45}s"><b>Goal for week ${w}</b>${esc(l)}</div>`).join('')}</div>
+  ${sumCard()}
+  <p class="hint tc">Goals, not guarantees. Week count comes from your level and minutes.</p></div>
+  <div class="foot">${cta('Start my plan')}</div>`,
+19:()=>{
+  const R=CONFIG.rating,RV=reviewsReal(),tp=tipFor();
+  const FAQ=[['How do I cancel?','Cancel anytime in your account settings, up to 24 hours before renewal. We\'ll email you before your first renewal.'],
+    ['Will I be charged again?','Yes, unless you cancel: each plan renews at the price and period shown on its card.'],
+    ['Are tutors real people?','No. Tutors are AI voices, clearly labelled. They don\'t replace a human teacher.'],
+    ['Is my voice saved? <span class="verify">verify</span>','The product team confirms audio retention before launch. This answer must be updated with the real policy.']];
+  return `<div class="wp" id="wp">
+  <div class="wbar"><div class="brand">${ic('mic',18)} ${CONFIG.brand}</div><button class="mini" data-a="toplans">Start speaking</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
+  <div class="wsec tight"><span class="eyebrow">Your speaking plan is ready</span><h1 class="display" style="font-size:29px">${t(`Start speaking with ${tn()}`,`Unlock ${nmP()} speaking plan`)}</h1>
+   <p class="lead" style="margin:8px 0 16px">${t('Daily sessions and feedback in one plan.','Cancel anytime. Renewal price shown up front.')}</p>
+   <div class="whero"><div class="lvbox"><div class="lv">${esc(lvlFull(levelIdx()))} <span class="ar">→</span> ${esc(lvlFull(levelIdx()+1))}</div><div class="chipsrow"><span>🎙️ ${esc(sitChip())}</span><span>⏱ ${minTok()} min/day</span><span>≈ ${weeks()} weeks</span></div></div>
+   ${hasSaid()?`<div class="tipc"><span class="eyebrow">Your first pronunciation note</span><div class="big">${esc(tp.w)}</div><div class="say">${esc(tp.say)}</div><p>${esc(tp.how)}</p></div>`:''}
+   <div class="facts"><div class="fact">Tutor<b>${tn()}</b></div><div class="fact">Level<b>${esc(lvlCode())}</b></div><div class="fact">Situation<b>${esc(sitChip())}</b></div><div class="fact">Daily<b>${minTok()} min</b></div></div></div></div>
+  <div class="wsec" id="plans1">${planBlock('a')}</div>
+  <div class="wsec"><span class="eyebrow">What's inside</span><h2 class="wh2">Everything in your plan</h2><p class="lead">Your level and first note are open. Unlock the rest.</p>
+   <div class="toc">    <div class="open"><span class="n">1</span><span>Your level and first note</span><span class="l">${ic('check',16,'currentColor',2.4)}</span></div>
+    <div><span class="n">2</span><span>Daily speaking sessions with ${tn()}</span><span class="l">${ic('lock',16)}</span></div>
+    <div><span class="n">3</span><span>Instant feedback with a model voice</span><span class="l">${ic('lock',16)}</span></div>
+    <div><span class="n">4</span><span>${esc(cap1(sitChip()))} phrase packs</span><span class="l">${ic('lock',16)}</span></div>
+    <div><span class="n">5</span><span>AI tutor conversations <span class="verify">verify</span></span><span class="l">${ic('lock',16)}</span></div>
+    <div><span class="n">6</span><span>Progress check toward ${esc(nextCode())}</span><span class="l">${ic('lock',16)}</span></div></div></div>
+  <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From silent to speaking</h2>
+   <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Unlock your plan','It opens on this page right away.'],['Practice in the app','Log in with your email for Day 1.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
+  ${ratingReal()||RV.length?`<div class="wsec"><span class="eyebrow">What learners say</span>${ratingReal()?`<div class="rate"><div class="sc">${esc(R.score)}</div><div><div class="srow" style="color:#F5A623;display:flex;gap:2px">${stars(5,16)}</div><div class="hint">${esc(R.count)} ratings</div></div></div>`:''}
+   <div class="stack" style="margin-top:10px">${RV.map(realReview).join('')}</div></div>`:''}
+  ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${ic('shield',30,'currentColor',2)}</div><div><b style="font:800 18px var(--display)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
+  <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq2" style="margin-top:8px">${FAQ.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
+  <div class="wsec" id="plans2">${planBlock('b')}</div>
+  <div class="wfoot"><div class="legal"><span>Terms</span><span>Privacy Policy</span><span>Restore</span></div><div style="margin-top:8px">AI tutor voices are not real people. ${isReal(CONFIG.legalEntity)?esc(CONFIG.legalEntity):tok('legal_entity')}</div></div>
+  </div>
+  <div class="sticky" id="sticky"><div class="sum"><span data-sumname>${CONFIG.plans[S.plan].name}</span><b data-sum>${todayLine()}</b></div>${cta('Start speaking',true,'buy')}</div>`},
+20:()=>{const o=CONFIG.offer,was=o.compareAt?tok('price_'+o.compareAt):'';
+  return `<div class="scr owrap">
+  <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">${CONFIG.brand}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display" style="font-size:28px">${t('Start smaller with one week',`Try ${tn()} for a week`)}</h1>
+   <p class="lead">${t('Daily sessions with feedback, no long plan.','One-time starter, then weekly renewal.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${isReal(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
+   <div class="sumc">${sumCard(true)}</div>
+   <div class="oname"><b>${esc(o.name)}</b><span>${esc(o.sub)}</span></div>
+   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${[`Daily speaking sessions with ${esc(tn())}`,'Instant feedback with a model voice','An email before your first renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   <div class="onot">Not included: phrase packs, progress checks, the full plan.</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
+   <p class="ofine">${tv(o.price)} today, then ${tv(o.renews)} every ${esc(o.period)} until you cancel. We'll email you before. Cancel anytime, up to 24h before renewal.</p></div>
+  <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
+21:()=>{const tp=tipFor();
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t(`You're in, ${nm()}!`,'Your first session awaits')}</h1>
+  <p class="lead" style="margin-top:-6px">${t(`Get the app and log in with ${esc(S.email||'your email')}.`,'Your plan and tutor are waiting.')}</p>
+  <div class="mock"><div class="in"><div class="hd"><span>${CONFIG.brand}</span><span style="color:var(--t3)">Day 1 of your plan</span></div>
+    <div class="d1"><span style="font-size:22px">🎙️</span><span>Day 1 · ${esc(cap1(sitChip()))} speaking<small>${minTok()} min · ${esc(lvlCode())} · with ${esc(tn())}</small></span></div>
+    <div class="mw">First note${hasSaid()?` · ${esc(tp.w)}`:''}</div>
+    <div style="display:flex;align-items:center;gap:10px">${av(S.tutor)}<div class="bubble" style="font-size:14px">${hasSaid()?`Let's say "${esc(tp.w)}" together.`:'Ready when you are.'}</div></div></div></div>
+  <div style="display:flex;justify-content:center">${storeBtn()}</div>
+  <div class="steps3"><div><b>1</b>Install the app</div><div><b>2</b>Log in with ${esc(S.email||'your email')}</div><div><b>3</b>Start Day 1 with ${esc(tn())}</div></div>
+  <p class="hint tc">Receipt and cancel link sent to ${esc(S.email||'your email')}.</p></div>
+  <div class="foot">${cta('Get the app',true,'store')}</div>`}
+};
+
+/* ---------- paywall helpers ---------- */
+const planPeriod=()=>CONFIG.plans[S.plan].period;
+const todayLine=()=>`${tok('price_'+S.plan)} today, then ${tok('renew_'+S.plan)}`;
+const renewLine=()=>`You pay ${tok('price_'+S.plan)} today. Renews at ${tok('renew_'+S.plan)} every ${planPeriod()} until you cancel. Cancel anytime. We'll email you before your first renewal.`;
+function planBlock(id){const P=CONFIG.plans;
+  return `<div class="pick" data-pick="${id}"><h2 class="wh2" style="text-align:center;margin-bottom:16px">Choose your plan</h2><div class="plans">${Object.entries(P).map(([k,p])=>`<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" data-plan="${k}" aria-pressed="${S.plan===k}">${p.rib?`<span class="rib ${p.alt?'alt':''}">${p.rib}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,'currentColor',3.2):''}</span><span class="nm">${p.name}</span><span class="sub">${tok('price_'+k)} today, then ${tok('renew_'+k)} every ${p.period}</span><span class="pr">${tok('week_equiv_'+k)}<small>per week</small></span></button>`).join('')}</div>
+   <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
+   <div style="height:12px"></div>${cta('Start speaking',true,'buy')}
+   <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+   <div class="secure"><span>${ic('shield',14)} Secure checkout</span><span>${ic('check',14,'currentColor',2.4)} Cancel anytime</span>${refundReal()?`<span>${esc(CONFIG.refundDays)}-day money-back</span>`:''}</div>
+   <p class="fine" data-renew>${renewLine()}</p></div>`}
+function applyPlan(){const v=cur();if(!v)return;
+  v.querySelectorAll('.wplan').forEach(b=>{const on=b.dataset.plan===S.plan;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('.rd').innerHTML=on?ic('check',12,'currentColor',3.2):''});
+  v.querySelectorAll('[data-today],[data-sum]').forEach(e=>e.innerHTML=todayLine());v.querySelectorAll('[data-renew]').forEach(e=>e.innerHTML=renewLine());
+  const sn=v.querySelector('[data-sumname]');if(sn)sn.textContent=CONFIG.plans[S.plan].name}
+function bindPaywall(v){
+  const wp=v.querySelector('#wp'),st=v.querySelector('#sticky'),blocks=[...v.querySelectorAll('.pick')];
+  if(!wp)return;
+  if(!('IntersectionObserver' in window)){st&&st.classList.add('show');return}
+  const vis=new Set();
+  const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{root:wp,threshold:.25});
+  blocks.forEach(b=>io.observe(b));
+  wp.addEventListener('scroll',()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{passive:true});
+}
+const streakSheet=()=>`<div class="dim"></div><div class="sheet" role="dialog" aria-label="Streak challenge"><span class="grab"></span><div style="font-size:40px;text-align:center">🔥</div>
+  <h2 class="display tc" style="font-size:25px">Want a 7-day speaking streak challenge?</h2>
+  <button class="btn" data-a="streak" data-v="1">Yes, I'm in</button><button class="link" data-a="streak" data-v="0">No thanks</button></div>`;
+
+function miniPlan(){return `<div style="font:800 15px var(--display);margin-bottom:8px">${cap1(nmP())} path to ${nextCode()}</div><svg viewBox="0 0 300 90" width="100%" height="90"><path d="M10 80 C 100 76, 170 30, 290 12" stroke="#E04A1F" stroke-width="5" fill="none" stroke-linecap="round"/></svg><div style="display:flex;gap:6px;margin-top:8px"><span class="tagsug">${esc(sitChip())}</span><span class="tagsug">${minTok()} min/day</span></div>`}
+function sumCard(compact){
+  return `<div class="sumcard"><div class="lv">${esc(lvlFull(levelIdx()))} <span class="ar">→</span> ${esc(lvlFull(levelIdx()+1))}</div><div class="row"><span>🎙️ ${esc(sitChip())}</span>${compact?'':`<span>${esc(tn())}</span>`}<span>⏱ ${minTok()} min/day</span></div></div>`;
+}
+/* plan goals derived from level + minutes (targets we set, not promised outcomes) */
+function planGoals(){const W=weeks();
+  const g=[[1,S.minutes>=15?'Speak 5 short sentences aloud daily':'Speak 3 short sentences aloud daily'],[2,`Practice ${sitLabel()} phrases`],[3,`Hold a short back-and-forth with ${tn()}`],[W,'Re-check your speaking level']];
+  const seen=new Set();return g.filter(([w])=>w<=W&&!seen.has(w)&&seen.add(w))}
+function planChart(){
+  const W=weeks();const P0=[18,128],C1=[110,124],C2=[190,52],P1=[300,24];
+  const bz=u=>{const m=1-u;return[0,1].map(j=>m*m*m*P0[j]+3*m*m*u*C1[j]+3*m*u*u*C2[j]+u*u*u*P1[j])};
+  const dots=planGoals().filter(([w])=>w<W).map(([w],i)=>{const[x,y]=bz(w/W);return `<g class="md" style="animation-delay:${1+i*.45}s"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="#fff" stroke="#E04A1F" stroke-width="3"/><text x="${x.toFixed(1)}" y="${(y+20).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#998A7C">Wk ${w}</text></g>`}).join('');
+  return `<div class="chart"><svg viewBox="0 0 320 160" aria-label="Goal path from today to week ${W}">
+    <defs><linearGradient id="ar1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E04A1F" stop-opacity=".22"/><stop offset="1" stop-color="#E04A1F" stop-opacity="0"/></linearGradient></defs>
+    ${[40,80,120].map(y=>`<line x1="10" x2="310" y1="${y}" y2="${y}" stroke="#ECE0D0" stroke-dasharray="2 4"/>`).join('')}
+    <path class="area" d="M${P0} C${C1} ${C2} ${P1} L300 140 L18 140Z" fill="url(#ar1)"/>
+    <path class="curve" pathLength="1" d="M${P0} C${C1} ${C2} ${P1}"/>
+    ${dots}
+    <g class="md" style="animation-delay:2s"><circle cx="300" cy="24" r="8" fill="#E04A1F"/><rect x="172" y="14" width="112" height="20" rx="10" fill="#FFE6DB"/><text x="228" y="28" text-anchor="middle" font-size="10.5" font-weight="800" fill="#8A3413">Goal: ${esc(nextCode())}</text></g>
+    <circle cx="18" cy="128" r="6" fill="#1B1511"/>
+    <text x="18" y="156" font-size="11" font-weight="800" fill="#6C5D50">Today</text><text x="306" y="156" text-anchor="end" font-size="11" font-weight="800" fill="#6C5D50">Week ${W}</text>
+  </svg></div>`;
+}
+
+/* ---------- loading (#15) ---------- */
+function runLoading(){
+  let row=0,pct=0,paused=false;
+  const tick=setInterval(()=>{
+    if(S.sheet==='streak'||paused)return;
+    if(row===2&&pct===0&&S.streak===null){S.sheet='streak';cur().insertAdjacentHTML('beforeend',streakSheet());return}
+    pct+=3;const el=document.getElementById('st'+row);if(!el){clearInterval(tick);return}
+    el.querySelector('.bar span').style.width=Math.min(pct,100)+'%';el.querySelector('.pct span').textContent=Math.min(pct,100)+'%';
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',3)}<span>100%</span>`;row++;pct=0;
+      if(row>3){clearInterval(tick);paused=true;later(()=>go(16),1400)}}
+  },RM?20:42);TM.push(tick);
+}
+
+/* ---------- render ---------- */
+function render(dir){
+  const n=S.i;const html=nav()+V[n]();const old=cur();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in'+(dir==='b'?' bk':'');nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);setTimeout(()=>nv.classList.remove('in','bk'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{if(old.classList.contains('out'))return;const st=old.querySelector('.scr,.wp')?.scrollTop||0;old.innerHTML=html;const sc=old.querySelector('.scr,.wp');if(sc&&!dir)sc.scrollTop=st}
+  const v=cur();
+  if(n===15)runLoading();
+  if(n===OFFER_N)runOffer();
+  if(n===PW_N)bindPaywall(v);
+  if(dir){emit('screen_view',{index:n,name:SCREENS[n]});if(n===PW_N)emit('paywall_view')}
+  const f=v.querySelector(n===8?'#nm':n===16?'#em':null);
+  if(f&&dir&&!S.email){setTimeout(()=>{if(cur()===v)f.focus({preventScroll:true})},320)}
+  renderPanel();
+}
+
+/* ---------- panel ---------- */
+function renderPanel(){
+  const mk=micScored()?`${matchStat().ok}/${matchStat().n} words matched`:hasSaid()?'Typed (no sound judged)':S.skipped?'Skipped':'—';
+  document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag])=>`<button class="${S.i===n?'on':''} ${n===12&&S.skipped?'skip':''}" data-j="${n}"><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const d=[
+    ['Fears',fearList().join(', ')||'—'],['Situation',S.sit?sitChip():'—'],['Speaks now',S.freq?FREQ[S.freq][1]:'—'],['Self-rated',S.self?SELF[S.self][1]:'—'],['Name',S.name.trim()||'—'],
+    ['Mic',S.mic==='unknown'?'—':S.mic],['Test mode',S.i>=10?mode():'—'],['Sentence',S.i>=11?(S.said.trim()||'—'):'—'],['Match',S.i>=12?mk:'—'],
+    ['Tutor',S.i>=13?tn():'—'],['Minutes',minTok()+' / day'],
+    ['Level',S.i>=17?`${lvlFull(levelIdx())}`:'—'],['Plan length',S.i>=17?`≈ ${weeks()} weeks to ${nextCode()}`:'—'],
+    ['Streak challenge',S.streak===null?'—':S.streak?'Yes':'No thanks'],
+    ['Email',S.email||'—'],['Marketing opt-in',S.mkt?'Yes':'No'],
+    ['Plan',S.bought||(S.i>=PW_N?`${S.plan} selected`:'—')],
+    ['Offer',S.offer?'Accepted':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+
+/* ---------- events ---------- */
+const toggle=(arr,v)=>arr.includes(v)?arr.filter(x=>x!==v):[...arr,v];
+const okNow=()=>{switch(S.i){case 3:return S.fears.length>0&&(!S.fears.includes('other')||S.fearOther.trim().length>0);case 4:return !!S.sit&&(S.sit!=='other'||S.sitOther.trim().length>0);case 11:return S.said.trim().length>0}return true};
+const setBtn=()=>{const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!okNow();const nt=cur().querySelector('.foot .note');if(nt)nt.style.display=okNow()?'none':''};
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':next();break;
+    case 'back':back();break;
+    case 'fear':S.fears=toggle(S.fears,v);render();if(v==='other'&&S.fears.includes('other'))document.getElementById('oth')?.focus();break;
+    case 'sit':S.sit=v;render();if(v==='other')document.getElementById('oth')?.focus();break;
+    case 'freq':S.freq=v;render();break;
+    case 'self':S.self=v;render();break;
+    case 'name':if(!S.name.trim()){S.err='Please enter a name to continue';render();document.getElementById('nm')?.focus()}else{S.name=S.name.trim();next()}break;
+    case 'allowmic':requestMic();break;
+    case 'typeinstead':S.mic='typed';S.mode='typed';S.said='';emit('mic_result',{status:'typed'});go(11);break;
+    case 'usetype':stopRec();S.mode='typed';S.said='';render();document.getElementById('sa')?.focus();break;
+    case 'rec':if(S.recording){if(REC)try{REC.stop()}catch(x){}}else startRec();break;
+    case 'sayt':speak(sent().text);break;
+    case 'sayw':speak(v);break;
+    case 'skipsay':stopRec();S.skipped=true;S.said='';emit('say_skip');go(13);break;
+    case 'tutor':S.tutor=v;render();break;
+    case 'prev':{S.tutor=v;render();speak(`Hi, I'm ${TUT[v][1]}. Let's practice together.`);break}
+    case 'min':S.minutes=+v;render();break;
+    case 'streak':S.streak=v==='1';S.sheet=null;cur().querySelectorAll('.dim,.sheet').forEach(x=>x.remove());renderPanel();break;
+    case 'acct':S.acct=v;S.email=(S.name.trim()||'maya').toLowerCase().replace(/[^a-z]/g,'')+(v==='Apple'?'@privaterelay.appleid.com':'@gmail.com');toast(`Signed in with ${v} (demo)`);next();break;
+    case 'mkt':S.mkt=!S.mkt;render();break;
+    case 'email':{const em=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){S.err='Enter a valid email address';S.errTaken=false;render();document.getElementById('em')?.focus()}
+      else if(/taken/i.test(em)){S.err='taken';S.errTaken=true;render()}else{S.email=em;next()}break}
+    case 'login':toast('Login flow would open (demo)');break;
+    case 'plan':S.plan=v;emit('plan_select',{plan:v});applyPlan();renderPanel();break;
+    case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
+    case 'buy':S.bought=CONFIG.plans[S.plan].name+' (demo)';emit('checkout_click',{plan:S.plan});toast('Demo only. No charge made.');go(LAST);break;
+    case 'closepw':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('User leaves the funnel here (demo)')}break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: 1-week speaking starter (demo)';toast('Demo only. No charge made.');go(LAST);break;
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
+    case 'store':toast(isAndroid?'Google Play would open (demo)':'App Store would open (demo)');break;
+  }
+});
+phone.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.tagName==='INPUT'){const bt=cur().querySelector('.foot .btn');bt&&!bt.disabled&&bt.click()}
+  if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('tcard')){e.preventDefault();e.target.click()}
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f)return;S[f]=e.target.value;
+  if(f==='name'){const hi=document.getElementById('hi');if(hi){const n=S.name.trim();hi.textContent=n?`Hi, ${n}!`:'…';hi.classList.toggle('empty',!n)}if(S.err){S.err='';const x=cur().querySelector('.err');x&&x.remove();cur().querySelector('.box.bad')?.classList.remove('bad')}}
+  if(f==='fearOther'||f==='sitOther'||f==='said')setBtn();
+  if(f==='email'&&S.err){S.err='';S.errTaken=false;cur().querySelector('.err')?.remove();cur().querySelector('.box.bad')?.classList.remove('bad')}
+  renderPanel();
+});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);S.sheet=null;go(n);if(innerWidth<=820)document.getElementById('pbox').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'})});
+const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');if(S.i!==15)render()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v;S=INIT();S.v=v;render('b')};
+
+/* fit the 390x812 phone into narrow viewports (16px gutter, no horizontal scroll) */
+function fit(){
+  const vw=document.documentElement.clientWidth,k=Math.min(1,(vw-32-22)/390);
+  const box=document.getElementById('pbox');box.style.width=390*k+'px';box.style.height=812*k+'px';
+  phone.style.transform=k<1?`scale(${k})`:'';
+}
+addEventListener('resize',fit);fit();
+
+/* deep link: #s=11 or #s11; optional -vB */
+{const h=decodeURIComponent(location.hash);const m=h.match(/s=?(\d+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}
+ const vv=h.match(/v[-=]?([AB])\b/);if(vv){S.v=vv[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
+render();
+</script>
+</body>
+</html>
