@@ -370,7 +370,7 @@ const CONFIG={
 <script>
 const QS=new URLSearchParams(location.search);
 const DEBUG=QS.get('debug')==='1';
-const IMG=/*IMG-START*/{'img/jar.jpg':'img/jar.jpg','img/obv.jpg':'img/obv.jpg','img/rev.jpg':'img/rev.jpg','img/cloth.jpg':'img/cloth.jpg','img/cam.jpg':'img/cam.jpg','img/world.jpg':'img/world.jpg','img/bullion.jpg':'img/bullion.jpg','img/ancient.jpg':'img/ancient.jpg'}/*IMG-END*/;
+const IMG=/*IMG-START*/{'img/jar.jpg':'img/jar.jpg','img/obv.jpg':'img/obv.jpg','img/rev.jpg':'img/rev.jpg','img/cloth.jpg':'img/cloth.jpg','img/world.jpg':'img/world.jpg','img/bullion.jpg':'img/bullion.jpg'}/*IMG-END*/;
 const im=p=>IMG[p]||p;
 const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
 const IC={
@@ -395,11 +395,10 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const isTok=s=>/^\{\{/.test(String(s||''));
 const tok=s=>isTok(s)||/\{\{/.test(s)?`<span class="tok">${esc(s)}</span>`:esc(s);
 
-/* ================= COLLECT: every niche-specific value lives here =================
-   To reuse this funnel for cards / antiques / notes+stamps+gems / plants: swap this block
-   (object word, host, Q1-Q4 options, games, samples, levels). Screens and engine stay the same. */
+/* ================= COLLECT: niche data (Q1-Q4 options, games, samples, levels, host label) =================
+   Reuse for cards / antiques / notes+stamps+gems / plants: swap this block, then search-and-replace the
+   hardcoded object word "coin", host name "Edward" and brand "CoinIn" in the screen copy (not driven by COLLECT). */
 const COLLECT={
-  word:'coin',Word:'Coin',collectionWord:'collection',
   host:{name:'Edward',tag:'Illustrative guide, not a real person'},
   src:{inherited:['🧓','Inherited'],found:['🫙','Found in change'],collect:['🗂️','I collect'],gift:['🎁','Gift or purchase']},
   count:{s:['🪙','Under 20'],m:['🫙','20 to 100'],l:['📦','100 to 500'],xl:['🧰','500 or more']},
@@ -416,7 +415,7 @@ const COLLECT={
     {id:'g1',h:['Which 1943 cent is rare?','Guess the rare one'],b:['Both say 1943. Only one is unusual.','Tap the coin you think is worth more.'],
      opts:[['a','⚪','Silver-gray coin',{tone:'steel',txt:'1943'}],['b','🟤','Copper coin',{tone:'cu',txt:'1943'}]],right:'b',
      says:'Copper. 1943 cents were made of steel, so a copper one is a rare error.',tail:'A scan checks details like this for you.'},
-    {id:'g2',h:['Which quarter has silver?','Which is worth more?'],b:['One is 1964, one is 1965.','Silver makes it worth more than face value.'],
+    {id:'g2',h:['Which quarter has silver?','Which is worth more?'],b:['One is 1964, one is 1965.','Look closely at the edge and the date.'],
      opts:[['a','🅰️','The 1964 quarter',{tone:'ag',txt:'1964',edge:'silver'}],['b','🅱️','The 1965 quarter',{tone:'ag',txt:'1965',edge:'clad'}]],right:'a',
      says:'1964. Quarters made through 1964 are 90% silver. From 1965 they are copper-nickel.',tail:'Silver coins are worth more than face value as metal, and a scan can tell them apart.'}
   ],
