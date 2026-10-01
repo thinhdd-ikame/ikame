@@ -565,7 +565,25 @@ const CONFIG={funnel:'calmio-calm-kids',brand:'Calmio',
 };
 const DEBUG=/[?&]debug=1\b/.test(location.search);
 const EVENTS=window.ikEvents=[];
-function emit(name,data={}){EVENTS.push({event:name,...data,t:Date.now()});if(DEBUG)console.info('[calmio-calm-kids]',name,data);if(typeof renderPanel==='function'&&document.getElementById('data'))renderPanel()}
+/* tracking: never email, typed text or chat in payloads */
+const SNAP_SKIP=/name|email|other|chat|txt|text|err|hist|^ov$|safety|offerEnd|year|^_/i;
+function snapshot(){const o={screen:S.i,variant:S.v,plan:S.plan,paid:S.premium===true||S.premium==='pass'||!!S.pack,safetyEvents:S.safety.length,hasName:!!(S.name&&S.name.trim()),emailProvided:!!(S.email&&S.email.trim())};
+  Object.keys(S).forEach(k=>{if(k in o||SNAP_SKIP.test(k))return;const v=S[k];
+    if(typeof v==='string'&&v.length<=40)o[k]=v;else if(typeof v==='number'||typeof v==='boolean')o[k]=v;else if(Array.isArray(v)&&v.length<=12&&v.every(x=>typeof x==='string'&&x.length<=40||typeof x==='number'))o[k]=v.slice()});return o}
+function emit(name,data={}){EVENTS.push({event:name,...data,t:Date.now()});if(DEBUG)console.info('[calmio-calm-kids]',name,data);
+  let snap={};try{snap=snapshot()}catch(e){}
+  const d=Object.assign({},data,{data:snap});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:name,detail:d},'*')}catch(e){}
+  const f=Object.assign({funnel:CONFIG.funnel},snap,data);
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}
+  try{if(Array.isArray(window.dataLayer))window.dataLayer.push(Object.assign({event:'ikfunnel_'+name},f))}catch(e){}
+  if(typeof renderPanel==='function'&&document.getElementById('data'))renderPanel()}
+let LASTSCR=0;
+const PLANKEY=p=>({'1w':'w1','4w':'w4','12w':'w12'}[p]||p);
+function checkoutNav(u,plan){if(!u)return false;try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan',plan);
+  try{window.top.location.href=x.toString()}catch(e){location.href=x.toString()}return true}catch(e){return false}}
 const tok=x=>esc(x).replace(/{{([^}]+)}}/g,'<span class="token">{{$1}}</span>');
 
 /* ---------- one-time offer (once per session, on paywall close) ---------- */
@@ -582,7 +600,7 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
   tick();window.__oiv=setInterval(tick,1000)}
 function offerCheckout(){const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
   if(!u)return false;
-  try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);
+  try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);
     new URLSearchParams(location.search).forEach((v,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,v)});
     try{window.top.location.href=x.toString()}catch(e){location.href=x.toString()}return true}catch(e){return false}}
 
@@ -917,6 +935,7 @@ function runLoading(){
 /* ---------- render ---------- */
 function render(dir){
   const n=S.i;
+  if(n!==LASTSCR){LASTSCR=n;emit('screen_view',{screen:n});if(n===17)emit('paywall_view');if(n===19)emit('complete')}
   const html=nav()+V[n]();
   const old=cur();
   if(dir&&old&&!RM){
@@ -1047,12 +1066,13 @@ const STEPKEY={8:'react',9:'tried'};
 phone.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
   const a=b.dataset.a,v=b.dataset.v;
+  if(v!==undefined&&v!==''&&v!=='other'&&!/^(next|back|help|ovclose|ovcont|soon|year|plan|remind|play|pay|closepw|notnow|offerbuy|offerno|unlock|lesson)$/.test(a))emit('answer',{key:a,value:v});
   switch(a){
     case 'next':next();break;
     case 'back':back();break;
     case 'help':openOv('crisis','link');break;
-    case 'ovclose':closeOv(false);break;
-    case 'ovcont':closeOv(true);break;
+    case 'ovclose':closeOv(false);flushPaid();break;
+    case 'ovcont':if(pendingPaid!==null){closeOv(false);flushPaid()}else closeOv(true);break;
     case 'soon':toast('Not part of this funnel demo');break;
     case 'year':selectYear(+v,true);break;
     case 'age':if(!S.year)return;if(NOWY-S.year<18){S.minor=true;render('f')}else next();break;
@@ -1070,11 +1090,11 @@ phone.addEventListener('click',e=>{
     case 'emailgo':{const em=S.email.trim().toLowerCase();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){S.err='Enter a valid email address';render()}
       else if(em==='taken@example.com'){S.err='That email has an account, sign in instead?';render()}
-      else{S.err='';toast('Demo only — no account created');next()}break}
-    case 'plan':S.plan=v;updatePlan();break;
-    case 'pay':S.premium=true;emit('checkout_click',{plan:S.plan,url:CONFIG.checkoutUrl});toast('Demo only — no charge made');go(19);break;
+      else{S.err='';emit('lead',{email_provided:true});toast('Demo only — no account created');next()}break}
+    case 'plan':S.plan=v;emit('plan_select',{plan:v});updatePlan();break;
+    case 'pay':emit('checkout_click',{plan:S.plan,url:(CONFIG.plans[S.plan]&&CONFIG.plans[S.plan].checkoutUrl)||CONFIG.checkoutUrl||''});if(checkoutNav((CONFIG.plans[S.plan]&&CONFIG.plans[S.plan].checkoutUrl)||CONFIG.checkoutUrl,S.plan))break;S.premium=true;toast('Demo only — no charge made');emit('purchase_complete',{plan:S.plan,demo:true});go(19);break;
     case 'closepw':case 'notnow':S.premium=false;emit('paywall_close',{via:a});go(offerOpen()?18:19);break;
-    case 'offerbuy':S.offerSeen=true;clearInterval(window.__oiv);if(!offerCheckout()){S.premium=false;S.pack=true;toast('Demo only — no charge made');go(19)}break;
+    case 'offerbuy':S.offerSeen=true;clearInterval(window.__oiv);if(!offerCheckout()){offerPaid();toast('Demo only — no charge made');emit('purchase_complete',{plan:'offer',demo:true});go(19)}break;
     case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);S.premium=false;emit('offer_decline');go(19);break;
     case 'remind':S.remind=!S.remind;if(S.remind)toast('Demo only — no permission prompt shown');render();break;
     case 'lesson':toast('Tonight’s script would open here (demo)');break;
@@ -1117,6 +1137,24 @@ fit();addEventListener('resize',fit);
 function fromHash(){const m=location.hash.match(/^#s=?([0-9]+b?)$/);if(!m)return false;const j=m[1];if(j==='3b'){S.minor=true;S.year=NOWY-15;S.i=3;return true}const n=+j;if(!V[n])return false;fillTo(n);S.i=n;return true}
 fromHash();
 addEventListener('hashchange',()=>{const m=location.hash.match(/^#s=?([0-9]+b?)$/);if(m)jump(m[1])});
+/* ---------- host API (FunnelFox / embeds) ---------- */
+function offerPaid(){S.premium=false;S.pack=true;}
+let pendingPaid=null;
+function applyPaid(plan,fromLoad){
+  plan=PLANKEY(plan||S.plan||'w4');
+  if(plan==='offer'){if(safetyHit())return false;clearInterval(window.__oiv);S.offerSeen=true;offerPaid()}
+  else{if(CONFIG.plans[plan])S.plan=plan;S.premium=true}
+  emit('purchase_complete',{plan});
+  if(fromLoad)fillTo(19);
+  go(19);return true}
+function completePurchase(plan){
+  /* never bypass the safety sheet: if it is open, finish after the user closes it */
+  if(S.ov){pendingPaid=plan||null;return true}
+  return applyPaid(plan)}
+function flushPaid(){if(pendingPaid===null)return;const p=pendingPaid;pendingPaid=null;if(p)applyPaid(p)}
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:()=>{try{return snapshot()}catch(e){return {}}},completePurchase});
+emit('funnel_start');
+{const qp=new URLSearchParams(location.search).get('paid');if(qp){const k=PLANKEY(qp);if(k==='offer'||CONFIG.plans[k]){applyPaid(k,true);ensureLoop()}}}
 render();
 </script>
 </body></html>
