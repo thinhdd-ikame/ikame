@@ -22,7 +22,7 @@ motion: >
 
 This is the health-adjacent reskin of the TestLibrary flagship in `testlibrary/funnel-content.md` and the sibling `testlibrary/personality-mbti/`. The user gives an age band, a reason and 30 agree/disagree statements about everyday experience. They get a profile across five areas (social, sensory, routine, detail, communication) as plain "lighter / mixed / stronger" bands. They get **no condition label and no score cut-off**. The paid report adds where each area shows up day to day, everyday ideas, and a guide to talking to a professional. Archetype: **assessment-unlock** (followed as-is, plus the health guardrails below). 16 screens. Screens 4 and 5 are templates that repeat (30 statements, 3 checkpoints).
 
-**Reference funnels:** Testora's IQ-and-autism funnel (46 steps, see `testlibrary.md` §6-7 and `testlibrary-captures.md` §1, adspylab captures) and TestLibrary's own brand and lander pattern (`testlibrary.md`, fetched 2026-09-28). **Deliberately different:** 30 statements, not 46 steps; honest checkpoints with no flattery and no percentile; a "this is not a diagnosis" screen *before* the first sensitive statement; no total score and no "likely / unlikely" verdict; the renewal price sits beside every trial price; nothing is billed silently; a support route is on every screen. **Policy posture (high risk, Meta health rules):** ad copy and creative must never imply a personal attribute ("Are you autistic?", "You might be on the spectrum"). Lead with curiosity and self-knowledge ("Understand how you experience the world"). The landing page may say what the check is. The result never names a condition, never says "you have", and never ranks the user against a cut-off. **Look:** the light "exam paper" look of the sibling brief (white, ink navy, one amber accent), calmer and with more air; paywall is a long-scroll web page.
+**Reference funnels:** Testora's IQ-and-autism funnel (46 steps, see `testlibrary.md` §6-7 and `testlibrary-captures.md` §1, adspylab captures) and TestLibrary's own brand and lander pattern (`testlibrary.md`, fetched 2026-09-28). **Deliberately different:** 30 statements, not 46 steps; honest checkpoints with no flattery and no percentile; a "this is not a diagnosis" screen *before* the first sensitive statement; no total score and no "likely / unlikely" verdict; the renewal price sits beside every trial price; nothing is billed silently; a support route is on every screen. **Policy posture (high risk, Meta health rules):** ad copy and creative must never imply a personal attribute ("Are you autistic?", "You might be on the spectrum"). Lead with curiosity and self-knowledge ("Understand how you experience the world"). The default landing headline stays neutral; the topic-naming variant is organic/search only. The result never names a condition, never says "you have", and never ranks the user against a cut-off. **Look:** the light "exam paper" look of the sibling brief (white, ink navy, one amber accent), calmer and with more air; paywall is a long-scroll web page.
 
 **Health guardrails (apply to every screen):**
 - A persistent **"Need help now?"** link on every screen opens a support sheet: "In danger now? Call your local emergency number. Call or text 988 (US) · Outside the US: findahelpline.com. A doctor or GP can also help." One tap, no sign-in, never paywalled.
@@ -35,10 +35,10 @@ This is the health-adjacent reskin of the TestLibrary flagship in `testlibrary/f
 
 ### 1. Lander - Self-check
 **Purpose:** Cold traffic arrives wanting to understand itself. The first tap is cheap (age band), and the page says honestly what the check is, what it is not, and what is free.
-**Headline A:** Adult autism traits self-check
-**Headline B:** Understand your own traits
-**Body A:** 30 statements. Not a diagnosis. About 6 minutes.
-**Body B:** Pick your age to start. Free to take.
+**Headline A:** Understand your own traits
+**Headline B:** Adult autism traits self-check
+**Body A:** Pick your age to start. Free to take.
+**Body B:** 30 statements. Not a diagnosis. About 6 minutes.
 **Options:**
 - 🌱 18-24
 - 🚀 25-34
@@ -47,7 +47,7 @@ This is the health-adjacent reskin of the TestLibrary flagship in `testlibrary/f
 - 🦉 60+
 **Field:** Single select, auto-advance on tap. Under-18: "You must be 18 or older to take this check."
 **Visual:** White page, wordmark top-left. Hero: five soft paper tiles in a row with thin bars beneath, half filled, in navy and one amber accent, a pencil beside them. Age pills stacked full-width beneath. Footer links (Cancel subscription · Subscription policy · FAQ · Terms · Privacy) and a "Need help now?" link in a strip along the bottom.
-**Microcopy:** Directly under the pills: "Free to take · Full report is a paid unlock". Under it: "A self-check, not a diagnosis. Independent, not clinical."
+**Microcopy:** **Variant use:** A (the default) is the only variant for paid traffic and ads. B names the topic and is for organic and search landings only. Directly under the pills: "Free to take · Full report is a paid unlock". Under it: "A self-check, not a diagnosis. Independent, not clinical."
 **CTA:** (auto-advances on select)
 
 ### 2. What this is, and isn't
@@ -114,7 +114,7 @@ This is the health-adjacent reskin of the TestLibrary flagship in `testlibrary/f
 ### 6. How it's built - after the effort
 **Purpose:** A trust beat right after the longest effort, before the email ask. It builds trust through honest method, not numbers. A real review is added only when one exists.
 **Headline A:** How your check works
-**Headline B:** Your answers, scored fairly
+**Headline B:** How your answers are used
 **Body A:** Statements in the style of public self-report checks.
 **Body B:** Your results are almost ready.
 **Visual:** Three short rows: "Scored from your answers only", "No total score, no verdict", "Not a clinical tool". Below, one review card with first name and country, or a dashed placeholder.
@@ -176,8 +176,8 @@ This is the health-adjacent reskin of the TestLibrary flagship in `testlibrary/f
 **Headline B:** Meet your profile, {{name}}
 **Body A:** Your clearest area is free. The rest is locked.
 **Body B:** Everything blurred below unlocks with your report.
-**Visual:** Stacked preview on white. (1) Five icon tiles, clear. (2) A trait card: five bars with the clearest one clear with its band and %, the other four blurred. (3) Three locked rows with lock icons. "Not a diagnosis" line right under the card.
-**Microcopy:** Benefit rows: "🧭 Where each area shows up in daily life" · "💡 Everyday ideas for {{goal}}" · "🗣️ How to talk to a professional" · "📝 Notes to bring to a visit" · "📊 All 5 areas". Line under the card: "A self-check based on your answers. Not a diagnosis."
+**Visual:** Stacked preview on white. (1) Five icon tiles, clear. (2) A trait card: five bars with the clearest one clear with its band word, the other four blurred. No percentages anywhere. (3) Three locked rows with lock icons. "Not a diagnosis" line right under the card.
+**Microcopy:** Benefit rows: "🧭 Where each area shows up in daily life" · "💡 Everyday ideas for {{goal_phrase}}" · "🗣️ How to talk to a professional" · "📝 Notes to bring to a visit" · "📊 All 5 areas". Line under the card: "Bands only group your answers. Not a screening result, not a diagnosis."
 **CTA:** Unlock my report
 
 ---
@@ -198,21 +198,21 @@ Plan block repeats lower on the page, with the same selection.
 **Visual:** One long scroll, web style, light page. In order: (1) brand bar with wordmark and a close X. (2) Personal hero with the five icon tiles and the clearest-area line, with the locked rows beneath. (3) Plan block with three stacked radio cards, "today" and "then" in two equal-weight lines, then the CTA. (4) What's inside: where each area shows up · everyday ideas · how to talk to a professional · notes to bring · all 5 areas · all tests (Full Access only). (5) How it works: 1 unlock · 2 read it in your account · 3 bring your notes to a professional if you choose. (6) Proof: a real review card and the rating, hidden while unset. (7) Guarantee: the refund window that really exists, hidden while unset. (8) FAQ accordion: Is this a diagnosis? · How is my profile decided? · When will I be charged? · How do I cancel? (9) The plan block again. (10) A support box: "Need help now?" with the support sheet link, and "Not a diagnosis". (11) Sticky bottom CTA that always shows today's charge and the renewal line.
 **Microcopy:**
 - Above the CTA, changing with the plan: "Today: {{price_trial}}. On {{renewal_date}}: {{renewal_trial}}, then every 4 weeks until you cancel." / "One payment of {{price_report}}. Nothing renews."
-- Trust row: "Secure checkout · Cancel anytime in your account · 2-click cancel".
+- Trust row: "Secure checkout · Cancel anytime in your account".
 - Reminder promise, only if the reminder email is actually sent (`CONFIG.reminder`, default on): "We'll email you 2 days before your trial ends."
 - Disclaimer: "A self-check for reflection. Not a diagnosis, not medical advice, not a clinical assessment. Talk to a qualified professional about any concerns."
-- Headline B variant by reason: Prepare for a doctor visit → "Get your visit notes ready".
+- {{goal_phrase}} by reason: curious → "knowing yourself", work → "work and study", relationships → "your relationships", doctor visit → "your doctor visit", other → the user's own words in lower case. Headline B variant by reason: Prepare for a doctor visit → "Get your visit notes ready".
 **Fallback offer:** Screen 12. The close X (and any back or exit) goes to the last-chance offer first, once per session. After it is declined, closing the paywall returns to the preview (10).
 **CTA:** Continue to checkout
 
 ### 12. Last-chance offer (on close)
-**Purpose:** A second chance for people who closed the paywall, most often because they don't want a subscription. It is the one-time report, nothing renews. Shown once per session (sessionStorage `ikf_offer_testlibrary-autism`), then never again.
-**Headline A:** {{name}}, just want your report?
-**Headline B:** Want only this report?
-**Body A:** Your profile is scored. Get this one report, no subscription.
+**Purpose:** A second chance for people who closed the paywall, most often because they don't want the full report or a subscription. It is a genuinely smaller product: one area in detail plus the talking guide, paid once, nothing renews. It is not the paywall's one-time report. Shown once per session (sessionStorage `ikf_offer_testlibrary-autism`), then never again.
+**Headline A:** {{name}}, want a smaller option?
+**Headline B:** Just one area in detail?
+**Body A:** One area in detail, plus a guide for talking to a professional.
 **Body B:** One payment. Nothing renews, nothing to cancel.
-**Plans:** One offer card: {{offer_name}} (default "This profile report only": one payment, nothing renews). {{offer_price}} today. A struck-through price appears only if it is a real, lower price that checkout charges; if the offer is the one-time report at its listed price, nothing is struck. Optional {{offer_badge}}.
-**Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with a mini profile card (five bars, report blurred), the price row, 3 checks (where each area shows up · everyday ideas · how to talk to a professional), the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
+**Plans:** One offer card: {{offer_name}} (default "Clearest-area summary + talking guide": your single clearest area in detail, how it shows up day to day, and the how-to-talk-to-a-professional guide; one payment, nothing renews). {{offer_price}} today, lower than the one-time report. A struck-through price appears only if it is a real, lower price that checkout charges. Optional {{offer_badge}}. **Not included**, listed on the card: the other four areas in detail, everyday ideas, visit notes, library access.
+**Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with the single clearest-area tile, the price row, 3 checks (clearest area in detail · how it shows up day to day · how to talk to a professional), a dashed "Not included" box, the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel." After purchase, screen 14 shows only the clearest area, the day-to-day note and the professional guide, with a "Not in your offer" note; visit notes (15) are skipped.
 **Microcopy:** No timer by default. A timer appears only if `CONFIG.offer.expiresMin` is set to a real deadline; when it ends the offer is withdrawn (`offer_expired`) and the user returns to the preview. Decline link: "No thanks, back to my free preview". Disclaimer as on the paywall. Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Offer CVR is measured separately.
 **CTA:** Claim my offer
 
@@ -238,8 +238,8 @@ Plan block repeats lower on the page, with the same selection.
 **Headline B:** {{name}}, here's your profile
 **Body A:** Five areas, in plain words. Not a diagnosis.
 **Body B:** Where each area shows up for you.
-**Visual:** Five icon tiles, then five trait bars with a band and % (Lighter · Mixed · Stronger) and ends "Less like me" / "More like me". Three strengths as cards from the clearest areas. Then sections: Where it shows up day to day (two clearest areas) · Everyday ideas (one per clearest area) · **Talking to a professional**: 1 write down examples (notes sheet), 2 book with a GP or an adult-assessment clinician, 3 bring this profile and your questions; "Only a qualified clinician can say whether any condition applies. This check cannot." · A support box with the "Need help now?" sheet.
-**Microcopy:** Method line, always visible: "Based on 30 statements you rated. A band describes how much each area fits you, not a condition." Disclaimer: "A self-check for reflection. Not a diagnosis, not medical advice." Every result is shown with the same warmth, including "Lighter" across the board.
+**Visual:** Five icon tiles, then five relative bars with a neutral label ("Shows up more for you" · "In between" · "Shows up less for you"), no percentages, and ends "Less" / "More". Three strengths as cards from the clearest areas. Then sections: Where it shows up day to day (two clearest areas) · Everyday ideas (one per clearest area) · **Talking to a professional**: 1 write down examples (notes sheet), 2 book with a GP or an adult-assessment clinician, 3 bring this profile and your questions; "Only a qualified clinician can say whether any condition applies. This check cannot." · A support box with the "Need help now?" sheet.
+**Microcopy:** Method line, always visible: "Based on 30 statements you rated. Bands only group your answers. They are not a screening result, and not a condition." Disclaimer: "A self-check for reflection. Not a diagnosis, not medical advice." Every result is shown with the same warmth, including "Shows up less" across the board.
 **CTA:** Get my visit notes
 
 ### 15. Talking points for a professional
@@ -271,11 +271,11 @@ Plan block repeats lower on the page, with the same selection.
 
 **Reused from the sibling briefs (not re-researched):** the whole monetization spine (trial plan with renewal on the card, unticked consent, reminder email, one-time alternative, last-chance offer, library cross-sell) from `testlibrary/funnel-content.md`. Changed: the test is 30 statements across five areas with three checkpoints; a "not a diagnosis" expectations screen sits before the first statement; the result is a trait profile with bands and no label; the certificate becomes private visit notes; there is no share-to-social screen; a support sheet is on every screen.
 
-**Unverified (`[I]` in research for some steps of the 46-step reference):** the exact order and wording of Testora's autism flow, any in-flow disclaimers it shows, and its price ladder. Unverified in this brief: the "in the style of public self-report checks" wording, the 6-minute length, the statement bank (original wording, 6 per area, not clinically validated), the band thresholds (below 34% Lighter, 34-66% Mixed, 67% and up Stronger, chosen for plain-language grouping only) and the support wording. **A clinical or compliance reviewer must read every screen before launch.**
+**Unverified (`[I]` in research for some steps of the 46-step reference):** the exact order and wording of Testora's autism flow, any in-flow disclaimers it shows, and its price ladder. Unverified in this brief: the "in the style of public self-report checks" wording, the 6-minute length, the statement bank (original wording, 6 per area, not clinically validated), the band thresholds (internal only, never shown: below 34% "shows up less", 34-66% "in between", 67% and up "shows up more"; chosen for plain-language grouping) and the support wording. **A clinical or compliance reviewer must read every screen before launch.**
 
 **Competitor mechanic, recorded only (do NOT implement).** Personality and brain-health funnels in this niche pair a long test with "you're faster than 93%" flattery, a $1 "see your result" click that becomes a large 4-weekly charge, a resetting timer and fake live tickers, and ads that ask "Are you autistic?". None of it is copied. The renewal price is printed on the plan, the consent box is unticked, there are no timers, ads never imply a personal attribute, and a one-time option exists.
 
-**Honesty rules for the result.** Bands come from the user's own answers: per area, the sum of fit scores (reverse-keyed items flipped) over the maximum. There is no cross-area total and no cut-off. Never say "autistic", "likely", "high risk", "screened positive", "certified", "validated" or "clinical". Never say "you have". Never advise starting, stopping or changing treatment. Not a diagnosis, on screens 1, 2, 10, 11, 12, 14 and 15. "Need help now?" on every screen.
+**Honesty rules for the result.** Bands come from the user's own answers: per area, the sum of fit scores (reverse-keyed items flipped) over the maximum, shown only as a relative bar and a neutral label. There is no cross-area total, no cut-off and no percentage on screen. Never say "autistic", "likely", "high risk", "screened positive", "certified", "validated" or "clinical". Never say "you have". Never advise starting, stopping or changing treatment. Not a diagnosis, on screens 1, 2, 10, 11, 12, 14 and 15. "Need help now?" on every screen.
 
 **Blocks skipped:** no notification opt-in, no wheel, no countdown upsell, no before/after, no gender or education question, no share-to-social.
 
