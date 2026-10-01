@@ -459,7 +459,7 @@ button{font:inherit;color:inherit;cursor:pointer}
     </div>
     <div>
       <p class="foot-note"><b>Computed from your answers:</b> quiz score out of 3 (#10), one week per chosen body system (#19), 20 lessons = 5 a week x 4 weeks, each of your daily minutes. A goal, not a promised outcome. Education only, not medical advice.</p>
-      <p class="foot-note"><b>Placeholders:</b> prices, renewals and the offer price are dashed tokens (growth team sets them). Art is emoji/CSS until images are generated (<code>gen_images.py</code>, then fill the <code>IMG</code> map). The 4.5 rating is from the sibling MyGrowth brief (store listing 2026-09-28); re-check at launch. No review quotes until real ones exist; money-back hidden until a refund window is set. "Body Systems 101" is a working title, unverified.</p>
+      <p class="foot-note"><b>Placeholders:</b> prices, renewals and the offer price are dashed tokens (growth team sets them). Art is emoji/CSS until images are generated (<code>gen_images.py</code>, then fill the <code>IMG</code> map). The app rating is a token and stays hidden until the real store rating is confirmed. No review quotes until real ones exist; money-back hidden until a refund window is set. "Body Systems 101" is a working title, unverified.</p>
       <p class="foot-note">Pick "Other" on screens 3, 11, 12 or 13 to see the empty-input state (CTA disabled). Try <code>taken@example.com</code> on #18. No purchase, sign-in or email is made.</p>
     </div>
   </aside>
@@ -499,7 +499,7 @@ const RV='<p>"Real App Store review goes here, 15 words max."</p><small>First na
 const CONFIG={funnel:'mygrowth-anatomy',
   offer:{enabled:true,name:'Single-system pass',price:'{{offer_price}}',renews:null,period:'one-time',compareAt:null,badge:'',checkoutUrl:'',expiresMin:null},
   refundDays:'{{refund_days}}',
-  rating:{value:'4.5',count:'2,400+'},
+  rating:{value:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[]};
 const tokenLike=s=>/^\{\{.*\}\}$/.test(String(s||''));
 const refundOk=()=>CONFIG.refundDays&&!tokenLike(CONFIG.refundDays);

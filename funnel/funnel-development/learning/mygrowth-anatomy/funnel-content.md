@@ -36,7 +36,7 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score_line}}`, `{{systems}}`, 
 **Body A:** Bite-sized lessons on bones, heart, brain and more.
 **Body B:** Short lessons you can read or listen to.
 **Visual:** White background, MyGrowth logo top-left, rating strip. Friendly flat illustration of a skeleton and heart on a lavender card with a "206 bones" chip, last headline word in violet, violet CTA pinned bottom.
-**Microcopy:** Rating strip: "★ {{app_rating}} · {{rating_count}} App Store ratings" (verified 4.5 / 2,400+ on 2026-09-28 in the sibling brief; re-check at launch, never a geo-injected "Top app in {country}"). Under the card: "General-knowledge anatomy. Not medical advice."
+**Microcopy:** Rating strip: "★ {{app_rating}} · {{rating_count}} App Store ratings" (tokens until the real store rating and count are confirmed; the strip hides while they are tokens; never a geo-injected "Top app in {country}"). Under the card: "General-knowledge anatomy. Not medical advice."
 **CTA:** Start my quiz
 
 ### 2. Hook B — Learning, made fun
@@ -45,7 +45,7 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score_line}}`, `{{systems}}`, 
 **Headline B:** Learn how you work
 **Body A:** Short lessons, quizzes and quick facts.
 **Body B:** Five minutes a day is enough to start.
-**Visual:** Lavender panel, small phone loop cycling three real app screens: a lesson card, the audio player, a quiz round. Real footage, not a stock phone.
+**Visual:** Lavender panel, small phone loop cycling three real app screens: a lesson card, the audio player, a quiz round. Mock screens until real app footage exists.
 **Microcopy:** Under CTA: "Takes about 2 minutes"
 **CTA:** Continue
 
@@ -232,13 +232,13 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score_line}}`, `{{systems}}`, 
 ## C. Trust
 
 ### 15. Social proof
-**Purpose:** Trust beat after the longest run of taps, right before the loader. It uses only the public, checkable store rating.
-**Headline A:** Rated 4.5 on the App Store
-**Headline B:** Learners give it 4.5 stars
-**Body A:** From 2,400+ ratings by people like {{name}}.
+**Purpose:** Trust beat after the longest run of taps, right before the loader. Rating-free copy until a real store rating is confirmed.
+**Headline A:** Made for curious people
+**Headline B:** Lessons that fit your day
+**Body A:** Short lessons you can finish over coffee.
 **Body B:** Lessons short enough to finish over coffee.
-**Visual:** Huge "4.5" with a star row and laurel, App Store + Google Play badges beneath. No review quote until real, reusable store reviews are supplied.
-**Microcopy:** Numbers come from `CONFIG.rating` (verified on the store listing 2026-09-28); the block hides if the values are unset. No "300,000+ learners" or "1.5M users" unless internal data confirms them.
+**Visual:** App Store + Google Play badges beneath; when `{{app_rating}}` / `{{rating_count}}` are real, a huge rating with star row and laurel is added above and the headline becomes "Rated {{app_rating}} on the App Store". No review quote until real, reusable store reviews are supplied.
+**Microcopy:** Numbers come from `CONFIG.rating` (`{{app_rating}}` / `{{rating_count}}` until confirmed); the rating block and every rating strip hide while they are tokens. No "300,000+ learners" or "1.5M users" unless internal data confirms them.
 **CTA:** Continue
 
 ---
@@ -361,5 +361,5 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score_line}}`, `{{systems}}`, 
 - **Drop-off risks:** #4 name (first typing) and #18 email.
 - **Measure:** quiz completion by screen, #19 to #20 reach, paywall conversion per plan, offer accept rate, activation (install + sign-in + first lesson within 48 h), first-renewal retention at full price, refund rate.
 - **First A/B tests:** (1) hook "Know your body in 5 minutes" vs "Anatomy, without the textbook" (#1 Headline A vs #2 Headline A as hook); (2) email gate before #19 (as written) vs after; (3) pre-select the 4-week plan vs the 1-week plan, judged on refund-adjusted revenue.
-- **Verify before launch:** course title and catalogue, current store rating and count, whether a single-system pass can be sold, guarantee terms and `{{refund_days}}`, and a qualified review of the anatomy facts in #7-9 and #16.
+- **Verify before launch:** course title and catalogue, current store rating and count (tokens until then), the "6 subjects" and "Streaks and achievements" claims in the paywall copy, whether a single-system pass can be sold, guarantee terms and `{{refund_days}}`, and a qualified review of the anatomy facts in #7-9 and #16.
 - **Demo (private Artifact):** https://claude.ai/artifact/DZZzdXVTTFx7FSa5wR3zjG
