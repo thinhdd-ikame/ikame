@@ -6,7 +6,7 @@ subject: person
 input: native language (ES or PT), goals, self-rated level, struggles (false friends, sounds, listening), a 2-grid word check, one false-friend subtitle question, minutes per day, optional deadline
 output: estimated English vocabulary size + level, and a paced plan with a false-friends pack and sound drills for ES/PT speakers
 screens: 22
-monetization: web subscription paywall (1-week intro / 4-week pre-selected / 12-week anchor) priced in local currency tokens (MXN / BRL), intro and renewal price shown together, disclosed 3-day free trial as the dismiss fallback
+monetization: web subscription paywall (1-week intro / 4-week pre-selected / 12-week anchor) priced in local currency tokens (MXN / BRL), intro and renewal price shown together, paid intro offer (no free period) as the dismiss fallback
 creative_screens:
   hook-a: 1
   hook-b: 9
@@ -53,7 +53,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 **Purpose:** Every translation, hint and false-friend pair depends on it, so it comes first. It also switches the funnel to ES or PT.
 **Headline A:** ¿Cuál es tu idioma?
 **Headline B:** ¿Qué idioma hablas?
-**Body A:** Traducimos cada palabra y error típico a él.
+**Body A:** Te explicamos cada error en tu idioma.
 **Body B:** Tus pistas y traducciones saldrán en este idioma.
 **Options:**
 - 🇲🇽 Español
@@ -155,7 +155,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 
 ### 9. Social proof
 **Purpose:** Trust beat right after the heaviest profiling stretch and right before the word check, the highest-effort screen.
-**Headline A:** Calificada 4.7 por 196K
+**Headline A:** 4.7 de 196K reseñas
 **Headline B:** Les encanta tocar y traducir
 **Body A:** Reseñas reales de App Store.
 **Body B:** La función más mencionada, en cada idioma.
@@ -296,7 +296,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 **Headline A:** Conoces unas {{words}} palabras
 **Headline B:** Tu nivel: {{level}}
 **Body A:** Siguiente: {{next_level}}, conversaciones del día a día.
-**Body B:** Casi todos suben de nivel en semanas.
+**Body B:** Tu plan arranca desde este punto.
 **Visual:** Horizontal scale 100 · 1,000 · 2,500 · 5,000 · 10,000 words with level bands (Novato to Intermedio alto) and a marker animating to `{{words}}`; the next band softly highlighted.
 **Microcopy:** Footnote: "Estimación de tu prueba de palabras. Se actualiza mientras aprendes." (Rubric in Notes.)
 **CTA:** Ver mi plan
@@ -320,26 +320,26 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 **Headline A:** Empieza tu plan de inglés hoy
 **Headline B:** Desbloquea el plan de {{name}}
 **Body A:** Biblioteca completa, tutor de IA y todos los niveles.
-**Body B:** Cancela cuando quieras, con garantía de 14 días.
+**Body B:** Cancela cuando quieras, con aviso antes de renovar.
 **Plans:**
 - **1 semana** — `{{price_mxn_1w}}` today, then `{{renew_mxn_1w}}`/week. Per-day price small. No badge.
 - **4 semanas** — **pre-selected**, "MÁS ELEGIDO" badge. `{{price_mxn_4w}}` today, then `{{renew_mxn_4w}}` every 4 weeks. Per-day price small.
 - **12 semanas** — "MENOR PRECIO POR DÍA" badge, the anchor. `{{price_mxn_12w}}` today, then `{{renew_mxn_12w}}` every 12 weeks.
 - BRL variant uses `{{price_brl_*}}` / `{{renew_brl_*}}` (same structure). On every card the renewal line sits directly under the price at the same size. Savings badges compare against the 1-week price times weeks, never an invented "was" price.
-**Visual:** Top to bottom, one scroll: (1) brand bar with the app name and a close ✕ · (2) personalised hero: level to next level card, goal, minutes, and a "Tu pack de falsos amigos" line · (3) plan block with 3 cards and the CTA · (4) what's inside (clips with tap-to-translate, books with audio, flashcards, AI tutor, false-friends pack, sound drills) · (5) how it works in 3 steps (install, log in with the same email, Day 1) · (6) proof: store rating and two real review cards · (7) guarantee: the 14-day money-back card · (8) FAQ accordion, "¿Cómo cancelo?" open by default · (9) the plan block again with the CTA · (10) legal row. A sticky bottom bar (selected plan + today's charge + CTA) appears after the first plan block scrolls out of view.
-**Microcopy:** Disclosure above every CTA, updated live for the selected plan: "Pagas {{price_sel}} hoy. Se renueva a {{renew_sel}} cada {{period}} hasta que canceles. Cancela hasta 24 h antes de renovar." Under the CTA: "Te avisaremos por correo antes de tu primera renovación." Trust row: "🔒 Pago seguro · Cancela cuando quieras · Garantía de 14 días".
-**Fallback offer:** On dismiss, the last-chance offer (#21) once per session: a disclosed 3-day free trial on the 4-week plan, then its regular renewal. No timer, no second discount.
+**Visual:** Top to bottom, one scroll: (1) brand bar with the app name and a close ✕ · (2) personalised hero: level to next level card, goal, minutes, and a "Tu pack de falsos amigos" line · (3) plan block with 3 cards and the CTA · (4) what's inside (clips with tap-to-translate, books with audio, flashcards, AI tutor, false-friends pack, sound drills) · (5) how it works in 3 steps (install, log in with the same email, Day 1) · (6) proof: store rating and two real review cards · (7) guarantee card, rendered only when `CONFIG.refundDays` is a real number (hidden while it is the token `{{refund_days}}`) · (8) FAQ accordion, "¿Cómo cancelo?" open by default · (9) the plan block again with the CTA · (10) legal row. A sticky bottom bar (selected plan + today's charge + CTA) appears after the first plan block scrolls out of view.
+**Microcopy:** Disclosure above every CTA, updated live for the selected plan: "Pagas {{price_sel}} hoy. Se renueva a {{renew_sel}} cada {{period}} hasta que canceles. Cancela hasta 24 h antes de renovar." Under the CTA: "Te avisaremos por correo antes de tu primera renovación." Trust row: "🔒 Pago seguro · Cancela cuando quieras", plus "· Garantía de {{refund_days}} días" only when refund days are confirmed. The same gate hides the guarantee card and its FAQ line.
+**Fallback offer:** On dismiss, the last-chance offer (#21) once per session: a paid intro offer on the 4-week plan (intro price for the first 4 weeks, then its regular renewal). No free period, no timer, no second discount.
 **CTA:** Empezar a aprender
 
 ### 21. Last-chance offer (on close)
-**Purpose:** Second chance for users who close the paywall without paying: a disclosed 3-day free trial on the 4-week plan, then its regular renewal. No second discount. Shown once per session, then never again.
-**Headline A:** Prueba el plan de {{name}} gratis
-**Headline B:** Llega a {{next_level}}, 3 días gratis
-**Body A:** Tu camino en inglés está listo. Empieza con 3 días gratis.
-**Body B:** Conservas tu plan y tu pack de falsos amigos.
-**Plans:** One offer card: **4-week plan, 3 days free first**. `{{offer_price_mxn}}` today for 3 days with the real 4-week price (`{{price_mxn_4w}}`, `compareAt: '4w'`) struck, then `{{renew_mxn_4w}}` every 4 weeks until cancelled. Optional `{{offer_badge}}` only if true.
+**Purpose:** Second chance for users who close the paywall without paying: a paid intro offer on the 4-week plan: `{{offer_price_mxn}}` for the first 4 weeks, then the regular renewal. No free period, no second discount. Shown once per session, then never again.
+**Headline A:** Un precio inicial para ti
+**Headline B:** Empieza hoy con precio inicial
+**Body A:** Primeras 4 semanas a precio de introducción.
+**Body B:** Luego se renueva a su precio normal.
+**Plans:** One offer card: **4-week plan, intro price**. `{{offer_price_mxn}}` for the first 4 weeks, nothing struck (`compareAt: null`, because a different-length plan is not a fair comparison), then `{{renew_mxn_4w}}` every 4 weeks until cancelled. Optional `{{offer_badge}}` only if true.
 **Visual:** Same web-page look as #20: sticky bar with app name and ✕, eyebrow "Oferta única · se muestra una vez", headline and lead, one orange-bordered card with the level summary, plan name, price row, 3 checks, CTA, payment badges and the renewal line. A plain decline link below.
-**Microcopy:** Renewal line: "{{offer_price_mxn}} hoy por 3 días, luego {{renew_mxn_4w}} cada 4 semanas hasta que canceles. Te avisamos un día antes. Cancela hasta 24 h antes de renovar." Shown once per session (sessionStorage `ikf_offer_ewa-latam`). No timer: `CONFIG.offer.expiresMin` is `null`. Decline link: "No, gracias, volver a mi plan" returns to #19. Events: `paywall_close`, `offer_view`, `offer_accept`, `checkout_click`, `offer_decline`.
+**Microcopy:** Renewal line: "{{offer_price_mxn}} por las primeras 4 semanas, luego {{renew_mxn_4w}} cada 4 semanas hasta que canceles. Te avisamos antes de renovar. Cancela hasta 24 h antes de renovar." Shown once per session (sessionStorage `ikf_offer_ewa-latam`). No timer: `CONFIG.offer.expiresMin` is `null`. Decline link: "No, gracias, volver a mi plan" returns to #19. Events: `paywall_close`, `offer_view`, `offer_accept`, `checkout_click`, `offer_decline`.
 **CTA:** Quiero mi oferta
 
 ---
@@ -360,7 +360,7 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English through adapted books with 
 
 ## Notes
 
-**Unverified / inferred.** The Praktika multilingual funnel (native language asked at step 2) is taken from the research doc and was not re-walked screen by screen: the order after step 2 is unverified. The EWA Spanish-for-English variant was only seen as a count (134 screens). The 14-day money-back guarantee, "4.7 · 196K", the two review quotes and the "about 70M learners" figure are carried over from `learning/ewa` and must be confirmed with EWA before launch. The false-friends pack and the sound drills are our own addition, not a live competitor feature.
+**Unverified / inferred.** The Praktika multilingual funnel (native language asked at step 2) is taken from the research doc and was not re-walked screen by screen: the order after step 2 is unverified. The EWA Spanish-for-English variant was only seen as a count (134 screens). The money-back guarantee (refund days not confirmed, so the demo hides it behind `{{refund_days}}`), "4.7 · 196K", the two review quotes and the "about 70M learners" figure are carried over from `learning/ewa` and must be confirmed with EWA before launch. The false-friends pack and the sound drills are our own addition, not a live competitor feature.
 
 **ES / PT-BR variants (the demo is ES; PT only swaps data).**
 
