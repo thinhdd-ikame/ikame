@@ -109,10 +109,11 @@ This is the personality-test reskin of the TestLibrary flagship in `testlibrary/
 ### 6. Social proof - after the effort
 **Purpose:** A trust beat right after the longest effort, before the email ask. No count is claimed, only real reviews.
 **Headline A:** See what test-takers say
-**Headline B:** Real reviews, real people
+**Headline B:** What test-takers say
 **Body A:** Reviews from people who took a TestLibrary test.
 **Body B:** Your results are almost ready.
-**Visual:** Star row and one review card with first name and country. A review-platform logo only if that platform allows it.
+**Fallback (while no real review is configured):** Headline A "Your answers are in", Headline B "Almost scored", Body A "Next, we score all 40 of them.", no review card, no stars. The review text, name, country and platform are CONFIG tokens; the review view shows only when all four are real (not a `{{token}}`).
+**Visual:** Star row and one review card with first name and country, only when real review data is set. A review-platform logo only if that platform allows it.
 **Microcopy:** The review is a real, current review, or the card is omitted. No tests-taken number and no rating figure unless taken live from analytics or the platform. Never import another company's numbers.
 **CTA:** See my results
 
@@ -189,7 +190,7 @@ This is the personality-test reskin of the TestLibrary flagship in `testlibrary/
 - **1-week Full Access - {{price_trial}} today, then {{renewal_trial}} every 4 weeks.** Pre-selected, badge "ALL TESTS". The renewal line is printed on the card at the same size and color as the intro price.
 - **4-week Full Access - {{price_4week}}, renews at {{renewal_4week}} every 4 weeks.**
 Plan block repeats lower on the page, with the same selection.
-**Visual:** One long scroll, web style, light page. In order: (1) brand bar with wordmark and a close X. (2) Personal hero with the four letters, the nickname and the first strength, with the locked rows beneath. (3) Plan block with three stacked radio cards, "today" and "then" in two equal-weight lines, then the CTA. (4) What's inside: Career fit · Relationship style · Growth plan · all 4 trait percentages · all tests (Full Access only). (5) How it works: 1 unlock · 2 read it in your account · 3 take the next test. (6) Proof: a real review card and the rating. (7) Guarantee: the refund window that really exists, in plain words. (8) FAQ accordion: How is my type decided? · What does the trial include? · When will I be charged? · How do I cancel? (9) The plan block again. (10) Sticky bottom CTA that always shows today's charge and the renewal line.
+**Visual:** One long scroll, web style, light page. In order: (1) brand bar with wordmark and a close X. (2) Personal hero with the four letters, the nickname and the first strength, with the locked rows beneath. (3) Plan block with three stacked radio cards, "today" and "then" in two equal-weight lines, then the CTA. (4) What's inside: Career fit · Relationship style · Growth plan · all 4 trait percentages · all tests (Full Access only). (5) How it works: 1 unlock · 2 read it in your account · 3 take the next test. (6) Proof: a real review card with stars, hidden while the review fields are unresolved tokens; no rating figure. (7) Guarantee: the refund window that really exists, in plain words, hidden while `{{refund_window}}` is an unresolved token. (8) FAQ accordion: How is my type decided? · What does the trial include? · When will I be charged? · How do I cancel? (9) The plan block again. (10) Sticky bottom CTA that always shows today's charge and the renewal line.
 **Microcopy:**
 - Above the CTA, changing with the plan: "Today: {{price_trial}}. On {{renewal_date}}: {{renewal_trial}}, then every 4 weeks until you cancel." / "One payment of {{price_report}}. Nothing renews."
 - Trust row: "Secure checkout · Cancel anytime in your account · 2-click cancel".
@@ -201,14 +202,14 @@ Plan block repeats lower on the page, with the same selection.
 
 ### 12. Last-chance offer (on close)
 **Purpose:** A second chance for people who closed the paywall, most often because they don't want a subscription. It is the one-time report, nothing renews. Shown once per session (sessionStorage `ikf_offer_testlibrary-personality`), then never again.
-**Headline A:** {{name}}, just want your report?
-**Headline B:** Want only this report?
-**Body A:** Your type is scored. Get this one report, no subscription.
+**Headline A:** {{name}}, just want your type?
+**Headline B:** Want only your type?
+**Body A:** A smaller pass, paid once. No subscription.
 **Body B:** One payment. Nothing renews, nothing to cancel.
-**Plans:** One offer card: {{offer_name}} (default "This profile report only": one payment, nothing renews). {{offer_price}} today. A struck-through price appears only if it is a real, lower price that checkout charges; if the offer is the one-time report at its listed price, nothing is struck. Optional {{offer_badge}}.
-**Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with a mini profile card (letters clear, report blurred), the price row, 3 checks (career fit · relationship style · growth plan), the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
-**Microcopy:** No timer by default. A timer appears only if `CONFIG.offer.expiresMin` is set to a real deadline; when it ends the offer is withdrawn (`offer_expired`) and the user returns to the preview. Decline link: "No thanks, back to my free preview". Disclaimer as on the paywall. Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Offer CVR is measured separately.
-**CTA:** Claim my offer
+**Plans:** One offer card, a smaller product than the one-time report: {{offer_name}} (default "Type summary only"): the four-letter type and all 4 trait percentages, saved to the account. {{offer_price}} paid once, nothing renews, no strike-through. Not included (stated on the card): career fit, relationship style, 3-week growth plan, library access. Optional {{offer_badge}}.
+**Visual:** Light page in the paywall's style: wordmark and close X, eyebrow "One-time offer · shown once", one navy-bordered offer card with a mini profile card (letters clear, report blurred), the price row, 3 checks (four-letter type · 4 trait percentages · saved to your account), a "Not included" line, the CTA, payment badges and the line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
+**Microcopy:** No timer by default. A timer appears only if `CONFIG.offer.expiresMin` is set to a real deadline; when it ends the offer is withdrawn (`offer_expired`) and the user returns to the preview. Decline link: "No thanks, back to my free preview". Disclaimer as on the paywall. Offer buyers get a limited profile in #14 (letters, trait bars, strengths, a locked note; no career, relationship or growth sections). Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Offer CVR is measured separately.
+**CTA:** Get my type summary
 
 ### 13. Order summary + consent
 **Purpose:** The anti-trap screen. It restates what is charged today and later, with an unticked consent box.
@@ -219,7 +220,7 @@ Plan block repeats lower on the page, with the same selection.
 **Field:** Summary card (plan, today's charge, next charge date, amount and interval, "Cancel anytime before {{renewal_date}} to pay nothing more"). Below it a **consent checkbox, unticked by default**: "I understand my plan renews at {{renewal_trial}} every 4 weeks until I cancel." Required for recurring plans, hidden for One-time. Then card / Apple Pay / Google Pay.
 **Visual:** White summary card with two rows, "Today" and "{{renewal_date}}", in equal type. Checkbox and label at body size right above the pay button.
 **Error state:** "Please tick the box to confirm renewal terms." · "Card declined. Try another card or PayPal."
-**Microcopy:** "Receipt with cancel link sent to {{email}}." Refund wording points to the Subscription policy; the paywall guarantee carries the real refund window.
+**Microcopy:** "Receipt with cancel link sent to {{email}}." Refund wording points to the Subscription policy; the paywall guarantee carries the real refund window once it exists.
 **CTA:** Pay and see profile
 
 ---
@@ -232,7 +233,7 @@ Plan block repeats lower on the page, with the same selection.
 **Headline B:** {{name}}, you're {{type_code}}
 **Body A:** {{type_nickname}}. Here's your full profile.
 **Body B:** Your traits, strengths and next steps.
-**Visual:** Four big letter tiles with the nickname, then four trait bars with real percentages and their pole labels (e.g. Introverted 68%). Three strengths as cards, picked from the clearest traits. Then three unlocked sections: Career fit (4 fields to explore) · Relationship style · Growth plan (one habit per week for 3 weeks, built from the least clear trait).
+**Visual:** Four big letter tiles with the nickname, then four trait bars with real percentages and their pole labels (e.g. Introverted 68%). Three strengths as cards, picked from the clearest traits. Then three unlocked sections: Career fit (4 fields to explore) · Relationship style · Growth plan (one habit per week for 3 weeks, built from the least clear trait). Type-summary offer buyers see only letters, bars and strengths plus a locked note listing the three sections.
 **Microcopy:** Method line, always visible: "Based on 40 statements you rated. A trait near 50% means you use both sides." Disclaimer: "For self-discovery only. Independent 16-type test. Not clinical." Every result is shown with the same warmth, including balanced ones.
 **CTA:** Get my profile card
 

@@ -393,7 +393,7 @@ code{font-size:.92em;overflow-wrap:anywhere}
     </div>
     <div class="foot-note">
       <p><b>Faked:</b> the type is a simple sum of agree scores per trait (no norms), the loading steps, Google/Apple sign-in, checkout, PDF and share buttons are simulated, and no charge is made.</p>
-      <p><b>Real:</b> the plan structure only. Every price is a token ({{price_*}}, {{renewal_*}}). Review text and the refund window on the paywall are placeholders (dashed). Fill them from real data only. The 8-minute estimate is a guess until measured.</p>
+      <p><b>Real:</b> the plan structure only. Every price is a token ({{price_*}}, {{renewal_*}}). Review text and the refund window are CONFIG tokens: the blocks stay hidden until real values are set. The 8-minute estimate is a guess until measured.</p>
       <p><b>Images</b> in <code>img/</code> are placeholder art. Run <code>gen_images.py</code> with <code>IKAME_AI_KEY</code> set to replace them under the same names.</p>
     </div>
   </aside>
@@ -486,8 +486,14 @@ const CONFIG={
      Default: this one profile report, no subscription. Prices are tokens: real values come from checkout config.
      compareAt:null = nothing struck. Strike a price only if it is a real, lower price that checkout charges.
      renews:null = one payment, nothing renews. expiresMin:null = no timer (the brief promises none). */
-  offer:{enabled:true,name:'This profile report only',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+  offer:{enabled:true,name:'Type summary only',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  /* Unverified proof: stays a {{token}} until real data is set; every block using it is hidden while it is a token. */
+  refundWindow:'{{refund_window}}',
+  review:{quote:'{{review_quote}}',name:'{{review_first_name}}',country:'{{review_country}}',platform:'{{review_platform}}'}
 };
+const notTok=v=>!!v&&!/^\{\{/.test(v);
+const realReview=()=>{const r=CONFIG.review||{};return notTok(r.quote)&&notTok(r.name)&&notTok(r.country)&&notTok(r.platform)};
+const hasRefund=()=>notTok(CONFIG.refundWindow);
 PLANS.offer={n:esc(CONFIG.offer.name),today:CONFIG.offer.price,then:CONFIG.offer.renews||'Nothing renews',later:CONFIG.offer.renews||''};
 const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
 
@@ -556,8 +562,7 @@ const lettersRow=(opts={})=>{const code=opts.q?'????':typeCode();return `<div cl
 function tbar(a,{blur=false,hot=false,fill=null}={}){const X=AX[a],p=axPct(a),pole=axPole(a),bal=axBalanced(a);
   return `<div class="tb ${hot?'hot':''} ${blur?'blur':''}"><div class="top"><span>${X.n}</span><b>${bal?'Balanced':pole} ${p}%</b></div><div class="trk"><i style="width:${fill===null?p:fill}%"></i></div><div class="ends"><span>${X.la}</span><span>${X.lb}</span></div></div>`}
 const tbars=o=>`<div class="tbars">${[0,1,2,3].map((a,i)=>tbar(a,o&&o.teaser?{blur:i>0,hot:i===0}:{hot:i===0})).join('')}</div>`;
-const reviewCard=()=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${ph('review_quote')}”</q><span class="by">— ${ph('review_first_name')}, ${ph('review_country')} · ${ph('review_platform')}</span></div>`;
-const dashQuote=()=>`<div class="quote dash"><q>“Real, current review goes here.”</q><span class="by">— fill from real review data only</span></div>`;
+const reviewCard=()=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${esc(CONFIG.review.quote)}”</q><span class="by">— ${esc(CONFIG.review.name)}, ${esc(CONFIG.review.country)} · ${esc(CONFIG.review.platform)}</span></div>`;
 const miniCard=()=>`<div class="mcard"><div class="ml">${typeCode().split('').map(c=>`<i>${c}</i>`).join('')}</div><div class="mb"></div><div class="mb b" style="width:70%"></div><div class="mb b" style="width:85%"></div></div>`;
 const pays=`<div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>`;
 const DISC='For self-discovery only. Independent 16-type test. Not a clinical or diagnostic assessment.';
@@ -606,16 +611,16 @@ const V={
   <div class="chips" style="justify-content:center">${AX.map(x=>`<span class="chip">${x.n}</span>`).join('')}</div>
   <div class="tip">${TIPS[cp]}</div></div>
   <div class="foot">${cta('Keep going',true,'nextsec')}</div>`},
-6:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${t('See what test-takers say','Real reviews, real people')}</h1>
-  <p class="lead" style="text-align:center">${t('Reviews from people who took a TestLibrary test.','Your results are almost ready.')}</p>
-  ${dashQuote()}</div>
+6:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${realReview()?t('See what test-takers say','What test-takers say'):t('Your answers are in','Almost scored')}</h1>
+  <p class="lead" style="text-align:center">${realReview()?t('Reviews from people who took a TestLibrary test.','Your results are almost ready.'):t('Next, we score all 40 of them.','Your results are almost ready.')}</p>
+  ${realReview()?reviewCard():''}</div>
   <div class="foot">${cta('See my results')}</div>`,
 7:()=>{const rows=['Reading your 40 answers…','Weighing each of the 4 traits…','Matching you to one of 16 types…','Writing your profile, almost ready…'];
   return `<div class="scr" style="gap:14px"><h1 class="display" style="text-align:center;margin-top:6px">${t('Scoring your answers…','Building your profile…')}</h1>
   <p class="lead" style="text-align:center;margin-top:-8px">Scored from your answers only.</p>
   <div id="ltr">${lettersRow({q:true,big:true})}</div>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
-  <div class="qrot" id="qrot">${dashQuote()}</div></div>
+  ${realReview()?`<div class="qrot" id="qrot">${reviewCard()}</div>`:''}</div>
   <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
 8:()=>`<div class="scr"><h1 class="display">${t('Your results are ready','Where should we save them?')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Enter your email to save your profile.','Your profile lives in your account, anytime.')}</p>
@@ -651,8 +656,8 @@ const V={
   ${CONFIG.reminder?'<p class="small">We’ll email you 2 days before your trial ends.</p>':''}${pays}
   <div class="pwsec"><h2>What’s inside</h2><div class="checks">${['Career fit for '+esc(goalLabel().toLowerCase()),'Your relationship style','A 3-week growth plan','All 4 trait percentages','Full Access plans: every test in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
   <div class="pwsec"><h2>How it works</h2><div class="how"><div><b>1</b><span>Unlock your report in one step.</span></div><div><b>2</b><span>Read it any time in your account.</span></div><div><b>3</b><span>Take the next test from the library.</span></div></div></div>
-  <div class="pwsec"><h2>People like you</h2>${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}${reviewCard()}</div>
-  <div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Refund window: ${ph('refund_window')}. Cancel a plan any time in your account.</span></div>
+  ${realReview()?`<div class="pwsec"><h2>People like you</h2>${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}${reviewCard()}</div>`:''}
+  ${hasRefund()?`<div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Refund window: ${esc(CONFIG.refundWindow)}. Cancel a plan any time in your account.</span></div>`:''}
   <div class="pwsec"><h2>Questions</h2><div class="faq">${[['How is my type decided?','From your 40 answers: for each of 4 traits we add up how much you agreed toward each side. It is a self-report estimate.'],['What does the trial include?','1 week of Full Access to every test in the library, including this report.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','In your account, in two clicks.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="pwsec"><h2>Ready when you are</h2>${planBlock('bottom')}</div>
   <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel</p>
@@ -662,15 +667,16 @@ const V={
   return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
   <div class="wbar">${wordmark()}</div>
   <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display sm">${lead('just want your report?')}</h1>
-   <p class="lead" style="margin:0">Your type is scored. Get this one report, no subscription.</p>
+   <h1 class="display sm">${lead('just want your type?')}</h1>
+   <p class="lead" style="margin:0">A smaller pass, paid once. No subscription.</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow">${miniCard()}<div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">${o.renews?'Full report + library trial':'One payment · nothing renews'}</span></div></div>
+   <div class="orow">${miniCard()}<div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">One payment · nothing renews</span></div></div>
    <div class="oprice"><b>${tok(o.price)}</b><span>today</span></div>
-   <div class="checks">${['Career fit for '+esc(goalLabel().toLowerCase()),'Your relationship style','Your 3-week growth plan'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}${pays}
-   <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
+   <div class="checks">${['Your four-letter type','All 4 trait percentages','Saved to your account'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   <p class="hint" style="margin:0 0 4px">Not included: career fit, relationship style, 3-week growth plan, library access.</p>
+   ${cta('Get my type summary',true,'offerbuy')}${pays}
+   <p class="small">One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.</p></div>
   <p class="small">${DISC}</p>
   <button class="link" data-a="offerno" style="margin-bottom:24px">No thanks, back to my free preview</button></div>`},
 13:()=>{const p=S.plan,P=PLANS[p],rec=recurring(p),rd=renewal(p);
@@ -686,15 +692,15 @@ const V={
   <p class="small">Refund terms are in the Subscription policy.</p>
   <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
   <div class="foot">${cta('Pay and see profile',true,'paynow')}</div>`},
-14:()=>{const code=typeCode(),c=careers(),lw=least();
+14:()=>{const code=typeCode(),c=careers(),lw=least(),lim=(S.paidPlan||S.plan)==='offer';
   return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`You’re ${code}`,nameOk()?`${nm()}, you’re ${code}`:`You’re ${code}`)}</h1>
   <p class="lead" style="margin-top:-6px">${t(`${nick()}. Here’s your full profile.`,'Your traits, strengths and next steps.')}</p>
   ${lettersRow({big:true})}
   <div class="pv"><h4>Your traits</h4>${tbars()}</div>
   <div class="pv"><h4>Your strengths</h4>${strengths().map((x,i)=>`<div class="str"><i>${i+1}</i>${x}</div>`).join('')}</div>
-  <div class="sec"><h4>💼 Career fit</h4><p>Fields to explore, for ${esc(goalLabel().toLowerCase())}:</p><ul>${c.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  ${lim?`<div class="sec"><h4>${ic('lock',15)} Not in your type summary</h4><p>Career fit, relationship style and the 3-week growth plan are part of the full report.</p></div>`:`<div class="sec"><h4>💼 Career fit</h4><p>Fields to explore, for ${esc(goalLabel().toLowerCase())}:</p><ul>${c.map(x=>`<li>${x}</li>`).join('')}</ul></div>
   <div class="sec"><h4>💞 Relationship style</h4><p>${REL[axLetter(0)]}</p><p>${REL[axLetter(3)]}</p></div>
-  <div class="sec"><h4>🌱 Your 3-week growth plan</h4><p>Built from your least clear trait: ${AX[lw].n}.</p><ul>${GROW[lw].map((x,i)=>`<li>Week ${i+1}: ${x}</li>`).join('')}</ul></div>
+  <div class="sec"><h4>🌱 Your 3-week growth plan</h4><p>Built from your least clear trait: ${AX[lw].n}.</p><ul>${GROW[lw].map((x,i)=>`<li>Week ${i+1}: ${x}</li>`).join('')}</ul></div>`}
   <div class="method">Based on 40 statements you rated. A trait near 50% means you use both sides. ${DISC}</div></div>
   <div class="foot">${cta('Get my profile card')}</div>`},
 15:()=>`<div class="scr" style="gap:14px"><h1 class="display sm" style="margin-top:4px">${t('Your profile card is ready',tail('Share your type'))}</h1>
@@ -726,8 +732,7 @@ function runLoading(){
       row++;pct=0;
       if(row>3){clearInterval(timer);timer=setTimeout(()=>go(8,false),1300)}}
   },45);
-  let qi=0;const Q=[dashQuote,dashQuote,dashQuote];
-  timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi=(qi+1)%Q.length;q.innerHTML=Q[qi]()},2300);
+  
 }
 
 function render(dir){
