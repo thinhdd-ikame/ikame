@@ -3,7 +3,7 @@ niche: chai-short-drama
 display_name: Chai - Short Drama Series (watch an episode, then talk to the lead - 18+)
 archetype: companion-chat
 subject: person
-input: birth year (18+ gate), series, your name, two chat replies, email
+input: birth month and year (18+ gate), series, your name, two chat replies, email
 output: a short vertical drama you watch, then a lead character who remembers what you just watched and talks about it
 screens: 14
 monetization: web subscription paywall (1-week intro / 4-week pre-selected / 12-week anchor, price tokens) after Episode 3 is locked; one-time series pass as the last-chance offer; second trigger is the in-chat daily message limit card
@@ -57,15 +57,15 @@ Visual: the Chai system (near-black, magenta-violet gradient primary, Plus Jakar
 ## B. Investment
 
 ### 2. Age gate
-**Purpose:** Clear the legal gate before any story is shown. A real year picker, under-18 is a hard stop.
+**Purpose:** Clear the legal gate before any story is shown. Birth month and year pickers, age computed to the month, under-18 is a hard stop.
 **Headline A:** Adults only. Quick check.
 **Headline B:** When were you born?
 **Body A:** Chai dramas are for people 18 and older.
 **Body B:** We only use this to confirm your age.
-**Field:** Birth-year select, no default. CTA disabled until a year is picked.
+**Field:** Birth month + year selects, no default. CTA disabled until both are picked. A failed check is persisted for the session (`sessionStorage`), so a reload stays blocked.
 **Visual:** Dimmed story frame behind a rounded `surface` box with the year select.
 **Microcopy:** "AI-generated stories · All characters are fictional and 18+" · Footer: Terms of Service · Privacy Policy
-**Error state:** Under 18 gives a blocking screen: "Sorry, Chai is for adults" / "You must be 18 or older to continue." No back button.
+**Error state:** Under 18 gives a blocking screen: "Sorry, Chai is for adults" / "You must be 18 or older to continue." No back button, and it stays blocked after a reload.
 **CTA:** Continue
 
 ### 3. Pick your series
@@ -237,7 +237,7 @@ Renewal price shows on every card and on the sticky CTA. No struck-through price
 
 - **Not shown in the funnel, but required in the product:** a post-purchase notification opt-in ("a new episode is ready", app voice, never "{{char_name}} misses you") and a "continue watching" row in the app. Episode cadence is not claimed anywhere until Chai confirms it.
 - **Skipped on purpose:** Candy's 28-screen quiz, a fake countdown on the lock, a scratch card or spin wheel, struck-through intro prices, a viewer ticker, taboo or power-dynamic titles, any sexual input.
-- **Compliance:** 18+ gate first with a real year picker. Posters, art and ad creative stay SFW. AI disclosure on #5-#9, #13, #14. Paywall and offer hero are the series poster, not the lead pleading. The fair-use cap is disclosed behind "unlimited".
+- **Compliance:** 18+ gate first with real month and year pickers. Posters, art and ad creative stay SFW. AI disclosure on #5-#9, #13, #14. Paywall and offer hero are the series poster, not the lead pleading. The fair-use cap is disclosed behind "unlimited".
 - **Unverified:** the category outlook (CandyShorts discontinued per sheet, no re-crawl), the 10 free messages/day and 300 fair-use cap (reused from the Chai base, confirm), every price, rating, review, refund term and the existence of a one-time series pass (all tokens or assumptions), and the "voice line" playback (in the demo it is a stub that says "plays in the app").
 - **Content ops:** each series needs 2 free episodes plus 1 locked episode (3 slides each, art plus caption), a lead with an opening line quoting the episodes, two reply sets with scripted answers, and a tease line. The demo scripts all three series.
 - **Drop-off risk:** #2 (year gate on screen two), #5-#6 (slide length: keep each under 20 s), #9 (users who do not reply: chips are the safety net), #12.

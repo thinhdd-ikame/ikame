@@ -476,7 +476,7 @@ const FREE=CONFIG.freeMessagesPerDay;
 const THIS_YEAR=new Date().getFullYear();
 const real=v=>!/^\{\{/.test(String(v==null?'':v));
 
-const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',blocked:false,series:'',name:'',picks:[],chat:[],typing:false,turn:0,msgs:FREE,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,offerSeen:false,offerRet:14,sl:0,ps:false,ep3done:false});
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',month:'',blocked:(()=>{try{return !!sessionStorage.getItem('ikf_age_block')}catch(e){return false}})(),series:'',name:'',picks:[],chat:[],typing:false,turn:0,msgs:FREE,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,offerSeen:false,offerRet:14,sl:0,ps:false,ep3done:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const SCREENS={1:'hook',2:'age_gate',3:'series_pick',4:'your_name',5:'episode_1',6:'episode_2',7:'cliffhanger',8:'chat_turn_1',9:'chat_turn_2',10:'episode_3_locked',11:'save_progress',12:'paywall',13:'last_chance_offer',14:'episode_3_and_chat'};
@@ -658,6 +658,8 @@ function say(text,idx){
 }
 
 /* ---------- screens ---------- */
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const months=()=>'<option value="">Month</option>'+MONTHS.map((m,i)=>`<option value="${i+1}" ${String(i+1)===String(S.month)?'selected':''}>${m}</option>`).join('');
 const years=()=>{let o='<option value="">Birth year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
 const V={
 1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} Chai</div>
@@ -666,9 +668,9 @@ const V={
   <div class="fan">${SORDER.map((k,j)=>`<div class="fc" style="--gbg:${SERIES[k].bg};background:var(--gbg);border-color:${SERIES[k].acc}88;transform:translateX(${(j-1)*66}px) rotate(${(j-1)*9}deg);z-index:${3-Math.abs(j-1)}"><span>${SERIES[k].e}</span>${im(SERIES[k].img)}<div class="bars"><i></i><i></i><i></i></div></div>`).join('')}</div></div>
   <div class="foot">${cta('Start watching')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
 2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Adults only. Quick check.','When were you born?'),t('Chai dramas are for people 18 and older.','We only use this to confirm your age.'))}
-  <select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select>
+  <div style="display:flex;gap:10px"><select class="sel" id="month" data-f="month" aria-label="Birth month">${months()}</select><select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select></div>
   <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div>
-  <div class="foot">${cta('Continue',!!S.year,'age')}</div>`,
+  <div class="foot">${cta('Continue',!!(S.year&&S.month),'age')}</div>`,
 3:()=>`<div class="scr">${q(t('Pick your series.','What are you watching?'),t('Each has a different lead to talk to.','Switch series anytime later.'))}
   <div class="opts" style="gap:12px">${SORDER.map(k=>{const g=SERIES[k],on=S.series===k;return `<button class="sposter ${on?'on':''}" data-a="pick" data-f="series" data-v="${k}" aria-pressed="${on}" style="--gbg:${g.bg};--gacc:${g.acc}"><span class="gc">${g.e}</span>${im(g.img)}<span class="tx"><em>${esc(g.lead.toUpperCase())} · ${esc(g.role)}</em><b>${esc(g.t)}</b><small>${esc(g.log)}</small></span></button>`}).join('')}</div>
   <p class="hint">Illustrations only. Leads are AI characters.</p></div>`,
@@ -754,7 +756,7 @@ phone.addEventListener('click',e=>{
       if(S.i===4){answer('name_set',!!S.name.trim());S.name=S.name.trim()}
       next();break;
     case 'back':back();break;
-    case 'age':{const age=THIS_YEAR-(+S.year);if(age<18){S.blocked=true;emit('age_block');render();break}emit('age_confirm',{method:'year'});next();break}
+    case 'age':{const now=new Date(),age=THIS_YEAR-(+S.year)-((now.getMonth()+1)<(+S.month)?1:0);if(age<18){S.blocked=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render();break}try{sessionStorage.setItem('ikf_age_ok','1')}catch(e){}emit('age_confirm',{method:'month_year'});next();break}
     case 'pick':
       if(S.series!==v){S.chat=[];S.picks=[];S.turn=0}
       S.series=v;answer('series',v);
@@ -790,11 +792,11 @@ phone.addEventListener('input',e=>{
   const f=e.target.dataset.f;
   if(e.target.id==='msg'){const s=document.getElementById('sendb');if(s)s.disabled=!e.target.value.trim();return}
   if(!f)return;
-  if(f==='year'){S.year=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.year;return}
+  if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month);return}
   S[f]=e.target.value;
   if(f==='name'){const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.name.trim();const ne=document.getElementById('nerr');if(ne)ne.hidden=!!S.name.trim()}
 });
-phone.addEventListener('change',e=>{if(e.target.id==='year'){S.year=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.year}});
+phone.addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month)}});
 phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='msg')cur().querySelector('[data-a="send"]')?.click()});
 
 /* Host API: the page embedding this funnel can complete a purchase or read the picks. */
