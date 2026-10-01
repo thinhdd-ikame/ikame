@@ -333,7 +333,7 @@ const CONFIG={
   /* Last-chance offer shown ONCE when the paywall is closed without paying.
      Real terms only. compareAt = the regular plan it undercuts (its real price is struck).
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
-  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',renews:'{{renewal_1w}}/week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},  /* one-time Key window pass: no renewal, not the 1-week SKU, no strike-through */
   termsUrl:'',privacyUrl:'',subscriptionTermsUrl:'',
   appUrl:'',appStoreUrl:'',playStoreUrl:'',
   onPalmPhoto:null,   /* optional async (blob)=>void; null = the photo never leaves the device */
@@ -416,7 +416,7 @@ function wheels(d=14,{spin=false,anim=true}={}){
 }
 const art=(img,cls='',d=14)=>`<div class="art ${cls}">${wheels(d)}<img src="${im(img)}" alt="" onerror="this.remove()"></div>`;
 
-const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',gender:'',goal:'',goalOther:'',dob:{m:'',d:'',y:''},bt:{h:'',mi:'',ap:'AM'},xg:'',xdob:{m:'',d:'',y:''},xskip:false,xbt:{h:'',mi:'',ap:'AM'},ended:'',why:'',whyOther:'',contact:'',dur:'',feel:'',fate1:'',fate2:'',inline:{},photo:null,photoErr:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false,offerSeen:false});
+const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',gender:'',goal:'',goalOther:'',dob:{m:'',d:'',y:''},bt:{h:'',mi:'',ap:'AM'},xg:'',xdob:{m:'',d:'',y:''},xskip:false,xbt:{h:'',mi:'',ap:'AM'},ended:'',why:'',whyOther:'',contact:'',dur:'',feel:'',fate1:'',fate2:'',inline:{},photo:null,photoErr:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false,offerSeen:false,pass:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const SCREENS={1:'hook',2:'gender',3:'goal',4:'goal_reassurance',5:'birth_date',6:'birth_time',7:'ex_gender',8:'ex_birth_date',9:'ex_birth_time',10:'who_ended',11:'why_ended',12:'contact',13:'duration',14:'charts_meet',15:'feeling',16:'fate_1',17:'fate_2',18:'palm_photo',19:'loader',20:'result_teaser',21:'email',22:'paywall',23:'offer',24:'reading'};
@@ -566,7 +566,7 @@ const V={
   ${S.emailErr?`<div class="err" role="alert">${S.emailErr}</div>`:''}
   <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button></div>
   <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our Terms of Use and Privacy Policy.</p></div>`,
-22:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text),vk=verdictKey();
+22:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text&&!/\{\{/.test(r.text)),vk=verdictKey();
   const FAQ=[['When will I get my reading?','Right after checkout, on this page and in the Nebula app. Log in with '+esc(S.email||'your email')+'.'],
     ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
     ['Will I be charged again?','Yes, unless you cancel: the plan renews at the price and period shown on the card you pick.'],
@@ -583,29 +583,30 @@ const V={
    <div class="toc"><div class="open"><span class="n">1</span><span>Verdict: ${VERDICT[vk][1]}</span><span class="l">${ic('check',16,2.4)}</span></div>${['Why it ended, in your charts','Key window and what it means','What each chart needs',NEXTTXT[nextKey()][0],'Daily guide in the app'].map((x,i)=>`<div><span class="n">${i+2}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From your answers to your guide</h2>
    <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Read it now','Your full reading opens on this page.'],['Keep going in the app','Log in with your email for your daily guide.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  ${R&&R.score?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
+  ${R&&R.score&&!/\{\{/.test(R.score)&&!/\{\{/.test(R.count||'')?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
    <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${/\{\{/.test(r.name)?'?':esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div><span class="stars" style="margin-left:auto;font-size:12px">★★★★★</span></div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
-  <div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>
+  ${/\{\{/.test(CONFIG.refundDays)?'':`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
   <div class="wfoot">${legal()}<div>For entertainment purposes only. ${tok(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
-23:()=>{const o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price:'';
+23:()=>{const o=CONFIG.offer,refund=/\{\{/.test(CONFIG.refundDays)?'':` ${esc(CONFIG.refundDays)}-day money-back.`;
   return `<div class="wp"><div class="wbar"><div class="brand">${ic('spark',16)} Nebula</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Wait, keep your <em>reading</em>','One-time offer, <em>shown once</em>')}</h1>
-   <p class="lead" style="margin-top:8px">${t('Unlock everything at a lower first price.','Your verdict is ready and waiting.')}</p>
+  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Not ready? Get the <em>window</em>','One-time offer, <em>shown once</em>')}</h1>
+   <p class="lead" style="margin-top:8px">${t('A smaller pass, paid once. No subscription.','Just your key window, in full.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th" style="background:#0E111A">${wheels(8,{anim:false})}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Full reading · 1 week</div></div></div>
-   <div class="oprice">${was?`<s>${tok(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
-   <div class="checks" style="margin:14px 0">${['Why it ended, in your charts','Your key window and next step','Daily guide in the app'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="orow"><div class="th" style="background:#0E111A">${wheels(8,{anim:false})}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Key window pass · one payment</div></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>once</span></div>
+   <div class="checks" style="margin:14px 0">${['Your key window, in full','What it means for both charts','Reading saved to your email'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
+   <p class="hint" style="margin-bottom:10px">Not included: what each chart needs, your next step and the daily guide.</p>
+   ${cta('Get the window pass',true,'offerbuy')}
    <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-   <p class="fine">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account. ${tok(CONFIG.refundDays)}-day money-back.</p></div></div>
+   <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.${refund}</p></div></div>
   <div class="wsec tc" style="padding-bottom:calc(var(--sab) + 30px)"><button class="link" data-a="offerno">No thanks, show my free reading</button><div class="note" style="margin-top:6px">For entertainment purposes only.</div></div></div>`},
 24:()=>{const vk=verdictKey(),a=xsun(),b=sun(),ea=NEEDS[ELEM[b]]||'to feel seen',eb=NEEDS[ELEM[a]]||'space to breathe';
-  const open=(k)=>S.paid||k===0;
+  const open=(k)=>S.paid||k===0||(S.pass&&k===1);
   const cards=[['Why it ended',WHYTXT[whyKey()]],['Key window: '+winTxt(),'A softer stretch for talking, or for letting go. Pick the one that serves you.'],
     ['What each chart needs',`${b||'You'} needs ${ea}. ${a||'They'} needs ${eb}.`],NEXTTXT[nextKey()]];
   return `<div class="scr" style="gap:14px">${S.paid?'<span class="badge">'+ic('check',13,2.6)+' Unlocked</span>':''}<h1 class="display sm">${t('Your compatibility reading','Here is your reading')}</h1>
@@ -695,7 +696,7 @@ app.addEventListener('click',e=>{
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'pay':checkout();break;
     case 'closepw':emit('paywall_close');go(offerOpen()?23:24);break;
-    case 'offerbuy':S.offerSeen=true;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u)try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}break;
+    case 'offerbuy':S.offerSeen=true;S.pass=!CONFIG.offer.checkoutUrl;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}else go(24)}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(24);break;
     case 'topw':go(22);break;
     case 'app':{const u=appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
@@ -718,7 +719,7 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
   completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(24)}});
-if(QS.get('paid')){S.paid=true;S.plan=QS.get('paid')}
+if(QS.get('paid')==='offer'){S.pass=true}else if(QS.get('paid')){S.paid=true;S.plan=QS.get('paid')}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{gender:S.gender||'f',goal:S.goal||'closure',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},xg:S.xg||'m',xdob:S.xdob.m?S.xdob:{m:'10',d:'3',y:'1992'},ended:S.ended||'they',why:S.why||'comm',contact:S.contact||'none',dur:S.dur||'y13',feel:S.feel||'conf',fate1:S.fate1||'unsure',fate2:S.fate2||'bit',email:S.email||'demo@example.com'});go(n)};window.IkFunnel.takeFile=takeFile}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
 render();viewed();

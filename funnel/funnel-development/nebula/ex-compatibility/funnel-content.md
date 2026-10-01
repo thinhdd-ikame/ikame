@@ -308,26 +308,26 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": the verdict open, then locked rows: Why it ended, Key window, What each chart needs, Your next step, Daily guide in the app.
 4. "How it works": checkout, read it now, keep going in the app.
-5. Rating and reviews (placeholders until real).
-6. Money-back seal (only if the refund policy exists).
+5. Rating and reviews (hidden while {{app_rating}}/{{rating_count}}/review text are unresolved; no hard-coded stars or counts).
+6. Money-back seal (hidden while {{refund_days}} is unresolved; shown only once a real refund policy and period exist).
 7. FAQ accordion: When will I get it? · How do I cancel? · Will I be charged again? · Can a chart bring them back? (No) · What happens to my palm photo?
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
 **Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ answer on outcomes: "No. A chart shows patterns for reflection. It cannot bring anyone back."
-**Fallback offer:** #23, shown once. Declining it goes to #24 with the verdict and one section open.
+**Fallback offer:** #23, shown once. Declining it goes to #24 with the verdict and one section open. Buying the pass opens only the key window in #24; the rest stays locked behind the subscription.
 **CTA:** Get my reading
 
 ### 23. Last-chance offer (on close)
 **Purpose:** One second chance after a paywall close, shown once per session.
-**Headline A:** Wait, keep your reading
+**Headline A:** Not ready? Get the window
 **Headline B:** One-time offer, shown once
-**Body A:** Unlock everything at a lower first price.
-**Body B:** Your verdict is ready and waiting.
-**Plans:** One offer card: {{offer_name}} (1 week). {{offer_price}} today with the regular {{price_1w}} struck, then {{renewal_1w}}/week. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the wheels thumbnail, price row, 3 checks, CTA, payment badges, renewal line.
+**Body A:** A smaller pass, paid once. No subscription.
+**Body B:** Just your key window, in full.
+**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (key window pass), {{offer_price}} paid once, no renewal, no strike-through price. Includes the key window in full, what it means for both charts, and the reading saved to the email. Not included (stated on the card): what each chart needs, next step, daily guide. Optional {{offer_badge}}.
+**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the wheels thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line. The money-back line shows only once {{refund_days}} is resolved.
 **Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Decline link: "No thanks, show my free reading".
-**CTA:** Claim my offer
+**CTA:** Get the window pass
 
 ---
 
