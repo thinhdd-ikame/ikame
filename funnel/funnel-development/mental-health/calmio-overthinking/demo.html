@@ -1,3 +1,5 @@
+<!doctype html>
+<html lang="en"><head>
 <title>Calmio Night Overthinking</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -457,6 +459,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .chkrow .cb{width:22px;height:22px;border-radius:7px;border:1.5px solid #D5CFC3;display:grid;place-items:center;flex:none;background:#fff;color:#fff}
 .chkrow.on .cb{background:var(--c-sage);border-color:var(--c-sage)}
 </style>
+</head><body>
 
 <div class="wrap">
   <div class="pbox" id="pbox"><div class="phone" id="phone"></div></div>
@@ -557,7 +560,7 @@ const CONFIG={funnel:'calmio-overthinking',brand:'Calmio',
   /* Gentle one-time offer shown ONCE when the paywall is closed without paying (fallback / "upsell on decline").
      Real terms only: price and renewal must be what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
      expiresMin stays null: no timer in this category. Never shown after a safety event (crisis sheet, crisis chat, help link). */
-  offer:{enabled:true,name:'First-week plan',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'w4',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  offer:{enabled:true,name:'Intro 4-week plan',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'w4',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
   refundDays:'{{refund_days}}',refundTerms:'{{refund_terms}}',company:'{{legal_entity}}',
   termsUrl:'',privacyUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -630,7 +633,7 @@ const later=(fn,ms)=>{const id=setTimeout(fn,ms);chatT.push(id);return id};
 
 /* ---------- safety overlays (phone-level, never gated) ---------- */
 let ovNext=null;
-function openOv(kind,ctx,after){S.ov={kind,ctx};ovNext=after||null;S.safety.push(ctx==='link'?'Help link (#'+S.i+')':'Crisis language (#'+S.i+')');drawOv();renderPanel()}
+function openOv(kind,ctx,after){S.ov={kind,ctx};ovNext=after||null;if(ctx!=='link')S.safety.push('Crisis language (#'+S.i+')');drawOv();renderPanel()}
 function closeOv(run){const f=ovNext;ovNext=null;if(S.ov){S.ov=null;drawOv()}if(run&&f)f()}
 const helpRows=(first)=>`${first}
   <div class="helprow"><span class="w">${ic('globe',18)}</span><div><b>Outside the US: findahelpline.com</b><small>Free, confidential helplines by country</small></div></div>
@@ -722,6 +725,7 @@ function planBlock(id){const P=CONFIG.plans;
    <p class="fine" data-renew>${renewLine()}</p>
    <p class="fine2">We’ll email you before every renewal.</p>
    <p class="fine2" style="color:var(--c-sage);font-weight:800">Crisis resources are always free.</p></div>`}
+const refundReal=()=>!/{{/.test(CONFIG.refundDays+CONFIG.refundTerms)&&!!CONFIG.refundDays&&!!CONFIG.refundTerms;
 const legal=()=>`<div class="legal"><a>Terms of Use</a><a>Privacy Policy</a><a>Subscription terms</a></div>`;
 function updatePlan(){
   const c=cur();if(!c)return;
@@ -869,7 +873,7 @@ const V={
   <div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars2">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
    ${RV.map(r=>`<div class="rev">${tok(r.text)}<small>${tok(r.name)} · ${tok(r.meta)}</small></div>`).join('')}
    <p class="hint2">Placeholders. Real store reviews only, quoted as shown.</p></div>
-  <div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:800 17px var(--sans)">Refund window</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days. Full terms: ${tok(CONFIG.refundTerms)}</p></div></div></div>
+  ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:800 17px var(--sans)">Refund window</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days. Full terms: ${tok(CONFIG.refundTerms)}</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:4px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock('b')}<button class="link" data-a="notnow" style="margin-top:2px">Not now</button></div>
   <div class="wfoot">${legal()}<div>Calmio is AI and not a substitute for professional care.</div><div>${tok(CONFIG.company)}</div></div>
@@ -879,11 +883,11 @@ const V={
   return `<div class="wp">
   <div class="wbar"><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button><div class="brand">${ic('flower',16)} ${CONFIG.brand}</div><span class="sp"></span><span class="helpspace" style="width:128px"></span></div>
   <div class="wsec tight" style="text-align:center"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display" style="font-size:28px">${t(nameOK()?`Start gently, ${nm()}`:'Start gently','Try tonight’s unload first')}</h1>
-   <p class="lead">${t('If four weeks feels like a lot, try one first.','No rush. Here’s a smaller first step.')}</p>
+   <h1 class="display" style="font-size:28px">${t(nameOK()?`Start gently, ${nm()}`:'Start gently','Start tonight for less')}</h1>
+   <p class="lead">${t('Same 4-week plan, at a gentler first price.','No rush. A lower first price, if it helps.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="wsec tight"><div class="ocard" style="margin-top:${o.badge?10:0}px">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th"><img src="${im('img/topic-stress.jpg')}" alt="A still, misty lake" onerror="this.remove()"></div><div style="flex:1;min-width:0"><b style="font:800 18px var(--sans)">${esc(o.name)}</b><div class="hint">The ${P.label} plan · Week 1: ${esc(P.weeks[0])}</div></div></div>
+   <div class="orow"><div class="th"><img src="${im('img/topic-stress.jpg')}" alt="A still, misty lake" onerror="this.remove()"></div><div style="flex:1;min-width:0"><b style="font:800 18px var(--sans)">${esc(o.name)}</b><div class="hint">The ${P.label} plan · 4 weeks · Week 1: ${esc(P.weeks[0])}</div></div></div>
    <div class="oprice">${was?`<s>${tok(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
    <div class="ochecks">${['Your 4-week plan, from night one','Evening chats with Calmio','A reminder before it renews'].map(x=>`<div>${ic('check',16,'currentColor',2.6)}<span>${x}</span></div>`).join('')}</div>
    ${cta('Claim my offer',true,'offerbuy')}
@@ -1170,3 +1174,4 @@ fromHash();
 addEventListener('hashchange',()=>{const m=location.hash.match(/^#s=?([0-9]+b?)$/);if(m)jump(m[1])});
 render();
 </script>
+</body></html>
