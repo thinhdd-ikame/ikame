@@ -604,6 +604,7 @@ const CONFIG={funnel:'calmio-nervous-system',brand:'Calmio',
      Paid once, 7 days, NO renewal, not the auto-renewing 1-week tier. compareAt stays null (no same-length plan to strike).
      expiresMin stays null: no timer. Never shown after a safety event (crisis sheet from free text). */
   offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  deletion:false,  /* true only when in-app data deletion really exists */
   refundDays:'{{refund_days}}',refundTerms:'{{refund_terms}}',company:'{{legal_entity}}',
   termsUrl:'',privacyUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
@@ -827,7 +828,7 @@ const V={
   <p class="lead">${t('It guides calming practices. It doesn’t diagnose or treat.','For crisis or medical care, please reach real people.')}</p>
   <div class="card" style="padding:4px 16px"><div class="rows">
    <div class="rowi"><span class="w">${ic('msg',18)}</span><span>Calmio is AI, and always says so</span></div>
-   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
+   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>You choose what you share</span></div>
    <div class="rowi"><span class="w">${ic('life',18)}</span><span>In crisis? Call or text 988 (US) or visit findahelpline.com</span></div>
    <div class="rowi"><span class="w">${ic('wind',18)}</span><span>Breathing is gentle. Stop anytime, and breathe normally, if you feel dizzy.</span></div>
    <div class="rowi"><span class="w">${ic('book',18)}</span><span>Calmio shares practices and reflections. It does not give medical advice.</span></div>
@@ -838,12 +839,12 @@ const V={
 8:()=>{const RV=reviewsReal();
   return `<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
   <h1 class="display" style="text-align:center">${t('Private. Judgment-free. Yours.','Your answers stay yours.')}</h1>
-  <p class="lead" style="text-align:center">${t('Your chats stay private. Nothing is ever public.','No judging, no streak guilt.')}</p>
+  <p class="lead" style="text-align:center">${t('You choose what you share. Sharing is always your choice.','No judging, no streak guilt.')}</p>
   ${ratingReal()?`<div class="rate"><div class="sc">${esc(CONFIG.rating.score)}★</div><div><div class="stars2">★★★★★</div><div class="hint">${esc(CONFIG.rating.count)} ratings on the store</div></div></div>${RV.slice(0,1).map(r=>`<div class="rev">${esc(r.text)}<small>${esc(r.name)} · ${esc(r.meta)}</small></div>`).join('')}`:''}
   <div class="card" style="padding:4px 16px"><div class="rows">
-   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
-   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Nothing is ever public</span></div>
-   <div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your chats anytime <span class="hint">(ships only if in-app deletion exists)</span></span></div></div></div></div>
+   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>You choose what you share</span></div>
+   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Sharing is always your choice</span></div>
+   ${CONFIG.deletion?`<div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your chats anytime</span></div>`:''}</div></div></div>
   <div class="foot">${cta('Continue')}</div>`},
 9:()=>single(9),10:()=>single(10),11:()=>single(11),12:()=>single(12),13:()=>single(13),
 14:()=>{const ok=helpOk();return `<div class="scr"><h1 class="display">${t('What would you try?','What helps you most?')}</h1>
@@ -885,7 +886,7 @@ const V={
    ['Will it fix my anxiety or stress?','Calmio can’t promise that. It offers short practices and reflections you can try. For medical care, please see a professional.'],
    ['How do I cancel?','Any time in your account settings, before the next renewal. No calls, no forms.'],
    ['Will I be charged again?','Yes, unless you cancel. The plan renews at the price and period on the card you pick, and we email you before every renewal.'],
-   ['Are my chats private?','Yes. They stay private and are never public.'],
+   ['Who sees my chats?','You choose what you share, and sharing is always your choice. See the privacy policy for how data is handled.'],
    ['What if I’m in crisis?','Crisis resources are always free. Tap “Need help now?” any time.']];
   const toc=[...P.weeks.map((w,i)=>[`Week ${i+1} · ${w}`,i===0?'check':'lock']),['Guided breathing practices','wind'],['Your three practices, each week','pen']];
   return `<div class="wp" id="wp">
