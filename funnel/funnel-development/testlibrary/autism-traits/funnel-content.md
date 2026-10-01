@@ -199,7 +199,7 @@ Plan block repeats lower on the page, with the same selection.
 **Microcopy:**
 - Above the CTA, changing with the plan: "Today: {{price_trial}}. On {{renewal_date}}: {{renewal_trial}}, then every 4 weeks until you cancel." / "One payment of {{price_report}}. Nothing renews."
 - Trust row: "Secure checkout · Cancel anytime in your account".
-- Reminder promise, only if the reminder email is actually sent (`CONFIG.reminder`, default on): "We'll email you 2 days before your trial ends."
+- Reminder promise, only if the reminder email is actually sent (`CONFIG.reminder`, default **off**; enable only if the reminder email is actually sent): "We'll email you 2 days before your trial ends."
 - Disclaimer: "A self-check for reflection. Not a diagnosis, not medical advice, not a clinical assessment. Talk to a qualified professional about any concerns."
 - {{goal_phrase}} by reason: curious → "knowing yourself", work → "work and study", relationships → "your relationships", doctor visit → "your doctor visit", other → the user's own words in lower case. Headline B variant by reason: Prepare for a doctor visit → "Get your visit notes ready".
 **Fallback offer:** Screen 12. The close X (and any back or exit) goes to the last-chance offer first, once per session. After it is declined, closing the paywall returns to the preview (10).

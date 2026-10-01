@@ -558,7 +558,7 @@ const CONFIG={
   /* non-empty URL per plan key (one, t1, t4) = checkout_click leaves the demo for that hosted checkout (?funnel=&plan= appended) */
   checkoutUrls:{one:'',t1:'',t4:''},
   /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
-  reminder:true,
+  reminder:false,
   /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
      Smaller than every paywall tier: score summary only, no subscription. Prices are tokens: real values come from checkout config.
      compareAt:null = nothing struck. renews:null = one payment, nothing renews. expiresMin:null = no timer (the brief promises none). */
@@ -884,10 +884,10 @@ const V={
   <div class="pwsec"><h2>How it works</h2><div class="how"><div><b>1</b><span>Unlock your report in one step.</span></div><div><b>2</b><span>Read it any time in your account.</span></div><div><b>3</b><span>Follow the plan and replay the games.</span></div></div></div>
   ${hasRev()?`<div class="pwsec"><h2>What players say</h2>${CONFIG.reviews.rating&&!isTok(CONFIG.reviews.rating.value)?`<p class="small" style="text-align:left">${starRow(5,16).replace('class="stars"','class="stars" style="justify-content:flex-start"')}Rated ${esc(CONFIG.reviews.rating.value)}${CONFIG.reviews.rating.source?' on '+esc(CONFIG.reviews.rating.source):''}</p>`:''}${REV().slice(0,2).map(reviewCard).join('')}</div>`:''}
   ${isTok(CONFIG.refundDays)?'':`<div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Ask for a refund within ${esc(CONFIG.refundDays)} days. Cancel a plan any time in your account.</span></div>`}
-  <div class="pwsec"><h2>Questions</h2><div class="faq">${[['Is this a medical test?','No. It is a set of memory games for curiosity and training. It can’t tell you anything about your health. If you are worried, talk to a doctor.'],['How is my score worked out?','Each game gives a 0-100 score from what you did. Your overall score is the average of the games you played. It is not compared with other people.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','In your account, in two clicks.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
+  <div class="pwsec"><h2>Questions</h2><div class="faq">${[['Is this a medical test?','No. It is a set of memory games for curiosity and training. It can’t tell you anything about your health. If you are worried, talk to a doctor.'],['How is my score worked out?','Each game gives a 0-100 score from what you did. Your overall score is the average of the games you played. It is not compared with other people.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','Anytime in settings.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="pwsec"><h2>Ready when you are</h2>${planBlock('bottom')}</div>
   ${supbox()}
-  <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel</p>
+  <p class="small">Secure checkout · Cancel anytime in settings</p>
   <p class="small" style="margin-bottom:8px">${DISC}</p></div>
   <div class="foot"><div class="today">${todayLine(p)}</div>${cta('Continue to checkout',true,'checkout')}</div>`},
 13:()=>{const o=CONFIG.offer;
@@ -1049,7 +1049,7 @@ phone.addEventListener('click',e=>{
     case 'checkout':{const u=planCheckoutUrl(S.plan);emit('checkout_click',{plan:S.plan,url:u||null});if(u&&leaveToCheckout(u,S.plan))break;go(14);break}
     case 'exit':exitPaywall();break;
     case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
-      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
       else{S.plan='offer';S.consent=false;go(14)}break}
     case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(11);break;
     case 'pay':S.pay=v;render();break;

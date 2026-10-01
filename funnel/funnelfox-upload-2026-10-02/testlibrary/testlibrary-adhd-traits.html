@@ -504,7 +504,7 @@ const CONFIG={
   /* non-empty URL per plan key (one, t1, t4) = checkout_click leaves the demo for that hosted checkout (?funnel=&plan= appended) */
   checkoutUrls:{one:'',t1:'',t4:''},
   /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
-  reminder:true,
+  reminder:false,
   /* Unverified blocks: hidden while unset. proof = real review text; refundDays = the refund window that really exists. */
   proof:null,refundDays:null,
   /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
@@ -850,7 +850,7 @@ phone.addEventListener('click',e=>{
     case 'checkout':{const u=planCheckoutUrl(S.plan);emit('checkout_click',{plan:S.plan,url:u||null});if(u&&leaveToCheckout(u,S.plan))break;go(13);break}
     case 'exit':exitPaywall();break;
     case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
-      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
       else{S.plan='offer';S.consent=false;go(13)}break}
     case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
     case 'pay':S.pay=v;render();break;
