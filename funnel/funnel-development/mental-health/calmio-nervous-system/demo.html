@@ -573,9 +573,9 @@ const Q={
  13:{k:'state',items:STATE,other:true,h:['Right now, you feel…','Where are you today?'],b:['Pick the closest one.','It can change. That’s fine.']}
 };
 const PROFILES={
-  wired:{label:'Revved up',line:'Your mind runs fast and your body follows.',weeks:['Slow the evening wind-down','Short resets through the day','Easing into sleep','Your weekly check-in'],br:{inn:4,out:6,cue:'Let your shoulders drop.'}},
-  down:{label:'Powered down',line:'Things feel dim and heavy, so you pull back.',weeks:['Gentle wake-up steps','Small bursts of energy','Reconnecting, one thing a day','Your weekly check-in'],br:{inn:4,out:4,cue:'Feel your feet on the floor.'}},
-  both:{label:'Seesaw',line:'You swing between wired and worn out.',weeks:['Noticing the swings','Steadier days, small steps','Easing the crashes','Your weekly check-in'],br:{inn:4,out:5,cue:'Let your jaw soften.'}}
+  wired:{label:'Revved up',line:'Your mind runs fast and your body follows.',weeks:['Practice a slower evening wind-down','Take short resets through the day','Try an easing-into-sleep routine','Your weekly check-in'],br:{inn:4,out:6,cue:'Let your shoulders drop.'}},
+  down:{label:'Powered down',line:'Things feel dim and heavy, so you pull back.',weeks:['Try gentle wake-up steps','Add small bursts of movement','Reconnect, one thing a day','Your weekly check-in'],br:{inn:4,out:4,cue:'Feel your feet on the floor.'}},
+  both:{label:'Seesaw',line:'You swing between wired and worn out.',weeks:['Notice the swings','Practice steadier days in small steps','Try calming moves after busy days','Your weekly check-in'],br:{inn:4,out:5,cue:'Let your jaw soften.'}}
 };
 const PRACTICE={breath:['Two 1-minute breathing breaks','1 min'],scan:['A 3-minute body check-in','3 min'],write:['Write 3 lines before bed','5 min'],talk:['Talk one worry through with Calmio','5 min'],move:['A gentle 5-minute walk','5 min']};
 const PRACTICE_DEF=[['One 60-second breathing break','1 min'],['Notice how your body feels at midday','1 min'],['Wind down 10 minutes before bed','10 min']];
@@ -797,7 +797,7 @@ const V={
   <div class="scr" style="align-items:center;text-align:center;gap:14px;justify-content:flex-end">
   ${flower('breathe',150)}
   <div class="bubble ai fadein" style="align-self:center;animation-delay:.6s">Let’s slow it down.</div>
-  <h1 class="display" style="font-size:31px;margin-top:6px">${t('Stuck in fight-or-flight?','Can’t switch off?')}</h1>
+  <h1 class="display" style="font-size:31px;margin-top:6px">${t('Can’t switch off?','Stuck in fight-or-flight?')}</h1>
   <p class="lead">${t('Short guided resets for body and mind.','A few taps, then a 60-second breath.')}</p></div>
   <div class="foot">${cta('Get started')}<div class="note">18+ · Calmio is AI and not a substitute for professional care</div></div>`,
 2:()=>`<div class="scr center">
@@ -869,7 +869,7 @@ const V={
   <p class="lead" style="margin-top:-6px">${t(P.line,'One minute, right here, any time.')}</p>
   <div class="bcard" id="bx"></div>
   <div class="eyebrow" style="margin-bottom:-6px">This week, 3 practices</div>${thingCards()}
-  <div class="eyebrow" style="margin-bottom:-6px">Your 4-week calm plan</div>${weeks()}
+  <div class="eyebrow" style="margin-bottom:-6px">Your 4-week plan goals</div>${weeks()}
   <p class="hint" style="text-align:center;margin:0">A reflection, not a diagnosis. A starting point you can change.</p></div>
   <div class="foot">${cta('Continue')}</div>`},
 18:()=>`<div class="scr center" style="align-items:center;text-align:center">${flower('float',110,0.42)}
@@ -895,7 +895,7 @@ const V={
    <div class="pcard" style="padding:14px 16px"><span class="pill">Your regulation profile</span><h2 style="font-size:26px">${P.label}</h2></div>
    <div class="facts"><div class="fact">You noticed<b>${esc(noticed())}</b></div><div class="fact">Hardest<b>${esc(whenLabel())}</b></div><div class="fact">Nudge<b>${esc(nudge())}</b></div><div class="fact">Plan<b>4 weeks</b></div></div></div>
   <div class="wsec" id="plans1">${planBlock('a')}</div>
-  <div class="wsec"><span class="eyebrow">Inside your plan</span><h2 class="wh2">Everything for your week</h2><p class="lead">Week 1 opens today.</p>
+  <div class="wsec"><span class="eyebrow">Your 4-week plan goals</span><h2 class="wh2">Everything for your week</h2><p class="lead">Week 1 opens today. Goals, not promises.</p>
    <div class="toc">${toc.map(([l,i],n)=>`<div><span class="n">${n+1}</span><span>${esc(l)}</span><span class="l">${ic(i,16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From today, small steps</h2>
    <div class="how" style="margin-top:6px">${[['Choose a plan','Secure checkout, a few seconds.'],['Open your first practice','Your first guided breath is ready right away.'],['Take one step a day',`A short practice, nudged around ${nudge()}.`]].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
@@ -923,14 +923,14 @@ const V={
    <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
    <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.${refund}</p></div></div>
   <div class="wsec" style="text-align:center;align-items:center;padding-bottom:30px"><p class="fine2" style="color:var(--c-sage);font-weight:800">Crisis resources are always free.</p>
-   <button class="link" data-a="offerno">No thanks, keep the free plan</button></div></div>`},
-21:()=>{const free=S.premium!==true,first=practices()[0];
+   <button class="link" data-a="offerno">No thanks</button></div></div>`},
+21:()=>{const offer=S.premium===true&&S.plan==='offer',free=S.premium!==true,first=practices()[0];
   return `${bgph('payoff-dawn','A calm, bright morning outdoors','linear-gradient(180deg,#F7F4EE00 0%,#F7F4EE00 38%,#F7F4EEa6 62%,#F7F4EE 94%)',false,'top')}<div class="scr" style="align-items:center;text-align:center;gap:12px;padding-top:0">${flower('reveal',150)}
   <h1 class="display">${t('Your reset starts now',nameOK()?`Welcome in, ${nm()}.`:'Welcome in.')}</h1>
   <p class="lead" style="margin-top:-6px">${t('First up, one small practice. Start when ready.','Come back anytime. Calmio is here.')}</p>
   <div class="prompt" style="width:100%;text-align:left"><small>Today’s one practice · ${esc(first[1])}</small>${esc(first[0])}</div>
-  <button class="togrow ${S.remind?'on':''}" data-a="remind" aria-pressed="${S.remind}">${ic('clock',18)}<span style="font-weight:700;font-size:14px">Remind me at ${nudge()}</span><span class="sw"></span></button>
-  ${free?`<button class="unlock" data-a="unlock">${ic('lock',15)} Unlock your plan</button>`:'<span class="chip">Full plan unlocked</span>'}</div>
+  ${offer?'<span class="chip">Calm Week pass · 7 days</span>':`<button class="togrow ${S.remind?'on':''}" data-a="remind" aria-pressed="${S.remind}">${ic('clock',18)}<span style="font-weight:700;font-size:14px">Remind me at ${nudge()}</span><span class="sw"></span></button>
+  ${free?`<button class="unlock" data-a="unlock">${ic('lock',15)} Unlock your plan</button>`:'<span class="chip">Full plan unlocked</span>'}`}</div>
   <div class="foot" style="padding-bottom:12px">${cta('Start my first step',true,'lesson')}</div>
   <nav class="tabbar">${[['Today','flower'],['Chat','msg'],['Plan','book'],['Me','user']].map(([l,i],k)=>`<button class="${k===0?'on':''}" data-a="soon">${ic(i,22)}<span>${l}</span></button>`).join('')}</nav>`}
 };
