@@ -311,7 +311,7 @@ Tokens: `{{name}}`, `{{spots}}`, `{{top_spot}}`, `{{goal}}`, `{{style}}`, `{{sty
 **Body B:** 20 script cards, built around {{goal}}.
 **Plans:** (structure only, prices are tokens)
 - **1-week plan** intro `{{price_1w}}`, then `{{renewal_1w}}` per week.
-- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. "MOST POPULAR" only if sales data backs it.
+- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. Badge: "Recommended" (no popularity claim).
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
 - Plans are named by the period they bill. No fake "was" price.
 **Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (style card, goal, `{{minutes}}` min/day chips) · plan block · what's inside · how it works (3 steps) · proof (rating + review cards, only when real) · guarantee (only when refund days are real) · FAQ · plan block repeated · sticky CTA.

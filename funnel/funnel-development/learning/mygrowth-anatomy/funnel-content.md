@@ -312,7 +312,7 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score_line}}`, `{{systems}}`, 
 - **1-week plan** intro `{{price_1w}}`, then `{{renewal_1w}}` per week.
 - **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. Matches the 4-week schedule length.
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
-- Plans are named by the period they bill. No fake "was" price, no "MOST POPULAR" unless sales data backs it.
+- Plans are named by the period they bill. No fake "was" price, badge is "Recommended", no popularity claim.
 **Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (course cover "Body Systems 101", chosen systems, `{{reminder_time}}` · `{{daily_minutes}}` min/day) · plan block · what's inside · how it works (3 steps) · proof (store rating; review cards only when real ones exist) · guarantee (only when `{{refund_days}}` is set) · FAQ · plan block repeated · sticky CTA.
 **Visual:** Same web look as the rest of the funnel. Radio plan cards, violet border on the selected one, payment-method row (Apple Pay / PayPal / card), safe-checkout badges. No countdown bar.
 **Microcopy:**

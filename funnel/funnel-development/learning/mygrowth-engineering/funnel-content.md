@@ -305,7 +305,7 @@ Tokens: `{{name}}`, `{{reason}}`, `{{level}}`, `{{score}}`, `{{score_line}}`, `{
 **Body B:** Your goal: 22 lessons in 4 weeks.
 **Plans:** (structure only, prices are tokens)
 - **1-week plan** intro `{{price_1w}}`, then `{{renewal_1w}}` per week.
-- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. "MOST POPULAR" only if sales data backs it.
+- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. Badge: "Recommended" (no popularity claim).
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
 - Plans are named by the period they bill. No fake "was" price.
 **Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (course cover, "{{topic}} first" chip, `{{daily_minutes}}` min/day, goal chip) · plan block · what's inside · how it works (3 steps) · proof (real rating + real review cards; hidden while unset) · guarantee (hidden while `CONFIG.refundDays` is unset) · FAQ · plan block repeated · sticky CTA.

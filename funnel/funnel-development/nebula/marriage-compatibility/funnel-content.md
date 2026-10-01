@@ -306,7 +306,7 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Headline B:** See your full window
 **Body A:** Peak season, three axes, your next step.
 **Body B:** What each chart needs, and when.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, MOST POPULAR, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
+**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
 **Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
 1. Hero: eyebrow "Your reading is ready", the wheels (`img/paywall-hero.jpg`), 4 fact chips (your sign, partner sign or partner type, window, match or timing).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.

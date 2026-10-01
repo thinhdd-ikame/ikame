@@ -630,7 +630,7 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
   tick();window.__oiv=setInterval(tick,1000)}
 function offerCheckout(){const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
   if(!u)return false;
-  try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);
+  try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');
     new URLSearchParams(location.search).forEach((v,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,v)});
     try{window.top.location.href=x.toString()}catch(e){location.href=x.toString()}return true}catch(e){return false}}
 

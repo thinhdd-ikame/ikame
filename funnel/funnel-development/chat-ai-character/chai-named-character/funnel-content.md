@@ -200,7 +200,7 @@ Visual: the Chai system as in `chai-ai-boyfriend` and `chai-dream-girl` (near-bl
 **Body B:** No coins. No per-message charges.
 **Plans:**
 - **1 week intro** — {{price_1w}}, then **renews at {{renew_1w}} per week**
-- **4 weeks — pre-selected**, "Most popular" badge — {{price_4w}}, **renews at {{renew_4w}} every 4 weeks**
+- **4 weeks — pre-selected**, "Recommended" badge — {{price_4w}}, **renews at {{renew_4w}} every 4 weeks**
 - **12 weeks — anchor** — {{price_12w}}, **renews at {{renew_12w}} every 12 weeks**
 - Renewal shown beside every price. No struck prices. Real prices only.
 **Visual:** A long-scroll web page: (1) top brand bar with the Chai logo, close ×, and a mini CTA that appears once plan block one scrolls away. (2) Hero: the character portrait and a snippet of the unread reply blurred, with chips from the user's picks ("{{name}}", "{{interest_1}}", "{{interest_2}}"). (3) Plan block with the three plans, "Due today" row, CTA, "Secure checkout · Cancel anytime". (4) What's inside: unlimited chat, all voice notes, memory, every character, good-morning texts. (5) How it works: pay → open the app → continue the chat. (6) Proof: rating and reviews, placeholders until real. (7) Guarantee: hidden while `refundDays` is a token. (8) FAQ accordion. (9) Plan block repeated. (10) Footer with legal and the AI disclosure. (11) Sticky bottom CTA.

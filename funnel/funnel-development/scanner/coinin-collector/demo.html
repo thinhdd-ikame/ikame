@@ -469,7 +469,7 @@ function emit(name,detail){
 }
 const answer=(k,v)=>emit('answer',{key:k,value:v});
 function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
-function withParams(url,plan){let u;try{u=new URL(url,location.href)}catch(e){return null}u.searchParams.set('plan',plan);if(S.email)u.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});return u.toString()}
+function withParams(url,plan){let u;try{u=new URL(url,location.href)}catch(e){return null}u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});return u.toString()}
 function checkout(){const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});const u=url&&withParams(url,S.plan);if(u)navTop(u);else toast('Demo only. No charge made.')}
 function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
@@ -534,7 +534,7 @@ const P_ORDER=['intro','w4','w12'];
 const todayLine=()=>`${tok(CONFIG.plans[S.plan].price)} today`;
 const renewText=k=>{const P=CONFIG.plans[k];return k==='intro'?`${tok(P.price)} for the first week, then ${tok(P.renewPrice)} every week until you cancel.`:`${tok(P.price)} today, then ${tok(P.renewPrice)} every ${P.period} until you cancel.`};
 function planBlock(){const P=CONFIG.plans;
-  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${P_ORDER.map(k=>{const p=P[k];return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${k==='w4'?'<span class="rib">MOST POPULAR</span>':''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renewPrice)}</small></span></button>`}).join('')}</div>
+  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${P_ORDER.map(k=>{const p=P[k];return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${k==='w4'?'<span class="rib">Recommended</span>':''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renewPrice)}</small></span></button>`}).join('')}</div>
    <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
    <div style="height:12px"></div>${cta('Unlock my coin',true,'pay')}
    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>

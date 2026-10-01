@@ -670,7 +670,7 @@ const locale=(navigator.language||'es').slice(0,2).toLowerCase();
    The offer is a one-time "Scenes starter pass": paid once, no renewal, nothing struck. expiresMin: null = no timer; a number = a real deadline, withdrawn when it ends. */
 const CONFIG={
   brand:'EWA',funnel:'ewa-movies',defaultShow:'Friends',
-  plans:{'1w':{name:'1 week',period:'week',sub:'Intro price, renews weekly'},'4w':{name:'4 weeks',period:'4 weeks',rib:'MOST POPULAR',sub:'Intro price, renews every 4 weeks'},'12w':{name:'12 weeks',period:'12 weeks',rib:'LOWEST PER WEEK',alt:1,sub:'Intro price, renews every 12 weeks'}},
+  plans:{'1w':{name:'1 week',period:'week',sub:'Intro price, renews weekly'},'4w':{name:'4 weeks',period:'4 weeks',rib:'Recommended',sub:'Intro price, renews every 4 weeks'},'12w':{name:'12 weeks',period:'12 weeks',rib:'LOWEST PER WEEK',alt:1,sub:'Intro price, renews every 12 weeks'}},
   defaultPlan:'4w',refundDays:'{{refund_days}}',legalEntity:'{{legal_entity}}',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],
@@ -800,7 +800,7 @@ function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funne
   try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
   try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}}
 function checkoutNav(p){const o=p==='offer'?CONFIG.offer:((CONFIG.plans||{})[p]||{}),url=(o&&o.checkoutUrl)||'';if(!url)return false;let u;try{u=new URL(url,location.href)}catch(e){return false}
-  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan',p);if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan',p);
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}return true}
 /* ---------- last-chance offer (once per session, on paywall close) ---------- */
@@ -819,7 +819,7 @@ function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
   emit('offer_accept',{price:o.price,oneTime:true,url});
   emit('checkout_click',{plan:'offer',price:o.price,oneTime:true,url});
   if(!url)return false;let u;try{u=new URL(url,location.href)}catch(e){return false}
-  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}return true}
 

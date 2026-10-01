@@ -309,7 +309,7 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 **Body B:** Cancel anytime. Renewal price shown up front.
 **Plans:**
 - **1 week** — intro price `{{price_1w}}` today, then `{{renew_1w}}` every week. No badge.
-- **4 weeks** — **pre-selected**, "MOST POPULAR". `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Each card also shows its per-week equivalent (`{{week_equiv_4w}}`).
+- **4 weeks** — **pre-selected**, "Recommended". `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Each card also shows its per-week equivalent (`{{week_equiv_4w}}`).
 - **12 weeks** — "LOWEST PER WEEK". `{{price_12w}}` today, then `{{renew_12w}}` every 12 weeks.
 - Renewal sits directly under the intro price at the same size, on every card, in the CTA line and on the receipt. Savings compare only against the real weekly price. No countdown, no ribbon that follows the user through the funnel.
 **Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close); personalized hero (their level strip, the three covers, "for {{genre}}" chip, fact chips: level, books ready, minutes per day); plan block; "What's inside" (first chapter open, three adapted books, tap-to-translate on every page, audio narration marked verify, flashcards, AI tutor marked verify, daily plan); "How it works" (3 steps); proof (rating block and review cards only when real values are configured, otherwise the section is omitted); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.

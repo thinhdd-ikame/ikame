@@ -279,7 +279,7 @@ Visual: the Chai system (near-black, magenta-violet gradient primary, Plus Jakar
 **Body B:** One plan. No coins. No per-message charges.
 **Plans:**
 - **1-week intro**, {{price_1w}}, renews at {{renew_1w}} per week
-- **4-week, pre-selected**, "Most popular" badge, {{price_4w}}, renews at {{renew_4w}} every 4 weeks
+- **4-week, pre-selected**, "Recommended" badge, {{price_4w}}, renews at {{renew_4w}} every 4 weeks
 - **12-week, anchor**, {{price_12w}}, renews at {{renew_12w}} every 12 weeks
 Renewal price shows on every card and on the sticky CTA. No struck-through prices, no countdown.
 **Visual:** Long-scroll web page. (1) Brand bar with logo, close X from the first frame and Restore. (2) Personal hero: the story cover with `{{story_title}}`, the companion portrait, the user's role, setting and tone chips. (3) Plan block with the 4-week pre-selected. (4) "What's inside": unlimited chat (fair-use cap), every genre and scene, companion memory, voice notes, switch role and tone anytime. (5) "How it works": three steps (pick, play, it remembers). (6) Proof: store rating, user count and review cards as `{{rating}}`, `{{review_*}}` config placeholders, hidden until real. (7) Guarantee: shown only when `{{refund_days}}` is a real number, hidden otherwise. (8) FAQ: "Is it free to start?", "What does unlimited mean?", "Is this safe and private?", "How do I cancel?", "Is it explicit?" (No, SFW). (9) Plan block repeated with the same selection. (10) Sticky bottom CTA with plan, price and renewal line. Close button visible throughout.

@@ -293,7 +293,7 @@ Archetype: **learning-plan**, registered variant of `learning/ewa`. Deliberate d
 **Body B:** Cancel anytime. Renewal price shown up front.
 **Plans:**
 - **1 week** — intro price `{{price_1w}}` today, then `{{renew_1w}}` every week. No badge.
-- **4 weeks** — **pre-selected**, "MOST POPULAR". `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Each card also shows its per-week equivalent (`{{week_equiv_4w}}`).
+- **4 weeks** — **pre-selected**, "Recommended". `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Each card also shows its per-week equivalent (`{{week_equiv_4w}}`).
 - **12 weeks** — "LOWEST PER WEEK". `{{price_12w}}` today, then `{{renew_12w}}` every 12 weeks.
 - Renewal sits directly under the intro price at the same size, on every card, in the CTA line and on the receipt. Savings compare only against the real weekly price. No countdown, no ribbon that follows the user through the funnel, no lifetime anchor.
 **Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close); personalized hero (their level strip, the pronunciation tip with the same label rule, tutor chip, fact chips: level, situation, minutes per day); plan block; "What's inside" (daily speaking sessions, instant feedback with model voice, situation phrase packs, progress check, AI tutor marked verify); "How it works" (3 steps); proof (rating block plus review cards, hidden while tokens); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open, "Is my voice saved?" marked verify); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.

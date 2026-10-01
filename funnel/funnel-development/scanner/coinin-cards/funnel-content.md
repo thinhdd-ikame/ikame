@@ -243,7 +243,7 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 **Body B:** Scan unlimited cards and track the pile.
 **Plans:** Structure only, no invented numbers.
 - 1-week intro: intro price token, then weekly renewal shown beside it. Never called free.
-- **4-week: pre-selected**, "MOST POPULAR", price and renewal tokens.
+- **4-week: pre-selected**, "Recommended", price and renewal tokens.
 - 12-week: anchor, price and renewal tokens.
 - Every plan shows its own renewal price and period next to the price.
 **Visual:** Sticky brand bar with a close X. Hero: the user's card with its raw range (demo: marked "Sample data") and three locked rows glowing gold as "unlocking". Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.

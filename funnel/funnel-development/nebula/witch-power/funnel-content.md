@@ -296,7 +296,7 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Headline B:** See your full craft
 **Body A:** Your {{power}} ritual, timed to the Moon.
 **Body B:** Thirty days of practice built around you.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, MOST POPULAR, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
+**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
 **Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
 1. Hero: eyebrow "Your reading is ready", the power glyph on the chart wheel, 4 fact chips (power, Sun, Moon, Rising).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.

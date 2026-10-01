@@ -324,7 +324,7 @@ const CONFIG={
      3 plans: 1-week intro / 4-week pre-selected / 12-week anchor. Renewal shown next to every price. */
   plans:{
     '1w':{name:'1 week',price:'{{price_1w}}',renew:'{{renewal_1w}}',per:'week',badge:'',sub:'Intro price',save:''},
-    '4w':{name:'4 weeks',price:'{{price_4w}}',renew:'{{renewal_4w}}',per:'4 weeks',badge:'MOST POPULAR',sub:'Best for most',save:''},
+    '4w':{name:'4 weeks',price:'{{price_4w}}',renew:'{{renewal_4w}}',per:'4 weeks',badge:'Recommended',sub:'',save:''},
     '12w':{name:'12 weeks',price:'{{price_12w}}',renew:'{{renewal_12w}}',per:'12 weeks',badge:'',sub:'Lowest per week',save:''}
   },
   defaultPlan:'4w',
@@ -447,7 +447,7 @@ function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
 function checkout(){
   const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('plan',S.plan);if(S.email)u.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
+  u.searchParams.set('plan',S.plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
 }
 function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
@@ -698,7 +698,7 @@ app.addEventListener('click',e=>{
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'pay':checkout();break;
     case 'closepw':emit('paywall_close');go(offerOpen()?23:24);break;
-    case 'offerbuy':S.offerSeen=true;S.pass=!CONFIG.offer.checkoutUrl;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}else go(24)}break;
+    case 'offerbuy':S.offerSeen=true;S.pass=!CONFIG.offer.checkoutUrl;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}else go(24)}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(24);break;
     case 'topw':go(22);break;
     case 'app':{const u=appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}

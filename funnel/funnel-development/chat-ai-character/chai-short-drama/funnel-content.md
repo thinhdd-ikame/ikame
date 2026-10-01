@@ -197,7 +197,7 @@ Visual: the Chai system (near-black, magenta-violet gradient primary, Plus Jakar
 **Body B:** One plan. No coins. No per-episode charges.
 **Plans:**
 - **1-week intro**, {{price_1w}}, renews at {{renew_1w}} per week
-- **4-week, pre-selected**, "Most popular" badge, {{price_4w}}, renews at {{renew_4w}} every 4 weeks
+- **4-week, pre-selected**, "Recommended" badge, {{price_4w}}, renews at {{renew_4w}} every 4 weeks
 - **12-week, anchor**, {{price_12w}}, renews at {{renew_12w}} every 12 weeks
 Renewal price shows on every card and on the sticky CTA. No struck-through prices, no countdown.
 **Visual:** Long-scroll web page. (1) Brand bar with logo, close X from the first frame, Restore. (2) Personal hero: the series poster with the lead and a "Ep 3 locked" chip. (3) Plan block with the 4-week pre-selected. (4) "What's inside": all episodes of every series, a lead who remembers what you watched, unlimited chat (fair-use cap), voice lines, switch series anytime. (5) "How it works": watch, talk, unlock the next. (6) Proof: store rating, user count and reviews as `{{rating}}`, `{{review_*}}` config placeholders, hidden until real. (7) Guarantee: shown only when `{{refund_days}}` is a real number. (8) FAQ: "Is it free to start?", "What is unlimited?", "How often do new episodes come?", "Is this private?", "Is it explicit?" (No, SFW), "How do I cancel?". (9) Plan block repeated. (10) Sticky CTA with plan, price and renewal line. Close visible throughout.

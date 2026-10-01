@@ -636,7 +636,7 @@ function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
   emit('offer_accept',{price:o.price,period:o.period,url});
   emit('checkout_click',{plan:'offer',price:o.price,period:o.period,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
 
 const PLD={w1:'Shortest commitment',w4:'Pre-selected · fits the 30 days',w12:'Longest plan · same renewal shown'};

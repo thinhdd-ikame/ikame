@@ -603,7 +603,7 @@ function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
   emit('offer_accept',{price:o.price,period:o.period,oneTime:true,url});
   emit('checkout_click',{plan:'offer',price:o.price,period:o.period,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');
   try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
 
 const planBlock=()=>`<div class="pills" style="gap:12px">${Object.entries(PLANS).map(([k,p])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${p.n}</span><span class="pl" style="display:block;margin-top:4px">${TK('price_'+p.tok)} first ${p.first}</span><span class="pl" style="display:block">then ${TK('renewal_'+p.tok)} / ${p.every}</span>${k==='w4'?'<span class="pd">Pre-selected · most flexible length</span>':k==='w12'?'<span class="pd">Longest plan · same renewal shown</span>':'<span class="pd">Shortest commitment</span>'}</span></button>`).join('')}</div>`;

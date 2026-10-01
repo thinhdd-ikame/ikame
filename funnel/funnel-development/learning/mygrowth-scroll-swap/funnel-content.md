@@ -345,7 +345,7 @@ Tokens: `{{name}}`, `{{screen_hours}}`, `{{top_app}}`, `{{subject}}`, `{{score_l
 **Body B:** Your goal: {{hours_month}} hours a month.
 **Plans:** (structure only, prices are tokens)
 - **1-week plan** intro `{{price_1w}}`, then `{{renewal_1w}}` per week.
-- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. "MOST POPULAR" only if sales data backs it.
+- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. Badge: "Recommended" (no popularity claim).
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
 - Plans are named by the period they bill. No fake "was" price.
 **Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (course cover, "goal {{hours_month}} h / month" chip, `{{scroll_window}}` · `{{swap_minutes}}` min/day) · plan block · what's inside · how it works (3 steps) · proof (real rating + real review cards; section hidden while unset) · guarantee (hidden while `CONFIG.refundDays` is unset) · FAQ · plan block repeated · sticky CTA.

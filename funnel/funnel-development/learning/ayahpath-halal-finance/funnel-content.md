@@ -310,7 +310,7 @@ Tokens: `{{name}}`, `{{focus}}`, `{{goal}}`, `{{minutes}}`, `{{anchor}}`, `{{int
 **Body B:** 30 daily ayahs, built around {{goal}}.
 **Plans:** (structure only, prices are tokens)
 - **1-week plan** intro `{{price_1w}}`, then `{{renewal_1w}}` per week. No BEST VALUE label.
-- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. Fits the 30-day challenge. "MOST POPULAR" only if sales data backs it.
+- **4-week plan**: **pre-selected**, intro `{{price_4w}}`, then `{{renewal_4w}}` every 4 weeks. Fits the 30-day challenge. Badge: "Recommended" (no popularity claim).
 - **12-week plan**: anchor, intro `{{price_12w}}`, then `{{renewal_12w}}` every 12 weeks.
 - Plans are named by the period they bill. No fake "was" price, no per-day framing.
 **Page structure (top to bottom):** brand bar (logo + close ✕) · personal hero (plan card, goal, `{{minutes}}` min/day chips) · plan block · what's inside · how it works (3 steps) · proof (rating and reviews, only when real) · guarantee (only when refund days are real) · FAQ · plan block repeated · sticky CTA.
