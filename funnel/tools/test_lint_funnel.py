@@ -74,5 +74,19 @@ class LintTest(unittest.TestCase):
             errs = lint(GOOD + f"\n{text_addition}\n")
             self.assertIn(expected_err, errs, f"Failed for: {text_addition}")
 
+    def test_offer_not_paywall(self):
+        """Test that 'Paywall — special offer' is not accepted as the offer screen."""
+        # Paywall with "offer" text should not satisfy offer screen requirement
+        bad = GOOD.replace("### 3. Last-chance offer", "### 3. Another screen").replace("### 2. Paywall", "### 2. Paywall — special offer")
+        errs = lint(bad)
+        self.assertIn("no fallback/last-chance offer screen", errs)
+
+    def test_offer_separate_from_paywall(self):
+        """Test that offer screen must be distinct from paywall."""
+        # This should pass: separate offer screen
+        good = GOOD.replace("### 3. Last-chance offer", "### 3. Exclusive offer for you")
+        errs = lint(good)
+        self.assertEqual(errs, [])
+
 if __name__ == "__main__":
     unittest.main()

@@ -9,7 +9,8 @@ LIMITS = (("Headline", 6), ("Body", 12))
 
 
 def lint(text):
-    m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
+    # Accept both LF and CRLF line endings
+    m = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n", text, re.S)
     if not m:
         return ["missing frontmatter"]
     fm = m.group(1)
@@ -26,14 +27,20 @@ def lint(text):
 
     for label, limit in LIMITS:
         for var, val in re.findall(rf"^\*\*{label} ([AB]):\*\*\s*(.+)$", text, re.M):
-            n = len(re.sub(r"\{\{[^}]+\}\}", "X", val).split())
+            # Replace tokens and standalone punctuation, then count words
+            cleaned = re.sub(r"\{\{[^}]+\}\}", "X", val)
+            cleaned = re.sub(r"[—\-/|]", " ", cleaned)
+            words = [w for w in cleaned.split() if w]
+            n = len(words)
             if n > limit:
                 errs.append(f"{label} {var} has {n} words (>{limit}): {val.strip()}")
 
-    heads = " ".join(re.findall(r"^### \d+\..*$", text, re.M)).lower()
-    if "paywall" not in heads:
+    screen_heads = [h.lower() for h in re.findall(r"^### \d+\..*$", text, re.M)]
+    if not any("paywall" in h for h in screen_heads):
         errs.append("no Paywall screen")
-    if not re.search(r"offer|upsell|last.chance", heads):
+    # Offer screen must exist and not be the paywall
+    has_offer = any(re.search(r"offer|upsell|last.chance", h) and "paywall" not in h for h in screen_heads)
+    if not has_offer:
         errs.append("no fallback/last-chance offer screen")
     if re.search(r"\b(TBD|TODO|lorem ipsum)\b", text, re.I):
         errs.append("placeholder text (TBD/TODO/lorem)")
@@ -41,6 +48,9 @@ def lint(text):
 
 
 if __name__ == "__main__":
+    if not sys.argv[1:]:
+        print("Usage: python3 lint_funnel.py <funnel-content.md> ...")
+        sys.exit(2)
     failed = 0
     for path in sys.argv[1:]:
         errs = lint(open(path, encoding="utf-8").read())
