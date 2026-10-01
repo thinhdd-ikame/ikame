@@ -36,7 +36,7 @@ Archetype: **learning-plan**, registered variant of `learning/ewa` (24). Deliber
 **Body A:** Tap any line. Keep every new word.
 **Body B:** Real scenes, word cards and a plan built around you.
 **Visual:** Cream background, a fanned stack of three illustrated sitcom-style scene cards (original art, no real show), one subtitle line on the front card with a single word highlighted and a small translation bubble above it; the series name set as plain text on a pill under the cards; orange pill CTA.
-**Microcopy:** Trust line: "★ {{app_rating}} · {{rating_count}} ratings on the App Store" *(EWA reference: 4.7 · 196K, captured Sept 2026)*. Small line: "Not affiliated with any show or studio."
+**Microcopy:** Trust line: "★ {{app_rating}} · {{rating_count}} ratings on the App Store", rendered only when both tokens are live (not a `{{token}}`); hidden otherwise *(EWA reference: 4.7 · 196K, captured Sept 2026, unverified until set in CONFIG)*. Small line: "Not affiliated with any show or studio."
 **CTA:** Get started
 
 ### 2. Hook B — Social framing
@@ -45,8 +45,8 @@ Archetype: **learning-plan**, registered variant of `learning/ewa` (24). Deliber
 **Headline B:** Subtitles that teach you
 **Body A:** Tap any word in a scene, save it in one tap.
 **Body B:** Cards bring words back at spaced intervals.
-**Visual:** Large app rating number, three-step strip "watch → tap → card" with tiny illustrated icons, one review card underneath.
-**Microcopy:** Review card is a dashed placeholder: "Real App Store review goes here" *(EWA reference quote: "If anything is unclear while reading, just tap a word", Maria)*.
+**Visual:** Large app rating number (only when live), three-step strip "watch → tap → card" with tiny illustrated icons, one review card underneath (only when a real review is set).
+**Microcopy:** Rating and review card are hidden while their values are tokens; no placeholder card is shown *(EWA reference quote: "If anything is unclear while reading, just tap a word", Maria)*.
 **CTA:** Continue
 
 ---
@@ -168,7 +168,8 @@ Archetype: **learning-plan**, registered variant of `learning/ewa` (24). Deliber
 **Headline B:** Learners love tapping to translate
 **Body A:** Ratings from the App Store.
 **Body B:** The feature reviewers mention most.
-**Visual:** Huge rating number with star row, App Store and Google Play badges, one dashed review placeholder.
+**Fallback (while `{{app_rating}}`/`{{rating_count}}` are tokens):** Headline A "Scenes you can tap", Headline B "Tap any line to translate", Body A "Save every new word as you watch.", Body B "Cards bring words back later."; no rating number, no stars, no review card.
+**Visual:** Huge rating number with star row (only when live), App Store and Google Play badges, a real review card only if one is set.
 **Microcopy:** Numbers are tokens (`{{app_rating}}`, `{{rating_count}}`). EWA reference: 4.7 · 196K, review "The coolest function is that you can immediately tap and translate words." (Anutel). Do not reuse these numbers for any other brand.
 **CTA:** Continue
 
@@ -240,7 +241,7 @@ Archetype: **learning-plan**, registered variant of `learning/ewa` (24). Deliber
 - Matching them to your level…
 - Pacing it to your minutes daily…
 - Almost ready, your plan is waiting…
-**Visual:** The first saved word as a flashcard with illustrated scene stills orbiting it; four progress rows; a dashed review placeholder under them.
+**Visual:** The first saved word as a flashcard with illustrated scene stills orbiting it; four progress rows; a real review card under them only if one is set.
 **Microcopy:** One optional free overlay at about 50%: "Want a free 7-day streak challenge?" with "Yes, I'm in" / "No thanks"; neither button adds anything paid.
 **CTA:** (auto-advances, ~6-8 seconds)
 
@@ -299,21 +300,21 @@ Archetype: **learning-plan**, registered variant of `learning/ewa` (24). Deliber
 - **4 weeks** — **pre-selected**, "MOST POPULAR". `{{price_4w}}` today, then `{{renew_4w}}` every 4 weeks. Each card also shows its per-week equivalent (`{{week_equiv_4w}}`).
 - **12 weeks** — "LOWEST PER WEEK". `{{price_12w}}` today, then `{{renew_12w}}` every 12 weeks.
 - Renewal sits directly under the intro price at the same size, on every card, in the CTA line and on the receipt. Savings compare only against the real weekly price. No countdown, no ribbon that follows the user through the funnel.
-**Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close); personalized hero (their level strip, the first six words as cards, "for {{show}}" chip, fact chips: level, words ready, minutes per day); plan block; "What's inside" (20 words, scene library, tap-to-translate, flashcards, AI tutor marked verify); "How it works" (3 steps); proof (rating block plus dashed review cards); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.
+**Visual:** Long-scroll web page: sticky brand bar (EWA name text, mini CTA, close); personalized hero (their level strip, the first six words as cards, "for {{show}}" chip, fact chips: level, words ready, minutes per day); plan block; "What's inside" (20 words, scene library, tap-to-translate, flashcards, AI tutor marked verify); "How it works" (3 steps); proof (rating block and review cards, each rendered only when live, i.e. not a `{{token}}`; the whole block is omitted otherwise); guarantee seal only when a real refund period is configured (hidden while `{{refund_days}}` is a token); FAQ ("How do I cancel?" open); plan block repeated; legal footer; sticky bottom CTA while no plan block is on screen.
 **Microcopy:** Disclosure above each CTA, live for the selected plan: "You pay {{price_sel}} today. Renews at {{renew_sel}} every {{period}} until you cancel." Under the CTA: "We'll email you before your first renewal." Trust row: "🔒 Secure payment · Cancel anytime", plus "{{refund_days}}-day money-back" only when a real refund period is set. Disclaimer: "Not affiliated with any show or studio."
 **Fallback offer:** On close, the last-chance offer (#20), shown once per session.
 **CTA:** Start learning
 
 ### 20. Last-chance offer
-**Purpose:** One second chance for users who close the paywall: a smaller 1-week starter (the 20 words and the scenes, without the flashcards, AI tutor or daily plan), then its weekly renewal. Not a discount on the same SKU. Shown once.
-**Headline A:** Start smaller with one week
-**Headline B:** Try {{show}} words for a week
-**Body A:** Your 20 words and scenes, no long plan.
-**Body B:** One-time starter, then weekly renewal.
-**Plans:** One offer card: **1-week starter**, `{{offer_price}}` today with the real `{{price_1w}}` (same plan length) struck only if it is lower, then `{{renew_1w}}` every week until cancelled. Checks match its scope: the 20 words, scenes with tap-to-translate, an email before renewal. Optional `{{offer_badge}}` only if true.
-**Visual:** Same web look as #19: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the plan name, price row (struck then offer price), three checks, CTA, payment badges and the renewal line; plain decline link.
-**Microcopy:** Renewal line: "{{offer_price}} today, then {{renew_1w}} every week until you cancel. We'll email you before. Cancel anytime." Shown once per session (sessionStorage `ikf_offer_ewa-movies`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #18.
-**CTA:** Claim my offer
+**Purpose:** One second chance for users who close the paywall: a smaller one-time Scenes starter pass (the 20 words and the scenes for the chosen show, without the flashcards, AI tutor or daily plan), paid once with no renewal. Not a discount on any paywall SKU. Shown once.
+**Headline A:** Start smaller, pay once
+**Headline B:** Try {{show}} scenes, pay once
+**Body A:** One show, paid once. No subscription.
+**Body B:** A one-time pass. Nothing to cancel.
+**Plans:** One offer card, a different and smaller product than any paywall tier: **Scenes starter pass**, `{{offer_price}}` paid once, no renewal, no strike-through, `{{renew_1w}}` not used. Checks match its scope: the 20 words and idioms for the chosen show, that show's scenes with tap-to-translate, saved to the email. Not included (stated on the card): other shows, the daily plan, word-card reviews, AI tutor. Optional `{{offer_badge}}` only if true.
+**Visual:** Same web look as #19: sticky bar with a close, eyebrow "One-time offer · shown once", headline, one orange-bordered offer card holding the level summary, the pass name, price row ("paid once"), three checks, a "Not included" line, CTA, payment badges and the "paid once" line; plain decline link.
+**Microcopy:** Paid-once line: "{{offer_price}} paid once. No renewal, nothing to cancel." Shown once per session (sessionStorage `ikf_offer_ewa-movies`); no timer (`CONFIG.offer.expiresMin` is `null`). Decline and close return to #18.
+**CTA:** Get the starter pass
 
 ---
 

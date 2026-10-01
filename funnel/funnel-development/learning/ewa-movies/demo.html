@@ -666,17 +666,20 @@ const trOf=k=>(DICT[k]&&DICT[k][S.native])||`(${nativeName(S.native)} translatio
 /* ---------- state ---------- */
 const locale=(navigator.language||'es').slice(0,2).toLowerCase();
 /* Last-chance offer: shown once per session when the paywall is closed without paying.
-   Real terms only: price / renews stay placeholders until the growth team sets them, and checkout must charge exactly these.
-   compareAt = the plan it undercuts (its real current price is struck). expiresMin: null = no timer; a number = a real deadline, withdrawn when it ends. */
+   Real terms only: the price stays a placeholder until the growth team sets it, and checkout must charge exactly it.
+   The offer is a one-time "Scenes starter pass": paid once, no renewal, nothing struck. expiresMin: null = no timer; a number = a real deadline, withdrawn when it ends. */
 const CONFIG={
   brand:'EWA',funnel:'ewa-movies',defaultShow:'Friends',
   plans:{'1w':{name:'1 week',period:'week',sub:'Intro price, renews weekly'},'4w':{name:'4 weeks',period:'4 weeks',rib:'MOST POPULAR',sub:'Intro price, renews every 4 weeks'},'12w':{name:'12 weeks',period:'12 weeks',rib:'LOWEST PER WEEK',alt:1,sub:'Intro price, renews every 12 weeks'}},
   defaultPlan:'4w',refundDays:'{{refund_days}}',legalEntity:'{{legal_entity}}',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_1}}'},{name:'{{reviewer_name}}',meta:'{{review_country}}',text:'{{review_2}}'}],
-  offer:{enabled:true,name:'1-week starter',sub:'Your 20 words and scenes, one week',price:'{{offer_price}}',renews:'{{renew_1w}}',period:'week',compareAt:'1w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+  offer:{enabled:true,name:'Scenes starter pass',sub:'One show, paid once, no renewal',price:'{{offer_price}}',oneTime:true,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
 };
 const refundReal=()=>/^\d+$/.test(String(CONFIG.refundDays));
+const live=v=>!!v&&!/^\{\{/.test(String(v));
+const ratingOn=()=>live(CONFIG.rating.score)&&live(CONFIG.rating.count);
+const reviewsOn=()=>(CONFIG.reviews||[]).filter(r=>r&&live(r.text));
 const PW_N=19,OFFER_N=20,LAST=21;
 const SCREENS={1:'hook_a',2:'hook_b',3:'series',4:'native',5:'level',6:'watch_habit',7:'stuck',8:'bridge',9:'name',10:'social_proof',11:'scene_word',12:'scene_idiom',13:'word_check',14:'minutes',15:'loading',16:'email',17:'level_words',18:'plan',19:'paywall',20:'offer',21:'get_app'};
 
@@ -775,7 +778,8 @@ const tok=n=>`<span class="tok">{{${n}}}</span>`;
 const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?tok(m[1]):esc(s)};
 const isAndroid=/android/i.test(navigator.userAgent);
 const storeBtn=()=>isAndroid?`<button class="store" data-a="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></button>`:`<button class="store" data-a="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></button>`;
-const phReview=(txt)=>`<div class="rev ph"><div class="who"><span class="av" style="background:var(--bd2)">?</span>${tok('reviewer_name')}<span class="stars" style="color:var(--bd2)">${stars(5,13)}</span></div><p>${txt||'“Real review goes here, ideally one about tap-to-translate. Use EWA’s own store reviews only.”'}</p></div>`;
+const revCard=r=>`<div class="rev"><div class="who"><span class="av" style="background:var(--bd2)">${live(r.name)?esc(r.name.slice(0,1).toUpperCase()):'•'}</span><span>${live(r.name)?esc(r.name):'Learner'}${live(r.meta)?`<small style="display:block;font-weight:700;color:var(--t3)">${esc(r.meta)}</small>`:''}</span><span class="stars" style="color:#F5A623">${stars(5,13)}</span></div><p>${esc(r.text)}</p></div>`;
+const phReview=()=>{const r=reviewsOn()[0];return r?revCard(r):''};
 
 /* scenes: original art. 'night' (suspense) is a CSS placeholder until scene-night.jpg is generated. */
 const ALT={door:'Illustrated scene: two friends talking at an apartment doorway at night',cafe:'Illustrated scene: two friends laughing over coffee in a warm cafe',dusk:'Illustrated scene: a woman on a city rooftop watching the sunset',night:'Illustrated scene: a dark alley with one warm street light'};
@@ -800,8 +804,8 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
 /* decline / close: back to the plan screen (#18), never back into the paywall, never a loop */
 function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
 function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
-  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
-  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('offer_accept',{price:o.price,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:o.price,oneTime:true,url});
   if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
   new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
@@ -819,17 +823,17 @@ const V={
     <div class="tbub" style="left:50%;top:150px;transform:translate(-20%,-100%)"><span><small>${esc(nativeName(S.native))}</small>${esc(trOf(I.k))}</span></div>
   </div>
   <span class="tpill">🎬 ${SH()}</span>
-  <div class="trust"><span class="st">★</span> ${tok('app_rating')} · ${tok('rating_count')} ratings on the App Store</div>
+  ${ratingOn()?`<div class="trust"><span class="st">★</span> ${esc(CONFIG.rating.score)} · ${esc(CONFIG.rating.count)} ratings on the App Store</div>`:''}
   <h1 class="display xl">${t(`Learn English from ${SH()}`,'Your favorite show is a teacher')}</h1>
   <p class="lead">${t('Tap any line. Keep every new word.','Real scenes, word cards and a plan built around you.')}</p>
   <div class="note">Not affiliated with any show or studio.</div></div>
   <div class="foot">${cta('Get started')}</div>`},
 2:()=>`<div class="scr">
-  <div style="position:relative;padding:22px 0 6px"><div class="worldmap" aria-hidden="true"></div><div class="bignum"><span class="tok big">{{app_rating}}</span></div><div class="hintline" style="position:relative;margin-top:12px">on the App Store</div></div>
+  ${ratingOn()?`<div style="position:relative;padding:22px 0 6px"><div class="worldmap" aria-hidden="true"></div><div class="bignum"><span class="big">${esc(CONFIG.rating.score)}</span></div><div class="hintline" style="position:relative;margin-top:12px">on the App Store</div></div>`:''}
   <h1 class="display tc">${t('Watch. Tap. Remember.','Subtitles that teach you')}</h1>
   <p class="lead tc">${t('Tap any word in a scene, save it in one tap.','Cards bring words back at spaced intervals.')}</p>
   <div class="mini-strip" aria-label="Watch, tap, card"><span>🎬 Watch</span><i>→</i><span>👆 Tap</span><i>→</i><span>🧠 Card</span></div>
-  <div class="stack">${phReview()}</div></div>
+  ${phReview()?`<div class="stack">${phReview()}</div>`:''}</div>
   <div class="foot">${cta('Continue')}</div>`,
 3:()=>{const other=S.show==='other',ok=!other||S.showOther.trim().length>0;
   return `<div class="scr"><h1 class="display">${t('Which show do you love?','Pick your comfort series')}</h1>
@@ -884,9 +888,9 @@ const V={
   <div class="field"><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
   <div class="foot">${cta('Continue',true,'name')}</div>`,
 10:()=>`<div class="scr center">
-  <div class="rating"><b><span class="tok big">{{app_rating}}</span></b><div class="srow">${stars(5,24)}</div></div>
-  <h1 class="display tc">${t(`Rated by ${tok('rating_count')} learners`,'Learners love tapping to translate')}</h1>
-  <p class="lead tc">${t('Ratings from the App Store.','The feature reviewers mention most.')}</p>
+  ${ratingOn()?`<div class="rating"><b><span class="big">${esc(CONFIG.rating.score)}</span></b><div class="srow">${stars(5,24)}</div></div>`:''}
+  <h1 class="display tc">${ratingOn()?t(`Rated by ${esc(CONFIG.rating.count)} learners`,'Learners love tapping to translate'):t('Scenes you can tap','Tap any line to translate')}</h1>
+  <p class="lead tc">${ratingOn()?t('Ratings from the App Store.','The feature reviewers mention most.'):t('Save every new word as you watch.','Cards bring words back later.')}</p>
   <div class="stores"><span class="store">${ic('apple',18)}<span><small>Download on the</small>App Store</span></span><span class="store">${ic('gplay',18)}<span><small>GET IT ON</small>Google Play</span></span></div>
   ${phReview()}</div>
   <div class="foot">${cta('Continue')}</div>`,
@@ -933,7 +937,7 @@ const V={
   return `<div class="scr" style="gap:14px;padding-top:6px"><div class="hero" data-mode="spin" data-sats="1" data-w="150"></div>
   <h1 class="display tc" style="font-size:27px">${t(`Building ${nmP()} ${SH()} plan…`,`Picking scenes for ${nm()}…`)}</h1>
   <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
-  <div class="revrot">${phReview()}</div></div>
+  ${phReview()?`<div class="revrot">${phReview()}</div>`:''}</div>
   ${S.sheet==='streak'?streakSheet():''}`},
 16:()=>`<div class="scr" style="gap:14px"><div class="preview" aria-hidden="true"><div class="pc">${miniPlan()}</div><div class="frost"><span>${ic('lock',15)} Your plan</span></div></div>
   <h1 class="display" style="font-size:28px">${t(`Your plan is ready, ${nm()}`,'Where should we send it?')}</h1>
@@ -967,7 +971,7 @@ const V={
   <p class="hint tc">Estimate for learners who practice daily. Results vary.</p></div>
   <div class="foot">${cta('Start my plan')}</div>`,
 19:()=>{
-  const R=CONFIG.rating,RV=CONFIG.reviews||[],list=POOL[genre()].list.slice(0,6);
+  const R=CONFIG.rating,list=POOL[genre()].list.slice(0,6);
   const FAQ=[['How do I cancel?','Cancel anytime in your account settings, up to 24 hours before renewal. We\'ll email you before your first renewal.'],
     ['Will I be charged again?','Yes, unless you cancel: each plan renews at the price and period shown on its card.'],
     ['Are the scenes from my show?','No. Scenes are original and written in the same genre. We never use clips, posters or logos from a real show.'],
@@ -989,29 +993,30 @@ const V={
     <div><span class="n">6</span><span>Daily plan to ${esc(nextLevel())}</span><span class="l">${ic('lock',16)}</span></div></div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From scene to fluent</h2>
    <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Open your 20 words','They unlock on this page right away.'],['Keep watching in the app','Log in with your email for Day 1.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
-  <div class="wsec"><span class="eyebrow">What learners say</span><div class="rate"><div class="sc">${tok(R.score.replace(/[{}]/g,''))}</div><div><div class="srow" style="color:#F5A623;display:flex;gap:2px">${stars(5,16)}</div><div class="hint">${tok(R.count.replace(/[{}]/g,''))} ratings</div></div></div>
-   <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev ph"><div class="who"><span class="av" style="background:var(--bd2)">?</span><span>${tv(r.name)}<small style="display:block;font-weight:700;color:var(--t3)">${tv(r.meta)}</small></span><span class="stars" style="color:var(--bd2)">${stars(5,13)}</span></div><p>${tv(r.text)}</p></div>`).join('')}</div></div>
+  ${(ratingOn()||reviewsOn().length)?`<div class="wsec"><span class="eyebrow">What learners say</span>${ratingOn()?`<div class="rate"><div class="sc">${esc(R.score)}</div><div><div class="srow" style="color:#F5A623;display:flex;gap:2px">${stars(5,16)}</div><div class="hint">${esc(R.count)} ratings</div></div></div>`:''}
+   <div class="stack" style="margin-top:10px">${reviewsOn().map(revCard).join('')}</div></div>`:''}
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${ic('shield',30,'currentColor',2)}</div><div><b style="font:800 18px var(--display)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays.replace(/[{}]/g,''))} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq2" style="margin-top:8px">${FAQ.map(([q,a],i)=>`<details ${i===0?'open':''}><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock('b')}</div>
   <div class="wfoot"><div class="legal"><span>Terms</span><span>Privacy Policy</span><span>Restore</span></div><div style="margin-top:8px">Not affiliated with any show, studio or network. ${tok(CONFIG.legalEntity.replace(/[{}]/g,''))}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span data-sumname>${CONFIG.plans[S.plan].name}</span><b data-sum>${todayLine()}</b></div>${cta('Start learning',true,'buy')}</div>`},
-20:()=>{const o=CONFIG.offer,was=o.compareAt?tok('price_'+o.compareAt):'';
+20:()=>{const o=CONFIG.offer;
   return `<div class="scr owrap">
   <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">${CONFIG.brand}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
   <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
-   <h1 class="display" style="font-size:28px">${t('Start smaller with one week',`Try ${SH()} words for a week`)}</h1>
-   <p class="lead">${t('Your 20 words and scenes, no long plan.','One-time starter, then weekly renewal.')}</p>
+   <h1 class="display" style="font-size:28px">${t('Start smaller, pay once',`Try ${SH()} scenes, pay once`)}</h1>
+   <p class="lead">${t('One show, paid once. No subscription.','A one-time pass. Nothing to cancel.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="ocard">${o.badge?`<span class="obadge">${tv(o.badge)}</span>`:''}
    <div class="sumc">${sumCard(true)}</div>
    <div class="oname"><b>${esc(o.name)}</b><span>${esc(o.sub)}</span></div>
-   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
-   <div class="ochecks">${[`All 20 ${SH()} words and idioms`,'Scenes with tap-to-translate','An email before your first renewal'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
-   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="oprice"><b>${tv(o.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${[`Your 20 ${SH()} words and idioms`,`${SH()} scenes with tap-to-translate`,'Saved to your email'].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   <p class="ofine" style="text-align:left"><b>Not included:</b> other shows, the daily plan, word-card reviews, AI tutor.</p>
+   ${cta('Get the starter pass',true,'offerbuy')}
    <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
-   <p class="ofine">${tv(o.price)} today, then ${tv(o.renews)} every ${esc(o.period)} until you cancel. We'll email you before. Cancel anytime, up to 24h before renewal.</p></div>
+   <p class="ofine">${tv(o.price)} paid once. No renewal, nothing to cancel.</p></div>
   <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
 21:()=>{const sv=S.saved.length?S.saved:[savedWord()];
   return `<div class="scr" style="gap:14px"><h1 class="display">${t(`You're in, ${nm()}!`,'Your first scene awaits')}</h1>
@@ -1244,7 +1249,7 @@ phone.addEventListener('click',e=>{
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'buy':S.bought=CONFIG.plans[S.plan].name+' (demo)';emit('checkout_click',{plan:S.plan});toast('Demo only. No charge made.');go(LAST);break;
     case 'closepw':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('User leaves the funnel here (demo)')}break;
-    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: 1-week starter (demo)';toast('Demo only. No charge made.');go(LAST);break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.bought='Last-chance offer: Scenes starter pass (demo)';toast('Demo only. No charge made.');go(LAST);break;
     case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast(isAndroid?'Google Play would open (demo)':'App Store would open (demo)');break;
     case 'flip':{const f=b.querySelector('.hflip');if(!f)break;S.flipped=!S.flipped;f.classList.remove('on','off');void f.offsetWidth;f.classList.add(S.flipped?'on':'off');break}
