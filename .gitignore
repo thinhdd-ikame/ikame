@@ -1,3 +1,15 @@
 .DS_Store
 **/.DS_Store
 .claude/scheduled_tasks.lock
+
+# creative-video-generator skill: generated media + local provider config
+funnel/creative-development/**/images/
+funnel/creative-development/**/videos/
+.claude/skills/creative-video-generator/config/providers.json
+
+# creative-video-optimizer skill: web-ready derivatives (web-assets.md stays tracked)
+funnel/creative-development/**/web/*.webp
+funnel/creative-development/**/web/*.mp4
+
+# funnel tools
+funnel/tools/node_modules/

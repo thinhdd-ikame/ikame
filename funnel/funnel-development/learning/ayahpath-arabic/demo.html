@@ -1,0 +1,836 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<title>AyahPath Arabic Funnel Demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Lora:wght@500;600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+
+/* page (control panel) tokens: follow the viewer's theme */
+:root{
+  color-scheme:light;
+  --pg:#F3EFE4;--pg2:#E6DEC8;--card:#FFFFFF;--bd:#DCD2BA;
+  --tx1:#173B2E;--tx2:#4C5C53;--tx3:#7A877F;
+  --acc:#0F5A43;--acc-tx:#FFFFFF;--acc-soft:#E3EEE6;--bezel:#173B2E;--bezel-ring:#2C4A3D;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --pg:#0B1310;--pg2:#10231B;--card:#121D19;--bd:#27372F;
+    --tx1:#EEE8D9;--tx2:#A9B6AD;--tx3:#77857C;
+    --acc:#C9A55C;--acc-tx:#10261D;--acc-soft:#1A2923;--bezel:#09160F;--bezel-ring:#2C4A3D;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --pg:#0B1310;--pg2:#10231B;--card:#121D19;--bd:#27372F;
+  --tx1:#EEE8D9;--tx2:#A9B6AD;--tx3:#77857C;
+  --acc:#C9A55C;--acc-tx:#10261D;--acc-soft:#1A2923;--bezel:#09160F;--bezel-ring:#2C4A3D;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--pg);background-image:radial-gradient(ellipse 70% 45% at 25% 0%,var(--pg2) 0%,transparent 70%);background-repeat:no-repeat;color:var(--tx1);font:15px/1.45 "Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:32px 16px 48px;max-width:100%}
+.phonebox{flex:none;position:relative;margin:11px;width:390px;height:812px}
+
+/* ---------- phone: app brand tokens, same in both page themes ---------- */
+.phone{
+  --ink:#173B2E;--ink2:#51645A;--ink3:#7A877F;--lav:#F1E8D0;--lav2:#F8F2E2;--line:#E2D8BE;
+  --v1:#1C6B52;--v2:#0F5A43;--vio:#0F5A43;--grad:linear-gradient(90deg,#1C6B52,#0F5A43);
+  --blue:#007BFF;--orange:#C9A55C;--green:#2F8F5F;--green-bg:#DCF0E3;--amber:#E39A00;--amber-bg:#FFF2D9;--red:#D64545;
+  --disp:"Lora",Georgia,serif;
+  color-scheme:light;
+  position:absolute;left:0;top:0;width:390px;height:812px;border-radius:52px;background:#fff;color:var(--ink);
+  overflow:hidden;isolation:isolate;transform-origin:0 0;
+  box-shadow:0 0 0 10px var(--bezel),0 0 0 11px var(--bezel-ring),0 40px 80px -24px #173B2E66;
+}
+.phone button:focus-visible,.phone input:focus-visible,.phone [tabindex]:focus-visible{outline:2px solid var(--vio);outline-offset:2px}
+.stage{position:absolute;inset:0;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column;background:#fff}
+.view.out{animation:vout .2s ease forwards;pointer-events:none}
+.view.in{animation:vin .3s ease both}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font:600 15px/1 "Inter",sans-serif;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--ink)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--ink)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--ink);border-radius:1px}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 14px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--ink2);font-size:22px;line-height:1}
+.iconbtn:hover{background:var(--lav2)}
+.prog{flex:1;height:5px;border-radius:3px;background:var(--lav);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--grad);border-radius:3px;transition:width .35s ease}
+.navspacer{width:36px}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:16px;position:relative;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr>*{flex-shrink:0}
+.scr.center{justify-content:center}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;background:#fff}
+.note{font-size:12px;color:var(--ink3);text-align:center;text-wrap:balance}
+
+.h1{font:800 28px/1.15 var(--disp);letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
+.h1.xl{font-size:32px}
+.h1.c,.lead.c{text-align:center}
+.violet{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--ink2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:800 11px/1 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--vio)}
+.logo{display:flex;align-items:center;gap:8px;font:800 19px/1 var(--disp);color:var(--ink)}
+.logo i{width:28px;height:28px;border-radius:9px;background:var(--grad);display:grid;place-items:center;color:#fff;font-style:normal;font-size:15px}
+.rating{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2);font-weight:500}
+.rating b{color:var(--orange)}
+
+.btn{height:56px;border-radius:999px;border:none;background:var(--grad);color:#fff;font:800 17px/1 var(--disp);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 24px -12px #0F5A43cc;transition:transform .12s ease,opacity .2s;position:relative;overflow:hidden;flex:none}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--line);color:var(--ink3);box-shadow:none;cursor:not-allowed}
+.btn:not([disabled]):not(.outline):not(.dark):not(.white)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.btn.outline{background:#fff;color:var(--vio);border:1.5px solid var(--vio);box-shadow:none}
+.btn.dark{background:#000;color:#fff;box-shadow:none;font:600 16px/1 "Inter",sans-serif;height:50px}
+.btn.white{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;font:600 16px/1 "Inter",sans-serif;height:50px}
+.link{background:none;border:none;color:var(--ink2);font-size:14px;padding:6px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.late{animation:fi .3s ease .55s both}
+
+.pills{display:flex;flex-direction:column;gap:10px}
+.pill{display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border-radius:16px;background:#fff;border:1.5px solid var(--line);text-align:left;width:100%;transition:border-color .15s,background .15s,color .15s;color:var(--ink)}
+.pill:hover{border-color:#D9C99A}
+.pill .em{font-size:22px;width:28px;text-align:center;flex:none;line-height:1}
+.pill .lb{flex:1;font-weight:600;font-size:16px}
+.pill .rt{font-size:13px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.pill .ck{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;font-size:13px;color:var(--vio);background:#fff}
+.pill.on{background:var(--grad);border-color:transparent;color:#fff}
+.pill.on .rt{color:#ffffffcc}
+.pill.on .ck{border-color:#fff}
+.pill.right{background:var(--green-bg);border-color:var(--green);color:#0C6B3F}
+.pill.wrong{background:var(--amber-bg);border-color:var(--amber);color:#7A5200}
+.pill.dim{opacity:.5}
+.pill[disabled]{cursor:default}
+.pill.on .bars i{background:#ffffff55}.pill.on .bars i.f{background:#fff}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scard{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:14px;border-radius:18px;background:#fff;border:1.5px solid var(--line);text-align:left;min-height:104px;color:var(--ink)}
+.scard .sem{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px}
+.scard .sl{font-weight:600;font-size:15px;line-height:1.2}
+.scard.on{border-color:var(--vio);box-shadow:0 0 0 3px #0F5A4322}
+.scard .sck{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.scard .tf{position:absolute;right:10px;bottom:10px;font:700 10px/1 var(--disp);padding:4px 6px;border-radius:6px;background:var(--lav);color:var(--vio)}
+
+.field{display:flex;flex-direction:column;gap:7px}
+.box{height:56px;border-radius:16px;background:#fff;border:1.5px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:10px;color:var(--ink3)}
+.box:focus-within{border-color:var(--vio);box-shadow:0 0 0 4px #0F5A4322}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--ink);font:500 16px "Inter",sans-serif}
+.phone .box input:focus-visible{outline:none}
+.err{font-size:13px;color:var(--red);font-weight:500}
+.hint{font-size:13px;color:var(--ink3)}
+.lav{background:var(--lav);border-radius:24px;padding:18px}
+.tok{font:600 .9em ui-monospace,Consolas,monospace;padding:1px 5px;border-radius:5px;border:1px dashed #7A877F;color:var(--ink2);background:#fff9}
+
+/* ---------- 3D hero: the course card deck ---------- */
+.pimg{display:block;width:100%;object-fit:cover}
+
+/* hook B mini phone loop */
+
+/* knowledge check */
+  repeating-linear-gradient(90deg,transparent 0 38px,#BDB3A0 38px 41px),
+  repeating-linear-gradient(0deg,#D8D0C0 0 18px,#BDB3A0 18px 21px);}
+
+
+
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--ink2);margin-bottom:6px;gap:10px}
+.step .pct{font-variant-numeric:tabular-nums;color:var(--ink3);font-weight:600}
+.step.done .top{color:var(--ink)}
+.step.done .pct{color:var(--green)}
+.bar{height:6px;border-radius:3px;background:var(--lav);overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#1C6B52,#0F5A43 60%,#C9A55C)}
+.revs{position:relative;height:94px}
+.rev{position:absolute;inset:0;padding:12px 14px;border-radius:18px;background:var(--lav2);border:1px solid var(--line);opacity:0;transition:opacity .5s}
+.rev.on{opacity:1}
+.rev p{margin:0 0 4px;font-size:14px;color:var(--ink)}
+.rev small{color:var(--ink3);font-size:12px}
+
+
+.gsheet{margin-top:auto;background:#fff;border-radius:28px 28px 0 0;box-shadow:0 -12px 40px -18px #173B2E55;padding:20px 20px 4px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.or{display:flex;align-items:center;gap:10px;color:var(--ink3);font-size:12px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.cb{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink2);cursor:pointer}
+.cb input{width:18px;height:18px;margin:1px 0 0;accent-color:#0F5A43;flex:none}
+
+.plan{display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;border:1.5px solid var(--line);background:#fff;text-align:left;width:100%;position:relative;color:var(--ink)}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);flex:none;display:grid;place-items:center}
+.plan.on{border-color:var(--vio);box-shadow:0 0 0 3px #0F5A4322}
+.plan.on .radio{border-color:var(--vio)}
+.plan.on .radio::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--grad)}
+.plan .pn{font:800 16px/1.2 var(--disp)}
+.plan .pl{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.plan .pd{font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.badge{position:absolute;top:-9px;right:14px;font:800 10px/1 var(--disp);letter-spacing:.06em;padding:5px 8px;border-radius:6px;background:var(--orange);color:#fff}
+.payrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.payrow span{height:40px;border-radius:12px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;gap:3px;font-weight:700;font-size:13px;color:var(--ink)}
+.safe{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;font-size:11px;color:var(--ink3)}
+.safe b{font:800 10px/1 var(--disp);padding:4px 6px;border:1px solid var(--line);border-radius:5px;color:var(--ink2)}
+.trust{font-size:12.5px;color:var(--ink2);text-align:center;font-weight:500}
+.get{display:flex;flex-direction:column;gap:9px;font-size:14px}
+.get div{display:flex;gap:10px}
+.get div::before{content:"\2713";color:var(--vio);font-weight:800}
+.rcard{padding:12px 14px;border-radius:16px;border:1.5px solid var(--line)}
+.rcard p{margin:4px 0;font-size:14px}
+.rcard small{color:var(--ink3);font-size:12px}
+.faq{border:1.5px solid var(--line);border-radius:16px;overflow:hidden}
+.faq button{width:100%;display:flex;justify-content:space-between;align-items:center;padding:13px 14px;background:#fff;border:none;font-weight:600;text-align:left;color:var(--ink)}
+.faq p{margin:0;padding:0 14px 13px;font-size:14px;color:var(--ink2)}
+.legal{display:flex;justify-content:center;gap:14px;font-size:12px;color:var(--ink3)}
+.closex{position:absolute;top:56px;left:14px;z-index:6;width:34px;height:34px;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--ink2);font-size:16px;line-height:1}
+
+
+
+.okhead{display:grid;place-items:center;position:relative;height:96px}
+.okhead .lg{width:78px;height:78px;border-radius:24px;background:var(--grad);display:grid;place-items:center;font-size:38px;color:#fff}
+.okhead .gc{position:absolute;left:calc(50% + 22px);top:4px;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;border:3px solid #fff}
+.nsteps{display:flex;flex-direction:column;gap:10px}
+.nsteps div{display:flex;gap:12px;align-items:center;font-size:14px;font-weight:500}
+.nsteps b{width:28px;height:28px;border-radius:50%;background:var(--lav);color:var(--vio);display:grid;place-items:center;font:800 14px var(--disp);flex:none}
+.stores{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.store{height:46px;border-radius:12px;background:#000;color:#fff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}
+.store small{display:block;font-size:9px;opacity:.8;line-height:1}
+.store span{font-weight:600;font-size:14px;line-height:1.1}
+.store .g{font-size:18px}
+.qr{width:84px;height:84px;flex:none;border-radius:8px;border:1.5px solid var(--line);padding:5px;background:#fff}
+.micro{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink2);text-align:center}
+
+.toast{position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:20;background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tst 2.6s ease forwards}
+@keyframes tst{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.fadein{animation:fi .35s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- control panel ---------- */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:22px;padding-top:8px;min-width:0}
+.panel h1{font:800 30px/1.1 "Lora",serif;margin:0 0 8px}
+.panel .intro{color:var(--tx2);margin:0;font-size:14px;overflow-wrap:anywhere}
+.panel code{font-size:12px;background:var(--acc-soft);padding:1px 5px;border-radius:4px}
+.seg{display:inline-flex;border:1px solid var(--bd);border-radius:999px;padding:3px;background:var(--card)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--tx2);font-weight:600}
+.seg button.on{background:var(--acc);color:var(--acc-tx)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--bd);background:var(--card);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--tx2)}
+.ctrls .restart:hover{color:var(--tx1)}
+.adsel{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)}
+.adsel select{font:inherit;color:var(--tx1);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:6px 8px}
+.panel button:focus-visible,.panel select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.plabel{font:700 11px/1 "Inter",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:12px}
+.flow .grp{display:flex;flex-direction:column;gap:1px}
+.flow .gname{font-size:12px;color:var(--acc);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--tx2);font-size:13px;width:100%}
+.flow button:hover{background:var(--card);color:var(--tx1)}
+.flow button.on{background:var(--acc-soft);color:var(--tx1)}
+.flow .n{font-variant-numeric:tabular-nums;color:var(--tx3);width:18px;flex:none;text-align:right}
+.flow .tag{margin-left:auto;font-size:10px;color:var(--tx3);border:1px solid var(--bd);border-radius:4px;padding:1px 5px;flex:none;white-space:nowrap}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--tx3)}
+.data dd{margin:0;color:var(--tx1);overflow-wrap:anywhere}
+.foot-note{font-size:12px;color:var(--tx3);margin:0 0 8px}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:32px;padding-block:20px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition:none!important}
+}
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:6px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.oclose{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;background:#fff;border:1.5px solid var(--line);color:var(--ink2);font-size:16px;line-height:1}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;font-size:13px;background:var(--lav2);color:var(--ink2)}
+.otimer b{font-variant-numeric:tabular-nums;color:var(--vio)}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:24px;background:linear-gradient(180deg,var(--lav2),#fff 45%);border:2px solid var(--vio);box-shadow:0 0 0 5px #0F5A4322,0 24px 44px -26px #0F5A4388;color:var(--ink)}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;white-space:nowrap;background:var(--grad);color:#fff}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font-size:18px;line-height:1.2}.oname span{font-size:13px;opacity:.8}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.oprice b{font-size:26px;line-height:1;color:var(--vio)}.oprice>span{font-size:13px;opacity:.8}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.35}
+.ochecks i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;margin-top:1px;background:var(--green);color:#fff;font-size:11px;font-weight:900}
+.opays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.opays span{font-size:10.5px;font-weight:700;padding:5px 7px;border-radius:6px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.ofine{font-size:12px;line-height:1.45;text-align:center;margin:0;opacity:.85}
+.ocard .oname b,.ocard .oprice b{font-family:var(--disp);font-weight:800}
+.obadge .tok{background:transparent;color:#fff;border-color:#ffffffaa}
+
+/* ---------- scroll-swap additions ---------- */
+.pwhero{border-radius:24px;padding:18px;background:linear-gradient(180deg,var(--lav),#fff);display:flex;flex-direction:column;gap:12px}
+.pwbar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:center;font-size:14.5px}
+.how b{width:28px;height:28px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;flex:none;font:800 13px/1 var(--disp)}
+.sec h2{font:800 18px/1.2 var(--disp);margin:0 0 10px;color:var(--ink)}
+.avt{width:38px;height:38px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:20px;flex:none}
+.pill .lb.q{font-weight:600;font-size:15px;line-height:1.3}
+.pill.pick{background:var(--lav);border-color:var(--vio);color:var(--ink)}
+
+/* ---------- AyahPath Arabic additions ---------- */
+:root{--arabic:"Amiri Quran","Amiri","Noto Naskh Arabic","Traditional Arabic","Arabic Typesetting",serif}
+.phone{--bg:#FBF6EA;--em:#0F3D2E;--em2:#155040;--gold:#C9A55C;--gold2:#E4CB8E;--cream:#F6EFDD;--vio:#0F5A43;--lav:#F1E8D0;--lav2:#F8F2E2;background:var(--bg)}
+.view,.foot{background:var(--bg)}
+.hamburger{display:none}
+.ar{font-family:var(--arabic);direction:rtl;unicode-bidi:isolate;line-height:2;font-weight:400;letter-spacing:0;text-transform:none}
+.hero{border-radius:22px;overflow:hidden;position:relative;background:var(--em);flex:none}
+.hero img{display:block;width:100%;height:100%;object-fit:cover}
+.hero .cap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px;text-align:center}
+.hero .cap .ar{color:var(--gold2);font-size:30px;text-shadow:0 2px 12px #0008}
+.hero .cap small{color:#F6EFDDcc;font-size:12px}
+.card-em{border-radius:22px;background:radial-gradient(ellipse 120% 80% at 50% 0%,#18543F,var(--em));color:#F6EFDD;padding:16px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.card-em .ar{color:var(--gold2)}
+.wordcard{border-radius:26px;background:#FFFDF7;border:1.5px solid var(--line);padding:10px 14px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 18px 36px -24px #0F3D2E88;text-align:center}
+.wordcard .ar{font-size:48px;line-height:1.7;color:var(--ink)}
+.wordcard .tr{font:600 15px/1.2 var(--disp);color:var(--ink2);min-height:19px;margin-top:2px;visibility:hidden}
+.wordcard .tr.on{visibility:visible}
+.cnt{font:700 12px/1 "Inter",sans-serif;color:var(--vio);letter-spacing:.06em;text-transform:uppercase}
+.dots6{display:flex;gap:6px}
+.wpills .pill{min-height:48px;padding:6px 14px}
+.dots6 i{flex:1;height:5px;border-radius:3px;background:var(--lav)}
+.dots6 i.d{background:var(--gold)}.dots6 i.c{background:var(--vio)}
+.pill.right{background:var(--green-bg);border-color:var(--green);color:#0C6B3F}
+.pill.wrong{background:var(--amber-bg);border-color:var(--amber);color:#7A5200}
+.pill.pick{background:var(--lav);border-color:var(--vio);color:var(--ink)}
+.fact{border-radius:20px;background:var(--lav);padding:14px 16px;display:flex;flex-direction:column;gap:4px;animation:up .45s cubic-bezier(.2,.8,.2,1) both}
+.fact .fl2{font:700 14px/1.2 var(--disp)}
+.fact .fl2.ok{color:var(--green)}.fact .fl2.no{color:#8A5A00}
+@keyframes up{from{transform:translateY(60%);opacity:.3}to{transform:none;opacity:1}}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:var(--lav);font-size:13px;font-weight:600;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .chip{background:#fff;border:1.5px solid var(--line)}
+.chips .chip small{color:var(--ink3);font-weight:500}
+.chip .ar{font-size:20px;line-height:1.2}
+/* surah map */
+.surah{border-radius:22px;background:#FFFDF7;border:1.5px solid var(--line);padding:14px 12px;display:flex;flex-direction:column;gap:2px}
+.srow{direction:rtl;display:flex;flex-wrap:wrap;gap:2px 6px;justify-content:flex-start;padding:2px 0;border-bottom:1px dashed var(--line)}
+.srow:last-child{border-bottom:none}
+.w{font-family:var(--arabic);font-size:21px;line-height:1.7;padding:0 6px;border-radius:9px;color:#17261F55;background:transparent;border:1.5px solid transparent;direction:rtl;unicode-bidi:isolate;white-space:nowrap}
+.w.k{color:var(--em);background:linear-gradient(180deg,#F3E2B4,#E4CB8E);border-color:#C9A55C;animation:kglow .6s ease both;animation-delay:calc(var(--d)*70ms + .3s)}
+@keyframes kglow{from{opacity:.3;transform:scale(.92)}to{opacity:1;transform:none}}
+.big{display:flex;align-items:baseline;justify-content:center;gap:6px;color:var(--vio);font:600 64px/1 var(--disp)}
+.big small{font-size:26px}
+.meter{height:12px;border-radius:7px;background:var(--lav);overflow:hidden;position:relative}
+.meter span{display:block;height:100%;background:linear-gradient(90deg,#C9A55C,#E4CB8E);border-radius:7px}
+.meter.goal span{background:linear-gradient(90deg,#1C6B52,#0F5A43)}
+.mrow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-top:4px}
+.chk{display:flex;flex-direction:column;gap:6px}
+.chk div{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;background:#fff;border:1.5px solid var(--line);font-size:14px}
+.chk .ar{font-size:24px;line-height:1.3;width:70px;text-align:center;flex:none}
+.chk .m{flex:1;font-weight:600}.chk .m small{display:block;font-weight:500;color:var(--ink3);font-size:12px}
+.chk i{font-style:normal;font-size:11px;font-weight:700;padding:4px 8px;border-radius:999px;background:var(--lav);color:var(--ink2)}
+.chk i.y{background:var(--green-bg);color:#0C6B3F}
+.stage1{display:flex;gap:12px;padding:14px;border-radius:18px;border:1.5px solid var(--line);background:#fff;align-items:flex-start}
+.stage1 b{width:30px;height:30px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:600 14px var(--disp);flex:none}
+.stage1 .t{font:600 15px/1.25 var(--disp)}.stage1 small{display:block;color:var(--ink2);font-size:13px;margin-top:3px}
+.stage1.g{border-color:var(--gold);background:linear-gradient(180deg,#FFFBEF,#fff)}
+.thumb{width:62px;height:62px;border-radius:16px;display:grid;place-items:center;font-size:30px;flex:none}
+.pwtop{display:flex;gap:12px;align-items:center}
+.stars{color:var(--orange);letter-spacing:1px}
+.lesson3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lesson3 div{border-radius:18px;background:#fff;border:1.5px solid var(--line);padding:12px 6px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}
+.lesson3 span{font-size:26px}.lesson3 b{font:600 14px var(--disp)}.lesson3 small{font-size:12px;color:var(--ink2)}
+.gbox{border-radius:18px;border:1.5px solid var(--line);padding:14px;font-size:14px;color:var(--ink2);display:flex;gap:10px}
+.sbar{position:absolute;left:0;right:0;top:0}
+.ocard .nope{font-size:13px;color:var(--ink2);padding:10px 12px;border-radius:14px;background:var(--lav2);border:1px dashed var(--line)}
+.ocard .nope b{color:var(--ink)}
+.gatebg{position:absolute;left:18px;right:18px;top:60px;filter:blur(7px);opacity:.55;pointer-events:none}
+.gsheet{margin-top:auto;background:#fff;border-radius:28px 28px 0 0;box-shadow:0 -12px 40px -18px #173B2E55;padding:20px 20px 4px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.okhead{display:grid;place-items:center;position:relative;height:96px}
+.okhead .lg{width:78px;height:78px;border-radius:24px;background:var(--grad);display:grid;place-items:center;font-size:38px;color:#fff}
+.okhead .gc{position:absolute;left:calc(50% + 22px);top:4px;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;border:3px solid #fff}
+.nsteps{display:flex;flex-direction:column;gap:10px}
+.nsteps div{display:flex;gap:12px;align-items:center;font-size:14px;font-weight:500}
+.nsteps b{width:28px;height:28px;border-radius:50%;background:var(--lav);color:var(--vio);display:grid;place-items:center;font:600 14px var(--disp);flex:none}
+.stores{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.store{height:46px;border-radius:12px;background:#000;color:#fff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}
+.store small{display:block;font-size:9px;opacity:.8;line-height:1}
+.store span{font-weight:600;font-size:14px;line-height:1.1}
+.store .g{font-size:18px}
+.qrrow{display:flex;gap:14px;align-items:center}
+.qr{width:84px;height:84px;flex:none;border-radius:8px;border:1.5px solid var(--line);padding:5px;background:#fff}
+.micro{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink2);text-align:center}
+.avt{width:38px;height:38px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:20px;flex:none}
+.pwbar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.pwhero{background:radial-gradient(ellipse 120% 80% at 50% 0%,#18543F,var(--em));color:#F6EFDD}
+.pwhero .h1,.pwhero .lead{color:#F6EFDD}.pwhero .lead{opacity:.85}.pwhero .eyebrow{color:var(--gold2)}
+.pwhero .chip{background:#ffffff1c;color:#F6EFDD}
+.pwhero .meter{background:#ffffff24}.pwhero .mrow{color:#F6EFDDcc}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="phonebox" id="pbox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>AyahPath: Quranic Arabic funnel</h1>
+      <p class="intro">Prototype of the 21-screen brief in <code>learning/ayahpath-arabic/funnel-content.md</code>: "understand what you recite". Six Al-Fatiha words decide the "% of Al-Fatiha you know", your pace sets a goal date. Tap through in the phone or jump to any screen below.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant">
+        <button id="vA" class="on">Copy A</button><button id="vB">Copy B</button>
+      </div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <div>
+      <p class="foot-note"><b>Computed from your answers:</b> the % counts every word of Al-Fatiha (29, repeats counted each time, Bismillah included) that belongs to a word you answered correctly (#7-#12); unchecked words are not counted, and lucky guesses may count. Words to learn = distinct words left (23 minus the ones you know). Days = words left / words per day (minutes / 2.5, an assumption) plus letter days if you cannot read yet. Dates are goals, not promised outcomes.</p>
+      <p class="foot-note"><b>Needs review before launch:</b> every Arabic string, transliteration, meaning and the word counts must be checked by a qualified scholar and an Arabic linguist. Arabic is live text (Amiri Quran), never baked into images.</p>
+      <p class="foot-note"><b>Placeholders:</b> prices, renewals, the offer price, rating and review blocks and the guarantee are gated in <code>CONFIG</code> and stay hidden until real values are set. Pictures are generated placeholders until gen_images.py runs; QR is a placeholder.</p>
+      <p class="foot-note">Pick "Other" on screen 4 to see the empty-input state (CTA disabled). Try <code>taken@example.com</code> on #17. No purchase, sign-in or email is made.</p>
+    </div>
+  </aside>
+</div>
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const IMG=/*IMG-START*/{'img/hook-fatiha.jpg':'img/hook-fatiha.jpg','img/hook-words.jpg':'img/hook-words.jpg','img/lantern-path.jpg':'img/lantern-path.jpg','img/result-glow.jpg':'img/result-glow.jpg','img/paywall-hero.jpg':'img/paywall-hero.jpg','img/payoff-dawn.jpg':'img/payoff-dawn.jpg'}/*IMG-END*/;
+const im=p=>IMG[p]||p;
+/* hero image; optional live Arabic caption is real text (never baked into the picture, so the script stays exact) */
+const hero=(p,h,alt='',ar='',sub='')=>`<div class="hero" style="height:${h}px"><img src="${im(p)}" alt="${esc(alt)}" loading="lazy" decoding="async">${ar?`<div class="cap"><span class="ar" lang="ar" dir="rtl">${ar}</span>${sub?`<small>${sub}</small>`:''}</div>`:''}</div>`;
+
+/* ---------- Al-Fatiha data (Hafs, Uthmani; Bismillah = first line). NEEDS scholar + linguist review before launch. ---------- */
+/* word families: [Arabic, transliteration] */
+const F={
+ bismi:['بِسْمِ','bismi'],allah:['ٱللَّهِ','Allāh'],rahman:['ٱلرَّحْمَٰنِ','ar-Raḥmān'],rahim:['ٱلرَّحِيمِ','ar-Raḥīm'],
+ hamd:['ٱلْحَمْدُ','al-ḥamdu'],rabb:['رَبِّ','rabbi'],alamin:['ٱلْعَٰلَمِينَ','al-ʿālamīn'],
+ malik:['مَٰلِكِ','māliki'],yawm:['يَوْمِ','yawmi'],din:['ٱلدِّينِ','ad-dīn'],
+ iyyaka:['إِيَّاكَ','iyyāka'],nabud:['نَعْبُدُ','naʿbudu'],nastain:['نَسْتَعِينُ','nastaʿīn'],
+ ihdina:['ٱهْدِنَا','ihdinā'],sirat:['ٱلصِّرَٰطَ','aṣ-ṣirāṭ'],mustaqim:['ٱلْمُسْتَقِيمَ','al-mustaqīm'],
+ alladhina:['ٱلَّذِينَ','alladhīna'],anamta:['أَنْعَمْتَ','anʿamta'],alayhim:['عَلَيْهِمْ','ʿalayhim'],
+ ghayr:['غَيْرِ','ghayri'],maghdub:['ٱلْمَغْضُوبِ','al-maghḍūb'],wala:['وَلَا','wa lā'],dallin:['ٱلضَّآلِّينَ','aḍ-ḍāllīn']
+};
+/* the surah as lines of [surface form, family]; every occurrence counts */
+const AYAT=[
+ [['بِسْمِ','bismi'],['ٱللَّهِ','allah'],['ٱلرَّحْمَٰنِ','rahman'],['ٱلرَّحِيمِ','rahim']],
+ [['ٱلْحَمْدُ','hamd'],['لِلَّهِ','allah'],['رَبِّ','rabb'],['ٱلْعَٰلَمِينَ','alamin']],
+ [['ٱلرَّحْمَٰنِ','rahman'],['ٱلرَّحِيمِ','rahim']],
+ [['مَٰلِكِ','malik'],['يَوْمِ','yawm'],['ٱلدِّينِ','din']],
+ [['إِيَّاكَ','iyyaka'],['نَعْبُدُ','nabud'],['وَإِيَّاكَ','iyyaka'],['نَسْتَعِينُ','nastain']],
+ [['ٱهْدِنَا','ihdina'],['ٱلصِّرَٰطَ','sirat'],['ٱلْمُسْتَقِيمَ','mustaqim']],
+ [['صِرَٰطَ','sirat'],['ٱلَّذِينَ','alladhina'],['أَنْعَمْتَ','anamta'],['عَلَيْهِمْ','alayhim'],['غَيْرِ','ghayr'],['ٱلْمَغْضُوبِ','maghdub'],['عَلَيْهِمْ','alayhim'],['وَلَا','wala'],['ٱلضَّآلِّينَ','dallin']]
+];
+const TOKENS=AYAT.flat(),TOTAL=TOKENS.length,FAMN=Object.keys(F).length;
+const occ=k=>TOKENS.filter(t=>t[1]===k).length;
+/* the six-word check: option = [label, isCorrect]; index 3 is always "Not sure" */
+const TESTS=[
+ {k:'allah',ar:'ٱللَّهِ',tr:'Allāh',b:'Start with the most familiar word.',o:[['The Day',0],['God',1],['The worlds',0]],m:'Allāh means God. It appears twice, in “Bismillah” and “al-ḥamdu lillāh”.'},
+ {k:'rabb',ar:'رَبِّ',tr:'rabbi',b:'From the second line of the surah.',o:[['Lord',1],['King',0],['Praise',0]],m:'Rabb means Lord: the One who creates, owns and sustains.'},
+ {k:'rahman',ar:'ٱلرَّحْمَٰنِ',tr:'ar-Raḥmān',b:'It describes Allah, and appears twice.',o:[['Praise',0],['King',0],['Most Merciful',1]],m:'Ar-Raḥmān means the Most Merciful. It appears twice in the surah.'},
+ {k:'iyyaka',ar:'إِيَّاكَ',tr:'iyyāka',b:'A short word, repeated twice.',o:[['We worship',0],['Guide us',0],['You alone',1]],m:'Iyyāka means “You alone”. It starts two phrases: worship, and ask for help.'},
+ {k:'sirat',ar:'ٱلصِّرَٰطَ',tr:'aṣ-ṣirāṭ',b:'A word from the du‘a near the end.',o:[['The path',1],['The Day',0],['The worlds',0]],m:'Aṣ-ṣirāṭ means the path. It appears twice: “the straight path” and “the path of…”.'},
+ {k:'alayhim',ar:'عَلَيْهِمْ',tr:'ʿalayhim',b:'It ends two phrases in the last line.',o:[['From them',0],['Upon them',1],['With them',0]],m:'ʿAlayhim means “upon them”. It appears twice in the last line.'}
+];
+const KNOWN=()=>new Set(S.ans.map((a,k)=>a!==null&&TESTS[k].o[a]&&TESTS[k].o[a][1]?TESTS[k].k:null).filter(Boolean));
+const knownTok=()=>{const K=KNOWN();return TOKENS.filter(t=>K.has(t[1])).length};
+const pct=()=>Math.round(100*knownTok()/TOTAL);
+const left=()=>FAMN-KNOWN().size;
+const answered=()=>S.ans.filter(a=>a!==null).length;
+
+const READ=[['none','🔤','Not yet'],['letters','✋','Letters, slowly'],['slow','📖','Yes, slowly'],['fluent','✅','Yes, fluently']];
+const GOALS=[['salah','🕌','Understand my salah','understand my salah'],['read','📖','Read the Quran','read the Quran'],['memo','🧠','Memorize surahs','memorize surahs'],['family','👨‍👩‍👧','Learn with family','learn with family']];
+const MINS=[[5,'👍','Light'],[10,'👌','Steady'],[15,'🤲','Committed'],[20,'💪','Dedicated']];
+const PLANS={
+ w1:{n:'1-week plan',tok:'1w',first:'week',every:'week'},
+ w4:{n:'4-week plan',tok:'4w',first:'4 weeks',every:'4 weeks'},
+ w12:{n:'12-week plan',tok:'12w',first:'12 weeks',every:'12 weeks'}
+};
+const TK=n=>`<span class="tok">{{${n}}}</span>`;
+/* Proof is gated: ratings, reviews and the guarantee render only when CONFIG holds a real value (not a {{token}}). */
+const real=v=>v!==null&&v!==undefined&&v!==''&&!/^\{\{/.test(String(v));
+const hasRating=()=>real(CONFIG.proof.rating)&&real(CONFIG.proof.count)&&real(CONFIG.proof.storeName);
+const reviews=()=>(CONFIG.proof.reviews||[]).filter(r=>real(r.q)&&real(r.by));
+const ratingStrip=()=>hasRating()?`<span class="rating"><b>★</b> ${esc(CONFIG.proof.rating)} · ${esc(CONFIG.proof.count)} ${esc(CONFIG.proof.storeName)} ratings</span>`:'';
+const reviewCard=r=>`<div class="rcard"><span class="stars">★★★★★</span><p>"${esc(r.q)}"</p><small>${esc(r.by)}</small></div>`;
+
+/* Last-chance offer: once per session, on paywall close. A smaller, one-time "Al-Fatiha pass" (paid once, no renewal) and a Not-included list.
+   price stays a token until the growth team sets it. compareAt null = nothing struck. expiresMin null = no timer (brand promise: no urgency). */
+const CONFIG={funnel:'ayahpath-arabic',checkoutUrl:{w1:'',w4:'',w12:''} /* '' = only emit checkout_click */,proof:{rating:'{{store_rating}}',count:'{{rating_count}}',storeName:'{{store_name}}',reviews:[],refundDays:'{{refund_days}}'},offer:{enabled:true,name:'Al-Fatiha pass',price:'{{offer_price}}',period:'once',oneTime:true,compareAt:null,badge:'',checkoutUrl:'',expiresMin:null}};
+
+const INIT=()=>({v:'A',i:1,hist:[],read:'',goal:'',goalO:'',name:'',ans:[null,null,null,null,null,null],mins:0,email:'',mkt:false,acct:'',plan:'w4',paid:false,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,faq:-1,err:''});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name||'you');
+const nmT=()=>S.name?esc(S.name):'you';
+const mins=()=>S.mins||10;
+const wpd=()=>Math.max(1,Math.round(mins()/2.5));
+const lettersDays=()=>S.read==='none'?7:S.read==='letters'?3:0;
+const studyDays=()=>Math.ceil(left()/wpd());
+const totalDays=()=>studyDays()+lettersDays();
+const goalDate=()=>new Date(Date.now()+totalDays()*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const goalO=()=>S.goal==='other';
+const goalL=()=>goalO()?esc(S.goalO.trim()||'understand the Quran'):(GOALS.find(g=>g[0]===S.goal)||GOALS[0])[3];
+const goalChip=()=>goalO()?esc(S.goalO.trim()||'Other'):(GOALS.find(g=>g[0]===S.goal)||GOALS[0])[2];
+const goalStage=()=>({salah:'Short surahs you pray, word by word',read:'Reading practice on short surahs',memo:'Memorize with meaning, one ayah at a time',family:'Learn side by side with family'})[S.goal]||(goalO()?`Your goal: ${esc(S.goalO.trim()||'in your words')}`:'Short surahs, word by word');
+const lastGold=s=>{const i=s.lastIndexOf(' ');return i<0?`<span class="violet">${s}</span>`:`${s.slice(0,i)} <span class="violet">${s.slice(i+1)}</span>`};
+const OKF={4:()=>S.goal&&(S.goal!=='other'||S.goalO.trim()),14:()=>!!S.mins};
+
+/* surah map: known families glow gold. hi = Set of families to highlight */
+const surah=hi=>{let d=0;return `<div class="surah" role="img" aria-label="Al-Fatiha, ${TOTAL} words">${AYAT.map(l=>`<div class="srow" dir="rtl">${l.map(([a,k])=>`<span class="w ${hi.has(k)?'k':''}" lang="ar" style="--d:${hi.has(k)?d++:0}">${a}</span>`).join('')}</div>`).join('')}</div>`};
+
+const FLOW=[
+ ['A · Hook',[[1,'Understand what you recite'],[2,'Six words, your number']]],
+ ['B · Investment',[[3,'Arabic reading'],[4,'Main goal'],[5,'Name'],[6,'Word check intro','bridge']]],
+ ['B · Word check',[[7,'Word 1 · Allāh'],[8,'Word 2 · rabb'],[9,'Word 3 · ar-Raḥmān'],[10,'Word 4 · iyyāka'],[11,'Word 5 · aṣ-ṣirāṭ'],[12,'Word 6 · ʿalayhim'],[13,'Your % of Al-Fatiha','computed'],[14,'Minutes a day']]],
+ ['C · Trust',[[15,'How a lesson works','rating-free']]],
+ ['D · Anticipation',[[16,'Building your path','auto']]],
+ ['E · Gate',[[17,'Email']]],
+ ['D · Reveal',[[18,'Your path','computed']]],
+ ['F · Monetization',[[19,'Paywall','long scroll'],[20,'Last-chance offer','once']]],
+ ['G · Payoff',[[21,'Get the app']]]
+];
+
+const phone=document.getElementById('phone');
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timers=[];
+const later=(f,ms)=>{const id=setTimeout(f,ms);timers.push(id);return id};
+const clearT=()=>{timers.forEach(id=>{clearTimeout(id);clearInterval(id)});timers=[]};
+
+const PW_N=19,OFFER_N=20,LOAD_N=16;
+function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';render(true)}
+function next(){go(S.i+1)}
+function back(){clearT();let p=S.hist.pop();while(p===LOAD_N&&S.hist.length)p=S.hist.pop();if(p){S.i=p;S.err='';render(true)}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+
+function fillTo(n){
+  if(n>3&&!S.read)S.read='slow';
+  if(n>4&&!OKF[4]())S.goal='salah';
+  if(n>5&&!S.name)S.name='Maya';
+  [7,8,9,10,11,12].forEach((k,j)=>{if(n>k&&S.ans[j]===null)S.ans[j]=[1,0,2,3,0,1][j]});
+  if(n>14&&!S.mins)S.mins=10;
+  if(n>17&&!S.email)S.email='maya@example.com';
+  if(n>19)S.paid=true;
+}
+
+function nav(){
+  const n=S.i;
+  if(n<2||n===LOAD_N||n>=PW_N)return '';
+  const prog=n>=3&&n<=14;const p=Math.round((n-2)/12*100);
+  return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back">‹</button>${prog?`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></div>`:'<div style="flex:1"></div>'}<div class="navspacer"></div></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" id="cta" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const pill=(a,v,em,label,on,multi,right='',k='')=>`<button class="pill ${on?'on':''}" data-a="${a}" data-v="${esc(v)}" ${k?`data-k="${k}"`:''} aria-pressed="${on}"><span class="em">${em}</span><span class="lb">${label}</span>${right}${multi?`<span class="ck">${on?'✓':''}</span>`:''}</button>`;
+const otherBox=(f,ph)=>`<div class="box fadein"><input id="oin" maxlength="40" type="text" data-f="${f}" placeholder="${ph}" value="${esc(S[f])}"></div>`;
+const hint=(ok,txt)=>`<div class="note" id="hint" style="visibility:${ok?'hidden':'visible'}">${txt}</div>`;
+
+function word(k){
+  const Q=TESTS[k],pick=S.ans[k],done=pick!==null;
+  const right=done&&pick<3&&Q.o[pick][1];
+  const head=t(`Word ${k+1} of 6`,'What does this mean?'),body=t(Q.b,"Not sure? That's a fine answer.");
+  const lab=i=>i===3?'Not sure':Q.o[i][0];
+  const opts=[0,1,2,3].map(i=>{
+    let cls='';
+    if(done){const ok=i<3&&Q.o[i][1];cls=ok?'right':i===pick?(i===3?'pick':'wrong'):'dim'}
+    return `<button class="pill ${cls}" data-a="ans" data-v="${i}" ${done?'disabled':''}><span class="em">${i===3?'🤔':'🔹'}</span><span class="lb">${esc(lab(i))}</span></button>`}).join('');
+  const fl=right?`<span class="fl2 ok">✓ Yes</span>`:pick===3?`<span class="fl2 no">No problem</span>`:`<span class="fl2 no">Not quite</span>`;
+  return `<div class="scr"><div class="dots6" aria-hidden="true">${TESTS.map((_,i)=>`<i class="${i<=k?'c':''}"></i>`).join('')}</div>
+  <h1 class="h1">${esc(head)}</h1><p class="lead" style="margin-top:-6px">${esc(body)}</p>
+  <div class="wordcard"><span class="ar" lang="ar" dir="rtl">${Q.ar}</span><span class="tr ${done?'on':''}">${esc(Q.tr)}</span></div>
+  <div class="pills wpills" style="gap:8px">${opts}</div>${done?`<div class="fact">${fl}<p>${esc(Q.m)}</p></div>`:''}</div>
+  <div class="foot">${done?`<div class="late">${cta(k===5?'See my result':'Next word')}</div>`:'<div class="note">Tap an answer</div>'}</div>`;
+}
+const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h};
+function qrSVG(seed){
+  const N=25;let h=hash(seed),r='';
+  const fin=(x,y)=>`<rect x="${x}" y="${y}" width="7" height="7" fill="#173B2E"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" fill="#173B2E"/>`;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++){if((x<8&&y<8)||(x>16&&y<8)||(x<8&&y>16))continue;h=(h*1103515245+12345)>>>0;if(h%100<48)r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`}
+  return `<svg class="qr" viewBox="0 0 25 25" width="84" height="84" shape-rendering="crispEdges" aria-label="QR code placeholder"><g fill="#173B2E">${r}</g>${fin(0,0)}${fin(18,0)}${fin(0,18)}</svg>`;
+}
+const APL=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.8zM14.1 5.8c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2.1-.5 2.7-1.3z"/></svg>`;
+const stores=()=>`<div class="stores"><button class="store" data-a="store"><span class="g">${APL(18)}</span><span><small>Download on the</small>App Store</span></button><button class="store" data-a="store"><span class="g">▶</span><span><small>GET IT ON</small>Google Play</span></button></div>`;
+
+/* prototype event log: the names a production build emits (window.dataLayer + ikfunnel:* DOM events) */
+/* ---------- tracking + host API (never the photo, email, name or typed text) ---------- */
+const IKQS=new URLSearchParams(location.search),DEBUG=IKQS.get('debug')==='1';
+function snapshot(){const o={screen:S.i,variant:S.v};for(const k in S){if(/^(hist|email|name|err|acct|offerEnd)$/.test(k)||/(Other|O\d?)$/.test(k))continue;const x=S[k];if(x===null||['string','number','boolean'].includes(typeof x)||(Array.isArray(x)&&x.every(y=>y===null||typeof y!=='object')))o[k]=x}o.email_provided=!!S.email;o.name_provided=!!S.name;return o}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{},{data});
+  try{(window.dataLayer=window.dataLayer||[]).push(d)}catch(e){}
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:name,detail:d},'*')}catch(e){}
+  const f=Object.assign({funnel:CONFIG.funnel},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel]',name,JSON.stringify(detail||{}))}catch(e){}
+}
+const answer=(k,v)=>emit('answer',{key:k,value:v});
+function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
+const planUrl=()=>(CONFIG.checkoutUrl&&CONFIG.checkoutUrl[S.plan])||'';
+function withParams(url,plan){try{const u=new URL(url,location.href);u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan',plan);return u.toString()}catch(e){return url}}
+const ANS_SKIP=/^(usesugg|plan|faq|acct|legal|login|store|open|toplans|next|back)$/;
+function ikView(){if(S._sv===S.i)return;S._sv=S.i;emit('screen_view',{index:S.i,name:'screen_'+S.i});if(S.i===PW_N)emit('paywall_view');if(S.i===21&&!S.completed){S.completed=true;emit('complete',{paid:S.paid,offer:S.offer})}}
+function planKey(p){p=String(p);if(PLANS[p])return p;if(PLANS['w'+p])return 'w'+p;const q=p.replace(/^w/,'');return PLANS[q]?q:null}
+function applyPaid(p){clearInterval(window.__oiv);if(p==='offer'){S.offer=true;S.offerSeen=true;try{sessionStorage.setItem(OKEY,'1')}catch(e){}}else{S.offer=false;const k=planKey(p);if(k)S.plan=k}S.paid=true}
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:()=>snapshot(),
+  completePurchase:plan=>{plan=plan||S.plan;applyPaid(plan);emit('purchase_complete',{plan:plan==='offer'?'offer':S.plan});go(21)}});
+
+const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?TK(m[1]):esc(s)};
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view',{price:o.price})}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,period:o.period,oneTime:true,url});
+  emit('checkout_click',{plan:'offer',price:o.price,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('funnel',CONFIG.funnel);u.searchParams.set('plan','offer');
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
+
+const planBlock=()=>`<div class="pills" style="gap:12px">${Object.entries(PLANS).map(([k,p])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${p.n}</span><span class="pl" style="display:block;margin-top:4px">${TK('price_'+p.tok)} first ${p.first}</span><span class="pl" style="display:block">then ${TK('renewal_'+p.tok)} / ${p.every}</span>${k==='w4'?'<span class="pd">Pre-selected · most flexible length</span>':k==='w12'?'<span class="pd">Longest plan · same renewal shown</span>':'<span class="pd">Shortest commitment</span>'}</span></button>`).join('')}</div>`;
+const FAQS=[['How do I cancel?','Profile → Settings → Manage subscription, or the link in your receipt.'],['Will it renew?','Yes, at the renewal price shown, until you cancel. We email you before every renewal.'],['Do I need to read Arabic?','No. Every lesson comes with transliteration and translation.'],['Can this replace a teacher?','No. It helps you understand words. For recitation rules or rulings, ask a qualified teacher.']];
+const faqBlock=()=>`<div class="faq">${FAQS.map(([q,a],i)=>`<button data-a="faq" data-v="${i}" aria-expanded="${S.faq===i}">${q}<span>${S.faq===i?'−':'+'}</span></button>${S.faq===i?`<p class="fadein">${a}</p>`:''}`).join('')}</div>`;
+const logo='<div class="logo"><i>✦</i>AyahPath</div>';
+const meter=(p,cls='')=>`<div class="meter ${cls}"><span style="width:${p}%"></span></div>`;
+
+const V={
+1:()=>`<div class="scr" style="padding-top:8px"><div style="display:flex;flex-direction:column;gap:6px">${logo}${ratingStrip()}</div>
+  ${hero('img/hook-fatiha.jpg',200,'Deep green geometric pattern with a soft gold glow','ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ',t('You say it 17 times a day','Part of every rak‘ah'))}
+  <h1 class="h1 xl">${lastGold(t('Understand what you recite','Know every word you pray'))}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Al-Fatiha is in every rak‘ah. Learn its words.','Word by word, in minutes a day.')}</p>
+  <p class="hint" style="margin:0">17 = the rak‘ahs of the five daily fard prayers.</p></div>
+  <div class="foot">${cta('Start my path')}</div>`,
+2:()=>{const hi=new Set(TESTS.map(x=>x.k));
+  return `<div class="scr"><h1 class="h1">${t('Six words. Your real number.','How much do you understand?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('See how much of Al-Fatiha you already know.','Takes about two minutes. No sign-up yet.')}</p>
+  ${surah(hi)}
+  <p class="hint" style="margin:0;text-align:center">Gold = the six words we'll check with you.</p></div>
+  <div class="foot">${cta('Continue')}<div class="note">About 2 minutes · No Arabic needed to begin</div></div>`},
+3:()=>`<div class="scr"><h1 class="h1">${t('Can you read Arabic script?',"How's your Arabic reading?")}</h1>
+  <p class="lead" style="margin-top:-6px">${t("Not yet is fine; we'll add letters.",'This decides if letters join your plan.')}</p>
+  <div class="pills">${READ.map(([v,em,l])=>pill('read',v,em,l,S.read===v,false)).join('')}</div>
+  <p class="hint" style="text-align:center">Every lesson also has transliteration and translation.</p></div>`,
+4:()=>`<div class="scr"><h1 class="h1">${t('What brings you here?',"What's your main goal?")}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Pick one; it shapes your plan.',"We'll start your path from here.")}</p>
+  <div class="pills">${GOALS.map(([v,em,l])=>pill('goal',v,em,l,S.goal===v,false)).join('')}${pill('goal','other','✏️','Other',S.goal==='other',false)}${S.goal==='other'?otherBox('goalO','e.g. Understand the Quran'):''}</div></div>
+  <div class="foot">${hint(!!OKF[4](),'Pick one to continue')}${cta('Continue',!!OKF[4]())}</div>`,
+5:()=>`<div class="scr"><h1 class="h1">${t('What should we call you?',"What's your first name?")}</h1>
+  <p class="lead" style="margin-top:-6px">${t("We'll use it on your path.",'First name only, nothing more.')}</p>
+  <div class="field"><div class="box"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" autocapitalize="words" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Continue',true,'name')}<button class="link" data-a="skipname">Skip for now</button></div>`,
+6:()=>`<div class="scr">${hero('img/hook-words.jpg',96,'Cream word tiles on green, a few glowing gold')}<h1 class="h1">${t("Let's check six words",'Six words from Al-Fatiha')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Not a grade. Just your starting point.','Every answer shows its meaning.')}</p>
+  <div class="card-em"><span class="eyebrow">Your word check</span>
+   <span class="ar" lang="ar" dir="rtl" style="font-size:30px;text-align:center">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span>
+   <div class="lesson3" style="margin-top:2px">${[['👀','See it','the Arabic word'],['👆','Tap it','its meaning'],['💡','Learn it','one short fact']].map(([e,a,b])=>`<div style="background:#ffffff14;border-color:#ffffff22"><span>${e}</span><b style="color:#F6EFDD">${a}</b><small style="color:#F6EFDDbb">${b}</small></div>`).join('')}</div></div>
+  <p class="hint" style="text-align:center;margin:0">A self-check for learning, not a judgement of anyone's faith.</p></div>
+  <div class="foot">${cta('Begin')}</div>`,
+7:()=>word(0),8:()=>word(1),9:()=>word(2),10:()=>word(3),11:()=>word(4),12:()=>word(5),
+13:()=>{const p=pct(),K=KNOWN(),kt=knownTok(),ok=answered()>0;
+  const head=p>0?t(`You know ${p}% of Al-Fatiha`,`Your starting point: ${p}%`):t(S.name?`A fresh start, ${nm()}`:'A fresh start','Starting point: 0%');
+  const body=p>0?t(`${kt} of ${TOTAL} words, from your 6 answers.`,'Your path covers the rest, word by word.'):t(`Every one of ${TOTAL} words is a new door.`,'Your path starts with the first one.');
+  return `<div class="scr"><div class="big">${p}<small>%</small></div>
+  <h1 class="h1 c" style="margin-top:-4px">${esc(head)}</h1>
+  <p class="lead c" style="margin-top:-6px">${esc(body)}</p>
+  ${surah(K)}
+  <div class="chk">${TESTS.map((x,k)=>{const y=K.has(x.k);return `<div><span class="ar" lang="ar" dir="rtl">${x.ar}</span><span class="m">${esc(x.tr)}<small>${esc(x.o.find(o=>o[1])[0])} · ${occ(x.k)}× in the surah</small></span><i class="${y?'y':''}">${y?'You know it':'To learn'}</i></div>`}).join('')}</div>
+  <p class="hint" style="text-align:center;margin:0">${kt} of ${TOTAL} words counted from your answers. Repeats count each time. Guesses may count; unchecked words aren't counted.</p></div>
+  <div class="foot">${cta('Build my plan')}</div>`},
+14:()=>`<div class="scr"><h1 class="h1">${t('How many minutes daily?','Your daily pace')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Short and steady beats long and rare.','You can change it anytime.')}</p>
+  <div class="pills">${MINS.map(([m,em,l])=>`<button class="pill ${S.mins===m?'on':''}" data-a="mins" data-v="${m}" aria-pressed="${S.mins===m}" style="min-height:68px"><span class="em">${em}</span><span class="lb">${m} min a day<small style="display:block;font-weight:500;font-size:13px;opacity:.7">${l}</small></span></button>`).join('')}</div>
+  <p class="hint" style="text-align:center">Your pace sets your goal date. You can change it anytime.</p></div>
+  <div class="foot">${cta('Set my pace',!!OKF[14]())}</div>`,
+15:()=>{const hr=hasRating(),rv=reviews();
+  return `<div class="scr center" style="align-items:center;text-align:center">
+  ${hr?`<div style="font:600 40px/1.1 var(--disp)">${esc(CONFIG.proof.rating)}</div><div class="stars" style="font-size:20px">★★★★<span style="opacity:.45">★</span></div>`:`<div class="avt" style="width:72px;height:72px;font-size:34px">✦</div>`}
+  <h1 class="h1 c">${hr?t(`Rated ${esc(CONFIG.proof.rating)} on ${esc(CONFIG.proof.storeName)}`,`Learners give it ${esc(CONFIG.proof.rating)} stars`):t('One word at a time','Hear it, see it, check it')}</h1>
+  <p class="lead c" style="margin-top:-6px">${hr?t(`From ${esc(CONFIG.proof.count)} ratings by people like `+nmT()+'.','Short lessons that fit around prayer.'):t('Every lesson follows the same three steps.','Meaning first, then a quick check.')}</p>
+  ${hr?'':`<div class="lesson3" style="width:100%">${[['🔊','Hear it','the word'],['👀','See it','Arabic + meaning'],['✅','Check it','a quick quiz']].map(([e,a,b])=>`<div><span>${e}</span><b>${a}</b><small>${b}</small></div>`).join('')}</div>`}
+  ${rv.length?reviewCard(rv[0]).replace('class="rcard"','class="rcard" style="text-align:left;width:100%"'):''}</div>
+  <div class="foot">${cta('Continue')}</div>`},
+16:()=>{const rows=['Counting the words you know…','Choosing your first lessons…',`Fitting lessons to ${mins()} minutes…`,'Setting your goal date…'];
+  return `<div class="scr" style="gap:14px;padding-top:6px">${hero('img/lantern-path.jpg',150,'A lantern at the end of a winding path of stones')}
+  <h1 class="h1 c" id="h16" style="font-size:24px">${t(S.name?`Building ${nm()}'s path…`:'Building your path…','Reading your six answers…')}</h1>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct">0%</span></div><div class="bar"><span></span></div></div>`).join('')}</div></div>`},
+17:()=>`<div class="gatebg"><div style="display:flex;flex-direction:column;gap:10px;padding:18px">${hero('img/lantern-path.jpg',150,'')}<div class="stage1"><b>1</b><div class="t">Al-Fatiha, word by word</div></div></div></div><div class="scr" style="padding:0;gap:0"><div class="gsheet">
+  <h1 class="h1">${t('Where should we send it?',S.name?'Save your path, '+nm():'Save your path')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your email signs you in to the app.',"You'll sign in with this email later.")}</p>
+  <button class="btn dark" data-a="acct" data-v="Apple">${APL(18)} Continue with Apple</button>
+  <button class="btn white" data-a="acct" data-v="Google"><b style="color:#4285F4">G</b> Continue with Google</button>
+  <div class="or">or use email</div>
+  <div class="field"><div class="box"><span>✉️</span><input id="em" type="email" inputmode="email" autocomplete="email" data-f="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <label class="cb"><input type="checkbox" id="mkt" ${S.mkt?'checked':''}><span>Send me learning tips and offers (optional)</span></label></div></div>
+  <div class="foot">${cta('Show my path',true,'email')}<div class="note">Used only for your account. No spam.<br><u>Terms</u> · <u>Privacy</u></div></div>`,
+18:()=>{const L=left(),wd=wpd(),sd=studyDays(),ld=lettersDays(),K=KNOWN();
+  const rest=Object.keys(F).filter(k=>!K.has(k));const show=rest.slice(0,8);
+  const stages=[];
+  if(ld)stages.push(['Letters first',`${ld} days`,'Short reading lessons so every word is readable.']);
+  stages.push(['Al-Fatiha, word by word',`${sd} days`,`${L} new words, about ${wd} a day. Repeats are taught once.`]);
+  stages.push([goalStage(),'Next','Your goal, after Al-Fatiha.']);
+  return `<div class="scr">${hero('img/result-glow.jpg',96,'A warm gold glow over a green geometric pattern')}<h1 class="h1">${t(nmT()==='you'?'Your path to Al-Fatiha':nm()+"'s path to Al-Fatiha",`${L} words to learn`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('A goal from your answers, not a promise.','Your minutes and level set the pace.')}</p>
+  <div style="display:flex;flex-direction:column;gap:10px">${stages.map(([a,b,c],i)=>`<div class="stage1 ${i===stages.length-2?'g':''}"><b>${i+1}</b><div style="flex:1"><div class="t">${a}</div><small>${c}</small></div><span class="chip">${b}</span></div>`).join('')}</div>
+  <div class="chips"><span class="chip">🎯 <small>Goal</small> ${goalChip()}</span><span class="chip">⏱ <small>Pace</small> ${mins()} min</span><span class="chip">📅 <small>Goal date</small> ${goalDate()}</span></div>
+  <div><div class="eyebrow" style="color:var(--ink2);margin-bottom:8px">Your first words</div><div class="chips">${show.map(k=>`<span class="chip"><span class="ar" lang="ar" dir="rtl">${F[k][0]}</span><small>${F[k][1]}</small></span>`).join('')}${rest.length>show.length?`<span class="chip"><small>+${rest.length-show.length} more</small></span>`:''}</div></div>
+  <p class="hint" style="text-align:center;margin:0">Dates are goals from your pace (about 2.5 minutes a word), not promised results.</p></div>
+  <div class="foot">${cta('Unlock my path')}</div>`},
+19:()=>{const P=PLANS[S.plan],p=pct(),rv=reviews(),hr=hasRating();
+  return `<div class="scr" style="padding-top:6px;gap:18px">
+  <div class="pwbar">${logo}<button class="oclose" data-a="close" aria-label="Close">✕</button></div>
+  <div class="pwhero card-em">${hero('img/paywall-hero.jpg',110,'Gold arcs of light over deep green')}<div class="eyebrow">Your path</div>
+   <h1 class="h1">${t(nmT()==='you'?'Understand Al-Fatiha, word by word':`${nm()}, understand Al-Fatiha`,`Your ${mins()}-minute path`)}</h1>
+   <p class="lead" style="margin-top:-6px">${t('Every price and renewal shown before you pay.',`Built around your goal: ${goalL()}.`)}</p>
+   <div><div class="mrow" style="margin:0 0 4px"><span>Al-Fatiha words you know today</span><b>${p}%</b></div>${meter(p)}
+   <div class="mrow"><span>Goal: all ${FAMN} words by ${goalDate()}</span><span>${left()} to go</span></div></div>
+   <div class="chips"><span class="chip">🎯 ${goalChip()}</span><span class="chip">⏱ ${mins()} min/day</span></div></div>
+  <div class="sec" id="plans1">${planBlock()}</div>
+  <div class="payrow"><span>${APL(15)} Pay</span><span style="color:#003087">PayPal</span><span>💳 Card</span></div>
+  <div class="trust">🔒 Secure checkout · Cancel online anytime</div>
+  <div class="lav sec"><h2>What's inside</h2><div class="get">${['Bite-sized daily lessons','Narrated audio stories','Quizzes that check understanding','Reflection and journal','Memorization practice','Streaks and gentle reminders'].map(x=>`<div>${x}</div>`).join('')}</div></div>
+  <div class="sec"><h2>How it works</h2><div class="how"><div><b>1</b>Pick your plan</div><div><b>2</b>Sign in with ${esc(S.email||'your email')}</div><div><b>3</b>Open your first word lesson</div></div></div>
+  ${hr?`<div class="sec"><h2>What learners say</h2><div style="margin-bottom:10px">${ratingStrip()}</div>${rv.length?`<div style="display:flex;flex-direction:column;gap:10px">${rv.map(reviewCard).join('')}</div>`:''}</div>`:''}
+  ${real(CONFIG.proof.refundDays)?`<div class="sec"><h2>Our guarantee</h2><div class="gbox"><span>🛡️</span><span><b>${esc(CONFIG.proof.refundDays)}-day money-back guarantee.</b> Conditions in plain words go here.</span></div></div>`:''}
+  <div class="sec"><h2>Questions</h2>${faqBlock()}</div>
+  <div class="sec"><h2>Choose your plan</h2>${planBlock()}</div>
+  <p class="hint" style="text-align:center;margin:0">We'll email you before every renewal.</p>
+  <div class="legal"><span>Terms</span><span>Privacy</span><span>Subscription terms</span></div></div>
+  <div class="foot" style="padding-top:10px;box-shadow:0 -10px 20px -14px #173B2E40"><div class="note" style="color:var(--ink);font-size:13px;font-weight:500">${TK('price_'+P.tok)} today. Then ${TK('renewal_'+P.tok)} every ${P.every} until you cancel.</div>${cta('Start my path',true,'buy')}</div>`},
+20:()=>{const o=CONFIG.offer,L=left();
+  return `<div class="scr owrap">
+  <div class="obar">${logo}<button class="oclose" data-a="offerno" aria-label="No thanks">✕</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="h1 c">${t('Just want Al-Fatiha?','Start with one surah')}</h1>
+   <p class="lead c">${t('One surah, paid once, nothing to cancel.',`Your ${L} Al-Fatiha words, no subscription.`)}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">
+   <div class="pwtop"><span class="thumb" style="background:var(--lav)">📖</span><div><div class="eyebrow">Your pass</div><div style="font:600 15px/1.2 var(--disp);margin-top:4px">Al-Fatiha · ${L} words</div></div></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>One surah only, paid once</span></div>
+   <div class="oprice"><b>${tv(o.price)}</b><span>one time, no renewal</span></div>
+   <div class="ochecks">${[`All ${L} Al-Fatiha word lessons`,'Meaning, transliteration and a quick check','Paid once, nothing to cancel'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
+   <div class="nope"><b>Not included:</b> other surahs, memorization practice, reflection journal, streaks, your full path.</div>
+   ${cta('Get the Al-Fatiha pass',true,'offerbuy')}
+   <div class="opays"><span>Apple Pay</span><span>PayPal</span><span>Card</span></div>
+   <p class="ofine">${tv(o.price)} one time. It does not renew. Your full path stays available as a subscription.</p></div>
+  <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
+21:()=>`<div class="scr" style="padding-top:14px">${hero('img/payoff-dawn.jpg',120,'A quiet dawn over green hills')}<div class="okhead"><span class="lg">✦</span><span class="gc">✓</span></div>
+  <h1 class="h1 c">${t(nmT()==='you'?"You're in!":`You're in, ${nm()}!`,'Last step: open the app')}</h1>
+  <p class="lead c" style="margin-top:-6px">${t(`Get the app and sign in with ${esc(S.email||'your email')}.`,'Your first word lesson is waiting.')}</p>
+  <div class="nsteps"><div><b>1</b>Download</div><div><b>2</b>Tap the sign-in link we emailed</div><div><b>3</b>Open word lesson 1</div></div>
+  ${stores()}
+  <div class="qrrow">${qrSVG('app'+S.email)}<span class="hint">On a computer? Scan with your phone. (QR placeholder)</span></div>
+  <div class="micro"><span>Receipt sent to ${esc(S.email||'your email')}</span><span>Manage or cancel anytime in Profile → Settings.</span></div></div>
+  <div class="foot">${cta('Open the app',true,'open')}</div>`
+};
+
+function runLoading(){
+  let row=0,pct=0;
+  const id=setInterval(()=>{
+    const el=document.getElementById('st'+row);if(!el){clearInterval(id);return}
+    pct+=3;const p=Math.min(pct,100);
+    el.querySelector('.bar span').style.width=p+'%';el.querySelector('.pct').textContent=p+'%';
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').textContent='✓ 100%';row++;pct=0;
+      if(row>3){clearInterval(id);later(()=>{if(S.i===LOAD_N)go(17)},1000)}}
+  },36);
+  timers.push(id);
+}
+
+function render(anim){ikView();
+  const n=S.i,html=nav()+V[n](),old=cur();
+  if(anim&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),230);setTimeout(()=>nv.classList.remove('in'),340);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{stage.querySelectorAll('.view:not(.cur)').forEach(e=>e.remove());old.innerHTML=html}
+  const v=cur();
+  if(n===LOAD_N)runLoading();
+  if(n===OFFER_N)runOffer();
+  const f=v.querySelector('#nm,#em');
+  if(f)setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},anim?320:0);
+  renderPanel();
+}
+
+/* ---------- panel ---------- */
+function renderPanel(){
+  document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag])=>`<button class="${S.i===n?'on':''}" data-j="${n}"><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const na=answered(),K=KNOWN();
+  const d=[
+    ['Arabic reading',S.read?(READ.find(r=>r[0]===S.read)||[0,0,'—'])[2]:'—'],
+    ['Goal',S.goal?(goalO()?`Other: ${S.goalO||'—'}`:goalChip()):'—'],
+    ['Name',S.name||'—'],
+    ['Word check',na?TESTS.map((x,k)=>S.ans[k]===null?'…':K.has(x.k)?'✓':S.ans[k]===3?'?':'✗').join(' '):'—'],
+    ['Al-Fatiha known',na?`${pct()}% (${knownTok()} of ${TOTAL} words)`:'—'],
+    ['Pace',S.mins?`${S.mins} min/day → ${studyDays()}${lettersDays()?` + ${lettersDays()}`:''} days`:'—'],
+    ['Email',S.email?(S.acct?`${S.email} (via ${S.acct})`:S.email):'—'],
+    ['Marketing emails',S.mkt?'Opted in':'Not opted in'],
+    ['Plan',S.paid?`${PLANS[S.plan].n} (demo, not charged)`:S.i>=PW_N?`${PLANS[S.plan].n} selected`:'—'],
+    ['Offer',S.offer?'Accepted (Al-Fatiha pass)':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+function updateCta(){const c=document.getElementById('cta');if(c&&OKF[S.i]){const ok=!!OKF[S.i]();c.disabled=!ok;const h=document.getElementById('hint');if(h)h.style.visibility=ok?'hidden':'visible'}}
+const autoNext=n=>later(()=>{if(S.i===n)next()},300);
+
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  if(v!==undefined&&!ANS_SKIP.test(a))answer(a,v);
+  switch(a){
+    case 'next':next();break;
+    case 'back':back();break;
+    case 'read':S.read=v;render();autoNext(3);break;
+    case 'goal':S.goal=v;if(v!=='other')S.goalO='';render();if(v==='other')document.getElementById('oin')?.focus();break;
+    case 'ans':if(S.ans[S.i-7]===null){S.ans[S.i-7]=+v;render();const sc=cur().querySelector('.scr');sc.scrollTop=sc.scrollHeight}break;
+    case 'mins':S.mins=+v;render();break;
+    case 'name':if(!S.name.trim()){S.err='Please enter a name, or tap Skip.';render()}else{S.name=S.name.trim();next()}break;
+    case 'skipname':S.name='';next();break;
+    case 'acct':S.acct=v;emit('lead',{method:v,email_provided:true});S.email=(S.name||'maya').toLowerCase().replace(/[^a-z0-9]/g,'')+'@example.com';toast(`${v} sign-in sheet would open (demo)`);next();break;
+    case 'email':{const m=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)){S.err='Please enter a valid email address';render()}else if(/^taken@/i.test(m)){S.err='This email already has a path. Check your inbox.';render()}else{S.email=m;S.acct='';emit('lead',{method:'email',email_provided:true,marketing_opt_in:!!S.mkt});next()}break}
+    case 'plan':S.plan=v;emit('plan_select',{plan:v});{const y=cur().querySelector('.scr').scrollTop;render();cur().querySelector('.scr').scrollTop=y}break;
+    case 'faq':{const y=cur().querySelector('.scr').scrollTop;S.faq=S.faq===+v?-1:+v;render();cur().querySelector('.scr').scrollTop=y;break}
+    case 'buy':{const u=planUrl();emit('checkout_click',{plan:S.plan,url:u});if(u){navTop(withParams(u,S.plan));break}}S.paid=true;toast('Demo only — no charge made');go(21);break;
+    case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('Would leave the funnel (demo)')}break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast('Would open checkout for the Al-Fatiha pass (demo)');break;
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
+    case 'store':toast('Would open the store (demo)');break;
+    case 'open':toast('Would deep-link into the app (demo)');break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f)return;
+  S[f]=e.target.value;
+  if(S.err&&(f==='name'||f==='email')){S.err='';const er=cur().querySelector('.err');if(er)er.remove()}
+  updateCta();renderPanel();
+});
+phone.addEventListener('change',e=>{if(e.target.id==='mkt'){S.mkt=e.target.checked;renderPanel()}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=cur().querySelector('#cta');b&&!b.disabled&&b.click()}});
+
+/* panel controls */
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);go(n)});
+const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');
+  if(S.i===LOAD_N){const h=document.getElementById('h16');if(h)h.innerHTML=t(S.name?`Building ${nm()}'s path…`:'Building your path…','Reading your six answers…')}else render()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v;S=INIT();S.v=v;render(true)};
+{const pp=IKQS.get('paid');if(pp){applyPaid(pp);S.i=21}}
+emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
+render(false);
+</script>
+
+</body></html>

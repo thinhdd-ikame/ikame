@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#151412">
+<meta name="robots" content="noindex">
+<title>CoinIn &middot; Plant Funnel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#0C0B09;
+  --bg:#151412;--bg-elev:#1A1916;--surface:#1F1D19;--surface-2:#2A2722;--border:#353129;
+  --t1:#F2EEE6;--t2:#B7AFA2;--t3:#81796C;
+  --acc:#8FCB8B;--acc-dim:#8FCB8B2E;--btn-text:#151412;--gold-lm:#2F6B3B;
+  --grad:linear-gradient(100deg,#B9E6AE 0%,#8FCB8B 50%,#5FA86A 100%);
+  --neg:#F29A8A;--pos:#7FD1A8;
+  /* palm line colours (on the user's photo) */
+  --l-heart:#F29A8A;--l-head:#8FB8FF;--l-life:#7FD1A8;--l-fate:#8FCB8B;--l-marriage:#D9A8FF;
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+a{color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.app{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse 120% 60% at 50% 0%,#241F16 0%,var(--bg) 60%)}
+@media (min-width:520px){.app{border-inline:1px solid #2B2822}}
+#stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block}
+.view{position:absolute;inset:0;z-index:1;padding-top:calc(var(--sat) + 6px);display:flex;flex-direction:column}
+.view.in{animation:vin .32s ease both}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.nav{height:48px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px;position:relative;z-index:3}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2);flex:none}
+.prog{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--grad);border-radius:2px;transition:width .35s ease}
+.navspacer{width:44px}
+.stepn{width:44px;text-align:right;font:600 12px var(--sans);color:var(--t3);font-variant-numeric:tabular-nums}
+.brand{display:flex;align-items:center;justify-content:center;gap:7px;font:600 15px var(--serif);letter-spacing:.02em;color:var(--t1)}
+.brand svg{color:var(--acc)}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none;overscroll-behavior:contain}
+.scr::-webkit-scrollbar{display:none}
+.scr.center{justify-content:center}
+.foot{flex:none;padding:10px 20px max(20px,calc(var(--sab) + 12px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
+.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+.note a{color:var(--t2)}
+.display{font:700 32px/1.1 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
+.display.sm{font-size:26px}
+.display em{font-style:normal;color:var(--acc)}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.gold{color:var(--acc)}
+.tc{text-align:center}
+.badge{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--acc-dim);color:var(--acc);font:500 13px/1 var(--sans)}
+.tc .badge{align-self:center}
+.btn{height:54px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease;flex:none;position:relative;overflow:hidden;box-shadow:0 8px 28px -10px #5FA86Aaa}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);box-shadow:none}
+.btn:not([disabled]):not(.ghost)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.btn.ghost{background:var(--surface);color:var(--t1);border:1px solid var(--border);box-shadow:none}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px 10px;min-height:44px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;padding:11px 14px;min-height:58px;border-radius:18px;background:linear-gradient(180deg,#26231E,var(--surface));border:1px solid var(--border);text-align:left;width:100%;transition:border-color .15s,background .15s,transform .12s;box-shadow:0 6px 18px -12px #000}
+.opt:hover{border-color:#4E8A58}
+.opt:active{transform:scale(.99)}
+.opt::after{content:"";width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex:none;margin-left:auto}
+.opt.on::after{border-color:var(--btn-text);background:radial-gradient(circle,var(--btn-text) 38%,transparent 42%)}
+.opt .well{width:36px;height:36px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:18px}
+.opt .lbl{flex:1;font-weight:500;font-size:15.5px}
+.opt.on{border-color:transparent;background:var(--grad);color:var(--btn-text)}
+.opt.on .well{background:#ffffff40}
+.box{height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:10px;color:var(--t3);min-width:0}
+.box:focus-within{border-color:var(--acc)}
+.box.white{background:#F7F4EC;border-color:#F7F4EC;color:var(--gold-lm)}
+.box.white input{color:#151412}
+.box.white input::placeholder{color:#9C8A5E}
+.box input,.box select{flex:1;min-width:0;width:100%;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+.box select{appearance:none;-webkit-appearance:none;cursor:pointer}
+.box select option{background:var(--surface);color:var(--t1)}
+.row3{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:8px}
+.err{font-size:13px;color:var(--neg)}
+.hint{font-size:13px;color:var(--t3)}
+.card{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.card h4{margin:0 0 4px;font-size:15px;font-weight:600;display:flex;gap:8px;align-items:center}
+.card p{margin:0;color:var(--t2);font-size:14px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.lockrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t2);font-size:14px}
+.lockrow .l{margin-left:auto;color:var(--acc)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.blurred{filter:blur(5px);user-select:none}
+.bigwell{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#8FCB8B55,transparent 70%),var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--acc);align-self:center;box-shadow:0 0 40px #8FCB8B55}
+.checks{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.checks div{display:flex;gap:10px;align-items:flex-start}
+.checks svg{color:var(--acc);flex:none;margin-top:2px}
+.fadein{animation:fi .35s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.toast{position:absolute;left:50%;top:calc(var(--sat) + 12px);transform:translateX(-50%);z-index:20;background:var(--t1);color:#0C0B09;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;max-width:calc(100% - 32px);width:max-content;animation:fade 2.6s ease forwards}
+@keyframes fade{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0}}
+
+/* hook */
+.hero{position:relative;height:300px;margin:0 -20px;flex:none;overflow:hidden}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;-webkit-mask-image:linear-gradient(#000 60%,#0000);mask-image:linear-gradient(#000 60%,#0000)}
+.proof{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.proof span{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--border);color:var(--t2)}
+.trio{display:flex;justify-content:center;gap:14px;font-size:12.5px;color:var(--t2)}
+.trio span{display:flex;gap:5px;align-items:center}
+.trio svg{color:var(--acc)}
+.rot{height:24px;overflow:hidden;font:600 20px/24px var(--serif);color:var(--acc)}
+.rot div{animation:rot 12s steps(1) infinite}
+@keyframes rot{0%{transform:translateY(0)}16.6%{transform:translateY(-24px)}33.3%{transform:translateY(-48px)}50%{transform:translateY(-72px)}66.6%{transform:translateY(-96px)}83.3%{transform:translateY(-120px)}}
+
+/* line chart legend (education) */
+.palmsvg path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.palmsvg .out{stroke:#8FCB8B;stroke-width:1.5;opacity:.85}
+.palmsvg .ln{stroke-width:2.6}
+.palmsvg .dr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:13px;color:var(--t2)}
+.legend div{display:flex;gap:8px;align-items:center}
+
+/* loaders */
+.ring{width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--acc) calc(var(--p)*1%),var(--surface-2) 0);display:grid;place-items:center;align-self:center;position:relative;flex:none}
+.ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--bg)}
+.ring b{position:relative;font:600 34px var(--serif)}
+.tasks{display:flex;flex-direction:column;gap:9px}
+.task{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t3);font-size:14px;transition:all .3s}
+.task i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;font-style:normal}
+.task.on{color:var(--t1);border-color:#4E8A58}
+.task.done{color:var(--t1)}
+.task.done i{background:var(--grad);border-color:transparent;color:var(--btn-text)}
+.iq{position:absolute;inset:0;z-index:6;background:#0A0908CC;display:grid;place-items:center;padding:24px;animation:fi .25s ease}
+.iq .in{width:100%;padding:22px 18px 18px;border-radius:22px;background:var(--bg-elev);border:1px solid var(--border);display:flex;flex-direction:column;gap:16px;text-align:center;box-shadow:0 20px 50px #000a}
+.iq b{font:600 21px/1.25 var(--serif)}
+.iq .row{display:flex;gap:10px}
+.iq .row .btn{height:48px;flex:1;min-width:0;width:auto}
+
+/* scan guide */
+.guide{display:grid;grid-template-columns:1fr;gap:10px}
+.gok{position:relative;border-radius:18px;border:1.5px solid var(--pos);background:#7FD1A812;padding:14px;display:flex;gap:14px;align-items:center}
+.gok .ph{width:92px;height:122px;border-radius:14px;overflow:hidden;flex:none;position:relative;background:#0C0B09}
+.gok .ph img{width:100%;height:100%;object-fit:cover}
+.gok b{color:var(--pos);display:flex;gap:6px;align-items:center}
+.gbad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gbad div{border-radius:14px;border:1.5px solid #F29A8A66;background:#F29A8A10;padding:10px 6px;text-align:center;font-size:11.5px;color:var(--t2);display:flex;flex-direction:column;gap:6px;align-items:center}
+.gbad svg{color:var(--neg)}
+.privacy{display:flex;gap:10px;font-size:12px;color:var(--t3);align-items:flex-start;text-align:left}
+.privacy svg{color:var(--pos);flex:none;margin-top:1px}
+
+/* upload */
+.drop{border-radius:22px;border:1.5px dashed #4E8A58;background:radial-gradient(ellipse at 50% 30%,#8FCB8B14,transparent 70%),var(--surface);min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;position:relative;overflow:hidden;flex:none}
+.drop.over{border-style:solid;background:#8FCB8B22}
+.drop .palmsvg{opacity:.8}
+.preview{position:relative;border-radius:22px;overflow:hidden;background:#0C0B09;flex:none;aspect-ratio:3/4;max-height:52vh;align-self:center;width:100%;border:1px solid var(--border)}
+.preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.preview svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.preview .tag{position:absolute;left:12px;top:12px;font-size:11.5px;padding:5px 9px;border-radius:999px;background:#0A0908cc;color:var(--t1);z-index:2;display:flex;gap:6px;align-items:center}
+.preview .scan{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,#0000,#B9E6AE,#0000);box-shadow:0 0 18px #8FCB8B;animation:scanl 2.2s ease-in-out infinite}
+@keyframes scanl{0%{top:6%}50%{top:92%}100%{top:6%}}
+.ov .fd{fill:#8FCB8B;stroke:#fff;stroke-width:.4}
+.ov .fd.pop{animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{from{r:0}}
+.ov .ln{fill:none;stroke-width:1.1;stroke-linecap:round;filter:drop-shadow(0 0 1.2px #000)}
+.ov .ln.dr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s ease forwards}
+.anl{text-align:center}
+.anl .what{font:600 22px var(--serif);color:var(--acc);min-height:28px}
+.anl .bar{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden;margin:10px 30px 0}
+.anl .bar span{display:block;height:100%;background:var(--grad);width:0;transition:width .4s ease}
+
+/* paywall */
+.closex{position:absolute;top:calc(var(--sat) + 6px);right:10px;z-index:3;width:44px;height:44px;border-radius:50%;background:#0C0B09AA;border:1px solid var(--border);display:grid;place-items:center;color:var(--t2)}
+.plan{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:62px;border-radius:18px;border:1px solid var(--border);background:var(--surface);text-align:left;width:100%;position:relative}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none}
+.plan.on{border:1.5px solid #8FCB8B;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface)}
+.plan.on .radio{background:var(--grad);border-color:transparent;color:var(--btn-text)}
+.plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.plan .pp{font-size:13px;color:var(--t1);display:block;margin-top:2px}
+.plan .ps{font-size:11.5px;color:var(--t3);display:block;margin-top:2px}
+.save{font:600 10px/1 var(--sans);letter-spacing:.05em;background:var(--grad);color:var(--btn-text);padding:4px 7px;border-radius:6px}
+.tok{font-family:ui-monospace,Consolas,monospace;font-size:.85em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--acc);color:var(--acc);white-space:nowrap}
+.legal{display:flex;justify-content:center;gap:4px 14px;font-size:12px;color:var(--t3);flex-wrap:wrap}
+.legal a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}
+.thumbrow{display:flex;gap:12px;align-items:center;padding:10px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.thumbrow .th{width:62px;height:78px;border-radius:12px;overflow:hidden;position:relative;flex:none;background:#0C0B09}
+.thumbrow .th img{width:100%;height:100%;object-fit:cover}
+.thumbrow .th svg{position:absolute;inset:0;width:100%;height:100%}
+.stores{display:flex;gap:8px;justify-content:center}
+.store{display:flex;align-items:center;gap:7px;height:46px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
+.store b{display:block;font-size:13px}
+/* ===== web paywall: long-scroll landing page, not an app sheet ===== */
+.wp{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-behavior:smooth;background:var(--bg)}
+.wp::-webkit-scrollbar{display:none}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(var(--sat) + 8px) 16px 10px;background:#151412e6;backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar .brand{flex:1;justify-content:flex-start}
+.wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
+.wbar .x{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
+.wsec{padding:28px 18px 0}
+.wsec.tight{padding-top:16px}
+.wh2{font:700 27px/1.15 var(--serif);margin:0 0 6px;text-wrap:balance}
+.wh2+.lead{margin-bottom:16px}
+.eyebrow{font:600 11.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:10px;display:block}
+.whero{display:grid;grid-template-columns:1fr 1.05fr;gap:14px;align-items:center}
+.whero .pv{border-radius:20px;overflow:hidden;position:relative;aspect-ratio:3/4;border:1px solid #8FCB8B55;box-shadow:0 20px 50px -20px #000,0 0 40px -10px #8FCB8B55}
+.whero .pv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.whero .pv svg{position:absolute;inset:0;width:100%;height:100%}
+.facts{display:flex;flex-direction:column;gap:8px}
+.fact{padding:9px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--t3)}
+.fact b{display:block;color:var(--t1);font-size:13.5px;font-weight:600;margin-top:2px}
+.pick{border-radius:24px;padding:18px 14px 16px;background:linear-gradient(180deg,#25221C,#181714);border:1px solid #8FCB8B40;box-shadow:0 30px 60px -30px #000}
+.pick .plans{display:flex;flex-direction:column;gap:10px}
+.wplan{position:relative;display:grid;grid-template-columns:24px 1fr auto;gap:2px 12px;align-items:center;padding:16px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--bg-elev);text-align:left;width:100%}
+.wplan .rd{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);grid-row:1/3;display:grid;place-items:center}
+.wplan .nm{font:600 16px var(--sans)}
+.wplan .sub{font-size:12px;color:var(--t3);grid-column:2}
+.wplan .pr{grid-row:1/3;grid-column:3;text-align:right;font:600 15px var(--sans)}
+.wplan .pr small{display:block;font:400 11.5px var(--sans);color:var(--t3);margin-top:3px}
+.wplan .rib{position:absolute;top:-11px;left:14px;font:700 10.5px/1 var(--sans);letter-spacing:.08em;padding:5px 9px;border-radius:999px;background:var(--grad);color:var(--btn-text)}
+.wplan.on{border-color:var(--acc);background:linear-gradient(0deg,#8FCB8B1c,#8FCB8B1c),var(--bg-elev);box-shadow:0 0 0 3px #8FCB8B22}
+.wplan.on .rd{background:var(--grad);border-color:transparent;color:var(--btn-text)}
+.today{display:flex;justify-content:space-between;font-size:13.5px;padding:12px 4px 0;color:var(--t2)}
+.today b{color:var(--t1)}
+.pay{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F2EEE6;color:#151412;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
+.secure{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--t2)}
+.secure span{display:flex;gap:5px;align-items:center}
+.secure svg{color:var(--pos)}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin:12px 4px 0;line-height:1.5}
+.toc{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.toc div{display:flex;gap:12px;align-items:center;padding:14px;background:var(--surface);border-top:1px solid var(--border);font-size:14px}
+.toc div:first-child{border-top:none}
+.toc .n{width:26px;height:26px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font:600 12px var(--sans);color:var(--acc);flex:none}
+.toc .l{margin-left:auto;color:var(--t3)}
+.toc .open .l{color:var(--pos)}
+.rate{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
+.rate .sc{font:600 38px/1 var(--serif);color:var(--acc)}
+.rate .sc .tok{font-size:13px}
+.stars{color:var(--acc);letter-spacing:2px;font-size:15px}
+.rev{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t2)}
+.rev .who{display:flex;gap:10px;align-items:center;color:var(--t1);font-weight:600}
+.rev .who i{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;color:var(--btn-text);font:600 12px var(--sans);font-style:normal}
+.rev .who small{display:block;font-weight:400;color:var(--t3);font-size:11.5px}
+.how{display:flex;flex-direction:column;gap:0}
+.how>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.how>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--border)}
+.how i{width:34px;height:34px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;font:600 14px var(--sans);font-style:normal;border:1px solid #8FCB8B55}
+.how b{display:block;margin-top:6px}
+.how span{font-size:13.5px;color:var(--t2)}
+.faq details{border-top:1px solid var(--border);padding:4px 0}
+.faq details:last-child{border-bottom:1px solid var(--border)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:12px;padding:14px 2px;font-weight:600;font-size:15px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--acc);font-size:20px;line-height:1;transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{margin:0 2px 14px;color:var(--t2);font-size:14px}
+.guar{display:flex;gap:14px;align-items:center;padding:18px;border-radius:20px;border:1px solid #8FCB8B55;background:radial-gradient(ellipse at 0% 0%,#8FCB8B22,transparent 60%),var(--surface)}
+.guar .seal{width:62px;height:62px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--grad);color:var(--btn-text);font:700 11px/1.1 var(--sans);text-align:center;box-shadow:0 0 0 4px #8FCB8B33}
+.wfoot{padding:28px 18px calc(var(--sab) + 110px);font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
+.ocard{position:relative;padding:18px 16px;border-radius:24px;border:1.5px solid var(--acc);background:radial-gradient(ellipse at 50% 0%,#8FCB8B24,transparent 60%),linear-gradient(180deg,#25221C,#181714);box-shadow:0 0 0 4px #8FCB8B18,0 30px 60px -30px #000}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad);color:var(--btn-text);font:700 11px/1 var(--sans);letter-spacing:.08em;white-space:nowrap}
+.obadge .tok{color:var(--btn-text);border-color:var(--btn-text)}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:58px;height:74px;border-radius:12px;overflow:hidden;position:relative;flex:none}
+.orow .th img{width:100%;height:100%;object-fit:cover}.orow .th svg{position:absolute;inset:0;width:100%;height:100%}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-top:16px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:600 30px var(--serif);color:var(--acc)}.oprice>span{color:var(--t2);font-size:13px;white-space:nowrap}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc);font-variant-numeric:tabular-nums}
+.sticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(var(--sab) + 10px));background:linear-gradient(180deg,transparent,#151412 28%);transform:translateY(110%);transition:transform .3s ease}
+.sticky.show{transform:none}
+.sticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}
+.sticky .sum b{color:var(--t1)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}}
+/* ---- plant funnel additions ---- */
+.vtog{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:30;font:600 10px/1 var(--sans);padding:4px 10px;border-radius:0 0 8px 8px;border:1px solid var(--border);border-top:none;background:#0A0908cc;color:var(--t3);min-height:0}
+.ed{display:flex;gap:10px;align-items:flex-end}
+.ed .av{width:58px;height:58px;border-radius:50%;flex:none;background:var(--surface-2);border:1px solid #8FCB8B66;overflow:hidden;display:block}
+.ed .bb{position:relative;flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:9px 12px;font-size:14px;line-height:1.4;color:var(--t1)}
+.ed .who{font:600 11px var(--sans);color:var(--acc);letter-spacing:.05em;display:block;margin-bottom:2px}
+.chipd{display:inline-flex;align-items:center;gap:6px;font:500 11.5px/1 var(--sans);padding:6px 10px;border-radius:999px;border:1px dashed #8FCB8Baa;color:var(--acc);align-self:flex-start}
+.tc .chipd{align-self:center}
+.plantwrap{display:grid;place-items:center}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gc{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px 12px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);position:relative;transition:border-color .2s,opacity .2s}
+.gc b{font:600 14px var(--sans)}
+.gc.win{border-color:var(--acc);box-shadow:0 0 0 3px #8FCB8B22}
+.gc.dim{opacity:.45}
+.gc .loupe{position:absolute;top:8px;right:10px;color:var(--t3)}
+.edge{height:10px;width:100px;border-radius:5px;display:flex;overflow:hidden;opacity:0;transition:opacity .4s}
+.edge i{display:block;flex:1}
+.revealed .edge{opacity:1}
+.reveal{padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid #8FCB8B66;font-size:14px;color:var(--t2)}
+.reveal b{color:var(--t1);display:block;margin-bottom:2px}
+.roundph{width:150px;height:150px;border-radius:50%;overflow:hidden;position:relative;background:#0C0B09;border:2px solid var(--acc);flex:none;display:grid;place-items:center;align-self:center}
+.roundph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.roundph svg{position:absolute;inset:0;width:100%;height:100%}
+.roundph.lg{width:190px;height:190px}
+.spin3d{perspective:700px;display:grid;place-items:center;align-self:center}
+.spin3d .roundph{animation:tilt 5s ease-in-out infinite;transform-style:preserve-3d}
+@keyframes tilt{0%,100%{transform:rotateY(-24deg) rotateX(6deg)}50%{transform:rotateY(24deg) rotateX(-4deg)}}
+.ringscan{position:absolute;inset:-8px;border-radius:50%;border:2px solid transparent;border-top-color:var(--acc);border-right-color:#8FCB8B88;animation:rs 1.6s linear infinite}
+@keyframes rs{to{transform:rotate(360deg)}}
+.dropc{border-radius:24px;border:1.5px dashed #4E8A58;background:radial-gradient(ellipse at 50% 30%,#8FCB8B14,transparent 70%),var(--surface);min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;flex:none}
+.dropc.over{border-style:solid;background:#8FCB8B22}
+.chips4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chips4 div{display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.chips4 svg{color:var(--acc);flex:none}
+.cardid{padding:14px;border-radius:22px;background:linear-gradient(180deg,#25221C,#181714);border:1px solid #8FCB8B55;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 50px -24px #000}
+.faces{display:flex;gap:12px;justify-content:center}
+.faces .roundph{width:104px;height:104px;border-width:1.5px}
+.cname{font:700 26px/1.1 var(--serif);text-align:center;margin:0}
+.frow{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:8px 2px;border-top:1px solid var(--border)}
+.frow span{color:var(--t3)}
+.frow b{font-weight:500;text-align:right}
+.medal{width:150px;height:150px;border-radius:50%;align-self:center;background:radial-gradient(circle at 35% 28%,#CFEFC4,#8FCB8B 55%,#3E7348);display:grid;place-items:center;text-align:center;color:#0F2A14;box-shadow:0 0 0 6px #8FCB8B26,0 20px 40px -14px #000;position:relative;flex:none}
+.medal .st{font-size:15px;letter-spacing:3px}
+.medal b{font:700 19px/1.05 var(--serif);display:block;padding:0 14px}
+.gridc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gridc div{aspect-ratio:1;border-radius:14px;border:1.5px dashed var(--border);display:grid;place-items:center;overflow:hidden;position:relative}
+.gridc div.f{border:1.5px solid var(--acc);background:#0C0B09}
+.gridc div.f img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rbar{height:12px;border-radius:6px;background:linear-gradient(90deg,#4A4338,#4E8A58,#8FCB8B);position:relative;margin:26px 0 6px}
+.rbar i{position:absolute;top:-22px;transform:translateX(-50%);font:600 10.5px var(--sans);font-style:normal;color:var(--acc);white-space:nowrap}
+.rbar i::after{content:"";position:absolute;left:50%;top:15px;width:2px;height:20px;background:var(--t1);transform:translateX(-50%)}
+.rlab{display:flex;justify-content:space-between;font-size:11px;color:var(--t3)}
+.hint.warn{color:#B9E6AE}
+.noim{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:14px;background:#F29A8A12;border:1px solid #F29A8A55;font-size:14px}
+</style>
+</head>
+<body>
+<noscript><p style="padding:24px;color:#F2EEE6;font:16px system-ui">Please turn on JavaScript to continue.</p></noscript>
+<script>
+/* ===================== CONFIG — edit before launch ===================== */
+const CONFIG={
+  brand:'CoinIn',
+  funnel:'coinin-plant',
+  /* TODO(pricing): replace every {{placeholder}} with the real price string. Do not invent numbers.
+     Structure: 1-week intro (renews weekly) / 4-week pre-selected / 12-week anchor. Renewal is shown next to every price. */
+  plans:{
+    intro:{name:'1-week intro',price:'{{trial_price}}',renewPrice:'{{week_price}}',period:'week',periodLabel:'week',sub:'First week'},
+    w4:{name:'4-week',price:'{{price_4w}}',renewPrice:'{{renew_4w}}',period:'4 weeks',periodLabel:'4 weeks',sub:'Every 4 weeks'},
+    w12:{name:'12-week',price:'{{price_12w}}',renewPrice:'{{renew_12w}}',period:'12 weeks',periodLabel:'12 weeks',sub:'Every 12 weeks'}
+  },
+  defaultPlan:'w4',
+  refundDays:'{{refund_days}}',
+  checkoutUrl:{intro:'',w4:'',w12:''},   /* '' = only emit checkout_click */
+  /* Last-chance offer, shown ONCE when the paywall is closed without paying. A genuinely smaller option:
+     one-time, non-recurring, one plant. compareAt:null = no struck price. expiresMin:null = no timer (only set for a real deadline). */
+  offer:{enabled:true,name:'One-plant plan',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
+  termsUrl:'',privacyUrl:'',subscriptionTermsUrl:'',   /* TODO */
+  appUrl:'',appStoreUrl:'',playStoreUrl:'',            /* TODO */
+  /* Optional async (file, meta)=>void: called with each plant photo so the host can run the real identification. null = photos never leave the device (prototype). */
+  onPlantPhoto:null,
+  /* Web paywall proof blocks. Real data only: leave as a {{token}} and the block hides. */
+  rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
+  reviews:[{name:'{{reviewer}}',meta:'{{country}}',text:'{{real_review_text}}'}],
+  company:'{{legal_entity}}',
+  supportEmail:'{{app_support_email}}',
+  maxUploadMB:15
+};
+/* ======================================================================= */
+</script>
+<main class="app" id="app"></main>
+<script>
+const QS=new URLSearchParams(location.search);
+const DEBUG=QS.get('debug')==='1';
+const IMG=/*IMG-START*/{'img/hero.jpg':'img/hero.jpg','img/window.jpg':'img/window.jpg','img/leafy-front.jpg':'img/leafy-front.jpg','img/leafy-close.jpg':'img/leafy-close.jpg'}/*IMG-END*/;
+const im=p=>IMG[p]||p;
+const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  scan:'<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/>',
+  leaf:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5M2 17l10 5 10-5"/>',
+  hand:'<path d="M7 11V8a2 2 0 0 1 4 0v3M11 10V7a2 2 0 0 1 4 0v4M15 10a2 2 0 0 1 4 0v4a7 7 0 0 1-14 0v-2a2 2 0 0 1 2-2"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>',
+  play:'<path d="m5 3 14 9-14 9z"/>'
+};
+const ic=(n,s=20,w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const isTok=s=>/^\{\{/.test(String(s||''));
+const tok=s=>isTok(s)||/\{\{/.test(s)?`<span class="tok">${esc(s)}</span>`:esc(s);
+
+/* ================= COLLECT: every niche-specific value lives here =================
+   Forked from scanner/coinin-collector. Plant version: swap this block AND the screen copy in V (object word, host, brand strings are hardcoded there). */
+const COLLECT={
+  host:{name:'Fern',tag:'Illustrative guide, not a real botanist'},
+  src:{leafy:['🪴','Leafy houseplant'],succ:['🌵','Succulent or cactus'],flower:['🌸','Flowering plant'],herb:['🌿','Herb or veg']},
+  water:{often:['💧','Every few days'],week:['🗓️','About weekly'],rare:['😅','When I remember'],unsure:['❓','No set routine']},
+  types:{yellow:['🟡','Yellow leaves'],droop:['🥀','Drooping or limp'],brown:['🟤','Brown tips or spots'],pests:['🐛','Pests or webbing']},
+  light:{sun:['☀️','Direct sun'],bright:['🌤️','Bright, indirect'],low:['🌥️','Low light'],unsure:['❓','Not sure']},
+  /* the demo cannot identify a real photo: every scan shows the seeded sample for the user's Q1 pick */
+  samples:{
+    leafy:{name:'Monstera deliciosa',common:'Swiss cheese plant',family:'Araceae',native:'Central America',light:'Bright, indirect light',water:'When the top few cm are dry',front:'img/leafy-front.jpg',back:'img/leafy-close.jpg',kind:'compact',kindBack:'crisp'},
+    succ:{name:'Echeveria elegans',common:'Mexican snowball',family:'Crassulaceae',native:'Mexico',light:'Bright light, some direct sun',water:'Only when the soil is fully dry',kind:'rosette',kindBack:'rosette'},
+    flower:{name:'Spathiphyllum',common:'Peace lily',family:'Araceae',native:'Tropical Americas',light:'Medium to low, indirect',water:'When the top soil feels dry',kind:'flower',kindBack:'soft'},
+    herb:{name:'Ocimum basilicum',common:'Sweet basil',family:'Lamiaceae',native:'Warm tropical regions',light:'Plenty of bright light',water:'Keep the soil lightly moist',kind:'herb',kindBack:'herb'}
+  },
+  /* likely cause and a general 7-day plan per symptom. An indication only: no pesticide or toxicity advice, only "read the label / ask a professional". */
+  diag:{
+    yellow:{label:'Too much water',days:['Check the soil with a finger, 3 cm down.','Empty any water sitting in the saucer.','Let the top soil dry before watering.','Move it to brighter, indirect light.','Remove fully yellow leaves with clean cuts.','Check that the pot drains freely.','Note what changed and water by feel.']},
+    droop:{label:'Thirst or root stress',days:['Feel the soil: dry means water slowly.','If the soil is soggy, hold off watering.','Check the roots for soft, dark parts.','Move it away from heaters and drafts.','Keep a steady, even watering routine.','Look for new, firm growth.','Re-check the leaves and adjust.']},
+    brown:{label:'Dry air or uneven watering',days:['Trim brown tips with clean scissors.','Move it away from heaters and vents.','Water evenly: soak, then drain.','Group plants together for more humidity.','Wipe dusty leaves with a damp cloth.','Check light: scorch spots need shade.','Look for new, clean growth.']},
+    unsure:{label:'Not sure yet',days:['Check the soil with a finger, 3 cm down.','Look under leaves and along stems.','Note the light it gets through the day.','Water only when the top soil is dry.','Move it closer to bright, indirect light.','Write down any new changes you see.','Re-check and adjust one thing at a time.']},
+    pests:{label:'Possible pests',days:['Keep it apart from your other plants.','Check under leaves and along stems.','Wipe leaves and stems with a damp cloth.','Rinse the plant gently in a sink.','For any spray, read the product label first.','Re-check the leaves every day.','If it spreads, ask a garden centre or professional.']}
+  },
+  games:[
+    {id:'g1',h:['Which plant is overwatered?','Spot the soggy one'],b:['Both look unhappy. Only one drank too much.','Tap the plant you think is too wet.'],
+     opts:[['a','🟡','Soft yellow leaves',{kind:'soft'}],['b','🟤','Crispy brown edges',{kind:'crisp'}]],right:'a',
+     says:'Soft, yellow leaves often mean too much water. Crispy brown edges often mean too little.',tail:'A scan looks at more clues for you.'},
+    {id:'g2',h:['Which plant needs more light?','Spot the light-starved one'],b:['Both are the same kind of plant.','Look at the stems and the leaf color.'],
+     opts:[['a','🪴','Long, pale stems',{kind:'leggy'}],['b','🪴','Compact, dark leaves',{kind:'compact'}]],right:'a',
+     says:'Long, pale, stretched stems often mean the plant is reaching for light.',tail:'The scan looks for clues like this in your photo.'}
+  ],
+  levels:[
+    {n:'Seedling',line:'Every green thumb starts small.'},
+    {n:'Sprout',line:"You're learning what your plant needs."},
+    {n:'Green Thumb',line:'You read your plants well.'},
+    {n:'Leaf Keeper',line:'Sharp eyes. The scan will like you.'}
+  ]
+};
+const WANT_HERO={yellow:'Plan for the yellow leaves',droop:'Plan for the drooping',brown:'Plan for the brown tips',pests:'Plan for the pests'};
+
+/* drawn plant (placeholder art; photos drop into img/ later with the same names) */
+function plantSVG(kind,sz=120){
+  const L=(x,y,r,c,w=14,l=34,tip)=>`<g transform="translate(${x} ${y}) rotate(${r})"><ellipse cx="0" cy="${-l/2}" rx="${w/2}" ry="${l/2}" fill="${c}"/>${tip?`<ellipse cx="0" cy="${-l+4}" rx="${w/3}" ry="5" fill="#8A5A2B"/>`:''}</g>`;
+  const pot='<path d="M42 92h36l-4 20H46z" fill="#A5622F"/><rect x="38" y="85" width="44" height="9" rx="2" fill="#8C5326"/>';
+  let b='';
+  if(kind==='soft')b=[-100,100,-62,62,0].map((r,i)=>L(60,86,r,['#CFCB5E','#C2BE50','#D6D273','#BDBA4E','#A9BC52'][i],17,40)).join('');
+  else if(kind==='crisp')b=[-70,70,-35,35,0].map(r=>L(60,86,r,'#4F9A5B',17,42,true)).join('');
+  else if(kind==='leggy')b=[-30,-12,6,24,-45].map((r,i)=>`<line x1="60" y1="86" x2="${60+Math.sin(r*Math.PI/180)*60}" y2="${86-Math.cos(r*Math.PI/180)*60}" stroke="#A9B97A" stroke-width="2.5"/>`+L(60+Math.sin(r*Math.PI/180)*58,86-Math.cos(r*Math.PI/180)*58,r,'#B9CB86',9,16)).join('');
+  else if(kind==='compact')b=[-80,80,-55,55,-28,28,0].map(r=>L(60,86,r,'#2F7A44',20,36)).join('');
+  else if(kind==='rosette')b=[-75,-45,-15,15,45,75,0].map(r=>L(60,88,r,'#7DB6A0',16,32)).join('');
+  else if(kind==='flower')b=[-60,60,-30,30,0].map(r=>L(60,86,r,'#2F7A44',16,40)).join('')+'<ellipse cx="60" cy="30" rx="8" ry="15" fill="#F2EEE6"/>';
+  else b=[-65,65,-40,40,-18,18,0].map(r=>L(60,86,r,'#4FA05A',11,24)).join('');
+  return `<svg viewBox="0 0 120 120" width="${sz}" height="${sz}" role="img" aria-label="Drawn plant">${b}${pot}</svg>`;
+}
+const AVATAR=`<svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true"><rect width="64" height="64" fill="#2A2722"/><path d="M32 30c-2-8-10-12-16-10 1 8 8 12 16 10z" fill="#5FA86A"/><path d="M32 30c2-9 10-13 17-11-1 9-9 13-17 11z" fill="#8FCB8B"/><path d="M20 38h24l-3 20H23z" fill="#B96F43"/><rect x="17" y="34" width="30" height="8" rx="3" fill="#9C5A34"/><circle cx="27" cy="48" r="2" fill="#0F2A14"/><circle cx="37" cy="48" r="2" fill="#0F2A14"/><path d="M28 53c2 1.6 6 1.6 8 0" fill="none" stroke="#0F2A14" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+
+const DEMO_NOTE='Demo only: this prototype can\'t identify real photos, so it shows a sample result.';
+const demoNote=()=>`<p class="note" style="margin:0">${DEMO_NOTE}</p>`;
+const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h};
+const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',name:'',src:'',srcOther:'',water:'',types:[],typesOther:'',light:'',g1:'',g2:'',front:null,back:null,sample:false,backSkipped:false,photoErr:'',photoWarn:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false,offerSeen:false});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const SCREENS={1:'hook',2:'meet',3:'name',4:'q_plant',5:'q_water',6:'q_symptoms',7:'q_light',8:'bridge',9:'game_1',10:'game_2',11:'primer',12:'scan_front',13:'scan_back',14:'identifying',15:'id_card',16:'badge',17:'email',18:'paywall',19:'offer',20:'result'};
+const nm=()=>(S.name||'').trim()||'friend';
+const sfx=()=>(S.name||'').trim()?', '+esc(S.name.trim()):'';
+const plant=()=>COLLECT.samples[COLLECT.samples[S.src]?S.src:'leafy'];
+const diag=()=>COLLECT.diag[S.types.find(k=>COLLECT.diag[k])||'unsure'];
+function lvl(){const p=(S.light&&S.light!=='unsure'?1:0)+(S.water&&S.water!=='unsure'?1:0)+(S.types.filter(x=>x!=='other').length>1?1:0)+COLLECT.games.filter(g=>S[g.id]===g.right).length;
+  const i=p<=1?0:p<=2?1:p<=3?2:3;return Object.assign({i,p},COLLECT.levels[i])}
+function face(side){const u=S[side]&&S[side].url;if(u)return `<img src="${u}" alt="Your plant, ${side==='front'?'whole plant':'close-up'}">`;
+  const c=plant();if(c[side])return `<img src="${im(c[side])}" alt="${esc(c.name)}, ${side==='front'?'whole plant':'close-up'}">`;
+  return plantSVG(side==='front'?c.kind:c.kindBack,200)}
+const ed=(txt,chip)=>`<div class="ed"><span class="av">${AVATAR}</span><div class="bb"><span class="who">${COLLECT.host.name}${chip?' · illustrative guide':''}</span>${txt}</div></div>${chip?`<span class="chipd">${esc(COLLECT.host.tag)}</span>`:''}`;
+
+/* ---------- tracking (never the photos, email or typed text) ---------- */
+function snapshot(){const l=lvl();return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,source:S.src||null,water:S.water||null,types:S.types.slice(),light:S.light||null,g1:S.g1||null,g2:S.g2||null,sample:S.sample,hasFront:!!S.front,hasBack:!!S.back,level:l.n,plan:S.plan,paid:S.paid}}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({},detail||{},{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:name,detail:d},'*')}catch(e){}
+  const f=Object.assign({funnel:CONFIG.funnel},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel]',name,JSON.stringify(detail||{}))}catch(e){}
+}
+const answer=(k,v)=>emit('answer',{key:k,value:v});
+function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
+function withParams(url,plan){let u;try{u=new URL(url,location.href)}catch(e){return null}u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});return u.toString()}
+function checkout(){const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});const u=url&&withParams(url,S.plan);if(u)navTop(u);else toast('Demo only. No charge made.')}
+function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
+const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
+
+const app=document.getElementById('app');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers=[];const later=(f,ms)=>{const id=setTimeout(f,ms);timers.push(id);return id};
+const clearT=()=>{timers.forEach(clearTimeout);timers=[];clearInterval(window.__iv)};
+
+function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===18)emit('paywall_view');if(S.i===19)emit('offer_view');if(S.i===20&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
+function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;if(n===18||n===19)try{history.pushState({s:n},'')}catch(e){}render(true);viewed()}
+const next=()=>go(S.i+1);
+function back(){clearT();const p=S.hist.pop();if(p){S.i=p;render(true);viewed()}}
+function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;app.appendChild(e);setTimeout(()=>e.remove(),2700)}
+
+/* ---------- validity of the current screen's primary CTA ---------- */
+const otherOk=(arr,txt)=>!arr.includes('other')||!!(txt||'').trim();
+function valid(i=S.i){switch(i){
+  case 3:return !!S.name.trim();
+  case 4:return !!S.src&&(S.src!=='other'||!!S.srcOther.trim());
+  case 6:return S.types.length>0&&otherOk(S.types,S.typesOther);
+  case 9:return !!S.g1;case 10:return !!S.g2;
+  default:return true}}
+
+/* ---------- blocks ---------- */
+const NAVSTEPS=[2,3,4,5,6,7,8,9,10,11,12,13,16,17];
+function nav(){
+  if(!NAVSTEPS.includes(S.i))return '';
+  const p=Math.round((S.i-1)/16*100);
+  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:6px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('leaf',16)} CoinIn</div><span class="navspacer"></span></div><div class="prog" style="margin:0 8px"><span style="width:${p}%"></span></div></div>`;
+}
+const cta=(l,ok=true,a='next')=>`<button class="btn" data-a="${a}" ${ok?'':'disabled'}>${l}</button>`;
+const q=(h,b)=>`<div><h1 class="display sm">${h}</h1>${b?`<p class="lead" style="margin-top:8px">${b}</p>`:''}</div>`;
+const optBtn=(a,f,k,e,l,on,img)=>`<button class="opt ${on?'on':''}" data-a="${a}" data-f="${f}" data-v="${k}" aria-pressed="${on}"><span class="well">${img?`<img src="${im(img)}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`:e}</span><span class="lbl">${l}</span></button>`;
+const otherBlock=(f)=>`<div class="box fadein"><input data-f="${f}Other" maxlength="40" placeholder="Type a few words" value="${esc(S[f+'Other']||'')}" aria-label="Other" autocomplete="off"></div><div class="hint" data-hint ${(S[f+'Other']||'').trim()?'hidden':''}>Type a few words to continue.</div>`;
+const single=(f,o,withOther)=>`<div class="opts">${Object.entries(o).map(([k,[e,l,img]])=>optBtn('pick',f,k,e,l,S[f]===k,img)).join('')}${withOther?optBtn('pick',f,'other','✏️','Other',S[f]==='other'):''}</div>${withOther&&S[f]==='other'?otherBlock(f):''}`;
+const multi=(f,o)=>`<div class="opts">${Object.entries(o).map(([k,[e,l,img]])=>optBtn('tog',f,k,e,l,S[f].includes(k),img)).join('')}${optBtn('tog',f,'other','✏️','Other',S[f].includes('other'))}</div>${S[f].includes('other')?otherBlock(f):''}`;
+const lockRows=(glow)=>`<div class="stack">${['Care plan, days 3 to 7','Full cause check','Watering and light schedule'].map(x=>`<div class="lockrow" ${glow?'style="border-color:#8FCB8B88;background:linear-gradient(0deg,#8FCB8B14,#8FCB8B14),var(--surface)"':''}><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div>`;
+function game(n){const g=COLLECT.games[n],pick=S[g.id],done=!!pick;
+  return `<div class="scr" style="gap:14px">${q(t(g.h[0],g.h[1]),t(g.b[0],g.b[1]))}
+  ${done?'':ed('Take your best guess!')}
+  <div class="pair ${done?'revealed':''}">${g.opts.map(([k,e,l,a])=>`<button class="gc ${done?(k===g.right?'win':'dim'):''}" data-a="guess" data-g="${g.id}" data-v="${k}" aria-label="${esc(l)}">${done?'':`<span class="loupe">${ic('search',16)}</span>`}${plantSVG(a.kind,104)}<b>${e} ${l}</b></button>`).join('')}</div>
+  ${done?`<div class="reveal fadein"><b>${pick===g.right?'Nice eye!':'Good guess.'}</b>${g.says}<br>${g.tail}</div>`:''}</div>
+  <div class="foot">${cta(n===0?'Next':'Photo my plant',done)}</div>`}
+function scanScreen(side){const p=S[side],f=side==='front';
+  const warnOrErr=S.photoErr?`<div class="err tc" role="alert">${esc(S.photoErr)}</div>`:(p&&S.photoWarn?`<div class="hint warn tc">${esc(S.photoWarn)}</div>`:'');
+  return `<div class="scr" style="gap:14px">${q(f?t('Whole plant first','Show us the plant'):t('Now a close-up','One more look'),f?t('Step back so the whole plant shows.','Natural light works best.'):t('Show the leaf that worries you.','Close-ups reveal spots and pests.'))}
+  ${p?`<div class="roundph lg fadein"><img src="${p.url}" alt="Your plant, ${f?'whole plant':'close-up'}"></div>`
+     :`<label class="dropc" id="drop" for="pf"><svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="38" fill="none" stroke="#8FCB8B" stroke-width="2" stroke-dasharray="5 6"/><path d="M42 58V34M42 40c-8 0-12-5-12-11 7 0 12 4 12 11zM42 46c7 0 11-4 11-10-7 0-11 4-11 10z" fill="none" stroke="#8FCB8B" stroke-opacity=".7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b style="font-size:16px">Tap to upload a photo</b><span class="hint">JPG, PNG or HEIC · or drag it here</span></label>`}
+  ${warnOrErr}
+  ${!f&&S.front?`<div class="thumbrow"><div class="roundph" style="width:52px;height:52px"><img src="${S.front.url}" alt="Whole plant photo"></div><span class="hint" style="color:var(--t2)">Whole plant captured</span></div>`:''}
+  <input type="file" id="pf" accept="image/*" data-side="${side}" hidden><input type="file" id="pc" accept="image/*" capture="environment" data-side="${side}" hidden>
+  <p class="note" style="margin:0">${f?'Step 1 of 2':'Step 2 of 2'}${f?' · Two photos give a sharper check':''}</p></div>
+  <div class="foot">${p?`${cta(f?'Use this photo':'Check my plant',true,'usephoto')}<button class="link" data-a="retake" data-side="${side}">Choose another</button>`
+     :`<label class="btn" for="pf" role="button">${ic('upload',18)} Upload from gallery</label><label class="btn ghost" for="pc" role="button">${ic('camera',18)} Take a photo now</label>`}
+   <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap"><button class="link" data-a="sample">Use a sample plant</button>${f?'':`<button class="link" data-a="skipback">Skip, whole plant only</button>`}</div></div>`}
+
+/* ---------- web paywall blocks ---------- */
+const P_ORDER=['intro','w4','w12'];
+const todayLine=()=>`${tok(CONFIG.plans[S.plan].price)} today`;
+const renewText=k=>{const P=CONFIG.plans[k];return k==='intro'?`${tok(P.price)} for the first week, then ${tok(P.renewPrice)} every week until you cancel.`:`${tok(P.price)} today, then ${tok(P.renewPrice)} every ${P.period} until you cancel.`};
+function planBlock(){const P=CONFIG.plans;
+  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${P_ORDER.map(k=>{const p=P[k];return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${k==='w4'?'<span class="rib">Pre-selected</span>':''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renewPrice)}</small></span></button>`}).join('')}</div>
+   <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
+   <div style="height:12px"></div>${cta('Unlock my plan',true,'pay')}
+   <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+   <div class="secure"><span>${ic('shield',14)} Secure checkout</span><span>${ic('check',14,2.4)} Cancel anytime</span></div>
+   <p class="fine" data-renew>${renewText(S.plan)}</p></div>`}
+
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el)return clearInterval(window.__iv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__iv);S.offerSeen=true;emit('offer_expired');go(20);return}
+    const m=Math.floor(ms/60000),sec=Math.floor(ms/1000)%60;el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
+  tick();window.__iv=setInterval(tick,1000)}
+
+/* ---------- screens ---------- */
+const BRIDGE={leafy:()=>`Leaves give the first clues${sfx()}.`,succ:()=>'Succulents like to dry out between drinks.',flower:()=>'Flowering plants can be fussy about light.',herb:()=>'Herbs love light and a regular trim.'};
+const carePlan=(paid)=>{const d=diag().days;const rows=(paid?d:d.slice(0,2)).map((x,i)=>`<div class="frow"><span>Day ${i+1}</span><b style="text-align:right;max-width:70%">${esc(x)}</b></div>`).join('');
+  return `<div class="card"><h4>Your 7-day plan${paid?'':' · days 1 and 2 free'}</h4><div>${rows}</div><p class="hint" style="margin-top:8px">A general plan from your answers. An indication, not expert advice.</p></div>`};
+const cardBlock=(extra='')=>{const c=plant();return `<div class="cardid"><div class="faces"><div class="roundph">${face('front')}</div>${S.backSkipped?'':`<div class="roundph">${face('back')}</div>`}</div>
+  <h2 class="cname">${esc(c.name)}</h2>
+  <div>${[['Common name',c.common],['Family',c.family],['Native to',c.native],['Light',c.light],['Water',c.water]].map(([a,b])=>`<div class="frow"><span>${a}</span><b>${esc(b)}</b></div>`).join('')}</div>${extra}<span class="chipd" style="align-self:center">Sample data</span></div>`};
+const V={
+1:()=>`<div class="scr" style="padding-top:0;gap:14px"><div class="hero" style="height:250px"><img src="${im('img/hero.jpg')}" alt="A houseplant with drooping, yellowing leaves"></div>
+  <div style="margin-top:-64px;position:relative;display:flex;flex-direction:column;gap:10px">${ed(t("Let's find out what's wrong.","Hello! Let's check your plant."),true)}</div>
+  <div class="tc" style="display:flex;flex-direction:column;gap:8px"><h1 class="display">${t('Why is my plant dying?','Meet Fern, your plant guide')}</h1><p class="lead">${t('Fern helps you find out what it needs.','Photograph one plant and get a care check.')}</p></div>
+  <div class="trio"><span>${ic('clock',15)} 2-min quiz</span><span>${ic('scan',15)} One plant photo</span><span>${ic('leaf',15)} Free care check</span></div></div>
+  <div class="foot">${cta("Let's check")}<p class="note">By continuing you agree to our Terms and Privacy Policy. Results are an indication, not expert advice.</p></div>`,
+2:()=>`<div class="scr" style="gap:16px">${q(t("Here's how it works",'Three steps, one plant'),t('Quick questions, one plant photo, your free care check.','Fern walks you through each step.'))}
+  ${ed("I'm an illustrated guide. I can't diagnose plants, but the scan can spot likely causes.",true)}
+  <div class="toc">${[['Answer a few questions'],['Photograph your plant'],['Get its care check']].map(([x],i)=>`<div><span class="n">${i+1}</span><span>${x}</span><span class="l">${ic(['hand','scan','check'][i],18)}</span></div>`).join('')}</div>
+  <span class="chipd">An indication, not expert advice</span></div><div class="foot">${cta('Continue')}</div>`,
+3:()=>`<div class="scr" style="gap:16px">${q(t('What should Fern call you?','First, your name'),t('Just a first name or nickname.','It makes your plant card personal.'))}
+  ${ed('Nice to meet you!')}
+  <div class="box"><input id="nm" data-f="name" maxlength="20" placeholder="Your first name" value="${esc(S.name)}" autocomplete="given-name" aria-label="Your first name"></div></div>
+  <div class="foot">${cta('Continue',valid(3))}<button class="link" data-a="skipname">Skip, call me friend</button></div>`,
+4:()=>`<div class="scr">${q(t('Which plant is it?','What are we checking?'),t('Fern will pick examples to match.','Pick the closest match.'))}${single('src',COLLECT.src,true)}</div>${S.src==='other'?`<div class="foot">${cta('Continue',valid(4))}</div>`:''}`,
+5:()=>`<div class="scr">${q(t('How often do you water?',"What's your water routine?"),t('A rough guess is fine.',"No schedule? That's okay."))}${single('water',COLLECT.water,false)}</div>`,
+6:()=>`<div class="scr">${q(t('What do you see?','What looks wrong?'),t('Pick all that apply.','Mixed is fine.'))}${multi('types',COLLECT.types)}</div><div class="foot">${cta('Continue',valid(6))}</div>`,
+7:()=>`<div class="scr">${q(t('How much light does it get?','Where does it sit?'),t('A rough guess is fine.','Your best guess is fine.'))}${single('light',COLLECT.light,false)}</div>`,
+8:()=>{const line=(BRIDGE[S.src]||(()=>'Every plant has its own rhythm.'))();
+  return `<div class="scr center" style="gap:18px">${q(t('Many causes, similar signs','Symptoms can mislead'),t('Water, light and pests can look alike. Fern checks all three.','Two quick guesses, then your photo.'))}
+  ${ed(line)}
+  <div class="pair" style="justify-items:center"><div>${plantSVG('soft',112)}</div><div>${plantSVG('crisp',112)}</div></div>
+  <p class="note">Same plant, different problems. Fern weighs the clues together.</p></div><div class="foot">${cta("Let's play")}</div>`},
+9:()=>game(0),
+10:()=>game(1),
+11:()=>`<div class="scr" style="gap:14px">${q(t('Grab your plant',"Let's photograph your plant"),t('Any plant works, even a sad one.','Fern needs a clear look.'))}
+  <div class="hero" style="height:150px;border-radius:20px;margin:0"><img src="${im('img/window.jpg')}" alt="A potted plant on a windowsill" style="-webkit-mask-image:none;mask-image:none"></div>
+  ${ed('Natural light, leaves in focus.')}
+  <div class="chips4">${[['leaf','One plant'],['sun','Good light'],['scan','Leaf close-up'],['layers','Fill the frame']].map(([i,l])=>`<div>${ic(i,18)}${l}</div>`).join('')}</div>
+  <div class="privacy">${ic('shield',16)}<span>Your photos are used to check this plant only.</span></div></div>
+  <div class="foot">${cta('Continue')}<button class="link" data-a="sample">No plant handy? Use a sample plant</button></div>`,
+12:()=>scanScreen('front'),
+13:()=>scanScreen('back'),
+14:()=>`<div class="scr center tc" style="gap:16px"><h1 class="display sm">${t('Checking your plant…',"Reading your plant's leaves…")}</h1>
+  <div class="spin3d"><div class="roundph lg">${face('front')}<span class="ringscan"></span></div></div>
+  <p class="note" style="margin:0">${S.backSkipped?'Photo received (whole plant only)':'Photos received'}</p>${demoNote()}
+  <div class="tasks">${['Reading leaf shape and color…','Matching it to known plants…','Checking common care problems…','Fern is preparing your plan…'].map((x,i)=>`<div class="task" id="tk${i}"><i></i><span style="flex:1;text-align:left">${x}</span><span id="pc${i}" style="font-variant-numeric:tabular-nums">0%</span></div>`).join('')}</div></div>`,
+15:()=>{const c=plant(),d=diag(),nomatch=QS.get('nomatch')==='1';
+  if(nomatch)return `<div class="scr center tc" style="gap:14px">${ed("Hmm, I can't see it clearly.")}<h1 class="display sm">We couldn't match this one yet</h1><p class="lead">Try brighter light and a plain background.</p></div><div class="foot">${cta('Retake photos',true,'retake12')}<button class="link" data-a="sample">Use a sample plant</button></div>`;
+  return `<div class="scr" style="gap:14px;padding-top:24px">${ed(`Here's your plant, ${esc(nm())}.`)}
+  <div><h1 class="display sm">${t("It's a "+esc(c.name),'We found your plant')}</h1><p class="lead" style="margin-top:8px">${t('Likely cause: '+esc(d.label)+'.','Care plan days 1 and 2 are free.')}</p></div>
+  ${cardBlock(`<div class="hint tc">Match confidence: ${S.backSkipped?'Medium':'High'} · <button class="link" style="min-height:0;padding:0" data-a="retake12">Not right? Try another photo</button></div>`)}
+  <span class="chipd">Sample data</span>${demoNote()}
+  ${carePlan(false)}${lockRows(false)}
+  <p class="note" style="margin:0">An indication from your photos, not expert advice.</p></div><div class="foot">${cta('See my badge')}</div>`},
+16:()=>{const l=lvl();
+  return `<div class="scr center tc" style="gap:16px"><div class="medal"><div><div class="st">${'★'.repeat(l.i+1)}${'☆'.repeat(3-l.i)}</div><b>${esc(l.n)}</b></div></div>
+  <div><h1 class="display sm">${t("You're a "+esc(l.n),'Your plant parent level')}</h1><p class="lead" style="margin-top:8px">${t('Based on your answers and your two guesses.','A fun badge, not a diagnosis.')}</p></div>
+  ${ed(esc(l.line)+(S.name.trim()?' '+esc(nm())+'.':''))}
+  <button class="link" data-a="sharebadge">Share my badge</button></div><div class="foot">${cta('Save my plan')}</div>`},
+17:()=>`<div class="scr" style="gap:14px">${q(t('Where should Fern send it?','Save your plant card'),t('Get your care plan and keep your scans safe.','One email, no spam.'))}
+  <div class="gridc"><div class="f"><div class="roundph" style="width:100%;height:100%;border:none;border-radius:0">${face('front')}</div></div><div></div><div></div><div></div></div>
+  <div class="box white ${S.emailErr?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" placeholder="Your email" value="${esc(S.email)}" data-f="email" aria-label="Email"></div>
+  ${S.emailErr?`<div class="err" role="alert">${S.emailErr}</div>`:''}
+  <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button></div>
+  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing you agree to our Terms and Privacy Policy. We never sell your email.</p></div>`,
+18:()=>{const c=plant(),l=lvl(),w=S.types.find(k=>WANT_HERO[k]);
+  const heroH=t(w?WANT_HERO[w]:'Get your full care plan','Save your '+esc(c.name));
+  const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text&&!isTok(r.text));
+  const toc=['Full cause check','Care plan, days 3 to 7','Watering and light schedule','Pest and leaf check','Unlimited plant scans','Plant tracker'];
+  if(S.types.includes('pests')){toc.splice(toc.indexOf('Pest and leaf check'),1);toc.unshift('Pest and leaf check')}
+  const FAQ=[["What's included?",'Full cause check, the 7-day care plan, a watering and light schedule, unlimited scans and a plant tracker.'],
+    ['Is this a diagnosis?','No. It is an indication from your photos, not expert advice.'],
+    ['What about sprays or toxic plants?','Fern gives no safety advice. Check the product label or ask a professional.'],
+    ['How do I cancel?','In your account settings or by emailing '+tok(CONFIG.supportEmail)+', any time before the next renewal.'],
+    ['Will I be charged again?','Yes, unless you cancel. The plan renews at the price and period shown on the card you pick.'],
+    ['Is Fern a real person?','No. Fern is an illustrated guide, not a botanist.']];
+  return `<div class="wp" id="wp">
+  <div class="wbar"><div class="brand">${ic('leaf',16)} CoinIn</div><button class="mini" data-a="toplans">Unlock my plan</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
+  <div class="wsec tight"><span class="eyebrow">Your plant card is ready</span><h1 class="display" style="font-size:31px">${heroH}</h1>
+   <p class="lead" style="margin:8px 0 16px">${esc(c.name)}. Three parts are still locked.</p>
+   <p class="note" style="margin:0 0 10px"><b>Sample data.</b> ${DEMO_NOTE}</p><div class="whero"><div class="pv" style="aspect-ratio:1;border-radius:50%"><div class="roundph" style="width:100%;height:100%;border:none">${face('front')}</div></div><div class="facts"><div class="fact">Plant<b>${esc(c.name)}</b></div><div class="fact">Level<b>${esc(l.n)}</b></div><div class="fact">Locked<b>3 of 3 parts</b></div></div></div>
+   <div style="margin-top:14px">${lockRows(true)}</div>
+   <div style="margin-top:14px">${ed('Fern is an illustrated guide, not a botanist.')}</div></div>
+  <div class="wsec" id="plans1">${planBlock()}</div>
+  <div class="wsec"><span class="eyebrow">Inside your plan</span><h2 class="wh2">Everything for this plant</h2><p class="lead">Your free plant card and days 1 and 2 stay free. This unlocks the rest.</p>
+   <div class="toc">${toc.map((x,i)=>`<div><span class="n">${i+1}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
+  <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From your photo to your plan</h2>
+   <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],["See your plant's full plan",'The cause check and all 7 days open on this page.'],['Keep checking in the app','Log in with your email to scan more plants.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
+  ${R&&!isTok(R.score)?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${esc(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${esc(R.count)} ratings</div></div></div>${RV.length?`<div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${esc((r.name||'?').slice(0,2).toUpperCase())}</i><div>${esc(r.name)}<small>${esc(r.meta||'')}</small></div></div>${esc(r.text)}</div>`).join('')}</div>`:''}</div>`:''}
+  ${!isTok(CONFIG.refundDays)?`<div class="wsec"><div class="guar"><div class="seal">${esc(CONFIG.refundDays)}<br>DAY</div><div><b style="font:700 19px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a refund.</p></div></div></div>`:''}
+  <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([a,b])=>`<details><summary>${a}</summary><p>${b}</p></details>`).join('')}</div></div>
+  <div class="wsec" id="plans2">${planBlock()}</div>
+  <div class="wfoot">${legal()}<div>Results are an indication from your photos, not expert advice. For sprays or toxicity questions, check the product label or ask a professional. ${tok(CONFIG.company)}</div></div>
+  </div>
+  <div class="sticky" id="sticky"><div class="sum"><span id="sumname">${CONFIG.plans[S.plan].name}</span><b id="sumline">${todayLine()}</b></div>${cta('Unlock my plan',true,'pay')}</div>`},
+19:()=>{const o=CONFIG.offer;
+  return `<div class="wp"><div class="wbar"><div class="brand">${ic('leaf',16)} CoinIn</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:31px">${t('Just this plant?','Get one plant plan')}</h1>
+   <p class="lead" style="margin-top:8px">${t("Pay once for this plant's full plan.",'No subscription, no renewal.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="wsec tight"><div class="ocard">${o.badge&&!isTok(o.badge)?`<span class="obadge">${esc(o.badge)}</span>`:''}
+   <div class="orow"><div class="roundph" style="width:64px;height:64px">${face('front')}</div><div style="flex:1;min-width:0"><b style="font:700 20px var(--serif)">${esc(o.name)}</b><div class="hint">${esc(plant().name)} · Sample data</div></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>one time</span></div>
+   <div class="checks" style="margin:14px 0 8px">${["This plant's full cause check",'Full 7-day care plan','Watering and light schedule'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
+   <div class="checks" style="margin:0 0 14px;color:var(--t3)"><div style="color:var(--t2);font-weight:600;font-size:12.5px">Not included</div>${['Unlimited plant scans','Plant tracker','Other plants'].map(x=>`<div>${ic('x',16,2.2)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Get my plan',true,'offerbuy')}
+   <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+   <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.</p></div></div>
+  <div class="wsec tc" style="padding-bottom:calc(var(--sab) + 30px)"><button class="link" data-a="offerno">No thanks, keep the free plant card</button><div class="note" style="margin-top:6px">An indication, not expert advice.</div></div></div>`},
+20:()=>{const l=lvl(),paid=S.paid;
+  return `<div class="scr" style="gap:14px;padding-top:26px">${paid?`<span class="badge">${ic('check',13,2.6)} Unlocked</span>`:''}
+  <div><h1 class="display sm">${t('Your plant card'+sfx(),'Your plant, decoded')}</h1><p class="lead" style="margin-top:8px">${t('Fern saved it to your plants.','Check your next plant any time.')}</p></div>
+  ${cardBlock(`<div class="hint tc">${ic('check',13,2.6)} Level: ${esc(l.n)}</div>`)}
+  ${demoNote()}${paid?`<div class="card"><h4>Likely cause: ${esc(diag().label)}</h4><p style="margin-top:6px">Based on your photos and answers. Check the soil, light and leaves yourself before changing anything big.</p><p class="hint" style="margin-top:6px">An indication, not expert advice. For sprays, check the product label or ask a professional.</p></div>${carePlan(true)}
+    <div class="card"><h4>Water and light</h4><p>${esc(plant().water)}. ${esc(plant().light)}.</p></div>`:`${carePlan(false)}${lockRows(false)}`}
+  <div class="gridc"><div class="f"><div class="roundph" style="width:100%;height:100%;border:none;border-radius:0">${face('front')}</div></div><div></div><div></div><div></div></div><p class="note" style="margin:-6px 0 0">Plants: 1 plant</p>
+  ${ed('Nice work. Bring me the next plant.')}</div>
+  <div class="foot">${paid?`${cta('Check next plant',true,'scannext')}<button class="btn ghost" data-a="app">Open the app</button><div class="stores"><span class="store">${ic('apple',18)}<span>Download on the<b>App Store</b></span></span><span class="store">${ic('play',16)}<span>Get it on<b>Google Play</b></span></span></div>`:`${cta('Unlock my plan',true,'topw')}<button class="link" data-a="scannext">Check next plant</button>`}</div>`}
+};
+
+/* ---------- photo handling: validate, decode, dark check, preview ---------- */
+function dropPhoto(side){const p=S[side];if(p&&p.url)try{URL.revokeObjectURL(p.url)}catch(e){}S[side]=null}
+async function takeFile(side,f){
+  if(!f)return;
+  S.photoErr='';S.photoWarn='';
+  if(!/^image\//.test(f.type)&&!/\.(heic|heif|jpe?g|png|webp)$/i.test(f.name)){S.photoErr="That file isn't a photo. Try a JPG or PNG.";render();return}
+  if(f.size>CONFIG.maxUploadMB*1024*1024){S.photoErr=`That photo is over ${CONFIG.maxUploadMB} MB. Try a smaller one.`;render();return}
+  const url=URL.createObjectURL(f),img=new Image();img.decoding='async';
+  img.onerror=()=>{URL.revokeObjectURL(url);S.photoErr="We couldn't open that photo. Try another.";emit('upload_error',{side,reason:'decode'});render()};
+  img.onload=()=>{dropPhoto(side);S[side]={url,file:f};S.sample=false;
+    let lum=128;try{const c=document.createElement('canvas');c.width=40;c.height=40;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,40,40);const d=x.getImageData(0,0,40,40).data;lum=0;for(let k=0;k<d.length;k+=4)lum+=.299*d[k]+.587*d[k+1]+.114*d[k+2];lum/=1600}catch(e){}
+    if(lum<45)S.photoWarn='It looks dark. Plants read best in bright light.';
+    emit('upload',{side,ok:!S.photoWarn,dark:lum<45});render()};
+  img.src=url;
+}
+
+/* ---------- animated screens ---------- */
+function run14(){let p=0;const total=RM?10:100,step=RM?5:50;
+  window.__iv=setInterval(()=>{p=Math.min(100,p+1);
+    for(let i=0;i<4;i++){const a=i*25,b=a+25,e=document.getElementById('tk'+i);if(!e)return clearInterval(window.__iv);
+      const v=Math.max(0,Math.min(100,Math.round((p-a)/25*100)));e.classList.toggle('on',p>=a&&p<b);e.classList.toggle('done',p>=b);e.querySelector('i').innerHTML=p>=b?ic('check',12,3):'';document.getElementById('pc'+i).textContent=v+'%'}
+    if(p>=100){clearInterval(window.__iv);later(next,500)}},step)}   /* ~5 s minimum; the real app advances when the API result is back */
+
+/* ---------- render ---------- */
+function render(anim){
+  const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');v.innerHTML=nav()+V[S.i]();
+  const old=app.querySelector('.view');if(old)old.replaceWith(v);else app.appendChild(v);
+  if(!app.querySelector('.vtog')){const b=document.createElement('button');b.className='vtog';b.dataset.a='ab';app.appendChild(b)}
+  const tg=app.querySelector('.vtog');tg.textContent='Copy '+S.v;tg.setAttribute('aria-label','Switch copy A/B');tg.hidden=S.i===18||S.i===19;
+  if(S.i===12||S.i===13)bindUpload(v);
+  if(S.i===14)run14();
+  if(S.i===18)bindPaywall(v);
+  if(S.i===19)runOffer();
+}
+function bindPaywall(v){
+  const wp=v.querySelector('#wp'),st=v.querySelector('#sticky'),blocks=[...v.querySelectorAll('.pick')];
+  if(!wp||!('IntersectionObserver' in window)){st&&st.classList.add('show');return}
+  const vis=new Set();
+  const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{root:wp,threshold:.25});
+  blocks.forEach(b=>io.observe(b));
+  wp.addEventListener('scroll',()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{passive:true});
+}
+function bindUpload(v){
+  v.querySelectorAll('input[type=file]').forEach(fi=>fi.addEventListener('change',()=>{const f=fi.files&&fi.files[0];emit('upload_pick',{side:fi.dataset.side,source:fi.id==='pc'?'camera':'gallery'});takeFile(fi.dataset.side,f);fi.value=''}));
+  const d=v.querySelector('#drop');if(!d)return;
+  ['dragenter','dragover'].forEach(e=>d.addEventListener(e,ev=>{ev.preventDefault();d.classList.add('over')}));
+  ['dragleave','drop'].forEach(e=>d.addEventListener(e,ev=>{ev.preventDefault();d.classList.remove('over')}));
+  d.addEventListener('drop',ev=>{const f=ev.dataTransfer.files&&ev.dataTransfer.files[0];emit('upload_pick',{side:S.i===12?'front':'back',source:'drop'});takeFile(S.i===12?'front':'back',f)});
+}
+function closePw(){emit('paywall_close');go(offerOpen()?19:20)}
+function offerNo(){S.offerSeen=true;emit('offer_decline');go(20)}
+function startSample(){dropPhoto('front');dropPhoto('back');S.sample=true;S.backSkipped=false;S.photoErr='';S.photoWarn='';emit('sample_plant');go(14)}
+
+app.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'ab':S.v=S.v==='B'?'A':'B';render(false);break;
+    case 'next':if(S.i===1)emit('start');if(!valid())break;next();break;
+    case 'back':back();break;
+    case 'skipname':S.name='';next();break;
+    case 'pick':{const f=b.dataset.f;S[f]=v;answer(f,v);
+      if(v==='other'){render();app.querySelector('[data-f="'+f+'Other"]')?.focus();break}
+      app.querySelectorAll(`[data-f="${f}"]`).forEach(x=>x.classList.toggle('on',x.dataset.v===v));later(next,RM?0:280);break}
+    case 'tog':{const f=b.dataset.f,arr=S[f],k=arr.indexOf(v);if(k<0)arr.push(v);else arr.splice(k,1);answer(f,arr.join(','));render();if(v==='other'&&k<0)app.querySelector('[data-f="'+f+'Other"]')?.focus();break}
+    case 'guess':{const g=COLLECT.games.find(x=>x.id===b.dataset.g);if(S[g.id])break;S[g.id]=v;answer(g.id,v+(v===g.right?':right':':wrong'));render();break}
+    case 'usephoto':{const side=S.i===12?'front':'back',p=S[side];
+      if(CONFIG.onPlantPhoto&&p)try{Promise.resolve(CONFIG.onPlantPhoto(p.file,{side})).catch(()=>{})}catch(e){}
+      emit('photo_confirm',{side,warned:!!S.photoWarn});S.photoWarn='';next();break}
+    case 'retake':dropPhoto(b.dataset.side);S.photoWarn='';S.photoErr='';render();break;
+    case 'retake12':dropPhoto('front');dropPhoto('back');S.sample=false;S.backSkipped=false;S.photoWarn='';S.photoErr='';go(12);break;
+    case 'sample':startSample();break;
+    case 'skipback':S.backSkipped=true;dropPhoto('back');emit('skip_back');go(14);break;
+    case 'sharebadge':toast('Demo only. Sharing is off.');break;
+    case 'consent':S.consent=!S.consent;render();break;
+    case 'email':{const x=(S.email||'').trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.emailErr='Enter a valid email address.';render();document.getElementById('em')?.focus();break}S.email=x;S.emailErr='';emit('lead',{method:'email',marketingConsent:S.consent});next();break}
+    case 'plan':{S.plan=v;emit('plan_select',{plan:v});
+      app.querySelectorAll('.wplan').forEach(x=>{const on=x.dataset.v===v;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);x.querySelector('.rd').innerHTML=on?ic('check',12,3):''});
+      app.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renewText(v));app.querySelectorAll('[data-today]').forEach(x=>x.innerHTML=todayLine());
+      const sl=document.getElementById('sumline');if(sl){sl.innerHTML=todayLine();document.getElementById('sumname').textContent=CONFIG.plans[v].name}break}
+    case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
+    case 'pay':checkout();break;
+    case 'closepw':closePw();break;
+    case 'offerbuy':{S.offerSeen=true;const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});const x=u&&withParams(u,'offer');if(x)navTop(x);else toast('Demo only. No charge made.');break}
+    case 'offerno':offerNo();break;
+    case 'topw':go(18);break;
+    case 'scannext':dropPhoto('front');dropPhoto('back');S.sample=false;S.backSkipped=false;go(11);break;
+    case 'app':{const u=appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
+  }
+});
+app.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;
+  if(f==='email'){S.email=e.target.value;if(S.emailErr){S.emailErr='';e.target.closest('.box').classList.remove('bad');app.querySelector('.err')?.remove()}return}
+  S[f]=e.target.value;
+  const cb=app.querySelector('.foot [data-a="next"]');if(cb)cb.disabled=!valid();
+  const h=app.querySelector('[data-hint]');if(h)h.hidden=!!e.target.value.trim()});
+app.addEventListener('keydown',e=>{if(e.key!=='Enter')return;if(e.target.id==='em')app.querySelector('[data-a="email"]')?.click();else if(e.target.dataset&&e.target.dataset.f&&e.target.id!=='em')app.querySelector('.foot [data-a="next"]:not([disabled])')?.click()});
+/* browser Back from the paywall or the offer acts like the close button; the offer shows once, so there is no loop */
+addEventListener('popstate',()=>{if(S.i===19)offerNo();else if(S.i===18)closePw()});
+
+/* host API */
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
+  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(20)}});
+if(QS.get('paid')){S.paid=true;S.plan=CONFIG.plans[QS.get('paid')]?QS.get('paid'):S.plan}
+if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{name:S.name||'Maya',src:S.src||'leafy',water:S.water||'often',types:S.types.length?S.types:['yellow','pests'],light:S.light||'bright',g1:S.g1||'a',g2:S.g2||'a',email:S.email||'demo@example.com'});go(n)};window.IkFunnel.takeFile=takeFile}
+emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
+render();viewed();
+</script>
+</body>
+</html>

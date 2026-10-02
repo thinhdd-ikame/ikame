@@ -1,0 +1,993 @@
+<title>Coinin-style Funnel Demo</title>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* ---------- page (control panel) tokens: light default, dark via media + data-theme ---------- */
+:root{
+  color-scheme:light dark;
+  --p-bg:#F4F1EA;--p-glow:#E8DDC3;--p-surface:#FFFFFF;--p-surface2:#EFE9DD;--p-border:#DDD5C5;
+  --p-t1:#1F1C17;--p-t2:#5A5448;--p-t3:#8A8274;--p-accent:#8C6A24;--p-on-accent:#FFFFFF;
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --p-bg:#100F0D;--p-glow:#241F16;--p-surface:#1A1916;--p-surface2:#25231F;--p-border:#353129;
+    --p-t1:#F2EEE6;--p-t2:#B7AFA2;--p-t3:#81796C;--p-accent:#D2AE67;--p-on-accent:#1D1606;
+  }
+}
+:root[data-theme="dark"]{
+  --p-bg:#100F0D;--p-glow:#241F16;--p-surface:#1A1916;--p-surface2:#25231F;--p-border:#353129;
+  --p-t1:#F2EEE6;--p-t2:#B7AFA2;--p-t3:#81796C;--p-accent:#D2AE67;--p-on-accent:#1D1606;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--p-bg);background-image:radial-gradient(ellipse 60% 40% at 30% 0%,var(--p-glow) 0%,transparent 70%);color:var(--p-t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--p-accent);outline-offset:2px}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding-block:32px 48px;padding-inline:16px}
+.pbox{position:relative;flex-shrink:0;width:390px;height:812px}
+
+/* ---------- phone: app brand tokens, same in both page themes ---------- */
+.phone{
+  --bg:#141311;--bg-elev:#1B1A17;--surface:#1F1D1A;--surface-2:#2A2824;--border:#3A362F;
+  --t1:#F3EEE4;--t2:#BAB2A4;--t3:#877F72;
+  --accent:#C9A45C;--accent-hi:#E3C47F;--accent-dim:#C9A45C24;--gold-line:#C9A45C70;--btn-text:#1D1606;
+  --negative:#E39A82;--positive:#9CCB9F;
+  color-scheme:dark;color:var(--t1);font:15px/1.45 var(--sans);
+  position:absolute;left:0;top:0;width:390px;height:812px;transform-origin:0 0;border-radius:52px;
+  background:radial-gradient(ellipse 110% 55% at 50% 0%,#23201B 0%,var(--bg) 62%);
+  border:1px solid #2F2C27;box-shadow:0 0 0 10px #0C0B0A,0 0 0 11px #2F2C27,0 40px 80px -20px #0008;overflow:hidden;isolation:isolate
+}
+.phone :focus-visible{outline-color:var(--accent)}
+.stage{position:absolute;inset:0;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:20;pointer-events:none;color:var(--t1)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid currentColor}
+.status .dots b{display:block;width:4px;height:10px;background:currentColor;border-radius:1px}
+
+/* simple screen change: fade + small slide only */
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:6}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--surface)}
+.iconbtn.on{color:var(--accent)}
+.prog{flex:1;height:3px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--accent);border-radius:2px;transition:width .35s ease}
+.navspacer{width:36px}
+.stepn{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums;width:36px;text-align:right}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr.center{justify-content:center}
+.foot{flex:none;padding:12px 20px 30px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:6}
+.foot .note,.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+.z{position:relative;z-index:1}
+.spot{position:absolute;inset:0 0 auto 0;height:420px;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 50% 18%,#C9A45C1f 0%,transparent 70%)}
+
+.display{font:700 33px/1.08 var(--serif);letter-spacing:-.005em;margin:0;text-wrap:balance}
+.display.xl{font-size:40px}
+.display.md{font-size:28px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--accent-dim);color:var(--accent-hi);font:600 12px/1 var(--sans)}
+.tok{font:500 .84em ui-monospace,Consolas,"Cascadia Mono",monospace;color:var(--accent-hi);border:1px dashed var(--gold-line);border-radius:5px;padding:0 4px;white-space:nowrap}
+
+.btn{height:54px;border-radius:999px;border:none;background:var(--accent);color:var(--btn-text);font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,opacity .2s;letter-spacing:.01em}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--t1);border:1px solid var(--border)}
+.btn.light{background:var(--t1);color:#141311}
+.btn.caps{letter-spacing:.08em;font-size:15px}
+.btn:not([disabled]):not(.ghost):not(.light){position:relative;overflow:hidden;box-shadow:0 8px 28px -12px #C9A45Caa}
+.btn:not([disabled]):not(.ghost):not(.light)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff5c,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border)}
+.link:hover{color:var(--t1)}
+.link.sm{font-size:13px;color:var(--t3)}
+
+/* option pills (gold border, selected fills gold) */
+.opts{display:flex;flex-direction:column;gap:10px}
+.pill{display:flex;align-items:center;gap:12px;min-height:54px;padding:10px 16px;border-radius:999px;background:var(--surface);border:1px solid var(--gold-line);text-align:left;width:100%;transition:background .15s,color .15s,border-color .15s}
+.pill:hover{border-color:var(--accent)}
+.pill .em{font-size:20px;width:28px;display:grid;place-items:center;flex:none}
+.pill .em .tph{display:block;border-radius:50%;overflow:hidden;box-shadow:0 1px 4px #0008}
+.pill .lbl{flex:1;font-weight:500;font-size:16px}
+.pill .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gold-line);display:grid;place-items:center;flex:none}
+.pill.on{background:var(--accent);color:var(--btn-text);border-color:var(--accent)}
+.pill.on .chk{background:var(--btn-text);border-color:var(--btn-text);color:var(--accent)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cardopt{min-height:128px;border-radius:20px;background:var(--surface);border:1px solid var(--gold-line);display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:16px;text-align:left;color:var(--accent);transition:background .15s}
+.cardopt b{font-weight:600;font-size:16px;color:var(--t1);line-height:1.25}
+.cardopt.on{background:var(--accent);color:var(--btn-text);border-color:var(--accent)}
+.cardopt.on b{color:var(--btn-text)}
+.box{height:52px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--accent)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+.box.bad{border-color:var(--negative)}
+.err{font-size:13px;color:var(--negative)}
+.hint{font-size:13px;color:var(--t3)}
+
+/* ---------- 3D coin (hero object) ---------- */
+.coin{position:relative;perspective:800px;perspective-origin:50% 50%;margin:0 auto;flex:none}
+.cscene{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.cl,.cf{position:absolute;inset:0;border-radius:50%}
+.cl{box-shadow:inset 0 0 0 1px #00000040}
+.cf{backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.cf svg{display:block;width:100%;height:100%}
+/* generated macro photos cropped to the coin circle (source has a thin black margin, so zoom slightly) */
+img.face{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.1);-webkit-user-drag:none;user-select:none}
+.csheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:linear-gradient(var(--sa,115deg),transparent 28%,#FFE9C83d 47%,transparent 64%)}
+.cshadow{position:absolute;left:12%;right:12%;bottom:-16%;height:18%;border-radius:50%;background:radial-gradient(closest-side,#000000b0,transparent);filter:blur(4px)}
+.cring{position:absolute;inset:-9%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 62%,#C9A45C55 80%,#FFE3A0 97%,transparent 100%);-webkit-mask:radial-gradient(closest-side,transparent 86%,#000 88%,#000 96%,transparent 98%);mask:radial-gradient(closest-side,transparent 86%,#000 88%,#000 96%,transparent 98%)}
+.goldring{position:absolute;inset:-10px;border-radius:50%;border:1.5px solid var(--accent);box-shadow:0 0 22px #C9A45C66,inset 0 0 14px #C9A45C33;pointer-events:none}
+
+/* hook 1 jar */
+.topbar{height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:relative;z-index:2}
+.brand{font:700 22px/1 var(--serif);letter-spacing:.02em}
+.jar{position:relative;height:300px;flex:none;margin:0 -20px}
+.jar svg{position:absolute;inset:0;width:100%;height:100%}
+.jar>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.jar::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,var(--bg) 0%,transparent 18%,transparent 70%,var(--bg) 100%)}
+.jar .jarcoin{z-index:1}
+.jarcoin{position:absolute;right:38px;bottom:26px;width:118px;height:118px}
+
+/* hook 2 mock */
+.mock{align-self:center;width:250px;border-radius:30px;border:1px solid var(--border);background:linear-gradient(180deg,#1E1C19,#171613);padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 30px 50px -30px #000}
+.mcam{width:100%;height:150px;border-radius:18px;background:radial-gradient(circle at 50% 50%,#35312B,#171512 75%);display:grid;place-items:center;position:relative;overflow:hidden}
+.mring{position:absolute;width:126px;height:126px;border-radius:50%;border:1.5px dashed var(--accent);left:50%;top:50%;transform:translate(-50%,-50%)}
+.marrow{color:var(--accent)}
+.mcard{width:100%;border-radius:16px;background:var(--surface);border:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:8px}
+.mname{font:700 19px/1.1 var(--serif)}
+.mrows{font-size:12px;color:var(--t2);display:flex;gap:6px}
+.mrow2{display:flex;gap:10px;align-items:center}
+.gchip{font:600 11px/1 var(--sans);padding:5px 8px;border-radius:999px;border:1px solid var(--gold-line);color:var(--accent-hi);flex:none}
+.gchip.tipable{cursor:help;border-style:dashed}
+
+/* range bar by grade (no numbers) */
+.rbar{position:relative;height:10px;border-radius:6px;background:linear-gradient(90deg,#3A362F,#6E5A33 45%,#C9A45C);flex:1}
+.rbar .seg{position:absolute;top:0;bottom:0;width:1px;background:#14131199}
+.rmark{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--t1);border:3px solid var(--accent);transform:translate(-50%,-50%);box-shadow:0 2px 8px #000a}
+.rmark.slide{animation:slide 5s ease-in-out infinite alternate}
+@keyframes slide{0%{left:8%}100%{left:92%}}
+.rbar.mini{height:6px}
+.rbar.mini .rmark{width:12px;height:12px;border-width:2px}
+.rlabels{display:grid;grid-template-columns:repeat(4,1fr);font-size:11px;color:var(--t3);text-align:center;margin-top:10px;gap:4px;line-height:1.2}
+.rlabels span.on{color:var(--accent-hi);font-weight:600}
+
+/* mini game */
+.game{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gcoin{display:flex;flex-direction:column;gap:8px;align-items:stretch;background:none;border:none;padding:0;text-align:center;transition:opacity .35s}
+.gcoin .crop{position:relative;aspect-ratio:1;border-radius:22px;overflow:hidden;border:1px solid var(--border);background:#0f0e0c}
+.gcoin .crop svg{display:block;width:100%;height:100%}
+.gcoin .gl{font-weight:600;font-size:15px;padding:10px;border-radius:999px;border:1px solid var(--gold-line);background:var(--surface)}
+.gcoin:hover .gl{border-color:var(--accent)}
+.game.done .gcoin.dim{opacity:.38}
+.game.done .gcoin.win .crop{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 30px -6px #C9A45C88}
+.game.done .gcoin.win .gl{background:var(--accent);color:var(--btn-text);border-color:var(--accent)}
+.circ{fill:none;stroke:var(--accent-hi);stroke-width:2.2;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s ease .15s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.answer{padding:14px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--gold-line);display:flex;flex-direction:column;gap:4px}
+.answer b{font:700 20px/1.2 var(--serif);color:var(--accent-hi)}
+.answer span{color:var(--t2);font-size:14px}
+
+/* social proof */
+.rating{display:flex;align-items:center;justify-content:center;gap:6px}
+.rating .num{font:700 84px/1 var(--serif);color:var(--accent)}
+.rating .num .tok{font-size:26px;vertical-align:middle}
+.brand .tok{font-size:13px}
+.display .tok{font-size:.56em;vertical-align:.25em}
+.stars{display:flex;gap:4px;justify-content:center;color:var(--accent)}
+.quote{padding:16px;border-radius:18px;border:1.5px dashed var(--gold-line);background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.quote p{margin:0;font:600 18px/1.3 var(--serif);color:var(--t2)}
+.quote small{color:var(--t3);font-size:12px}
+.edge{position:absolute;left:0;right:0;bottom:0;height:120px;z-index:0;pointer-events:none;background:repeating-linear-gradient(90deg,#C9A45C14 0 3px,transparent 3px 7px);-webkit-mask:linear-gradient(to top,#000,transparent);mask:linear-gradient(to top,#000,transparent)}
+
+/* camera primer */
+.cloth{position:relative;height:210px;border-radius:26px;flex:none;background:radial-gradient(ellipse at 50% 40%,#2E2B27,#161513 75%),#161513;overflow:hidden;display:grid;place-items:center}
+.cloth::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,#ffffff06 0 2px,transparent 2px 5px),repeating-linear-gradient(-45deg,#00000014 0 2px,transparent 2px 5px)}
+.cloth>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cloth.photo::before{display:none}
+.cloth.photo{place-items:end start}
+.cloth.photo .coin{position:absolute;left:44px;top:88px}
+.tips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tip{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font-size:12px;text-align:center;color:var(--t2);line-height:1.2}
+.tip svg{color:var(--accent)}
+
+/* viewfinder (faked camera) */
+.cam{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 55% at 50% 48%,#3A3630 0%,#1E1C19 55%,#0D0C0B 100%)}
+.cam::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,#ffffff07 0 2px,transparent 2px 5px),repeating-linear-gradient(-45deg,#0000001c 0 2px,transparent 2px 5px)}
+.cam>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cam.photo::before,.cam.lit::after{z-index:1}
+.coin2 .face{border-radius:50%;box-shadow:0 10px 24px #000b}
+.coin2{border-radius:50%;overflow:hidden}
+.cam.photo::before{background:radial-gradient(ellipse 80% 55% at 50% 48%,transparent 0%,#0000004d 60%,#000000a6 100%)}
+.cam.lit::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#FFF1D433,transparent 60%)}
+.vcoin{position:absolute;left:50%;top:392px;z-index:1;transform:translate(-50%,-50%);transition:transform .8s cubic-bezier(.3,.8,.3,1)}
+.vf[data-phase="far"] .vcoin{transform:translate(-50%,-50%) translate(30px,38px) scale(.52)}
+.coin2{position:absolute;left:50%;top:392px;width:120px;height:120px;z-index:1;transform:translate(40px,30px);opacity:0;transition:opacity .3s}
+.vf[data-phase="multi"] .coin2{opacity:1}
+.vf[data-phase="multi"] .vcoin{transform:translate(-50%,-50%) translate(-34px,-18px) scale(.8)}
+.shade{position:absolute;inset:0;z-index:2;background:#000;opacity:0;transition:opacity .3s;pointer-events:none}
+.vf[data-phase="dark"] .shade{opacity:.66}
+.blurov{position:absolute;left:50%;top:392px;width:236px;height:236px;margin:-118px 0 0 -118px;border-radius:50%;z-index:2;pointer-events:none;transition:backdrop-filter .3s}
+.vf[data-phase="blur"] .blurov{-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.vmask{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(circle 122px at 50% 392px,transparent 119px,#070605b3 122px)}
+.vring{position:absolute;left:50%;top:392px;width:244px;height:244px;margin:-122px 0 0 -122px;border-radius:50%;z-index:4;border:2px dashed var(--gold-line);transition:border-color .3s,box-shadow .3s;pointer-events:none}
+.vring i{position:absolute;background:var(--accent);opacity:.8}
+.vring i:nth-child(1){left:50%;top:-10px;width:2px;height:12px;margin-left:-1px}
+.vring i:nth-child(2){left:50%;bottom:-10px;width:2px;height:12px;margin-left:-1px}
+.vring i:nth-child(3){top:50%;left:-10px;height:2px;width:12px;margin-top:-1px}
+.vring i:nth-child(4){top:50%;right:-10px;height:2px;width:12px;margin-top:-1px}
+.vf[data-phase="lock"] .vring,.vf[data-phase="done"] .vring{border:3px solid var(--accent);box-shadow:0 0 30px #C9A45C88,inset 0 0 26px #C9A45C44}
+.vf.bad .vring{border-color:#E39A82aa}
+.flashfx{position:absolute;inset:0;z-index:9;background:#fff;opacity:0;pointer-events:none}
+.flashfx.go{animation:flash .45s ease}
+@keyframes flash{0%{opacity:0}15%{opacity:.85}100%{opacity:0}}
+.camui{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column;z-index:5}
+.camhead{text-align:center;padding:4px 28px 0;display:flex;flex-direction:column;gap:8px}
+.camhead .display{font-size:30px}
+.qchip{position:absolute;left:50%;top:236px;transform:translateX(-50%);z-index:6;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:#0B0A09cc;border:1px solid var(--border);font-size:13px;font-weight:500;white-space:nowrap;color:var(--t1)}
+.qchip.bad{color:#F2B3A0;border-color:#E39A8266}
+.qchip.ok{color:var(--accent-hi);border-color:var(--gold-line)}
+.qchip .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.vline{font-size:13px;color:var(--t2);text-align:center}
+.thumb{position:absolute;right:22px;top:540px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;padding:0}
+.thumb .tc{width:60px;height:60px;border-radius:50%;border:2px solid var(--accent);overflow:hidden;box-shadow:0 6px 16px #000a;animation:tflip .7s ease .15s both}
+.thumb .tc svg{display:block;width:100%;height:100%}
+.thumb span{font-size:11px;color:var(--t2);display:flex;gap:3px;align-items:center}
+@keyframes tflip{0%{transform:scaleX(1)}50%{transform:scaleX(.05)}100%{transform:scaleX(1)}}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:13px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:7px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--t1)}
+.step.done .pct{color:var(--accent)}
+.bar{height:3px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--accent);width:0}
+
+/* coin card */
+.ccard{border-radius:22px;background:linear-gradient(180deg,#221F1B,var(--surface));border:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:12px}
+.pics{display:flex;gap:10px;align-items:center}
+.pic{width:62px;height:62px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 4px 12px #0009;position:relative}
+.pic svg{display:block;width:100%;height:100%}
+.pic.none{border:1.5px dashed var(--border);box-shadow:none;display:grid;place-items:center;font-size:10px;color:var(--t3);text-align:center;line-height:1.15;padding:6px}
+.pic .q{position:absolute;inset:0;display:grid;place-items:center;background:#0009;color:var(--t1);font:700 26px var(--serif)}
+.cname{font:700 24px/1.1 var(--serif)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin:0}
+.facts dt{color:var(--t3)}
+.facts dd{margin:0;color:var(--t1)}
+.tipword{background:none;border:none;padding:0;color:inherit;font:inherit;text-decoration:underline dotted var(--accent);text-underline-offset:3px;cursor:help;text-align:left}
+.coach{font-size:12px;color:var(--btn-text);background:var(--accent);padding:8px 10px;border-radius:10px;position:relative;margin-top:6px}
+.coach::before{content:"";position:absolute;top:-5px;left:20px;width:10px;height:10px;background:var(--accent);transform:rotate(45deg)}
+.conf{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--t2);border-top:1px solid var(--border);padding-top:10px;flex-wrap:wrap}
+.conf .link{padding:0;font-size:13px}
+.locks{display:flex;flex-direction:column;gap:8px}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.lrow .lk{width:32px;height:32px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:grid;place-items:center;flex:none}
+.lrow .lt{flex:1;display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500}
+.lrow .gb{height:8px;border-radius:4px;background:#5a5750;filter:blur(3px);opacity:.55;width:70%}
+.lrow.glow{border-color:var(--gold-line);background:linear-gradient(90deg,var(--accent-dim),transparent 60%),var(--surface);position:relative;overflow:hidden}
+.lrow.glow::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,#E3C47F30 50%,transparent 70%);transform:translateX(-100%);animation:unl 2.8s ease-in-out infinite}
+.lrow.glow:nth-child(2)::after{animation-delay:.3s}.lrow.glow:nth-child(3)::after{animation-delay:.6s}
+@keyframes unl{60%,100%{transform:translateX(100%)}}
+
+/* gate */
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.slot{aspect-ratio:1;border-radius:18px;border:1.5px dashed var(--border);display:grid;place-items:center}
+.slot.full{border:1px solid var(--gold-line);background:var(--surface)}
+.slot.full .pic{animation:shrinkin .9s cubic-bezier(.3,.8,.3,1) both}
+@keyframes shrinkin{from{transform:translate(60px,-40px) scale(2.2);opacity:.2}to{transform:none;opacity:1}}
+.or{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t3)}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--border)}
+
+/* paywall */
+.closex{position:absolute;top:56px;left:16px;z-index:7;width:34px;height:34px;border-radius:50%;background:#141311cc;border:1px solid var(--border);display:grid;place-items:center;color:var(--t2)}
+.plan{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:18px;border:1px solid var(--border);background:var(--surface);text-align:left;width:100%}
+.plan .ph{display:flex;align-items:center;gap:12px}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none}
+.plan.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:linear-gradient(0deg,var(--accent-dim),var(--accent-dim)),var(--surface)}
+.plan.on .radio{border-color:var(--accent)}
+.plan.on .radio::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.plan .pn{font-weight:600;font-size:16px;display:flex;gap:8px;align-items:center}
+.plan .pp{font-size:14px;color:var(--t2)}
+.plan .pp small{font-size:12px;color:var(--t3)}
+.save{font:700 10px/1 var(--sans);letter-spacing:.06em;background:var(--accent);color:var(--btn-text);padding:4px 7px;border-radius:6px}
+.trialrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px solid var(--border);font-size:14px;color:var(--t1)}
+.sw{width:44px;height:26px;border-radius:13px;background:var(--surface-2);border:1px solid var(--border);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--t2);transition:transform .2s,background .2s}
+.sw.on{background:var(--accent);border-color:var(--accent)}
+.sw.on::after{transform:translateX(18px);background:var(--btn-text)}
+.disc{font-size:16px;font-weight:500;color:var(--t1);text-align:center;text-wrap:balance}
+.trust{font-size:12px;color:var(--t3);text-align:center}
+.checks{display:flex;flex-direction:column;gap:9px;font-size:15px}
+.checks div{display:flex;gap:10px;align-items:flex-start}
+.checks svg{color:var(--accent);flex:none;margin-top:2px}
+.faq{border-top:1px solid var(--border)}
+.faq button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;background:none;border:none;border-bottom:1px solid var(--border);padding:14px 2px;text-align:left;font-weight:500;color:var(--t1)}
+.faq button svg{transition:transform .2s;color:var(--t3);flex:none}
+.faq button.open svg{transform:rotate(180deg)}
+.faq p{margin:0;padding:10px 2px 14px;color:var(--t2);font-size:14px;border-bottom:1px solid var(--border)}
+.legal{display:flex;justify-content:center;gap:14px;font-size:12px;color:var(--t3)}
+.legal button{background:none;border:none;padding:0;color:inherit;font:inherit}
+
+/* payoff */
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.counter{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--t2);padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);flex:none}
+.counter b{color:var(--accent-hi);font-variant-numeric:tabular-nums}
+.counter.tick b{animation:tick .5s ease}
+@keyframes tick{40%{transform:translateY(-4px);color:#fff}}
+.block{padding:14px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.block h4{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.block p{margin:0;color:var(--t2);font-size:14px}
+.erow{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.erow svg{flex:none;margin-top:1px}
+.fade1{animation:fi .45s ease both}.fade2{animation:fi .45s ease .15s both}.fade3{animation:fi .45s ease .3s both}.fade4{animation:fi .45s ease .45s both}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fadein{animation:fi .4s ease both}
+
+/* sheets / toast */
+.dim{position:absolute;inset:0;background:#050404cc;z-index:10}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:11;background:var(--bg-elev);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:10px 20px 30px;display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--border);align-self:center}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.alt{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--border);width:100%;text-align:left}
+.alt .pic{width:44px;height:44px}
+.alt b{display:block;font-weight:600}
+.alt span{font-size:13px;color:var(--t3)}
+.toast{position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:30;background:var(--t1);color:#141311;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.6s ease forwards;pointer-events:none}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* ---------- side panel (page tokens) ---------- */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:700 34px/1.05 var(--serif);margin:0 0 8px}
+.panel .intro{color:var(--p-t2);margin:0;font-size:14px}
+.panel code{font-size:12px;background:var(--p-surface2);padding:1px 5px;border-radius:4px}
+.seg{display:inline-flex;border:1px solid var(--p-border);border-radius:999px;padding:3px;background:var(--p-surface);flex-wrap:wrap}
+.seg button{border:none;background:none;padding:6px 12px;border-radius:999px;font-size:13px;color:var(--p-t2);font-weight:500}
+.seg button.on{background:var(--p-accent);color:var(--p-on-accent)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.restart{border:1px solid var(--p-border);background:var(--p-surface);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--p-t2)}
+.restart:hover{color:var(--p-t1)}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--p-t3);margin-bottom:10px}
+.sims{display:flex;flex-direction:column;gap:10px}
+.sims .sl{font-size:12px;color:var(--p-t2);margin-bottom:4px}
+.sims .seg button{padding:5px 10px;font-size:12px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12px;color:var(--p-accent);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--p-t2);font-size:13px;width:100%}
+.flow button:hover{background:var(--p-surface);color:var(--p-t1)}
+.flow button.on{background:var(--p-surface2);color:var(--p-t1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--p-t3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--p-t3);border:1px solid var(--p-border);border-radius:4px;padding:1px 5px;flex:none;white-space:nowrap}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--p-t3)}
+.data dd{margin:0;color:var(--p-t1);overflow-wrap:anywhere}
+.foot-note{font-size:12px;color:var(--p-t3);margin:0;display:flex;flex-direction:column;gap:6px}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:32px;padding-block:20px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition:none!important}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="cuField" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#EFB38A"/><stop offset=".45" stop-color="#C47649"/><stop offset="1" stop-color="#84442A"/></radialGradient>
+    <linearGradient id="cuRim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E7A67C"/><stop offset=".55" stop-color="#96502F"/><stop offset="1" stop-color="#63321B"/></linearGradient>
+    <radialGradient id="cuBust" cx="42%" cy="30%" r="75%"><stop offset="0" stop-color="#F6C6A0"/><stop offset=".6" stop-color="#C9804F"/><stop offset="1" stop-color="#96512F"/></radialGradient>
+    <radialGradient id="wear" cx="55%" cy="45%" r="60%"><stop offset="0" stop-color="#3A1C0E" stop-opacity="0"/><stop offset=".7" stop-color="#3A1C0E" stop-opacity=".08"/><stop offset="1" stop-color="#2A1308" stop-opacity=".35"/></radialGradient>
+    <radialGradient id="agF" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#F5F4F0"/><stop offset=".5" stop-color="#BDBCB6"/><stop offset="1" stop-color="#77766F"/></radialGradient>
+    <radialGradient id="auF" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#F6DE9E"/><stop offset=".55" stop-color="#C99D4A"/><stop offset="1" stop-color="#86631F"/></radialGradient>
+    <radialGradient id="cuF" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#EFB38A"/><stop offset=".5" stop-color="#B96C40"/><stop offset="1" stop-color="#7A3E24"/></radialGradient>
+    <path id="arcTop" d="M 28 100 A 72 72 0 0 1 172 100"/>
+    <path id="arcTop2" d="M 24 100 A 76 76 0 0 1 176 100"/>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <div class="pbox" id="pbox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>Coinin-style onboarding</h1>
+      <p class="intro">An ikame prototype modeled on Coinin's funnel: the 17-screen scan-first flow in <code>funnel-content.md</code>. No Coinin branding, ratings or reviews appear in the phone. Look: charcoal, antique gold, a serif for coin names. Tap through it in the phone, or jump to any screen below.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <div>
+      <div class="plabel">Simulate</div>
+      <div class="sims" id="sims"></div>
+    </div>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <div class="foot-note">
+      <span><b>Faked:</b> the camera. The viewfinder is a still photo and every capture uses the same 1955 Lincoln cent. No camera is opened. The ID result, match confidence, alternatives, grade, error check and history lines are sample outputs, and the loading steps are timed.</span>
+      <span><b>Placeholders:</b> the brief sets no prices, value figures, trial length or review text, so those show as <code>{{tokens}}</code> or dashed cards. The app name, store rating, rating count and coin-database size are tokens too. The brief quotes Coinin's own listing (4.7★, 101K ratings, 270,000+ coins), and this demo must not reuse a competitor's brand or stats.</span>
+      <span><b>Images:</b> the jar, cloth, camera surface, coin faces and coin-type thumbnails are AI-generated illustrative photos, not real reference shots. The other-match coins (1955-D, 1955-S, 1956) are still drawings.</span>
+      <span><b>Not built:</b> the screen-8 coins are drawings standing in for licensed reference photos, because the image model could not render doubled letters. World and ancient swaps and the optional monthly plan are not included. Sign-in, permissions and purchases only show a toast. No charge is made and no data leaves the page.</span>
+    </div>
+  </aside>
+</div>
+
+<script>
+/* ---------- icons (lucide-style strokes) ---------- */
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',zapoff:'<path d="M12.41 6.75 13 2l-2.43 2.92M18.57 12.91 21 10h-5.34M8 8l-5 6h9l-1 8 5-6M2 2l20 20"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  one:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="5"/>',flat:'<path d="M3 17h18"/><ellipse cx="12" cy="13" rx="6" ry="2"/>',
+  fill:'<circle cx="12" cy="12" r="9" stroke-dasharray="2.5 2.5"/><circle cx="12" cy="12" r="6"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
+  mark:'<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>',
+  sprout:'<path d="M7 20h10M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8zM14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+  book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  medal:'<circle cx="12" cy="15" r="6"/><path d="M8.2 10.2 5 2h4l3 6 3-6h4l-3.2 8.2"/>',
+  brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',arrowdown:'<path d="M12 5v14M19 12l-7 7-7-7"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const starF=(s=16)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tok=n=>`<span class="tok">{{${n}}}</span>`;
+
+/* ---------- coin art (drawn stand-ins for real macro photos) ---------- */
+const TXT='font-family="Cormorant Garamond,Georgia,serif" font-weight="700"';
+const BUST='M70 178C66 160 72 146 84 138C78 128 74 112 76 96C76 70 92 52 112 54C128 55 136 66 136 80C137 86 140 90 142 96L146 104C144 107 141 108 140 110C141 114 139 118 138 120C140 128 138 136 132 142C126 148 118 150 112 150C116 156 126 160 138 168C142 171 144 175 144 178Z';
+/* photo faces: AI-generated illustrative macro shots of a 1955 (Philadelphia) cent; other years/mints keep the drawing */
+const faceImg=(src,alt)=>`<img class="face" src="${src}" alt="${alt}" draggable="false" decoding="async">`;
+function obverse(c){
+  const y=(c&&c.year)||'1955',m=(c&&c.mintL)||'';
+  if(y==='1955'&&!m)return faceImg('img/obv.jpg','Front of a 1955 Lincoln wheat cent (illustrative photo)');
+  return `<svg viewBox="0 0 200 200" aria-hidden="true">
+  <circle cx="100" cy="100" r="100" fill="url(#cuRim)"/><circle cx="100" cy="100" r="91" fill="url(#cuField)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="#5E2F17" stroke-opacity=".6" stroke-width="1.6"/>
+  <circle cx="100" cy="100" r="97" fill="none" stroke="#F3B98E" stroke-opacity=".35"/>
+  <text ${TXT} font-size="14" letter-spacing="2.4" fill="#F1B68D" stroke="#5E2F17" stroke-width=".5"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">IN GOD WE TRUST</textPath></text>
+  <g transform="translate(6 0)"><path d="${BUST}" fill="url(#cuBust)" stroke="#5E2F17" stroke-width="1.2" stroke-opacity=".7"/>
+  <path d="M96 78c4-8 12-12 20-11M92 96c6-4 12-4 16 0M104 102c2 4 2 9-1 12M118 124c4 2 9 2 13 0M100 140c4 4 8 6 12 6" fill="none" stroke="#6E3719" stroke-opacity=".45" stroke-width="1.2" stroke-linecap="round"/></g>
+  <text x="22" y="124" ${TXT} font-size="12.5" letter-spacing="1.4" fill="#F1B68D" stroke="#5E2F17" stroke-width=".45">LIBERTY</text>
+  <text x="138" y="152" ${TXT} font-size="16" letter-spacing=".6" fill="#F1B68D" stroke="#5E2F17" stroke-width=".5">${y}</text>
+  ${m?`<text x="152" y="166" ${TXT} font-size="10" fill="#F1B68D" stroke="#5E2F17" stroke-width=".4">${m}</text>`:''}
+  <circle cx="100" cy="100" r="91" fill="url(#wear)"/>
+  <g fill="#3A1C0E" opacity=".25"><circle cx="58" cy="70" r="1.2"/><circle cx="150" cy="84" r="1"/><circle cx="70" cy="150" r="1.4"/><circle cx="124" cy="46" r=".9"/></g>
+  </svg>`;
+}
+function wheat(){
+  let g='';const P0=[74,178],P1=[30,138],P2=[50,58];
+  const pt=t=>[(1-t)*(1-t)*P0[0]+2*(1-t)*t*P1[0]+t*t*P2[0],(1-t)*(1-t)*P0[1]+2*(1-t)*t*P1[1]+t*t*P2[1]];
+  for(let i=0;i<10;i++){const t=.3+i*.075,[x,y]=pt(t),[x2,y2]=pt(t+.01);const a=Math.atan2(y2-y,x2-x)*180/Math.PI+90;
+    g+=`<ellipse cx="${(x-3.6).toFixed(1)}" cy="${y.toFixed(1)}" rx="3" ry="6.5" transform="rotate(${(a-28).toFixed(0)} ${(x-3.6).toFixed(1)} ${y.toFixed(1)})"/><ellipse cx="${(x+3.6).toFixed(1)}" cy="${y.toFixed(1)}" rx="3" ry="6.5" transform="rotate(${(a+28).toFixed(0)} ${(x+3.6).toFixed(1)} ${y.toFixed(1)})"/>`}
+  return `<path d="M${P0} Q${P1} ${P2}" fill="none" stroke="#5E2F17" stroke-opacity=".6" stroke-width="2"/><g fill="url(#cuBust)" stroke="#5E2F17" stroke-opacity=".6" stroke-width=".8">${g}</g>`;
+}
+const WHEAT=wheat();
+function reverse(){
+  return faceImg('img/rev.jpg','Back of a Lincoln wheat cent, ONE CENT between two wheat ears (illustrative photo)');
+}
+function reverseSVG(){
+  return `<svg viewBox="0 0 200 200" aria-hidden="true">
+  <circle cx="100" cy="100" r="100" fill="url(#cuRim)"/><circle cx="100" cy="100" r="91" fill="url(#cuField)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="#5E2F17" stroke-opacity=".6" stroke-width="1.6"/>
+  <circle cx="100" cy="100" r="97" fill="none" stroke="#F3B98E" stroke-opacity=".35"/>
+  <text ${TXT} font-size="10" letter-spacing="2" fill="#F1B68D" stroke="#5E2F17" stroke-width=".4"><textPath href="#arcTop2" startOffset="50%" text-anchor="middle">E · PLURIBUS · UNUM</textPath></text>
+  ${WHEAT}<g transform="translate(200 0) scale(-1 1)">${WHEAT}</g>
+  <g ${TXT} fill="#F1B68D" stroke="#5E2F17" stroke-width=".7" text-anchor="middle"><text x="100" y="92" font-size="30" letter-spacing="2">ONE</text><text x="100" y="122" font-size="30" letter-spacing="2">CENT</text>
+  <text x="100" y="140" font-size="10.5" letter-spacing="1" stroke-width=".35">UNITED STATES</text><text x="100" y="153" font-size="10.5" letter-spacing="1" stroke-width=".35">OF AMERICA</text></g>
+  <circle cx="100" cy="100" r="91" fill="url(#wear)"/>
+  </svg>`;
+}
+/* macro crop for the mini game; doubled=true draws the doubled-die letters */
+function crop(doubled,circled){
+  const d=(x,y,s,txt,ls)=>`${doubled?`<text x="${x+3.2}" y="${y-3}" ${TXT} font-size="${s}" letter-spacing="${ls}" fill="#F6C39E" opacity=".85">${txt}</text>`:''}<text x="${x}" y="${y}" ${TXT} font-size="${s}" letter-spacing="${ls}" fill="#F1B68D" stroke="#5E2F17" stroke-width=".7">${txt}</text>`;
+  return `<svg viewBox="0 0 160 160" aria-hidden="true">
+  <rect width="160" height="160" fill="#2B150B"/><circle cx="178" cy="176" r="176" fill="url(#cuRim)"/><circle cx="178" cy="176" r="164" fill="url(#cuField)"/>
+  <circle cx="178" cy="176" r="164" fill="none" stroke="#5E2F17" stroke-opacity=".6" stroke-width="2"/>
+  <path d="M120 160C112 130 118 104 136 92L160 86V160Z" fill="url(#cuBust)" stroke="#5E2F17" stroke-opacity=".6"/>
+  ${d(20,78,22,'LIBERTY',2)}${d(58,134,30,'1955',1)}
+  <circle cx="178" cy="176" r="164" fill="url(#wear)"/>
+  ${circled?'<ellipse class="circ" pathLength="1" cx="62" cy="71" rx="50" ry="19"/><ellipse class="circ" pathLength="1" cx="92" cy="124" rx="42" ry="22" style="animation-delay:.45s"/>':''}
+  <g opacity=".9"><circle cx="96" cy="123" r="30" fill="#ffffff0d" stroke="#D9D2C4" stroke-width="3.5"/><path d="M118 145l22 22" stroke="#D9D2C4" stroke-width="7" stroke-linecap="round"/></g>
+  </svg>`;
+}
+function thumb(kind,s=30){
+  const w=`width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"`;
+  const PH={cent:['obv','Lincoln cent'],euro:['world','Bimetallic world coin'],denarius:['ancient','Ancient silver coin'],eagle:['bullion','Silver bullion round']}[kind];
+  if(PH)return `<span class="tph" style="width:${s}px;height:${s}px"><img class="face" src="img/${PH[0]}.jpg" alt="${PH[1]} (illustrative photo)" width="${s}" height="${s}" loading="lazy" decoding="async"></span>`;
+  if(kind==='cent')return `<svg ${w}><circle cx="20" cy="20" r="19" fill="url(#cuRim)"/><circle cx="20" cy="20" r="16" fill="url(#cuField)"/><path d="M15 34c-1-4 1-6 3-7-2-3-2-8 1-11 3-2 7-1 8 2l1 3-1 2c0 3-1 5-3 6 2 1 4 3 4 5z" fill="url(#cuBust)" opacity=".9"/></svg>`;
+  if(kind==='euro')return `<svg ${w}><circle cx="20" cy="20" r="19" fill="url(#auF)"/><circle cx="20" cy="20" r="12" fill="url(#agF)"/><text x="20" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="#6b6a64" font-family="Georgia">1</text></svg>`;
+  if(kind==='denarius')return `<svg ${w}><path d="M20 2c8 0 17 6 17 16s-6 19-17 19S3 30 3 20 11 2 20 2z" fill="url(#agF)"/><path d="M14 30c0-5 2-7 4-8-2-3-1-8 3-9 4 0 6 3 5 7l-2 3c1 2 3 4 3 7z" fill="#8E8D87" opacity=".7"/></svg>`;
+  if(kind==='eagle')return `<svg ${w}><circle cx="20" cy="20" r="19" fill="url(#agF)"/><circle cx="20" cy="20" r="15.5" fill="none" stroke="#8E8D87" stroke-width=".8"/><path d="M20 10l2.6 6.4 6.9.5-5.3 4.4 1.7 6.7L20 24.3l-5.9 3.7 1.7-6.7-5.3-4.4 6.9-.5z" fill="#9A9993"/></svg>`;
+  return '';
+}
+const coinPic=(side,extra='')=>`<span class="pic ${extra}">${side==='back'?reverse():obverse(S.coin)}</span>`;
+function jarSVG(){
+  const ce=(x,y,r,k,ry=.42)=>`<g><ellipse cx="${x}" cy="${y+3}" rx="${r}" ry="${r*ry}" fill="#2A170C"/><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r*ry}" fill="url(#${k})"/><ellipse cx="${x}" cy="${y}" rx="${r*.78}" ry="${r*ry*.78}" fill="none" stroke="#00000040"/></g>`;
+  const inside=[[80,190,16,'cuF'],[104,196,15,'agF'],[128,192,17,'cuF'],[152,197,14,'auF'],[176,192,16,'agF'],[92,178,14,'agF'],[118,180,16,'cuF'],[144,182,15,'cuF'],[168,180,14,'agF'],[196,188,15,'cuF'],[208,176,13,'auF'],[106,166,13,'cuF'],[134,168,14,'agF'],[160,168,13,'cuF']];
+  const out=[[250,236,18,'cuF'],[206,252,17,'agF'],[168,262,16,'cuF'],[232,270,15,'auF'],[132,270,15,'agF'],[190,280,14,'cuF'],[96,262,13,'cuF'],[268,262,14,'agF']];
+  return `<svg viewBox="0 0 390 300" aria-hidden="true">
+  <defs><linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".03"/><stop offset="1" stop-color="#ffffff" stop-opacity=".08"/></linearGradient></defs>
+  <ellipse cx="200" cy="268" rx="200" ry="34" fill="#000" opacity=".35"/>
+  <g transform="rotate(-12 150 180)">
+    <rect x="50" y="118" width="190" height="104" rx="34" fill="url(#glass)"/>
+    ${inside.map(c=>ce(...c)).join('')}
+    <rect x="50" y="118" width="190" height="104" rx="34" fill="none" stroke="#EDE3CF" stroke-opacity=".32" stroke-width="2"/>
+    <path d="M80 128h120" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>
+    <path d="M70 140v50" stroke="#fff" stroke-opacity=".12" stroke-width="4" stroke-linecap="round"/>
+    <rect x="236" y="128" width="16" height="84" rx="6" fill="#ffffff10" stroke="#EDE3CF" stroke-opacity=".4" stroke-width="2"/>
+  </g>
+  ${out.map(c=>ce(...c)).join('')}
+  </svg>`;
+}
+
+/* ---------- data from the brief ---------- */
+const ORIG={inherited:['🧓','Inherited from family'],jar:['🫙','Pocket change jar'],travel:['✈️','Travel & foreign'],own:['🗂️','My own collection'],other:['✏️','Other']};
+const WANT={worth:['💰',"What it's worth"],errors:['🔍','Rare errors'],history:['📜','Its history'],track:['🗂️','Track my collection'],trade:['🤝','Buy or sell'],other:['✏️','Other']};
+const TYPES={us:['cent','US coins'],world:['euro','World coins'],ancient:['denarius','Ancient coins'],bullion:['eagle','Silver & gold'],unsure:['🤷','Not sure'],other:['✏️','Other']};
+const EXP={beginner:['sprout','Complete beginner'],basics:['book','Know the basics'],serious:['medal','Serious collector'],pro:['brief','Dealer or pro']};
+const PW_HEAD={worth:"See what it's worth",errors:'Check it for rare errors',track:'Build your coin collection',trade:'Know its value before selling'};
+const FEAT=['Unlimited coin scans','Value range by condition','Condition grade estimate','Error & variety check','Collection tracker','Coin history & facts'];
+const FEAT_BY={worth:['Value range by condition','Condition grade estimate'],errors:['Error & variety check'],history:['Coin history & facts'],track:['Collection tracker'],trade:['Value range by condition']};
+const GRADES=['Good','Fine','Extremely Fine','Uncirculated'];
+/* sample identification output (faked) */
+const COIN0={name:'1955 Lincoln Wheat Cent',country:'United States',year:'1955',mint:'Philadelphia',mintNote:'no mint mark',mintL:'',metal:'Bronze',metalLong:'Bronze (95% copper)',denom:'1 cent'};
+const ALTS=[{name:'1955-D Lincoln Wheat Cent',mint:'Denver',mintNote:'"D" under the date',mintL:'D'},{name:'1955-S Lincoln Wheat Cent',mint:'San Francisco',mintNote:'"S" under the date',mintL:'S'},{name:'1956 Lincoln Wheat Cent',year:'1956',mint:'Philadelphia',mintNote:'no mint mark',mintL:''}];
+const GRADE='Fine',GRADE_POS=33;
+
+const INIT=()=>({v:'A',i:1,hist:[],origin:'',originOther:'',o1:false,want:[],wantOther:'',o2:false,types:[],typesOther:'',o3:false,exp:'',game:null,front:false,back:false,backSkipped:false,sample:false,flash:false,coin:{...COIN0},sheet:null,tip:'',account:null,email:'',err:'',plan:'annual',trial:false,fallback:false,premium:false,free:false,collection:0,faq:-1,
+  sim:{match:'match',issue:'none',variety:'none',signin:'ok'}});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const cn=()=>esc(S.coin.name);
+const conf=()=>S.back||S.sample?'High · 96%':'Medium · 78% (front only)';
+const noMatch=()=>S.sim.match==='nomatch'&&!S.sample;
+
+const FLOW=[
+ ['A · Hook',[[1,'The coin jar'],[2,'One glance'],[3,'Honest expectation']]],
+ ['B · Investment',[[4,'Where coins came from'],[5,'What they want to know'],[6,'Which coins'],[7,'Experience level'],[8,'Spot the rare one','mini-game']]],
+ ['C · Trust',[[9,'Social proof']]],
+ ['D · Scan',[[10,'Camera primer','→ sample'],[11,'Scan the front','camera'],[12,'Scan the back','skip link'],[13,'Identifying','auto'],[14,'Your coin (free)'],[14,'No-match state','state','nomatch']]],
+ ['E · Gate',[[15,'Save to collection','skippable']]],
+ ['F · Monetization',[[16,'Paywall','soft']]],
+ ['G · Payoff',[[17,'Full coin card']]]
+];
+
+const phone=document.getElementById('phone'),pbox=document.getElementById('pbox');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timers=[];
+const later=(fn,ms)=>{timers.push(setTimeout(fn,ms))};
+const clearT=()=>{timers.forEach(clearTimeout);timers=[];clearInterval(loadIv)};
+let loadIv=null;
+
+function go(n,push=true){clearT();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.tip='';render(dir)}
+function next(){go(S.i+1)}
+function back(){clearT();const p=S.hist.pop();if(p){S.i=p;S.err='';S.sheet=null;render('b')}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+
+function fillTo(n){
+  if(n>4&&!S.origin)S.origin='inherited';
+  if(n>5&&!S.want.length)S.want=['worth','errors'];
+  if(n>6&&!S.types.length)S.types=['us'];
+  if(n>7&&!S.exp)S.exp='beginner';
+  if(n>8&&!S.game)S.game='B';
+  if(n>11&&!S.front&&!S.sample)S.front=true;
+  if(n>12&&!S.back&&!S.backSkipped&&!S.sample)S.back=true;
+}
+
+function nav(){
+  if(S.i<2||S.i>10)return '';
+  const q=S.i>=4&&S.i<=8?S.i-3:0;
+  return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>${q?`<div class="prog" role="progressbar" aria-valuenow="${q}" aria-valuemin="0" aria-valuemax="5"><span style="width:${q*20}%"></span></div><span class="stepn">${q}/5</span>`:'<div style="flex:1"></div><div class="navspacer"></div>'}</div>`;
+}
+const cta=(label,ok=true,act='next',cls='')=>`<button class="btn ${cls}" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const pill=(key,val,lead,label,on,multi)=>`<button class="pill ${on?'on':''}" data-a="${key}" data-v="${val}" aria-pressed="${on}"><span class="em">${lead}</span><span class="lbl">${label}</span>${multi?`<span class="chk">${on?ic('check',13,'currentColor',3):''}</span>`:''}</button>`;
+const coin3d=(size,mode,side='front')=>`<div class="coin" data-size="${size}" data-mode="${mode}" data-side="${side}" style="width:${size}px;height:${size}px"></div>`;
+function rangeBar({pos=null,slide=false,mini=false,labels=true,on=''}={}){
+  return `<div style="width:100%"><div class="rbar ${mini?'mini':''}"><i class="seg" style="left:25%"></i><i class="seg" style="left:50%"></i><i class="seg" style="left:75%"></i>${pos!==null||slide?`<b class="rmark ${slide?'slide':''}" style="left:${pos??50}%"></b>`:''}</div>${labels?`<div class="rlabels">${GRADES.map(g=>`<span class="${g===on?'on':''}">${g}</span>`).join('')}</div>`:''}</div>`;
+}
+const gate={
+  4:()=>!!S.originOther.trim(),
+  5:()=>S.want.length>0||(S.o2&&!!S.wantOther.trim()),
+  6:()=>S.types.length>0||(S.o3&&!!S.typesOther.trim()),
+};
+function planLine(k){return k==='weekly'?`${tok('weekly_price')} per week, billed weekly`:`${tok('annual_price')} per year <small>· ${tok('per_week')}/week</small>`}
+function disclosure(){
+  if(S.plan==='annual'&&S.trial)return `Free for ${tok('trial_days')} days, then ${tok('annual_price')}/year from ${tok('charge_date')}.`;
+  return `${S.plan==='weekly'?tok('weekly_price'):tok('annual_price')} per ${S.plan==='weekly'?'week':'year'}. Renews automatically until you cancel.`;
+}
+function planCard(k){
+  const on=S.plan===k;
+  return `<button class="plan ${on?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${on}"><span class="ph"><span class="radio"></span><span style="flex:1"><span class="pn">${k==='weekly'?'Weekly':'Annual'}${k==='annual'?'<span class="save">BEST VALUE</span>':''}</span><span class="pp">${planLine(k)}</span>${k==='annual'?`<span class="pp" style="display:block"><small>Save ${tok('saving_vs_52x_weekly')}</small></span>`:''}</span></span>
+  ${k==='annual'&&on?`<span class="trialrow" data-a="trial" role="switch" aria-checked="${S.trial}"><span>Start with ${tok('trial_days')}-day free trial</span><span class="sw ${S.trial?'on':''}"></span></span>`:''}</button>`;
+}
+const buyLabel=()=>S.plan==='annual'&&S.trial?'Start free trial':'Unlock full value';
+function features(){const o=[];S.want.forEach(w=>(FEAT_BY[w]||[]).forEach(f=>{if(!o.includes(f))o.push(f)}));FEAT.forEach(f=>{if(!o.includes(f))o.push(f)});return o}
+
+/* ---------- screens ---------- */
+const V={
+1:()=>`<div class="spot"></div><div class="topbar"><span class="brand">${tok('app_name')}</span><span class="badge">${tok('app_rating')}★ App Store</span></div>
+  <div class="scr z" style="padding-top:0;gap:14px"><div class="jar"><img src="img/jar.jpg" alt="A glass jar tipped over, old copper and silver coins spilling onto dark linen" fetchpriority="high" decoding="async"><div class="jarcoin"><span class="goldring"></span>${coin3d(118,'spin')}</div></div>
+  <h1 class="display xl">${t("What's in your coin jar?",'That old coin might matter')}</h1>
+  <p class="lead">${t('Snap a photo and know it in seconds.','Identify any coin and see its estimated value.')}</p></div>
+  <div class="foot">${cta('Get started')}<div class="note">By continuing you agree to our Terms · Privacy</div></div>`,
+2:()=>`<div class="scr"><div class="mock"><div class="mcam"><span class="mring"></span>${coin3d(100,'spin')}</div><div class="marrow fade2">${ic('arrowdown',18)}</div>
+  <div class="mcard fade3"><div class="mname">${cn()}</div><div class="mrows"><span>${S.coin.year}</span>·<span>${S.coin.mint}</span>·<span>${S.coin.metal}</span></div><div class="mrow2"><span class="gchip">Grade</span>${rangeBar({pos:GRADE_POS,mini:true,labels:false})}</div></div></div>
+  <h1 class="display">${t('One photo, the full story','Scan it. Know it. Keep it.')}</h1>
+  <p class="lead">${t('Name, year, mint, grade and value estimate on one card.',`${tok('db_count')} coins recognized, from pennies to ancient silver.`)}</p></div>
+  <div class="foot">${cta('Continue')}</div>`,
+3:()=>`<div class="spot"></div><div class="scr z"><div style="padding:18px 0 22px">${coin3d(168,'float')}</div>
+  <div class="fade2">${rangeBar({slide:true})}</div>
+  <h1 class="display">${t('Honest estimates, not hype','Know before you sell')}</h1>
+  <p class="lead">${t('Values shown as a range by condition, never one number.',"Don't let a rare coin go for face value.")}</p></div>
+  <div class="foot">${cta('Continue')}</div>`,
+4:()=>`<div class="scr"><h1 class="display">${t('Where are your coins from?','How did you find them?')}</h1>
+  <p class="lead">${t("We'll show examples that match your coins.",'Every collection starts somewhere.')}</p>
+  <div class="opts">${Object.entries(ORIG).map(([k,[e,l]])=>pill('origin',k,e,l,k==='other'?S.o1:S.origin===k&&!S.o1,false)).join('')}
+  ${S.o1?`<div class="box"><input id="o1" data-f="originOther" maxlength="40" placeholder="Where are they from?" value="${esc(S.originOther)}"></div>`:''}</div></div>
+  <div class="foot">${S.o1?cta('Continue',gate[4](),'o1go'):'<div class="note">Tap one to continue</div>'}</div>`,
+5:()=>`<div class="scr"><h1 class="display">${t('What do you want to know?','What matters most to you?')}</h1>
+  <p class="lead">${t('Pick all that apply.','Choose as many as you like.')}</p>
+  <div class="opts">${Object.entries(WANT).map(([k,[e,l]])=>pill('want',k,e,l,k==='other'?S.o2:S.want.includes(k),true)).join('')}
+  ${S.o2?`<div class="box"><input id="o2" data-f="wantOther" maxlength="40" placeholder="What else?" value="${esc(S.wantOther)}"></div>`:''}</div></div>
+  <div class="foot">${gate[5]()?'':'<div class="note">Pick at least one</div>'}${cta('Continue',gate[5]())}</div>`,
+6:()=>`<div class="scr"><h1 class="display">${t('Which coins do you have?',"What's mostly in your pile?")}</h1>
+  <p class="lead">${t('Pick all that apply — mixed is fine.',"Helps us pick examples you'll recognize.")}</p>
+  <div class="opts">${Object.entries(TYPES).map(([k,[e,l]])=>pill('types',k,e.length>2?thumb(e,30):e,l,k==='other'?S.o3:S.types.includes(k),true)).join('')}
+  ${S.o3?`<div class="box"><input id="o3" data-f="typesOther" maxlength="40" placeholder="Which coins?" value="${esc(S.typesOther)}"></div>`:''}</div></div>
+  <div class="foot">${gate[6]()?'':'<div class="note">Pick at least one</div>'}${cta('Continue',gate[6]())}</div>`,
+7:()=>`<div class="scr"><h1 class="display">${t('How much do you know?','Your coin experience?')}</h1>
+  <p class="lead">${t("No wrong answer — we'll explain the jargon.",'Beginners and pros both welcome here.')}</p>
+  <div class="cards">${Object.entries(EXP).map(([k,[i,l]])=>`<button class="cardopt ${S.exp===k?'on':''}" data-a="exp" data-v="${k}" aria-pressed="${S.exp===k}">${ic(i,28,'currentColor',1.5)}<b>${l}</b></button>`).join('')}</div></div>
+  <div class="foot"><div class="note">Tap one to continue</div></div>`,
+8:()=>{const g=S.game;
+  return `<div class="scr"><h1 class="display">${t('Spot the rare one','Which penny is special?')}</h1>
+  <p class="lead">${t('Tiny details can change what a coin is.','Look closely at the letters.')}</p>
+  <div class="game ${g?'done':''}">${['A','B'].map(k=>`<button class="gcoin ${g?(k==='B'?'win':'dim'):''}" data-a="game" data-v="${k}" aria-label="Coin ${k}"><span class="crop">${crop(k==='B',g&&k==='B')}</span><span class="gl">${k==='A'?'🅰️':'🅱️'} Coin ${k}</span></button>`).join('')}</div>
+  ${g?`<div class="answer fadein"><b>Coin B — doubled letters, a famous error.</b><span>A scan checks details like this for you.</span></div>`:'<p class="hint" style="text-align:center">Tap the coin you think is special.</p>'}</div>
+  <div class="foot">${cta('Continue',!!g)}</div>`},
+9:()=>`<div class="spot"></div><div class="edge"></div><div class="scr z center" style="text-align:center">
+  <div class="rating">${laurel()}<span class="num">${tok('app_rating')}</span>${laurel(true)}</div>
+  <div class="stars">${[0,0,0,0,0].map(()=>starF(22)).join('')}</div>
+  <h1 class="display">${t(`${tok('app_rating')}★ from ${tok('rating_count')} ratings`,'Loved by coin collectors')}</h1>
+  <p class="lead">${t('Used to sort jars, albums and family collections.','Join collectors scanning their coins every day.')}</p>
+  <div class="quote" style="text-align:left"><div class="stars" style="justify-content:flex-start">${[0,0,0,0,0].map(()=>starF(13)).join('')}</div><p>“Verbatim App Store review goes here, about ease or identification.”</p><small>App Store user · picked by the team, never about a coin's dollar value</small></div>
+  <div class="hint" style="font-size:12px">App Store, US · ${tok('rating_date')}</div></div>
+  <div class="foot">${cta('Continue')}</div>`,
+10:()=>`<div class="scr"><div class="cloth photo"><img src="img/cloth.jpg" alt="A hand reaching down to place a coin on plain dark cloth" loading="lazy" decoding="async">${coin3d(104,'float')}</div>
+  <h1 class="display">${t("Let's scan your first coin",'Grab a coin nearby')}</h1>
+  <p class="lead">${t('Allow camera access so we can see it.','Any coin works — even one from your pocket.')}</p>
+  <div class="tips">${[['one','One coin'],['sun','Good light'],['flat','Flat surface'],['fill','Fill the circle']].map(([i,l])=>`<div class="tip">${ic(i,20)}<span>${l}</span></div>`).join('')}</div></div>
+  <div class="foot">${cta(`${ic('camera',18)} Open camera`,true,'camera')}<button class="link" data-a="sample">No coin handy? Try a sample coin</button></div>`,
+11:()=>camView(1),
+12:()=>camView(2),
+13:()=>{const rows=['Reading the design and lettering…','Matching the year and mint mark…','Checking known errors and varieties…','Your coin card is almost ready…'];
+  return `<div class="spot"></div><div class="scr z" style="gap:16px"><div style="padding:26px 0 18px">${coin3d(196,'scan')}</div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:6px"><h1 class="display md">${t('Identifying your coin…',`Checking ${tok('db_count')} coins…`)}</h1>
+  <span class="hint">${S.back||S.sample?'Two sides scanned':'Front side scanned'}</span></div>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div></div>
+  <div class="foot"><div class="note">Advances when the result is back</div></div>`},
+14:()=>noMatch()?`<div class="scr center" style="text-align:center;align-items:center">
+  <div class="pics" style="justify-content:center">${S.front||!S.sample?`<span class="pic" style="width:96px;height:96px">${obverse(S.coin)}<span class="q">?</span></span>`:''}${S.back?`<span class="pic" style="width:96px;height:96px">${reverse()}<span class="q">?</span></span>`:''}</div>
+  <h1 class="display">We couldn't match this one yet</h1><p class="lead">Try brighter light and a plain background.</p></div>
+  <div class="foot">${cta(`${ic('camera',18)} Retake photos`,true,'retakeall')}<button class="btn ghost" data-a="sample">Try a sample coin</button></div>`
+  :revealHTML(),
+15:()=>`<div class="scr"><h1 class="display">${t('Save it to your collection','Keep your scans safe')}</h1>
+  <p class="lead">${t('Your coins, backed up and synced across devices.','Sign in so your collection is never lost.')}</p>
+  <div class="slots"><div class="slot full">${coinPic('front')}</div>${'<div class="slot"></div>'.repeat(5)}</div>
+  <div style="display:flex;flex-direction:column;gap:10px"><button class="btn light" data-a="acct" data-v="Apple">${ic('apple',18)} Sign in with Apple</button><button class="btn ghost" data-a="acct" data-v="Google">${ic('google',18)} Continue with Google</button>
+  <div class="or">or</div><div class="box ${S.err&&S.err.startsWith('Please')?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" data-f="email" placeholder="Email" aria-label="Email" value="${esc(S.email)}"></div>
+  ${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot" style="padding-top:8px">${cta('Save coin',true,'save')}<button class="link sm" data-a="later">Maybe later</button><div class="note">By continuing you agree to our Terms · Privacy. · We never sell your email.</div></div>`,
+16:()=>{const h=(S.want.map(w=>PW_HEAD[w]).find(Boolean))||"See what it's worth";
+  return `<button class="closex" data-a="close" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:48px">
+  <div class="ccard"><div class="pics">${coinPic('front')}<div><div class="cname" style="font-size:21px">${cn()}</div><div class="hint">${S.coin.country} · ${S.coin.year} · ${S.coin.mint}</div></div></div>
+  <div class="locks">${['Estimated value range','Condition grade','Errors & varieties check'].map(l=>`<div class="lrow glow"><span class="lk">${ic('lock',16)}</span><span class="lt">${l}<i class="gb"></i></span></div>`).join('')}</div></div>
+  <h1 class="display">${t(h,`Unlock your ${cn()}'s story`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Value range, grade and error check for every scan.','Unlimited scans, values and your whole collection.')}</p>
+  <div style="display:flex;flex-direction:column;gap:10px">${planCard('weekly')}${planCard('annual')}</div>
+  <div class="disc">${disclosure()}</div>
+  ${cta(buyLabel(),true,'buy')}
+  <div class="trust">Cancel anytime in Settings · Secure payment via App Store / Google Play</div>
+  <div class="checks">${features().map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>
+  <div class="hint">Values are estimates, not appraisals or purchase offers.</div>
+  <div class="quote"><div class="stars" style="justify-content:flex-start">${[0,0,0,0,0].map(()=>starF(13)).join('')}</div><p>“Real App Store review goes here.”</p><small>App Store user</small></div>
+  <div class="faq">${faqs().map(([q,a],i)=>`<button data-a="faq" data-v="${i}" class="${S.faq===i?'open':''}" aria-expanded="${S.faq===i}">${q}${ic('chev',18)}</button>${S.faq===i?`<p class="fadein">${a}</p>`:''}`).join('')}</div>
+  <div class="legal" style="padding-bottom:12px"><button data-a="restore">Restore purchases</button><button data-a="terms">Terms</button><button data-a="terms">Privacy</button></div></div>
+  ${S.sheet==='fallback'?`<div class="dim" data-a="fbnot"></div><div class="sheet" role="dialog" aria-label="Annual plan"><span class="grab"></span><span class="eyebrow">Annual plan · one time, no timer</span>
+  ${planCard('annual')}<div class="disc">${disclosure()}</div>${cta(buyLabel(),true,'buy')}<button class="link" data-a="fbnot">Not now</button></div>`:''}`},
+17:()=>{const tipOn=S.exp==='beginner';const vr=S.sim.variety==='possible';
+  return `<div class="scr" style="gap:14px"><div class="row fade1"><span class="eyebrow">Full coin card</span><span class="counter" id="ctr">${ic('mark',13)} Collection · <b>${S.collection}</b> coin${S.collection===1?'':'s'}</span></div>
+  <h1 class="display md fade1">${t(`Your ${cn()}, fully decoded`,"Here's what it could fetch")}</h1>
+  <p class="lead fade1" style="margin-top:-6px">${t('Estimated range by condition — grade moves it most.','Condition, errors and history — all in one card.')}</p>
+  <div class="ccard fade2"><div class="pics">${coinPic('front')}${S.back||S.sample?coinPic('back'):'<span class="pic none">Back not scanned</span>'}<div style="min-width:0"><div class="cname" style="font-size:20px">${cn()}</div><div class="hint">${S.coin.year} · ${S.coin.mint} · ${S.coin.metal}</div></div></div>
+  <div style="display:flex;justify-content:space-between;align-items:center"><h4 style="margin:0;font-size:13px;color:var(--t3);font-weight:600;letter-spacing:.06em;text-transform:uppercase">Estimated value range</h4>
+  ${tipOn?`<button class="gchip tipable" data-a="tip" data-v="grade">Looks like: ${GRADE}</button>`:`<span class="gchip">Looks like: ${GRADE}</span>`}</div>
+  ${S.tip==='grade'?'<div class="coach fadein" style="align-self:flex-end">Grade = how worn the coin is.</div>':''}
+  ${rangeBar({pos:GRADE_POS,on:GRADE})}
+  <div class="disc" style="font-size:15px;text-align:left">At ${GRADE}: ${tok('value_low')} – ${tok('value_high')}</div>
+  <div class="hint">Estimate only. For possibly valuable coins, get a professional grade before selling.</div></div>
+  <div class="block fade3"><h4>Errors &amp; varieties</h4>${vr?`<div class="erow" style="color:var(--accent-hi)">${ic('alert',18)}<span>Possible 1955 doubled die obverse — check with a loupe</span></div>`:`<div class="erow">${ic('check',18,'var(--positive)',2.2)}<span>No known errors found</span></div>`}</div>
+  <div class="block fade4"><h4>History</h4><p>The Lincoln cent arrived in 1909, for Lincoln's 100th birthday. Its wheat-ear back ran until 1958.</p></div>
+  <div class="fade4" style="display:flex;flex-direction:column;gap:8px">${S.collection?`<button class="btn ghost" disabled style="background:transparent;color:var(--accent-hi);border:1px solid var(--gold-line)">${ic('check',18)} In your collection</button>`:`<button class="btn ghost" data-a="add" style="border-color:var(--gold-line)">${ic('mark',18)} Add to collection</button>`}
+  <button class="link" data-a="share" style="display:flex;gap:6px;justify-content:center;align-items:center">${ic('share',15)} Share this coin</button></div></div>
+  <div class="foot" style="padding-top:8px">${cta(`${ic('camera',18)} Scan next coin`,true,'scannext')}</div>`}
+};
+
+function laurel(flip){
+  let g='';for(let i=0;i<6;i++){const a=(-70+i*24)*Math.PI/180,x=30+26*Math.cos(a),y=40+26*Math.sin(a)*-1;g+=`<ellipse cx="${(x).toFixed(1)}" cy="${(y).toFixed(1)}" rx="3.2" ry="7.5" transform="rotate(${(i*24-40).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`}
+  return `<svg width="42" height="70" viewBox="0 0 44 72" style="${flip?'transform:scaleX(-1)':''}" aria-hidden="true"><path d="M34 66C18 56 10 40 14 14" fill="none" stroke="var(--accent)" stroke-width="1.6"/><g fill="var(--accent)" opacity=".85" transform="translate(-14 4)">${g}</g></svg>`;
+}
+function faqs(){return [
+  ["What's included?",features().join(' · ')+'.'],
+  ['How is value estimated?',`${tok('value_method')}: fill in once the data source is confirmed. Values are estimates, not appraisals or purchase offers.`],
+  ['How do I cancel?','Cancel anytime in Settings → Subscriptions (App Store or Google Play).'],
+  ['Can I use it for free?','Yes. The free tier identifies your coins. Value, grade and error check need Premium.']
+]}
+function revealHTML(){
+  const tipOn=S.exp==='beginner';
+  return `<div class="spot"></div><div class="scr z" style="gap:14px"><div style="padding:12px 0 6px">${coin3d(124,'land')}</div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:6px"><h1 class="display md">${t(`It's a ${cn()}`,'We found your coin')}</h1>
+  <p class="lead">${t(`${S.coin.country} · ${S.coin.year} · ${S.coin.mint} · ${S.coin.metal}`,'Value and grade are one tap away.')}</p></div>
+  <div class="ccard"><div class="pics">${coinPic('front')}${S.back||S.sample?coinPic('back'):'<span class="pic none">Back not scanned</span>'}<div class="cname" style="font-size:20px;min-width:0">${cn()}</div></div>
+  <dl class="facts"><dt>Country</dt><dd>${S.coin.country}</dd><dt>Year</dt><dd>${S.coin.year}</dd>
+  <dt>${tipOn?'<button class="tipword" data-a="tip" data-v="mint">Mint</button>':'Mint'}</dt><dd>${S.coin.mint} · ${esc(S.coin.mintNote)}${S.tip==='mint'?'<div class="coach fadein">Where the coin was made — a tiny letter.</div>':''}</dd>
+  <dt>Metal</dt><dd>${S.coin.metalLong}</dd><dt>Denomination</dt><dd>${S.coin.denom}</dd></dl>
+  <div class="conf"><span>Match confidence: ${conf()}</span><button class="link" data-a="alts">Not right? See other matches</button></div></div>
+  <div class="locks">${['Estimated value range','Condition grade','Errors & varieties check'].map(l=>`<div class="lrow"><span class="lk">${ic('lock',16)}</span><span class="lt">${l}<i class="gb"></i></span></div>`).join('')}</div></div>
+  <div class="foot">${cta('See value &amp; grade',true,S.free?'topw':'next')}</div>
+  ${S.sheet==='alts'?`<div class="dim" data-a="closesheet"></div><div class="sheet" role="dialog" aria-label="Other matches"><span class="grab"></span><h2 class="display md" style="font-size:24px">Other matches</h2>
+  ${ALTS.map((a,i)=>`<button class="alt" data-a="alt" data-v="${i}"><span class="pic">${obverse({...COIN0,...a})}</span><span><b>${a.name}</b><span>${a.mint} · ${a.mintNote}</span></span></button>`).join('')}
+  <button class="link" data-a="closesheet">Keep ${cn()}</button></div>`:''}`;
+}
+function camView(step){
+  const front=step===1;
+  return `<div class="vf" data-phase="${front?'far':'steady'}"><div class="cam photo ${S.flash?'lit':''}"><img src="img/cam.jpg" alt="Camera view of a plain dark cloth surface" loading="lazy" decoding="async"></div>
+  <div class="vcoin">${coin3d(196,front?'view':'flip',front?'front':'back')}</div>
+  <div class="coin2"><img class="face" src="img/bullion.jpg" alt="A second coin in the frame (silver round)" loading="lazy" decoding="async"></div>
+  <div class="shade"></div><div class="blurov"></div><div class="vmask"></div><div class="vring"><i></i><i></i><i></i><i></i></div><div class="flashfx"></div>
+  <div class="qchip" id="qchip"><span class="dot"></span><span>Finding the coin…</span></div>
+  ${front?'':`<button class="thumb" data-a="retake" aria-label="Retake front photo"><span class="tc">${obverse(S.coin)}</span><span>${ic('refresh',11)} Retake</span></button>`}
+  <div class="camui"><div class="nav"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div style="flex:1"></div><button class="iconbtn ${S.flash?'on':''}" data-a="flash" aria-label="Flash" aria-pressed="${S.flash}">${ic(S.flash?'zap':'zapoff',20)}</button></div>
+  <div class="camhead"><h1 class="display">${front?t('Front side first','Show us the face'):t('Now flip it over','One more side')}</h1>
+  <p class="lead">${front?t('Center the coin in the circle and hold steady.','Lay it flat on a plain surface.'):t('The back helps confirm the exact variety.','Two sides make the match more accurate.')}</p></div>
+  <div style="flex:1"></div>
+  <div class="foot"><div class="vline">${front?'Step 1 of 2 · Two sides = a sharper match':'Step 2 of 2'}</div>
+  ${cta(front?'SCAN FRONT':'IDENTIFY COIN',true,'shutter','caps')}
+  <div style="display:flex;justify-content:center;gap:18px"><button class="link sm" data-a="upload" style="display:flex;gap:5px;align-items:center">${ic('image',14)} Upload from photos</button>${front?'':'<button class="link sm" data-a="skipback">Skip — use the front only</button>'}</div></div></div></div>`;
+}
+
+/* ---------- capture simulation for 11/12 ---------- */
+const CHIP={far:['bad','Move closer — fill the circle.'],dark:['bad','Too dark — find more light.'],blur:['bad','A bit blurry — hold still.'],multi:['bad','One coin at a time, please.'],steady:['','Hold steady…'],lock:['ok','Sharp and centered · capturing'],done:['ok','Captured']};
+function setPhase(p){
+  const v=cur();if(!v)return;const vf=v.querySelector('.vf');if(!vf)return;
+  vf.dataset.phase=p;const [cls,txt]=CHIP[p];vf.classList.toggle('bad',cls==='bad');
+  const c=v.querySelector('#qchip');c.className='qchip '+cls;c.lastElementChild.textContent=txt;
+}
+function runCapture(step){
+  const issue=S.sim.issue;const d0=step===2?(RM?200:1500):0;
+  if(step===1)setPhase(issue!=='none'?issue:'far');else{setPhase('steady');}
+  if(issue!=='none'){later(()=>setPhase(issue),d0);return}
+  if(step===1)later(()=>setPhase('steady'),900);
+  later(()=>setPhase('lock'),d0+1800);
+  later(()=>capture(),d0+2900);
+}
+function capture(){
+  clearT();setPhase('done');const f=cur().querySelector('.flashfx');if(f&&!RM)f.classList.add('go');
+  if(S.i===11){S.front=true;renderPanel();later(()=>go(12),520)}
+  else{S.back=true;S.backSkipped=false;renderPanel();later(()=>go(13),520)}
+}
+
+/* ---------- loading (13) ---------- */
+function runLoading(){
+  let row=0,pct=0;
+  loadIv=setInterval(()=>{
+    const el=document.getElementById('st'+row);if(!el){clearInterval(loadIv);return}
+    pct+=4;el.querySelector('.bar span').style.width=Math.min(pct,100)+'%';el.querySelector('.pct span').textContent=Math.min(pct,100)+'%';
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.5)}<span>100%</span>`;row++;pct=0;
+      if(row>3){clearInterval(loadIv);const c=cur().querySelector('.coin');if(c&&c._c)c._c.flatT=performance.now();later(()=>go(14),1000)}}
+  },50);
+}
+
+/* ---------- render ---------- */
+function render(dir){
+  const n=S.i;const html=nav()+V[n]();const old=cur();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);setTimeout(()=>nv.classList.remove('in'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{old.innerHTML=html}
+  const v=cur();
+  v.querySelectorAll('.coin').forEach(mountCoin);
+  if(dir!==undefined||!v._started){
+    if(n===13)runLoading();
+    if(n===11||n===12)runCapture(n-10);
+    v._started=true;
+  }
+  const f=v.querySelector('input');
+  if(f&&[4,5,6].includes(n)){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  renderPanel();
+}
+function rerender(){const k=S.i;if(k===13)return;const sc=cur()&&cur().querySelector('.scr');const top=sc?sc.scrollTop:0;
+  if(k===11||k===12){clearT();render('same')}else{render();const s2=cur().querySelector('.scr');if(s2)s2.scrollTop=top}}
+
+/* ---------- 3D coin engine ---------- */
+const COINS=new Set();
+const ease=x=>1-Math.pow(1-x,3);
+const clamp=x=>Math.max(0,Math.min(1,x));
+function mountCoin(el){
+  if(el._c)return;
+  const size=+el.dataset.size||180,mode=el.dataset.mode||'float',side=el.dataset.side||'front';
+  const th=Math.max(6,Math.round(size*.07)),N=Math.max(8,Math.round(th/.8));
+  let layers='';for(let i=0;i<N;i++){const z=-th/2+th*(i+.5)/N;const c=i%3===0?'#7A3F22':i%3===1?'#8E4B2B':'#9B5733';layers+=`<i class="cl" style="transform:translateZ(${z.toFixed(2)}px);background:${c}"></i>`}
+  el.innerHTML=`<div class="cshadow"></div><div class="cscene">${layers}
+    <div class="cf front" style="transform:translateZ(${th/2}px)">${obverse(S.coin)}<i class="csheen"></i></div>
+    <div class="cf back" style="transform:rotateY(180deg) translateZ(${th/2}px)">${reverse()}<i class="csheen"></i></div>
+    ${mode==='scan'?'<div class="cring"></div>':''}</div>`;
+  const o={el,mode,side,th,scene:el.querySelector('.cscene'),ring:el.querySelector('.cring'),t0:performance.now(),px:0,py:0,tx:0,ty:0,flatT:null,base:Math.random()*360};
+  el._c=o;COINS.add(o);
+  const host=el.closest('.vf')||el;
+  host.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();o.tx=clampS(((e.clientX-r.left)/r.width-.5)*2);o.ty=clampS(((e.clientY-r.top)/r.height-.5)*2)});
+  host.addEventListener('pointerleave',()=>{o.tx=0;o.ty=0});
+  if(mode==='land')el.style.opacity=RM?1:0;
+  drawCoin(o,performance.now(),0);
+  if(!RM&&!COINS.loop){COINS.loop=true;COINS.last=performance.now();requestAnimationFrame(coinFrame)}
+}
+const clampS=x=>Math.max(-1,Math.min(1,x));
+function drawCoin(o,now,dt){
+  const t=(now-o.t0)/1000;let rx=0,ry=0,rz=0,s=1,lift=0;
+  o.px+=(o.tx-o.px)*.08;o.py+=(o.ty-o.py)*.08;
+  if(RM){
+    rx=10;ry=(o.mode==='flip'||o.side==='back')?166:-14;
+    if(o.mode==='land')o.el.style.opacity=1;
+  }else switch(o.mode){
+    case 'spin':ry=o.base+t*32;rx=12+Math.sin(t*.7)*6;rz=Math.sin(t*.5)*3;break;
+    case 'float':ry=Math.sin(t*.5)*26;rx=16+Math.sin(t*.8)*7;break;
+    case 'view':ry=Math.sin(t*.7)*5;rx=5+Math.sin(t*.9)*3;break;
+    case 'flip':{const k=ease(clamp((t-.35)/1.1));ry=180*k+Math.sin(t*.7)*5*k;rx=5+Math.sin(k*Math.PI)*22;lift=Math.sin(k*Math.PI)*46;break}
+    case 'scan':{let a=26+Math.sin(t*.6)*10,b=Math.sin(t*.45)*32;if(o.flatT!==null){const k=ease(clamp((now-o.flatT)/1000));a*=1-k;b*=1-k}rx=a;ry=b;break}
+    case 'land':{const k=ease(clamp(t/1.7));rx=80*(1-k)+(8+Math.sin(t*.8)*4)*k;ry=-360*(1-k)+Math.sin(t*.6)*10*k;s=.6+.4*k;lift=120*(1-k);o.el.style.opacity=Math.min(1,t/.45);break}
+    default:rx=12;ry=-12;
+  }
+  rx+=o.py*-22;ry+=o.px*28;
+  o.scene.style.transform=`translateZ(${lift.toFixed(1)}px) scale(${s.toFixed(3)}) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)`;
+  o.scene.style.setProperty('--sa',(110+((ry%360)+360)%360*.9).toFixed(0)+'deg');
+  if(o.ring)o.ring.style.transform=`translateZ(${o.th/2+3}px) rotateZ(${(t*220).toFixed(1)}deg)`;
+}
+function coinFrame(now){
+  const dt=Math.min(50,now-(COINS.last||now));COINS.last=now;
+  for(const o of COINS){if(!o.el.isConnected){COINS.delete(o);continue}drawCoin(o,now,dt)}
+  if(!RM)requestAnimationFrame(coinFrame);
+}
+
+/* ---------- panel ---------- */
+const SIMS=[
+  ['match','Scan outcome (14)',[['match','Match'],['nomatch','No match']]],
+  ['issue','Capture issue (11–12)',[['none','None'],['dark','Too dark'],['blur','Blurry'],['multi','Two coins'],['far','Too far']]],
+  ['variety','Error check (17)',[['none','None found'],['possible','Possible variety']]],
+  ['signin','Sign-in (15)',[['ok','Works'],['fail','Fails']]]
+];
+function renderSims(){document.getElementById('sims').innerHTML=SIMS.map(([k,l,opts])=>`<div><div class="sl">${l}</div><div class="seg" role="group" aria-label="${l}">${opts.map(([v,lab])=>`<button class="${S.sim[k]===v?'on':''}" data-sk="${k}" data-sv="${v}">${lab}</button>`).join('')}</div></div>`).join('')}
+function renderPanel(){
+  document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag,x])=>{const on=S.i===n&&(n!==14||(x==='nomatch')===noMatch());return `<button class="${on?'on':''}" data-j="${n}" ${x?`data-x="${x}"`:''}><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`}).join('')}</div>`).join('');
+  const lab=(m,k)=>m[k]?m[k][1]:'';
+  const d=[
+    ['Coins from',S.origin==='other'?`Other: ${S.originOther}`:lab(ORIG,S.origin)||'—'],
+    ['Wants',[...S.want.map(k=>lab(WANT,k)),S.o2&&S.wantOther?`Other: ${S.wantOther}`:''].filter(Boolean).join(', ')||'—'],
+    ['Coin types',[...S.types.map(k=>lab(TYPES,k)),S.o3&&S.typesOther?`Other: ${S.typesOther}`:''].filter(Boolean).join(', ')||'—'],
+    ['Experience',lab(EXP,S.exp)||'—'],
+    ['Mini-game',S.game?`Picked Coin ${S.game}`:'—'],
+    ['Photos',S.sample?'Sample coin':[S.front?'Front ✓':'',S.back?'Back ✓':S.backSkipped?'Back skipped':''].filter(Boolean).join(' · ')||'—'],
+    ['Match',S.i>=14?(noMatch()?'No match':`${S.coin.name} · ${conf()}`):'—'],
+    ['Account',S.account||'—'],
+    ['Plan',S.premium?`${S.plan==='annual'?'Annual':'Weekly'}${S.trial&&S.plan==='annual'?' + free trial':''}`:S.free?'Free tier (identify only)':'—'],
+    ['Collection',`${S.collection} coin${S.collection===1?'':'s'}`]
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+
+/* ---------- events ---------- */
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':next();break;
+    case 'back':back();break;
+    case 'origin':if(v==='other'){S.o1=!S.o1;S.origin=S.o1?'other':'';rerender();if(S.o1)document.getElementById('o1')?.focus()}else{S.o1=false;S.origin=v;rerender();later(()=>{if(S.i===4)next()},280)}break;
+    case 'o1go':S.origin='other';S.originOther=S.originOther.trim();next();break;
+    case 'want':if(v==='other'){S.o2=!S.o2}else{S.want=S.want.includes(v)?S.want.filter(x=>x!==v):[...S.want,v]}rerender();if(v==='other'&&S.o2)document.getElementById('o2')?.focus();break;
+    case 'types':if(v==='unsure'){S.types=S.types.includes('unsure')?[]:['unsure'];S.o3=false}else if(v==='other'){S.o3=!S.o3;S.types=S.types.filter(x=>x!=='unsure')}else{S.types=S.types.filter(x=>x!=='unsure');S.types=S.types.includes(v)?S.types.filter(x=>x!==v):[...S.types,v]}rerender();if(v==='other'&&S.o3)document.getElementById('o3')?.focus();break;
+    case 'exp':S.exp=v;rerender();later(()=>{if(S.i===7)next()},280);break;
+    case 'game':if(!S.game){S.game=v;rerender()}break;
+    case 'camera':toast('Camera permission prompt would appear (demo)');later(()=>go(11),350);break;
+    case 'sample':S.sample=true;S.front=true;S.back=true;S.backSkipped=false;S.coin={...COIN0};S.sim.match='match';S.sheet=null;renderSims();go(13);break;
+    case 'shutter':capture();break;
+    case 'upload':toast('Photo picker would open (demo)');capture();break;
+    case 'flash':S.flash=!S.flash;b.classList.toggle('on',S.flash);b.innerHTML=ic(S.flash?'zap':'zapoff',20);cur().querySelector('.cam').classList.toggle('lit',S.flash);break;
+    case 'retake':S.front=false;go(11);break;
+    case 'skipback':S.back=false;S.backSkipped=true;go(13);break;
+    case 'retakeall':S.front=false;S.back=false;S.backSkipped=false;S.sim.match='match';renderSims();go(11);break;
+    case 'alts':S.sheet='alts';rerender();break;
+    case 'alt':S.coin={...COIN0,...ALTS[+v]};S.sheet=null;rerender();toast('Match updated');break;
+    case 'closesheet':S.sheet=null;rerender();break;
+    case 'tip':S.tip=S.tip===v?'':v;rerender();break;
+    case 'topw':go(16);break;
+    case 'acct':if(S.sim.signin==='fail'){S.err="Sign-in didn't work. Try again.";rerender()}else{S.account=v;S.collection=1;toast(`Signed in with ${v} (demo)`);next()}break;
+    case 'save':{const ok=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.email.trim());
+      if(!ok){S.err='Please enter a valid email.';rerender()}else if(S.sim.signin==='fail'){S.err="Sign-in didn't work. Try again.";rerender()}else{S.account='Email';S.collection=1;toast('Coin saved (demo)');next()}break}
+    case 'later':S.account='Maybe later (saved on device)';S.collection=1;next();break;
+    case 'plan':if(S.plan!==v){S.plan=v;if(v==='weekly')S.trial=false;rerender()}break;
+    case 'trial':e.stopPropagation();S.trial=!S.trial;rerender();break;
+    case 'buy':S.premium=true;S.free=false;S.sheet=null;go(17);toast('Demo only — no charge made');break;
+    case 'close':if(!S.fallback){S.fallback=true;S.sheet='fallback';rerender()}else{S.free=true;S.sheet=null;go(14);toast('Free tier — identify only')}break;
+    case 'fbnot':S.sheet=null;S.free=true;go(14);toast('Free tier — identify only');break;
+    case 'faq':S.faq=S.faq===+v?-1:+v;rerender();break;
+    case 'restore':toast('Restore purchases (demo)');break;
+    case 'terms':toast('Opens Terms / Privacy (demo)');break;
+    case 'add':S.collection=Math.max(1,S.collection)+(S.collection?0:0);S.collection=S.collection||1;rerender();{const c=document.getElementById('ctr');if(c){c.classList.add('tick')}}toast('Added to your collection');break;
+    case 'share':toast('Share sheet: card image, no price shown');break;
+    case 'scannext':S.front=false;S.back=false;S.backSkipped=false;S.sample=false;S.coin={...COIN0};go(11);break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f)return;S[f]=e.target.value;
+  const g=gate[S.i];if(g){const btn=cur().querySelector('.foot .btn');if(btn)btn.disabled=!g();const nt=cur().querySelector('.foot .note');if(nt&&S.i!==4)nt.style.visibility=g()?'hidden':''}
+  if(f==='email'&&S.err){S.err='';const er=cur().querySelector('.err');if(er)er.remove();cur().querySelector('.box.bad')?.classList.remove('bad')}
+  renderPanel();
+});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;jump(+b.dataset.j,b.dataset.x)});
+function jump(n,x){
+  fillTo(n);S.sheet=null;
+  if(n===14){S.sample=false;S.sim.match=x==='nomatch'?'nomatch':'match';if(!S.back&&!S.backSkipped)S.back=true;renderSims()}
+  if(n===11){S.front=false}
+  if(n===12){S.back=false;S.backSkipped=false;S.front=true}
+  go(n);
+}
+document.getElementById('sims').addEventListener('click',e=>{const b=e.target.closest('[data-sk]');if(!b)return;S.sim[b.dataset.sk]=b.dataset.sv;if(b.dataset.sk==='match'&&b.dataset.sv==='nomatch')S.sample=false;renderSims();if(S.i!==13){S.err='';rerender()}else renderPanel()});
+const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');if(S.i===11||S.i===12){const h=cur().querySelector('.camhead');const tmp=document.createElement('div');tmp.innerHTML=camView(S.i-10);h.innerHTML=tmp.querySelector('.camhead').innerHTML}else rerender()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{clearT();const v=S.v,sim=S.sim;S=INIT();S.v=v;S.sim=sim;render('b')};
+
+/* phone scales down under ~430px wide (16px side gutters) */
+function fit(){const w=document.documentElement.clientWidth;const k=Math.min(1,(w-32)/390);pbox.style.width=(390*k)+'px';pbox.style.height=(812*k)+'px';phone.style.transform=k<1?`scale(${k})`:''}
+addEventListener('resize',fit);fit();
+
+/* deep link: #s14 (published) or #s=14 (local); add "n" for the no-match state, e.g. #s14n */
+{const m=location.hash.match(/s=?([0-9]+)(n?)/);renderSims();if(m&&V[+m[1]]){const n=+m[1];fillTo(n);if(n===14){S.sim.match=m[2]?'nomatch':'match';if(!S.back)S.back=true;renderSims()}if(n===12)S.front=true;if(n===11)S.front=false;S.i=n}}
+render();
+</script>
