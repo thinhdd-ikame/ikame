@@ -9,14 +9,16 @@ from PIL import Image
 BASE = "https://core-ai-platform.ikameglobal.com/v1/images/generations"
 MODEL = "gemini/gemini-3.1-flash-image"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img")
-STYLE = ("Mystical premium aura and tarot app art, deep navy #161A27 night sky with fine stars, warm gold #E9C26B and soft glowing color, "
-         "elegant, cinematic, vertical 2:3, no text, no logo, no watermark, no real faces.")
+STYLE = ("Mystical premium aura and tarot app art, deep navy #161A27 night sky with fine stars, warm gold #E9C26B accents, "
+         "ethereal glowing light, cinematic, soft depth of field, vertical 2:3, no text, no logo, no watermark, no visible face.")
+COLORS = {"red": "warm red and ember orange", "amber": "golden amber and honey", "green": "soft emerald and jade green",
+          "blue": "clear sky blue and cyan", "indigo": "deep indigo and blue-violet", "violet": "luminous violet and lilac"}
 P = {
- "hook-aura": "The dark silhouette of a calm person from behind, surrounded by a large soft glowing halo of indigo, violet and amber light",
- "reveal-aura": "A radiant indigo aura glowing around a faint silhouette, soft particles of light drifting up, calm and awe-inspiring",
- "card-back": "The back of a single tarot card, ornate gold geometric pattern with a central diamond and tiny stars on deep navy, symmetrical, top-down",
- "paywall-hero": "A calm moonlit table with three tarot cards fanned out, a soft aura halo of violet light above them, a single candle, no people",
+ "hook-aura": "A woman with long hair seen from behind, standing under a starry sky, wrapped in a large soft glowing aura that shifts from indigo to violet to amber, light particles drifting up",
+ "paywall-hero": "Three gold-edged tarot cards fanned on a dark velvet table, a soft halo of violet and indigo aura light rising above them, one candle, a crystal, no people",
 }
+P.update({f"reveal-{k}": f"A person seen from behind with arms relaxed, surrounded by a radiant glowing aura of {v} light, soft particles rising, calm and awe-inspiring" for k, v in COLORS.items()})
+# the 22 card faces + card back come from ../tarot/gen_images.py (one shared deck)
 def gen(name):
     body = json.dumps({"model": MODEL, "prompt": f"{P[name]}. {STYLE}", "n": 1}).encode()
     req = urllib.request.Request(BASE, body, {"Authorization": f"Bearer {os.environ['IKAME_AI_KEY']}", "Content-Type": "application/json"})

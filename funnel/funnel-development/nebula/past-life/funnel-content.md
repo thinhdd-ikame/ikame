@@ -1,12 +1,13 @@
 ---
 niche: past-life
-display_name: Nebula - Past Life (Who were you before?)
+display_name: Starlyn - Past Life (Who were you before?)
 archetype: personalization-quiz
 subject: person
 input: era that feels like home, deja vu and recurring-dream signals, a familiar place, 3 agree/disagree statements, early talent, calling, first name, birth date (18+)
 output: a past-life story for reflection - an era and a role (free), a gift you carry (free), then where you lived, your life story, a lesson you carry and who you may have known
-screens: 20
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance "life card" offer, then a free era, role and gift
+screens: 19
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -18,9 +19,9 @@ motion: >
   as a hooded silhouette fades in behind it
 ---
 
-# Funnel Content - Nebula: Past Life
+# Funnel Content - Starlyn: Past Life
 
-A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "who were you before?" niche. The user gives **the era that feels like home, a handful of deja-vu and dream signals, one talent, one calling and their birth date**. They get **a past-life story for reflection**: an era and a role first, then a gift they carry, then the full story. Archetype: **personalization-quiz**; every answer is used in the result, there is no photo or camera step. 20 screens, one flow with three "Other" escape hatches.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "who were you before?" niche. The user gives **the era that feels like home, a handful of deja-vu and dream signals, one talent, one calling and their birth date**. They get **a past-life story for reflection**: an era and a role first, then a gift they carry, then the full story. Archetype: **personalization-quiz**; every answer is used in the result, there is no photo or camera step. 19 screens, one flow with three "Other" escape hatches.
 
 **Modeled on:**
 - Nebula past-life funnel (appnebula.co/past-life/prelanding, 3,918 ads in 7 months, 49 screens, crawled via live funnelConfig 2026-10-01) and Astroline past-life (quiz-pp?mode=pastlife, 876 ads, 26 screens, capture stops at palm; paywall not captured), via the AdSpyLab research in `nebula-chai.md` section 3.
@@ -28,18 +29,18 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 - Stages after the quiz in both competitors (palm scan, onboarding, upsells, phone step) are not copied. The exact competitor paywall copy is **unverified**.
 
 **Kept from the references:**
-- An identity hook ("who were you?"), then an era question as the first real tap (Nebula asks it at screen 26 of 49; here it comes second).
+- An identity hook ("who were you?"), then an era question as the first real tap (Starlyn asks it at screen 26 of 49; here it comes second).
 - Deja vu, recurring dreams and a familiar place as the quiz spine, then three agree/disagree statements, then birth date, then a loader and a teaser of "your era + your role" before the email gate.
 
 **Deliberately changed, and why:**
 - **49 screens down to 20.** Nebula's image test, element, ancestors, 111 signs, nostalgia and self-care rounds are cut; every question left changes the result.
 - **No fake "decoding progress".** Competitors stretch a 22% to 34% to 56% "decoding" bar across the quiz. Here one short bridge counts the user's own signals (real count out of 6) and the loader is one brief screen. No percentage claims.
 - **Honest frame.** Past lives are a belief, not a fact. A reassurance screen (#3), the teaser, the FAQ and the footer say "for reflection, not proof". No claim that the user was a real historical person, no "karma curses", no fear hooks.
-- **No palm scan.** Nebula and Astroline end the quiz with a palm photo; here nothing is uploaded, so there is no camera step and no deletion promise to write.
-- **No dark patterns.** No $1 hidden-subscription lead-in, no timer reset, no fake code, no ticker. The last-chance offer shows once, has no timer unless a real deadline exists, and renewal is shown next to every price.
+- **No palm scan.** Starlyn and Astroline end the quiz with a palm photo; here nothing is uploaded, so there is no camera step and no deletion promise to write.
+- **No dark patterns.** No $1 hidden-subscription lead-in, no timer reset, no fake code, no ticker. There is no sale and no last-chance offer (Starlyn app policy, 2026-10-05).
 - **Result is one life, not a count.** Competitors tease "how many past lives". A count cannot be derived honestly; we tell one story and do not give a number.
 - **Ad-safe:** the ad hook is "Who were you before?", with no claim about the viewer's traits, health or beliefs.
-- **Palette:** Nebula navy `#161A27` + gold `#E9C26B`. Hero object is a turning ring of five eras with a hooded silhouette; the gold light rests on the user's era.
+- **Palette:** Starlyn navy `#161A27` + gold `#E9C26B`. Hero object is a turning ring of five eras with a hooded silhouette; the gold light rests on the user's era.
 
 ---
 
@@ -203,7 +204,7 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Field:** Month / Day / Year selects. Years stop at today minus 18. Sun-sign chip appears once complete.
 **Visual:** Three rounded selects in one row, sign chip fades in.
 **Microcopy:** "You must be 18 or older."
-**Error state:** "Pick your full date of birth"
+**Error state:** "Pick your full date of birth" · Under 18 (exact age from month, day and year): a blocking notice "Starlyn is for adults 18+." with a "Change my birth date" button that returns to this screen; the block persists for the session (sessionStorage) until the date is changed.
 **CTA:** Continue
 
 ---
@@ -249,8 +250,8 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Headline B:** See your full past life
 **Body A:** Where you lived, your story, your lesson.
 **Body B:** Who you knew, and what you carry.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
-**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
+**Plans:** One plan only, pre-selected: 1 week at `$13.67`, then `$49.99` every month until cancelled. No other tiers, no one-time products, no struck prices, no discount badges.
+**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, no close X (hard paywall)). Sections:
 1. Hero: eyebrow "Your reading is ready", the medallion (`img/paywall-hero.jpg`), 4 fact chips (your sign, your era, your role, your gift).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": era and role plus the gift you carry open, then locked rows: Where you lived, Your life story, The lesson you carry, Who you may have known, Daily guide in the app.
@@ -261,44 +262,27 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
-**Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your story is ready". FAQ on reality: "Past lives are a belief with no scientific proof. Your story is written from your answers, for reflection and fun."
-**Fallback offer:** #19, shown once. Declining it goes to #20 with era, role and gift open. Buying the pass opens only the full life story and where you lived in #20; the rest stays locked behind the subscription.
+**Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your story is ready". FAQ on reality: "Past lives are a belief with no scientific proof. Your story is written from your answers, for reflection and fun."
 **CTA:** Get my reading
-
-### 19. Last-chance offer (on close)
-**Purpose:** One second chance after a paywall close, shown once per session.
-**Headline A:** Not ready? Get the life card
-**Headline B:** One-time offer, shown once
-**Body A:** A smaller pass, paid once. No subscription.
-**Body B:** Just your life story and where you lived.
-**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (life card), {{offer_price}} paid once, no renewal, no strike-through price. Includes the full life story, where you lived and the reading saved to the email. Not included (stated on the card): the lesson you carry, who you may have known, daily guide. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the medallion thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
-**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Decline link: "No thanks, show my free reading".
-**CTA:** Get the life card
-
----
 
 ## F. Payoff
 
-### 20. Reading and app handoff
-**Purpose:** Deliver the reading (all sections if paid, era, role and gift if not) and move the user into the app.
-**Headline A:** {{name}}'s past life
-**Headline B:** Here is who you were
-**Body A:** A story from your answers, for reflection.
-**Body B:** Era and role first, then the story.
-**Visual:** Medallion with the era ring, era chip and role chip, then section cards: Your past life (open) · The gift you carry (open) · Where you lived · Your life story · The lesson you carry · Who you may have known. Then "Continue in the Nebula app", store badges.
-**Microcopy:** "A story for reflection. Past lives are a belief, not a fact. For entertainment purposes only." Without a name the headline reads "Your past life".
-**CTA:** Open the app (unpaid: Unlock all + Open the app)
-
----
+### 19. Get the app
+**Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your reading is ready
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Body B:** Download Starlyn: Daily Astrology and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
 
 ## Notes
 
+- **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Drop-off risk:** #13 (name) and #14 (birth date, the first personal-data ask), plus quiz fatigue around #7-#9. Mitigations: #3 honest frame first, #10 as a break, name has a skip. Measure completion per screen and the skip rate for #13.
-- **Branches:** none by design. "Other" on #5, #6, #11, #12 changes only the wording of the story (a generic place, gift or role) and never blocks. All 20 screens are shown to every user.
-- **Honesty:** past lives are a belief; the frame is stated on #1, #3, #16, #20, the FAQ and the footer. The era and role come from the user's own picks (era from #2, role from #12), not from a hidden calculation. Story text in the demo is a deterministic template; production needs the host's text engine. The count on #10 is the real number of signals the user gave.
-- **Monetization:** one subscription layer. Pay-per-minute chat credits and Nebula's later upsells are not sold here. Measure paywall-to-checkout and offer acceptance separately.
-- **Unverified:** Nebula's and Astroline's paywall ladders, the $1 / $5 / $9 / $13.67 trial price points and the secret $1 offer were not copied and not verified here. Astroline's capture stops before its paywall.
+- **Branches:** none by design. "Other" on #5, #6, #11, #12 changes only the wording of the story (a generic place, gift or role) and never blocks. All 19 screens are shown to every user.
+- **Honesty:** past lives are a belief; the frame is stated on #1, #3, #16, the app reading, the FAQ and the footer. The era and role come from the user's own picks (era from #2, role from #12), not from a hidden calculation. Story text in the demo is a deterministic template; production needs the host's text engine. The count on #10 is the real number of signals the user gave.
 - **Policy:** Meta personal-attribute rules. Ad copy: no "Are you cursed?", no "Do you remember dying?", no claim about the viewer. Use "Who were you before?" and the era framing.
 - **Images:** the demo draws the era ring in SVG and ships three generated-style placeholder JPGs. `IKAME_AI_KEY` was not set, so `gen_images.py` was not run; it lists the prompts for `hook-eras`, `result-life`, `paywall-hero` (JPG, 560x840) to drop into `img/` later with the same names.
 - **A/B first:** (1) Hook A vs B. (2) #2 era before vs after the dream and place questions. (3) #16 role first vs era first in the headline.

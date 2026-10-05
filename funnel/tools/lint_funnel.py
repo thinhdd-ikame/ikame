@@ -39,9 +39,11 @@ def lint(text):
     screen_heads = [h.lower() for h in re.findall(r"^### \d+\..*$", text, re.M)]
     if not any("paywall" in h for h in screen_heads):
         errs.append("no Paywall screen")
-    # Offer screen must exist and not be the paywall
+    # Offer screen must exist and not be the paywall, unless the app's policy forbids one
+    # (frontmatter `offer: none`, e.g. Nebula 2026-10-05: no sale, hard paywall)
+    no_offer_policy = re.search(r"^offer:\s*none\s*$", fm, re.M)
     has_offer = any(re.search(r"offer|upsell|last.chance", h) and "paywall" not in h for h in screen_heads)
-    if not has_offer:
+    if not has_offer and not no_offer_policy:
         errs.append("no fallback/last-chance offer screen")
     if re.search(r"\b(TBD|TODO)\b", text) or re.search(r"\blorem ipsum\b", text, re.I):
         errs.append("placeholder text (TBD/TODO/lorem)")

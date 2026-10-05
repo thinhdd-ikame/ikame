@@ -1,12 +1,13 @@
 ---
 niche: moon-reading
-display_name: Nebula - Moon Sign + Moon Phase Rituals (web2app)
+display_name: Starlyn - Moon Sign + Moon Phase Rituals (web2app)
 archetype: personalization-quiz
 subject: person
 input: full-moon feeling, intention, name, birth date, birth time (optional), birth place, what throws you off, ritual time and style, optional second person's birthday, phase reminder preference
 output: natal Moon sign + birth moon phase + 30-day moon phase calendar with personalized rituals (+ optional Moon-to-Moon match)
-screens: 23
-monetization: web paywall (weekly / 3-month decoy / annual pre-selected, renewal shown on every card) + in-app Premium; no second paid layer in the web funnel
+screens: 22
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -19,9 +20,9 @@ motion: >
   through every phase, a ring of thirty day-dots filling in around it
 ---
 
-# Funnel Content — Nebula · Moon Reading
+# Funnel Content — Starlyn · Moon Reading
 
-A web2app funnel (Meta ad → web quiz → web paywall → Nebula app) for the moon / moonology niche. AdSpyLab counted 23.8K ads in 03-08/2026, up 63% over the last three months, from Astroline's moon mode, Moongrade, Moonly and many new persona pages like "Moon Energy Daily". The user gives birth date, time and place plus how they want to use the moon cycle. They get their natal Moon sign, the phase they were born under, and a 30-day phase calendar with rituals sized to their real day. It's the **personalization-quiz** archetype with a monthly-rhythm product at its core, so retention (phase reminders) matters more than in the one-shot sketch or map funnels. **Modeled on:** Astroline `quiz-pp?mode=moon` ("Is your relationship truly over?" → birth date/time/place → chart mapping → a "forecast accuracy" meter climbing to 67% → relationship status, goals, favorite color and element filler → a palm photo before the paywall). **What I deliberately changed:**
+A web2app funnel (Meta ad → web quiz → web paywall → Starlyn app) for the moon / moonology niche. AdSpyLab counted 23.8K ads in 03-08/2026, up 63% over the last three months, from Astroline's moon mode, Moongrade, Moonly and many new persona pages like "Moon Energy Daily". The user gives birth date, time and place plus how they want to use the moon cycle. They get their natal Moon sign, the phase they were born under, and a 30-day phase calendar with rituals sized to their real day. It's the **personalization-quiz** archetype with a monthly-rhythm product at its core, so retention (phase reminders) matters more than in the one-shot sketch or map funnels. **Modeled on:** Astroline `quiz-pp?mode=moon` ("Is your relationship truly over?" → birth date/time/place → chart mapping → a "forecast accuracy" meter climbing to 67% → relationship status, goals, favorite color and element filler → a palm photo before the paywall). **What I deliberately changed:**
 
 - The first tap is "does the full moon get to you?", which matches the broad moonology ad angle. Astroline's relationship angle is kept as an optional branch (#14-#15), not the whole funnel.
 - Two free micro-reveals come from real data: the birth phase (#6) and tonight's live Moon (#13).
@@ -30,7 +31,7 @@ A web2app funnel (Meta ad → web quiz → web paywall → Nebula app) for the m
 - A phase-reminder preference is collected on web and applied on first app open.
 - No fake accuracy meter, color or element filler, palm photo, countdown or ticker. No invented "moon guide" personas. Renewal price on every card.
 
-The visual system is the base `nebula/` house look, with the moon as the single 3D hero object. 23 screens.
+The visual system is the base `nebula/` house look, with the moon as the single 3D hero object. 22 screens.
 
 ---
 
@@ -99,7 +100,7 @@ The visual system is the base `nebula/` house look, with the moon as the single 
 **Body A:** Your date finds the Moon you were born under.
 **Field:** Date wheel (month / day / year); age gate 18+
 **Visual:** Plain date wheel on the star field; a small moon above it changes phase as the day wheel scrolls.
-**Error state:** "Pick a full date to continue" / "You must be 18 or older to continue"
+**Error state:** "Pick a full date to continue". Under 18: a blocking notice, "Starlyn is for adults 18+." / "You must be 18 or older to use Starlyn. Entered the wrong date? Change it below.", with a "Change my birth date" button that clears the date and returns here. The block persists for the session (sessionStorage `ikf_age_block`) and fires `age_block`.
 **CTA:** Continue
 
 ### 6. Your birth phase (micro-reveal bridge)
@@ -285,7 +286,7 @@ The visual system is the base `nebula/` house look, with the moon as the single 
 ## E. Gate
 
 ### 20. Where to send it
-**Purpose:** Email = calendar delivery + Nebula app login (web2app handoff).
+**Purpose:** Email = calendar delivery + Starlyn app login (web2app handoff).
 **Headline A:** Where should we send it?
 **Headline B:** Save your moon month
 **Body A:** Your calendar and app login go here.
@@ -299,52 +300,39 @@ The visual system is the base `nebula/` house look, with the moon as the single 
 
 ## F. Monetization
 
-### 21. Paywall
-**Purpose:** Primary ask. Base nebula 3-tier structure with renewal disclosed on every card and in the CTA line. Premium sells the ongoing rhythm (every phase, every month), which suits a subscription.
+### 21. Paywall (hard)
+**Purpose:** Primary ask and a hard gate: the moon month, rituals and reminders open only after purchase. One plan, renewal disclosed on the card and in the CTA line.
 **Headline A:** Live with your Moon
 **Headline B:** {{name}}, unlock your moon month
 **Body A:** Rituals for every phase, every month.
 **Body B:** Your calendar, rituals and daily moon line.
 **Plans:** (prices are tokens for the ikame pricing team; do not invent numbers)
-- **Weekly** — `{{week_intro_price}}` first week. Card line: "then `{{week_price}}`/week, renews weekly".
-- **3-Month** — decoy tier, no badge. Card line: "`{{quarter_price}}` every 3 months, renews".
-- **Annual** — pre-selected, "BEST VALUE" badge, per-week equivalent small. Card line: "`{{annual_price}}`/year, renews yearly".
-**Visual:** Blurred calendar card at top, three stacked plan cards (Annual pre-highlighted), each renewal line the same size as its price; Apple Pay / Google Pay prominent, card form below.
-**Microcopy:** Benefit rows: "Rituals for every new and full moon" / "Daily moon line for your {{moon_sign}} Moon" / "Moon match for anyone you add". CTA line changes with the plan. Weekly: "`{{week_intro_price}}` today, then `{{week_price}}`/week until you cancel." Annual: "`{{annual_price}}` today, renews yearly." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment only. Not medical or mental-health advice."
-**Fallback offer:** On ✕, once per session, one bottom sheet: "Try 3 days free", then "`{{annual_price}}`/year after, cancel anytime" in the same type size as the offer. Buttons: "Start free trial" / "Not now". "Not now" returns to #18 with the Moon sign kept. No promo codes.
+- **1 week, then monthly**: the only plan, pre-selected. `$13.67` for the first week, then `$49.99` every month. Card line: "`$13.67` first week, then `$49.99`/month, renews monthly". No other tiers, no badge, no struck price.
+**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their blurred moon calendar and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer, and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
+**Microcopy:** Benefit rows: "Rituals for every new and full moon" / "Daily moon line for your {{moon_sign}} Moon" / "Moon match for anyone you add". CTA line: "`$13.67` today for your first week, then `$49.99` every month until you cancel." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment only. Not medical or mental-health advice."
 **CTA:** Unlock my rituals
-
 ---
 
 ## G. Payoff
 
-### 22. Tonight's ritual (reveal)
-**Purpose:** Delivers the first personalized ritual right away on the web success page, so it can be used tonight. Proof of value before the app install.
-**Headline A:** Tonight's ritual, {{name}}
-**Headline B:** Your first moon ritual
-**Body A:** {{ritual_minutes}} minutes, for your {{moon_sign}} Moon.
-**Visual:** Ritual card over tonight's moon: three numbered steps, a candle or breath icon matching #12, and a "Mark done" button. No timer.
-**Microcopy:** Sample steps: "1. Breathe in for 4, out for 6." / "2. Write one thing to release." / "3. Say: 'I let the tide take it.'" Disclaimer: "For entertainment."
-**CTA:** Continue in the app
-
-### 23. Continue in Nebula (app handoff)
-**Purpose:** Web2app handoff. The calendar, reminders from #16 and the Moon match live in the app, and login uses the same email.
-**Headline A:** Your Moon lives in Nebula
-**Headline B:** Your moon month, in your pocket
-**Body A:** Log in with {{email}} for daily moon guidance.
-**Visual:** Phone mockup showing the phase calendar, tonight's ritual card and a sample full-moon push; store badges; QR code on desktop.
-**Microcopy:** In-app rows: "Your 30-day moon calendar" / "Reminders before new and full moons" / "Moon match with {{person}}" (person path) or "Add someone's Moon" (solo). First app open applies the #16 reminder settings and then shows the system permission prompt.
+### 22. Get the app (after purchase)
+**Purpose:** Purchase confirmation and the web2app handoff. The moon calendar, rituals, reminders from #16 and the Moon match live in the Starlyn app; there is no free web result and no offer screen.
+**Headline A:** You're in, {{name}}
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges.
+**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase()`.
 **CTA:** Open the app
 
 ---
 
 ## Notes
 
-- **Two free micro-reveals + one free result** (#6 birth phase, #13 tonight's Moon, #18 Moon sign) are deliberate. Moon content is widely available for free, so the paywall has to sell the *personal rhythm* (calendar + rituals + reminders), not the sign. This follows the Starlyn "free proof, paid depth" variant rather than the base nebula hard gate.
+- **Starlyn app policy (2026-10-05):** hard paywall (no close ✕, no "continue free"), exactly one plan (`$13.67` first week, then `$49.99` every month), no sale of any kind (no last-chance offer, struck price, badge or promo code), and a confirmed purchase lands on a get-the-app screen. Under 18 shows a blocking notice with a "Change my birth date" way back.
+- **Two free micro-reveals + one free result** (#6 birth phase, #13 tonight's Moon, #18 Moon sign) are deliberate. Moon content is widely available for free, so the paywall has to sell the *personal rhythm* (calendar + rituals + reminders), not the sign. The free reveals stay before the gate; the paywall itself is hard, with no free path past it.
 - **Cut from Astroline's moon quiz:** the "forecast accuracy %" meter (fake metric), favorite color, element, modality/polarity cards and the palm photo. None of them feeds the output. Relationship status is replaced by the optional #14 branch, which only appears when it powers a real Moon match.
 - **No location ask for tonight's Moon:** the device time zone is enough for phase times, so the funnel keeps three data inputs.
 - **Trust beat** #9 sits after the birth data. There's no second interstitial because #13 (live sky data) plays that role without invented numbers.
 - **Retention is the product:** #16 reminders are collected on web and applied in the app. Measure reminder opt-in → day-30 retention separately from paywall CVR.
-- **One monetization layer on the web** (#21). No countdown upsell (the base nebula has one; it breaks the no-urgency rule) and no advisor chat or "moon guide" personas.
+- **One monetization layer:** the hard paywall (#21) with one plan. No offer, no sale, no countdown, no advisor chat or "moon guide" personas. Purchase → #22 get the app.
 - **Ad-angle routing:** traffic from relationship-angle creatives ("Is it really over?") should land on a variant where #14 comes first, with Hook A "Is it really over?" and the same flow after it.
 - **A/B first:** (1) #1 Headline A vs. B. (2) #18 free Moon sign vs. gated (does giving it away raise or lower #21 CVR?). (3) #13 on vs. off. (4) #21 Headline A vs. B.

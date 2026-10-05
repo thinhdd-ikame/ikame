@@ -1,27 +1,28 @@
 ---
 niche: astrocartography
-display_name: Nebula - Astrocartography Power Places Map (web2app)
+display_name: Starlyn - Astrocartography Power Places Map (web2app)
 archetype: personalization-quiz
 subject: person
 input: feeling about current city, life goal, name, birth date, birth time (optional, strongly encouraged), birth place, current city, optional place that felt right, move intent, setting, regions
 output: personal astrocartography map - planetary lines worldwide, current-city read, top 3 power places for the chosen goal
-screens: 24
-monetization: web paywall (weekly / 3-month decoy / annual pre-selected, renewal shown on every card) + optional one-time single-city report for movers
+screens: 22
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
   city-lines: 11
   felt-right: 19
   reveal: 17
-  map: 23
+  map: 18
 motion: >
   a dark globe turning slowly as coloured planetary lines trace across it
   pole to pole, then city pins pinging awake along the lines one by one
 ---
 
-# Funnel Content — Nebula · Astrocartography
+# Funnel Content — Starlyn · Astrocartography
 
-A web2app funnel (Meta ad → web quiz → web paywall → Nebula app) for the fastest-growing astrology niche. AdSpyLab counted 26.5K astrocartography ("bản đồ sao") ads in 03-08/2026, up 374% over the last three months. The user gives birth data, their current city and a life goal. They get a map of their planetary lines, a read on the city they live in now, and their top power places for that goal. It's the **personalization-quiz** archetype, but the inputs and reveal are built around geography. **Modeled on:** Hint `hint.app/astro-map` (45 screens, ~20 feelings-about-place questions, then a scare beat, "challenging planetary lines crossing places you've lived", then a "93% promo code", then a €1 paywall) and Astroline's `astrocartography_wr` "wrong place" quiz (14 steps, a fake "forecast accuracy 22%→67%" meter, color and element filler questions, ending in a palm photo). **What I deliberately changed:**
+A web2app funnel (Meta ad → web quiz → web paywall → Starlyn app) for the fastest-growing astrology niche. AdSpyLab counted 26.5K astrocartography ("bản đồ sao") ads in 03-08/2026, up 374% over the last three months. The user gives birth data, their current city and a life goal. They get a map of their planetary lines, a read on the city they live in now, and their top power places for that goal. It's the **personalization-quiz** archetype, but the inputs and reveal are built around geography. **Modeled on:** Hint `hint.app/astro-map` (45 screens, ~20 feelings-about-place questions, then a scare beat, "challenging planetary lines crossing places you've lived", then a "93% promo code", then a €1 paywall) and Astroline's `astrocartography_wr` "wrong place" quiz (14 steps, a fake "forecast accuracy 22%→67%" meter, color and element filler questions, ending in a palm photo). **What I deliberately changed:**
 
 - Kept the "wrong city?" angle as the first tap.
 - Cut the quiz to inputs the map actually uses: goal ranks the lines, current city gets its own read, and setting, region and move intent filter the recommended cities.
@@ -31,7 +32,7 @@ A web2app funnel (Meta ad → web quiz → web paywall → Nebula app) for the f
 - Dropped the fake accuracy meter, colors, elements, relationship status and the palm photo, because the map uses none of them.
 - No promo code, countdown or ticker. Renewal price on every card.
 
-The visual system is the base `nebula/` house look, with the globe as the single 3D hero object. 24 screens.
+The visual system is the base `nebula/` house look, with the globe as the single 3D hero object. 22 screens.
 
 ---
 
@@ -109,7 +110,7 @@ The visual system is the base `nebula/` house look, with the globe as the single
 **Body A:** Your date places each planet on the map.
 **Field:** Date wheel (month / day / year); age gate 18+
 **Visual:** Plain date wheel on the star field.
-**Error state:** "Pick a full date to continue" / "You must be 18 or older to continue"
+**Error state:** "Pick a full date to continue". Under 18: a blocking notice, "Starlyn is for adults 18+." / "You must be 18 or older to use Starlyn. Entered the wrong date? Change it below.", with a "Change my birth date" button that clears the date and returns here. The block persists for the session (sessionStorage `ikf_age_block`) and fires `age_block`.
 **CTA:** Continue
 
 ### 7. Time of birth
@@ -185,7 +186,7 @@ The visual system is the base `nebula/` house look, with the globe as the single
 **CTA:** Continue
 
 ### 13. Moving or curious?
-**Purpose:** Sets the map mode: relocation (livable cities, city report upsell) vs. travel (trip spots).
+**Purpose:** Sets the map mode: relocation (livable cities) vs. travel (trip spots).
 **Headline A:** Moving, or just curious?
 **Headline B:** What's the plan?
 **Body A:** This decides if we show moves or trips.
@@ -277,7 +278,7 @@ The visual system is the base `nebula/` house look, with the globe as the single
 ## E. Gate
 
 ### 20. Where to send your map
-**Purpose:** Email = map delivery + Nebula app login (web2app handoff).
+**Purpose:** Email = map delivery + Starlyn app login (web2app handoff).
 **Headline A:** Where should we send it?
 **Headline B:** Save your map, {{name}}
 **Body A:** Your map and app login go here.
@@ -291,61 +292,39 @@ The visual system is the base `nebula/` house look, with the globe as the single
 
 ## F. Monetization
 
-### 21. Paywall
-**Purpose:** Primary ask. Reuses the base nebula 3-tier structure, but every card carries its renewal price and the CTA line restates exactly what will be charged.
+### 21. Paywall (hard)
+**Purpose:** Primary ask and a hard gate: the full map and power places open only after purchase. One plan; the card and the CTA line state exactly what will be charged.
 **Headline A:** Unlock your full map
 **Headline B:** {{name}}, see your power places
 **Body A:** Every line, every place, plus what's ahead.
 **Body B:** Your top places and what they bring.
 **Plans:** (prices are tokens for the ikame pricing team; do not invent numbers)
-- **Weekly** — `{{week_intro_price}}` first week. Card line: "then `{{week_price}}`/week, renews weekly".
-- **3-Month** — decoy tier, no badge. Card line: "`{{quarter_price}}` every 3 months, renews".
-- **Annual** — pre-selected, "BEST VALUE" badge, per-week equivalent small. Card line: "`{{annual_price}}`/year, renews yearly".
-**Visual:** Blurred map card at top, three stacked plan cards (Annual pre-highlighted), each renewal line the same size as its price; Apple Pay / Google Pay prominent, card form below.
-**Microcopy:** Benefit rows: "Top 3 power places for {{goal}}" / "Every line, explained for you" / "Travel timing and line alerts in the app". CTA line changes with the plan. Weekly: "`{{week_intro_price}}` today, then `{{week_price}}`/week until you cancel." Annual: "`{{annual_price}}` today, renews yearly." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment only. Not relocation, financial or life advice."
-**Fallback offer:** On ✕, once per session, one bottom sheet: "Try 3 days free", then "`{{annual_price}}`/year after, cancel anytime" in the same type size as the offer. Buttons: "Start free trial" / "Not now". "Not now" returns to #18 with the free card kept. No promo codes.
+- **1 week, then monthly**: the only plan, pre-selected. `$13.67` for the first week, then `$49.99` every month. Card line: "`$13.67` first week, then `$49.99`/month, renews monthly". No other tiers, no badge, no struck price.
+**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their blurred lines map and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer, and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
+**Microcopy:** Benefit rows: "Top 3 power places for {{goal}}" / "Every line, explained for you" / "Travel timing and line alerts in the app". CTA line: "`$13.67` today for your first week, then `$49.99` every month until you cancel." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment only. Not relocation, financial or life advice."
 **CTA:** Unlock my map
-
-### 22. One city, in depth (optional add-on)
-**Purpose:** A second, small revenue layer only for users who said they're moving or could work remotely (#13). It's a genuine one-time report, with no timer.
-**Headline A:** Considering one city seriously?
-**Headline B:** Check a city before moving
-**Body A:** A deep report for any city you choose.
-**Visual:** Sample city report card (lines through it, love / work / home scores, best months); one-time price shown plainly.
-**Microcopy:** Price line: "One-time `{{city_report_price}}` · not a subscription". Path rule: shown only if #13 = move or remote; others skip to #23.
-**Skip link:** "No thanks, show my map"
-**CTA:** Add city report
 
 ---
 
 ## G. Payoff
 
-### 23. Your power places (reveal)
-**Purpose:** Delivers the map on the web success page right away, so the purchase pays off before the app install.
-**Headline A:** Your power places, {{name}}
-**Headline B:** Here's where you shine
-**Body A:** Tap any line or place to read it.
-**Visual:** Interactive map with tappable lines and pins; top 3 place cards below; a `{{current_city}}` card; share row.
-**Microcopy:** Tooltip sample: "Lisbon · on your Venus line — love and beauty come easier here." Share row: "Save map · Share". Disclaimer: "For entertainment."
-**CTA:** Explore in the app
-
-### 24. Continue in Nebula (app handoff)
-**Purpose:** Web2app handoff. Zoom, travel timing and line alerts live in the app, and login uses the same email.
-**Headline A:** Your map lives in Nebula
-**Headline B:** Take your map everywhere
-**Body A:** Log in with {{email}} to explore.
-**Visual:** Phone mockup showing the zoomable map, a "Best months for Lisbon" card and a line-alert push; store badges; QR code on desktop.
-**Microcopy:** In-app rows: "Zoom any city on your lines" / "Best months to visit" / "Alerts when you travel near a line". Notification opt-in happens on first app open.
+### 22. Get the app (after purchase)
+**Purpose:** Purchase confirmation and the web2app handoff. The full map, every line, the top 3 power places and travel timing live in the Starlyn app; there is no free web result and no offer screen.
+**Headline A:** You're in, {{name}}
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges.
+**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase()`.
 **CTA:** Open the app
 
 ---
 
 ## Notes
 
-- **Inputs kept vs. cut.** Kept: goal (ranks lines), birth date, time and place (the lines), current city (the "wrong city" answer), felt-right place (the aha moment), move intent (map mode + upsell eligibility), setting and region (filter top 3). Cut from Hint and Astroline: element, favorite color, introvert/extrovert, relationship status, career status, concept of "home", "what's keeping you from leaving", and the palm photo. None of them changes the map.
+- **Starlyn app policy (2026-10-05):** hard paywall (no close ✕, no "continue free"), exactly one plan (`$13.67` first week, then `$49.99` every month), no sale of any kind (no last-chance offer, struck price, badge or promo code), and a confirmed purchase lands on a get-the-app screen. Under 18 shows a blocking notice with a "Change my birth date" way back. The optional one-time city report was removed with the other tiers.
+- **Inputs kept vs. cut.** Kept: goal (ranks lines), birth date, time and place (the lines), current city (the "wrong city" answer), felt-right place (the aha moment), move intent (map mode), setting and region (filter top 3). Cut from Hint and Astroline: element, favorite color, introvert/extrovert, relationship status, career status, concept of "home", "what's keeping you from leaving", and the palm photo. None of them changes the map.
 - **Fear beat removed on purpose.** Hint's "challenging planetary lines crossing places you've lived" at 100% loading is a scare-to-buy tactic. #11 and #18 stay neutral ("mixed lines, no place is bad"). Astroline's rising "forecast accuracy %" meter isn't used either: it's a fake metric, and the real progress hint is enough.
 - **Birth time matters most in this niche.** #7 says the ~1,000-miles-per-hour fact plainly and offers a time-of-day fallback, so skippers still get a useful (wider-band) map. Track the #7 skip rate: if it's much higher than in the base nebula, test Body B.
 - **Trust beats:** #9 after the birth data (no numbers until real data exists) and #19 (a personal proof point, conditional).
-- **Two monetization layers, two metrics:** subscription CVR at #21 (+ fallback trial take rate), and city-report attach rate at #22 among move and remote users only. Don't fold #22 into paywall CVR.
+- **One monetization layer:** the hard paywall (#21) with one plan. No offer, no add-on, no sale. Purchase → #22 get the app.
 - **Drop-off risk:** #7 birth time, #10 current city (location permission; the manual search is the default), #20 email, #21 paywall.
 - **A/B first:** (1) #1 Headline A ("wrong city") vs. B (softer). (2) #19 on vs. off, to measure the aha screen's lift on #21 CVR. (3) #11 placement: before vs. after #12-#15. (4) #21 Headline A vs. B.

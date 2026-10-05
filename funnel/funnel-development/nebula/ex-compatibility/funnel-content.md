@@ -1,12 +1,13 @@
 ---
 niche: ex-compatibility
-display_name: Nebula - Ex Compatibility (Is it really over?)
+display_name: Starlyn - Ex Compatibility (Is it really over?)
 archetype: personalization-quiz
 subject: couple
 input: your gender and birth date (18+) and time, your ex's gender and birth date and time, who ended it, why, contact since, length, feeling now, 2 fate questions, optional palm photo
 output: a two-chart compatibility score with an honest one-line verdict (door still open / closure season / new chapter), one blurred key timing window, and a full reading with a next-step path matched to your goal
-screens: 24
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance offer, then a free verdict plus one open section
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 3
@@ -18,14 +19,14 @@ motion: >
   until their rings overlap, a gold thread tying them as a match score counts up
 ---
 
-# Funnel Content - Nebula: Ex Compatibility
+# Funnel Content - Starlyn: Ex Compatibility
 
-A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Nebula app) for the "is it really over?" niche. The user gives **their own birth data, their ex's birth data and the story of the breakup**. They get a **two-chart compatibility score with an honest verdict**. Archetype: **personalization-quiz**; the chart inputs are real, the story questions steer the reading, and the one optional upload is a side test, not a gate. 24 screens.
+A Starlyn web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Starlyn app) for the "is it really over?" niche. The user gives **their own birth data, their ex's birth data and the story of the breakup**. They get a **two-chart compatibility score with an honest verdict**. Archetype: **personalization-quiz**; the chart inputs are real, the story questions steer the reading, and the one optional upload is a side test, not a gate. 23 screens.
 
 **Modeled on:**
 - Nebula `appnebula.co/ex-compatibility/prelanding` (live funnel config read 2026-10-01; 5,196 ads in 7 months; 38 screens: goal, both charts, breakup history, fate yes/no, palm scan, analysing, email, paywall, phone, sign-up).
 - Astroline `mode=moon` "Is Your Relationship Truly Over?" (7,377 ads in 7 months; 14 steps, verdict framing).
-- Stages not captured in the library (paywall, phone and sign-up steps of Nebula; the Astroline paywall) are **unverified**; the paywall here follows the house web-paywall standard from `nebula/palm-reading`, not a copy of theirs.
+- Stages not captured in the library (paywall, phone and sign-up steps of Starlyn; the Astroline paywall) are **unverified**; the paywall here follows the house web-paywall standard from `nebula/palm-reading`, not a copy of theirs.
 
 **Kept from the references:**
 - Goal first, then both charts, then the breakup story.
@@ -35,11 +36,11 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Deliberately changed, and why:**
 - **A real "move on" branch.** Goals are second chance, closure, move on, understand why. Move on is a first-class path with its own reassurance, verdict and reading, not a consolation prize for users the quiz could not "win back".
 - **Honest verdict.** The score comes from the two charts and the answers. Copy never promises the ex returns; "charts show patterns, not promises" is on the reassurance screen, the teaser and the reading.
-- **No dark patterns.** No trial-price picker ($1/$5/$9/$13), no secret discount or promo code, no renewal that rises when a timer ends, no hidden downsell, no paid chat-credit upsell inside the web funnel. The last-chance offer shows once, has no timer unless a real deadline exists, and renewal is on it.
+- **No dark patterns.** No trial-price picker ($1/$5/$9/$13), no secret discount or promo code, no renewal that rises when a timer ends, no hidden downsell, no paid chat-credit upsell inside the web funnel. There is no sale and no last-chance offer (Starlyn app policy, 2026-10-05).
 - **Palm photo is optional** and sits after the story, with a plain skip link. The reading never depends on it.
 - **Birth data skips have fallbacks** (no birth time: midday chart; no ex birthday: we lean on your chart and the story).
 - **Ad-safe:** the ad hook is "Is it really over?", with no claim about the viewer ("Do you miss your ex?") and no guarantee.
-- **Palette:** Nebula navy `#161A27` + gold `#E9C26B`, as in the other Nebula funnels. Two overlapping chart wheels are the hero object; the "door" verdict chip is rose for closure, gold for open, sage for new chapter.
+- **Palette:** Starlyn navy `#161A27` + gold `#E9C26B`, as in the other Starlyn funnels. Two overlapping chart wheels are the hero object; the "door" verdict chip is rose for closure, gold for open, sage for new chapter.
 
 ---
 
@@ -100,7 +101,7 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Field:** Month / Day / Year selects. Years stop at today minus 18. Sun-sign chip appears once complete.
 **Visual:** Three rounded selects in one row, sign chip fades in.
 **Microcopy:** "You must be 18 or older."
-**Error state:** "Pick your full date of birth"
+**Error state:** "Pick your full date of birth" · Under 18 (exact age from month, day and year): a blocking notice "Starlyn is for adults 18+." with a "Change my birth date" button that returns to this screen; the block persists for the session (sessionStorage) until the date is changed.
 **CTA:** Continue
 
 ### 6. Your birth time
@@ -302,8 +303,8 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Headline B:** See the full picture
 **Body A:** Your {{score}}% match, the key window, what to do.
 **Body B:** Why it ended, what each chart needs.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
-**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
+**Plans:** One plan only, pre-selected: 1 week at `$13.67`, then `$49.99` every month until cancelled. No other tiers, no one-time products, no struck prices, no discount badges.
+**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, no close X (hard paywall)). Sections:
 1. Hero: eyebrow "Your reading is ready", the two wheels, 4 fact chips (your sign, their sign, match score, verdict).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": the verdict open, then locked rows: Why it ended, Key window, What each chart needs, Your next step, Daily guide in the app.
@@ -314,44 +315,26 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
-**Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ answer on outcomes: "No. A chart shows patterns for reflection. It cannot bring anyone back."
-**Fallback offer:** #23, shown once. Declining it goes to #24 with the verdict and one section open. Buying the pass opens only the key window in #24; the rest stays locked behind the subscription.
+**Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ answer on outcomes: "No. A chart shows patterns for reflection. It cannot bring anyone back."
 **CTA:** Get my reading
-
-### 23. Last-chance offer (on close)
-**Purpose:** One second chance after a paywall close, shown once per session.
-**Headline A:** Not ready? Get the window
-**Headline B:** One-time offer, shown once
-**Body A:** A smaller pass, paid once. No subscription.
-**Body B:** Just your key window, in full.
-**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (key window pass), {{offer_price}} paid once, no renewal, no strike-through price. Includes the key window in full, what it means for both charts, and the reading saved to the email. Not included (stated on the card): what each chart needs, next step, daily guide. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the wheels thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line. The money-back line shows only once {{refund_days}} is resolved.
-**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Decline link: "No thanks, show my free reading".
-**CTA:** Get the window pass
-
----
 
 ## H. Payoff
 
-### 24. Reading and app handoff
-**Purpose:** Deliver the reading (all sections if paid, verdict plus one section if not) and move the user into the app.
-**Headline A:** Your compatibility reading
-**Headline B:** Here is your reading
-**Body A:** Honest, chart-based, and yours to use.
-**Body B:** Verdict first, then what to do next.
-**Visual:** Wheels with score, verdict chip, section cards: Why it ended (open), Key window, What each chart needs, Your next step (branch: reconnect path / closure ritual / move-forward plan). Then "Continue in the Nebula app", store badges.
-**Microcopy:** "A chart shows patterns, not promises. For entertainment purposes only."
-**CTA:** Open the app (unpaid: Unlock all + Open the app)
-
----
+### 23. Get the app
+**Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your reading is ready
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Body B:** Download Starlyn: Daily Astrology and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
 
 ## Notes
 
-- **Drop-off risk:** #8 and #9 (the ex's data) and #10-#11 (the story). Mitigations: skip links with fallbacks, #4 reassurance first, #14 as a break. Measure completion per screen and skip rate for #6, #8, #9.
-- **Branches:** goal (#3) drives #4 copy, the verdict wording (#20) and the next-step card (#24). Skipping #8 skips #9. The "move on" branch gets the same quality of reading as "second chance".
+- **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
+- **Branches:** goal (#3) drives #4 copy, the verdict wording (#20) and the next-step card (in the app reading). Skipping #8 skips #9. The "move on" branch gets the same quality of reading as "second chance".
 - **Verdict honesty:** score is deterministic from both charts and answers. The demo's score, key window and section copy are placeholders; production needs the host's chart engine.
-- **Monetization:** one subscription layer. Pay-per-minute chat credits exist in Nebula's app flow; they are deliberately not sold here. Measure paywall-to-checkout and offer acceptance separately.
-- **Unverified:** Nebula's paywall, phone and sign-up steps and Astroline's paywall were not captured in AdSpyLab. Their pricing ladder ($1/$5/$9/$13.67 trial picker, secret $5 discount, $19 downsell, $49.99 credits) is knowingly not copied.
 - **Policy:** Meta relationship claims. Ad copy: no "guaranteed", no "get your ex back", no address to a personal attribute ("Do you miss your ex?"). Use "Is it really over?" and the three outcomes.
 - **Images:** the demo uses SVG/CSS art. `gen_images.py` lists the prompts for `hook-wheels`, `result-wheels`, `paywall-hero` (JPG, 560x840) to drop into `img/` later.
 - **A/B first:** (1) Hook A vs B. (2) #18 optional palm photo vs none. (3) #20 verdict first vs score first.

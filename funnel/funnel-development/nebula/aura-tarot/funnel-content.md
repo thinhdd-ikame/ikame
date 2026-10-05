@@ -1,12 +1,13 @@
 ---
 niche: aura-tarot
-display_name: Nebula - Aura and Tarot (What color is your aura?)
+display_name: Starlyn - Aura and Tarot (What color is your aura?)
 archetype: personalization-quiz
 subject: person
 input: 6 feeling and energy taps, the color you are drawn to, your focus area, birth date (18+), an optional first name, and 3 tarot cards you pick yourself
 output: your aura color (Red / Amber / Green / Blue / Indigo / Violet) with a free reading, a 3-card tarot spread you pulled, and a full reading with a 30-day aura plan
-screens: 22
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance offer (a smaller one-time Aura pack, no renewal), then your aura plus one open section for free
+screens: 21
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 9
@@ -18,13 +19,13 @@ motion: >
   one color, then three face-down tarot cards flip one by one in a gold-lit fan
 ---
 
-# Funnel Content - Nebula: Aura and Tarot
+# Funnel Content - Starlyn: Aura and Tarot
 
-A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "what color is my aura?" niche. The user gives **six feeling taps, the color they are drawn to, a focus area and their birth date**. They get **an aura color and a free reading**, then **pull three tarot cards by touch** as a second aha, and pay for the full reading. Archetype: **personalization-quiz**. The quiz answers and the color pull decide the aura; the birth date adds the Sun sign and breaks ties. 22 screens.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "what color is my aura?" niche. The user gives **six feeling taps, the color they are drawn to, a focus area and their birth date**. They get **an aura color and a free reading**, then **pull three tarot cards by touch** as a second aha, and pay for the full reading. Archetype: **personalization-quiz**. The quiz answers and the color pull decide the aura; the birth date adds the Sun sign and breaks ties. 21 screens.
 
 **Modeled on:**
 - Nebula aura ads (3,162 ads, 53 screens in the library; research `nebula-chai.md` section 4): a short feeling quiz, a free reveal of an aura color ("Indigo") plus a breakdown, then a paywall with an upsell report bundle. The screen-level flow comes from the research summary; the live funnel was not re-crawled, so exact copy and order are **unverified**.
-- Nebula `palm-reading` and `witch-power` for the house web paywall, rating gating and one-time pack offer.
+- Starlyn `palm-reading` and `witch-power` for the house web paywall, rating gating and one-time pack offer.
 
 **Kept from the reference:**
 - A named color result as the free aha ("Your aura is Indigo"), with one line per trait.
@@ -33,10 +34,10 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Deliberately changed, and why:**
 - **A second aha: a tarot pull the user does with their own hand.** After the aura reveal the user shuffles and taps three face-down cards. The deck is shuffled fresh each session, so the cards are not pre-set and no scratch-card trick is used. The free beat shows the three cards and one line each.
 - **Fewer questions.** Six feeling taps, a color pull, a focus area and a birth date. Each one changes the aura or the card reading.
-- **No dark patterns.** No "no charge yet" A/B, no timer reset, no fake discount, no fixed outcome, no persona guide, no fake user ticker. The last-chance offer shows once, has no timer unless a real deadline exists, and renewal is on it.
+- **No dark patterns.** No "no charge yet" A/B, no timer reset, no fake discount, no fixed outcome, no persona guide, no fake user ticker. There is no sale and no last-chance offer (Starlyn app policy, 2026-10-05).
 - **Honest framing.** The aura is a reflective reading from your answers, not a measurement of any field around the body. The FAQ says so plainly, and tarot is described as a prompt for reflection, not prediction.
 - **Ad-safe:** the hook is a question ("What color is your aura?"), never a claim about the viewer. 18+ only.
-- **Palette:** Nebula navy `#161A27` + gold `#E9C26B`; the aura color is the one accent that changes per result.
+- **Palette:** Starlyn navy `#161A27` + gold `#E9C26B`; the aura color is the one accent that changes per result.
 
 ---
 
@@ -160,7 +161,7 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Field:** Month / Day / Year selects. Years stop at today minus 18. Sun-sign chip appears once complete.
 **Visual:** Three rounded selects in one row, sign chip fades in.
 **Microcopy:** "You must be 18 or older."
-**Error state:** "Pick your full date of birth"
+**Error state:** "Pick your full date of birth" · Under 18 (exact age from month, day and year): a blocking notice "Starlyn is for adults 18+." with a "Change my birth date" button that returns to this screen; the block persists for the session (sessionStorage) until the date is changed.
 **CTA:** Continue
 
 ### 12. First name
@@ -266,8 +267,8 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Headline B:** See your full reading
 **Body A:** Your {{aura}} aura and three cards, in full.
 **Body B:** A 30-day plan built around your color.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
-**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
+**Plans:** One plan only, pre-selected: 1 week at `$13.67`, then `$49.99` every month until cancelled. No other tiers, no one-time products, no struck prices, no discount badges.
+**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, no close X (hard paywall)). Sections:
 1. Hero: eyebrow "Your reading is ready", the aura halo with the three card backs, 4 fact chips (aura, Sun sign, focus, cards).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": your aura open, then locked rows: Your three cards in depth, Your 30-day aura plan, Your focus guidance, Daily card in the app.
@@ -278,46 +279,30 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
-**Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ on outcomes: "Aura colors here are a reflective reading from your answers. Not a scan, not a measurement."
-**Fallback offer:** #21, shown once. Declining it goes to #22 with your aura and one section open.
+**Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ on outcomes: "Aura colors here are a reflective reading from your answers. Not a scan, not a measurement."
 **CTA:** Get my reading
-
-### 21. Last-chance offer (on close)
-**Purpose:** One second chance after a paywall close, shown once per session. A smaller, different product from the subscription tiers.
-**Headline A:** Not ready? Get the pack
-**Headline B:** One-time offer, shown once
-**Body A:** A smaller pack, paid once. No subscription.
-**Body B:** Just your aura and your card spread.
-**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (Aura pack), {{offer_price}} paid once, no renewal, no strike-through price. Includes your aura in full, your three cards in depth and the reading saved to your email. Not included (stated on the card): the 30-day aura plan, your focus guidance, the daily card. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with a halo thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
-**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Money-back line only when the refund policy is real. Buying the pack opens your aura and the three-card read in #22; the rest stays locked behind the subscription. Decline link: "No thanks, show my free reading".
-**CTA:** Get the aura pack
-
----
 
 ## H. Payoff
 
-### 22. Reading and app handoff
-**Purpose:** Deliver the reading (all sections if paid; aura plus one section if not) and move the user into the app.
-**Headline A:** Your aura reading
-**Headline B:** Here is your color
-**Body A:** Your answers, your cards, your plan.
-**Body B:** Your aura first, then what to do.
-**Visual:** Aura halo and name, Sun chip, section cards: Your aura (open), Your three cards in depth, Your 30-day aura plan, Your focus guidance. Then "Continue in the Nebula app", store badges.
-**Microcopy:** "A reflective reading for entertainment. No outcome is promised."
-**CTA:** Open the app (unpaid: Unlock all + Open the app)
-
----
+### 21. Get the app
+**Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your reading is ready
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Body B:** Download Starlyn: Daily Astrology and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
 
 ## Notes
 
+- **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Reference unverified.** The Nebula aura funnel (3,162 ads, 53 screens) is known from the research summary only; screen order and exact copy are inferred, not captured. Treat the competitor beats as unverified.
 - **Scoring (demo, deterministic).** Six aura colors (Red, Amber, Green, Blue, Indigo, Violet). Each option in #2, #3, #5, #7 adds 2 to one color and 1 to another; #4 and #6 add to the intuitive and deep colors by 3/2/1/0; the color pull #9 adds 3 to the picked color. Highest wins; an exact tie goes to the picked color, then the Sun element. "Other" on #7 adds nothing, so it never skews.
 - **Tarot pull.** Seven cards from a fresh shuffle of the 22 Major Arcana; the user opens three by touch. Upright only. The result differs each session by design; the reading below the free beat reads whichever cards were opened. No card is pre-set.
 - **Real vs placeholder.** Sun sign is exact from the birth date. Card meanings, trait lines and section copy are placeholders to be replaced with the host's content. The aura is not a measurement and the copy never says it is.
 - **Drop-off risk:** length of the tap run (#2-#7) and #16 (the pull needs three deliberate taps). Mitigations: #8 as a break, big touch targets in #16 and the free reveals at #14 and #17 as the reward. Measure completion per screen.
 - **No dark patterns.** No "no charge yet" A/B, no timer reset, no pre-set pick, no fake ticker, no persona guide.
-- **Monetization:** one subscription layer. Nebula's post-purchase report bundle is represented only by the smaller one-time Aura pack. Measure paywall-to-checkout and offer acceptance separately.
 - **Policy:** Meta personal-attribute rule. Ad copy asks the question ("What color is your aura?") and never says "Your aura is dark" or implies a trait of the viewer. No health or outcome claims.
 - **Images:** the demo uses CSS/SVG art plus local gradient placeholders. `gen_images.py` lists prompts for `hook-aura`, `reveal-aura`, `card-back`, `paywall-hero` (JPG, 560x840) to drop into `img/` later.
 - **A/B first:** (1) Hook A vs B. (2) #14 aura reveal before vs after the tarot pull. (3) #19 teaser with vs without the link line.

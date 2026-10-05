@@ -78,6 +78,12 @@ class LintTest(unittest.TestCase):
         self.assertEqual(lint(GOOD + "\nUsa la app todo el día\n"), [])
         self.assertIn("placeholder text (TBD/TODO/lorem)", lint(GOOD + "\nTODO\n"))
 
+    def test_offer_none_policy(self):
+        """`offer: none` in frontmatter waives the offer-screen rule (app policy: no sale)."""
+        txt = GOOD.replace("### 3. Last-chance offer", "### 3. Get app").replace("motion: stars drift\n", "motion: stars drift\noffer: none\n")
+        self.assertEqual(lint(txt), [])
+        self.assertIn("no fallback/last-chance offer screen", lint(txt.replace("offer: none\n", "")))
+
     def test_offer_not_paywall(self):
         """Test that 'Paywall — special offer' is not accepted as the offer screen."""
         # Paywall with "offer" text should not satisfy offer screen requirement

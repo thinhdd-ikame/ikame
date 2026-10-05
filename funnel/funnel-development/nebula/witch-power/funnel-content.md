@@ -1,12 +1,13 @@
 ---
 niche: witch-power
-display_name: Nebula - Witch Power (What's your witch power?)
+display_name: Starlyn - Witch Power (What's your witch power?)
 archetype: personalization-quiz
 subject: person
 input: your gender, 8 agree/disagree statements, whether witches run in your family, one image test, birth date (18+), birth time and birth city
 output: your witch power type (Seer / Healer / Dreamwalker / Moon Weaver / Earth Keeper), your free Sun, Moon and Rising signs, and a full reading with a 30-day ritual and a moon-timed practice
-screens: 24
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance offer (a smaller one-time Power pack, no renewal), then your power type plus one open section for free
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -19,16 +20,16 @@ motion: >
   witch's silhouette
 ---
 
-# Funnel Content - Nebula: Witch Power
+# Funnel Content - Starlyn: Witch Power
 
-A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "what is my witch power?" niche. The user gives **a short intuition quiz, a family-lineage answer, one image test and their birth data**. They get **a witch power type and their real Big Three (Sun, Moon, Rising) for free**, and pay for the full reading. Archetype: **personalization-quiz**; the birth data is real and powers the free reveal, the quiz answers decide the power type. 24 screens.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "what is my witch power?" niche. The user gives **a short intuition quiz, a family-lineage answer, one image test and their birth data**. They get **a witch power type and their real Big Three (Sun, Moon, Rising) for free**, and pay for the full reading. Archetype: **personalization-quiz**; the birth data is real and powers the free reveal, the quiz answers decide the power type. 23 screens.
 
 **This brief replaces the older, never-demoed `nebula/funnel-content.md` (generic 25-screen horoscope brief).** That file stays in the repo for history; do not build from it.
 
 **Modeled on:**
 - Nebula `appnebula.co/witch-power/prelanding` (live funnelConfig, read 2026-10-01; 2,720 ads in 7 months; 55 screens, about 41 questions: Likert statements, goal, empath questions, element, witches in family with a lineage branch, ambiguous-image test, lifestyle, DOB, palm photo, email, paywall, upsells).
 - Astroline `sub.astroline.today/quiz-pp?mode=witch` and `mode=birth-chart` (about 3,900 ads in 7 months; "Discover your witch power", DOB, birth time, birthplace, loader, free Big Three reveal, "accuracy" meter). Their flow is **unverified** at screen level (the library has no capture; SPA shell only), so it is inferred from the shared quiz engine.
-- The Nebula paywall and Astroline paywall are not copied; the paywall here follows the house web-paywall standard from `nebula/palm-reading`.
+- The Starlyn paywall and Astroline paywall are not copied; the paywall here follows the house web-paywall standard from `nebula/palm-reading`.
 
 **Kept from the references:**
 - Short agree/disagree statements first (intuition, dreams, deja vu), then empath questions.
@@ -36,14 +37,14 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 - A real, free Big Three reveal as the aha before the gate (Astroline's best idea), then a named power type.
 
 **Deliberately changed, and why:**
-- **41 questions cut to 14 taps.** Nebula asks about candles, scents and self-care; none of it feeds the result. Every question here changes the power type (see Notes, scoring).
-- **A real birth chart is the free aha.** Nebula gates its chart; Astroline reveals it but then adds a rising "accuracy" meter. Here the Big Three is shown with no meter and no percentage.
-- **No dark patterns.** No accuracy meter that climbs to sell, no Likert "lying detection" that pretends to catch the user, no trial-price picker ($1/$5/$9/$13.67), no secret discount, no renewal that rises when a timer ends, no persona "guide" page. The last-chance offer shows once, has no timer unless a real deadline exists, and renewal is on it.
+- **41 questions cut to 14 taps.** Starlyn asks about candles, scents and self-care; none of it feeds the result. Every question here changes the power type (see Notes, scoring).
+- **A real birth chart is the free aha.** Starlyn gates its chart; Astroline reveals it but then adds a rising "accuracy" meter. Here the Big Three is shown with no meter and no percentage.
+- **No dark patterns.** No accuracy meter that climbs to sell, no Likert "lying detection" that pretends to catch the user, no trial-price picker ($1/$5/$9/$13.67), no secret discount, no renewal that rises when a timer ends, no persona "guide" page. There is no sale and no last-chance offer (Starlyn app policy, 2026-10-05).
 - **Palm photo dropped.** Not needed for this result; one less upload ask.
 - **Honest framing.** The reading is a reflective practice built on a birth chart and your answers. The FAQ says plainly it is not prediction and needs no purchase of supplies.
 - **Birth data skips have fallbacks** (no birth time: midday chart; no birth city: Rising shown as an estimate).
 - **Ad-safe:** the ad hook is "What's your witch power?", not a claim about the viewer ("You are a witch"). 18+ only.
-- **Palette:** Nebula navy `#161A27` + gold `#E9C26B`, as in the other Nebula funnels. Hero object is a crescent over a birth-chart wheel; the power type gets one glyph and one accent colour.
+- **Palette:** Starlyn navy `#161A27` + gold `#E9C26B`, as in the other Starlyn funnels. Hero object is a crescent over a birth-chart wheel; the power type gets one glyph and one accent colour.
 
 ---
 
@@ -211,7 +212,7 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Field:** Month / Day / Year selects. Years stop at today minus 18. Sun-sign chip appears once complete.
 **Visual:** Three rounded selects in one row, sign chip fades in.
 **Microcopy:** "You must be 18 or older."
-**Error state:** "Pick your full date of birth"
+**Error state:** "Pick your full date of birth" · Under 18 (exact age from month, day and year): a blocking notice "Starlyn is for adults 18+." with a "Change my birth date" button that returns to this screen; the block persists for the session (sessionStorage) until the date is changed.
 **CTA:** Continue
 
 ### 16. Your birth time
@@ -296,8 +297,8 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 **Headline B:** See your full craft
 **Body A:** Your {{power}} ritual, timed to the Moon.
 **Body B:** Thirty days of practice built around you.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
-**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
+**Plans:** One plan only, pre-selected: 1 week at `$13.67`, then `$49.99` every month until cancelled. No other tiers, no one-time products, no struck prices, no discount badges.
+**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, no close X (hard paywall)). Sections:
 1. Hero: eyebrow "Your reading is ready", the power glyph on the chart wheel, 4 fact chips (power, Sun, Moon, Rising).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": the power type open, then locked rows: Your 30-day ritual, Moon-timed practice, What your Moon says about your craft, Your lineage line, Daily moon guide in the app.
@@ -308,47 +309,30 @@ A Nebula web2app funnel (Meta ad, web quiz, web paywall, Nebula app) for the "wh
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
-**Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ on outcomes: "It is a reflective practice built on your chart and answers. It does not predict or change events."
-**Fallback offer:** #23, shown once. Declining it goes to #24 with your power type and one section open.
+**Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ on outcomes: "It is a reflective practice built on your chart and answers. It does not predict or change events."
 **CTA:** Get my reading
-
-### 23. Last-chance offer (on close)
-**Purpose:** One second chance after a paywall close, shown once per session. A smaller, different product from the subscription tiers.
-**Headline A:** Not ready? Get the pack
-**Headline B:** One-time offer, shown once
-**Body A:** A smaller pack, paid once. No subscription.
-**Body B:** Just your power and moon practice.
-**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (Power pack), {{offer_price}} paid once, no renewal, no strike-through price. Includes your power type in full, your moon-timed practice and the reading saved to your email. Not included (stated on the card): the 30-day ritual, what your Moon says about your craft, your lineage line, the daily moon guide. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with a chart-wheel thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
-**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Money-back line only when the refund policy is real. Buying the pack opens only the power type and the moon practice in #24; the rest stays locked behind the subscription. Decline link: "No thanks, show my free reading".
-**CTA:** Get the power pack
-
----
 
 ## H. Payoff
 
-### 24. Reading and app handoff
-**Purpose:** Deliver the reading (all sections if paid; power type plus one section if not) and move the user into the app.
-**Headline A:** Your witch power reading
-**Headline B:** Here is your craft
-**Body A:** Your chart, your answers, your practice.
-**Body B:** Power first, then what to do next.
-**Visual:** Power glyph and name, three sign chips, section cards: Your power (open), What your Moon says about your craft, Your 30-day ritual, Your moon-timed practice (next new moon date, real), Your lineage line. Then "Continue in the Nebula app", store badges.
-**Microcopy:** "A reflective reading for entertainment. No outcome is promised."
-**CTA:** Open the app (unpaid: Unlock all + Open the app)
-
----
+### 23. Get the app
+**Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your reading is ready
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Body B:** Download Starlyn: Daily Astrology and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
 
 ## Notes
 
+- **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Replaces `nebula/funnel-content.md`.** The old 25-screen generic horoscope brief (never demoed) is superseded by this one for the witch/birth-chart angle. Do not build a demo from the old file.
 - **Scoring (demo, deterministic).** Five axes, each scaled to its own maximum: Seer (#3, #5, #6, image eye), Dreamwalker (#4, #6, image butterfly), Moon Weaver (#7, image moon), Earth Keeper (#8), Healer (#10, #11). Options score 3/2/1/0. Highest wins; an exact tie goes to the Sun element (water Healer, earth Earth Keeper, air Seer, fire Moon Weaver). "Other" on #14 adds nothing, so Other never blocks or skews.
 - **Branch:** #12 any answer except "None I know" opens #13; "None I know" jumps to #14. Lineage only affects one line of the reading.
 - **Ephemeris required.** No copy may claim a "real chart" in production until the host's ephemeris and house engine replace the demo's Moon and Rising approximations (the demo tags Moon and Rising "Estimate" when the birth time is unknown).
-- **Real vs placeholder.** Sun sign is exact from the birth date. The demo estimates the Moon sign from the Moon's mean orbit and the Rising sign from birth time (about one sign per two hours); production must use the host's ephemeris. The "next new moon" date in #24 uses the real 29.53-day cycle. Score weights and section copy are placeholders.
-- **Drop-off risk:** #16 and #17 (birth time and city), plus the length of the statement run (#3-#8). Mitigations: skip links with fallbacks, #9 as a break, and the free reveal at #19 as the reward. Measure completion per screen and skip rate for #16 and #17.
+- **Real vs placeholder.** Sun sign is exact from the birth date. The demo estimates the Moon sign from the Moon's mean orbit and the Rising sign from birth time (about one sign per two hours); production must use the host's ephemeris. The "next new moon" date in the app reading uses the real 29.53-day cycle. Score weights and section copy are placeholders.
 - **No accuracy meter, no "lying detection".** Both are dark patterns in the references (a rising accuracy %, Likert trap questions). Not used.
-- **Monetization:** one subscription layer. Nebula's post-purchase report upsells and pay-per-minute chat are deliberately not sold here. Measure paywall-to-checkout and offer acceptance separately.
 - **Unverified:** Astroline's witch-mode screens (inferred from the shared quiz engine) and both paywalls. Nebula's pricing ladder ($1/$5/$9/$13.67 trial picker, secret $1 to $20.99 discount, $49.99/30d renewal) is knowingly not copied.
 - **Policy:** Meta personal-attribute rule. Ad copy asks the question ("What's your witch power?") and never says "You are a witch" or "You have powers". No health or outcome claims.
 - **Images:** the demo uses SVG/CSS art. `gen_images.py` lists prompts for `hook-moon`, `inkblot`, `reveal-sky`, `paywall-hero` (JPG, 560x840) to drop into `img/` later.

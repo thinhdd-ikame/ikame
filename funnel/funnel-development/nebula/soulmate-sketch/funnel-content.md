@@ -1,12 +1,13 @@
 ---
 niche: soulmate-sketch
-display_name: Nebula - Soulmate Sketch + Palm Heart Line (web2app)
+display_name: Starlyn - Soulmate Sketch + Palm Heart Line (web2app)
 archetype: personalization-quiz
 subject: person
 input: partner gender and age, love-life status, name, birth date, birth time (optional), birth place, partner look and traits, optional left-palm photo
 output: AI soulmate sketch + partner sign + optional heart-line palm reading
-screens: 24
-monetization: web paywall (one-time sketch OR Premium weekly / annual, annual pre-selected) + in-app Premium; no second paid layer in the web funnel
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -19,20 +20,20 @@ motion: >
   tracing a face line by line over a slow star field, eyes appearing last
 ---
 
-# Funnel Content — Nebula · Soulmate Sketch
+# Funnel Content — Starlyn · Soulmate Sketch
 
-A web2app funnel (Meta ad → web quiz → web paywall → Nebula app) for the biggest astrology niche on Meta right now. AdSpyLab counted 78.5K "soulmate sketch" ads in 03-08/2026, 14.6K of them in August, up 54% over the last three months. Hint (53K ads, still growing) is filling the space Nebula left when it stopped these ads in August because of the FTC case. Target is US women 28-45. The user gives partner preferences, birth data and optionally a palm photo. They get an AI-drawn sketch, their partner sign and a heart-line reading. The palm step is a side test that rides on the main hook, since palm reading is a small but growing niche (5.6K ads, +105%). This is the **personalization-quiz** archetype, built as the honest "variant (a)" of the Soulmate Sketch lead magnet described in `references/archetypes/personalization-quiz.md`. **Modeled on:** Hint `hint.app/soulmate` (39 screens, €1 front-end plus a "93% promo code") and Nebula's own `appnebula.co/soulmate-sketch/prelanding` (33 screens, paid trial of €49.99/7d renewing at €13.67/30d). **What I deliberately changed:**
+A web2app funnel (Meta ad → web quiz → web paywall → Starlyn app) for the biggest astrology niche on Meta right now. AdSpyLab counted 78.5K "soulmate sketch" ads in 03-08/2026, 14.6K of them in August, up 54% over the last three months. Hint (53K ads, still growing) is filling the space Nebula left when it stopped these ads in August because of the FTC case. Target is US women 28-45. The user gives partner preferences, birth data and optionally a palm photo. They get an AI-drawn sketch, their partner sign and a heart-line reading. The palm step is a side test that rides on the main hook, since palm reading is a small but growing niche (5.6K ads, +105%). This is the **personalization-quiz** archetype, built as the honest "variant (a)" of the Soulmate Sketch lead magnet described in `references/archetypes/personalization-quiz.md`. **Modeled on:** Hint `hint.app/soulmate` (39 screens, €1 front-end plus a "93% promo code") and Nebula's own `appnebula.co/soulmate-sketch/prelanding` (33 screens, paid trial of €49.99/7d renewing at €13.67/30d). **What I deliberately changed:**
 
 - The first screen is the first tap ("who should we sketch?"), not two info screens.
 - The quiz is cut from ~20 partner questions to 7. Each one we keep feeds something the sketch or reading actually shows.
 - Instead of an ethnicity question, the user picks hair and eye color, with "let the chart decide" as the default.
 - Birth time is used to find the Descendant (partner sign), so the most-skipped input has a visible payoff.
 - The live sketch is generated right away. There is no 24-48h async delivery and no fake "your artist has started" persona.
-- Nothing is charged before the price is shown. A true one-time "sketch only" plan sits next to the subscription.
+- Nothing is charged before the price is shown. One plan only: a 1-week intro that renews monthly, stated on the card and the CTA line.
 - Renewal price appears on every plan card and in the CTA line.
 - No promo codes, countdowns or fake tickers.
 
-The visual system is the base `nebula/` house look (dark, purple-pink gradient CTAs), plus a cream-paper and gold-graphite sketch motif for the hero object. 24 screens.
+The visual system is the base `nebula/` house look (dark, purple-pink gradient CTAs), plus a cream-paper and gold-graphite sketch motif for the hero object. 23 screens.
 
 ---
 
@@ -115,7 +116,7 @@ The visual system is the base `nebula/` house look (dark, purple-pink gradient C
 **Body B:** Your birthday shapes how you love.
 **Field:** Date wheel (month / day / year); age gate 18+
 **Visual:** Plain scrollable date wheel on the star-field backdrop.
-**Error state:** "Pick a full date to continue" / "You must be 18 or older to continue"
+**Error state:** "Pick a full date to continue". Under 18: a blocking notice, "Starlyn is for adults 18+." / "You must be 18 or older to use Starlyn. Entered the wrong date? Change it below.", with a "Change my birth date" button that clears the date and returns here. The block persists for the session (sessionStorage `ikf_age_block`) and fires `age_block`.
 **CTA:** Continue
 
 ### 7. Your Venus (micro-reveal bridge)
@@ -305,7 +306,7 @@ The visual system is the base `nebula/` house look (dark, purple-pink gradient C
 ## E. Gate
 
 ### 21. Where to send it
-**Purpose:** Captures email, which is both the delivery address for the sketch and the Nebula app login (web2app handoff). It comes after the tease, so the user already knows what they're getting.
+**Purpose:** Captures email, which is both the delivery address for the sketch and the Starlyn app login (web2app handoff). It comes after the tease, so the user already knows what they're getting.
 **Headline A:** Where should we send it?
 **Headline B:** Save your sketch, {{name}}
 **Body A:** Your sketch and app login go here.
@@ -320,53 +321,39 @@ The visual system is the base `nebula/` house look (dark, purple-pink gradient C
 
 ## F. Monetization
 
-### 22. Paywall (honest variant)
-**Purpose:** Primary ask. The key difference from competitors: a real one-time plan sits beside the subscription, and every card says exactly what renews and when. Modeled on archetype variant (a) only.
+### 22. Paywall (hard, honest variant)
+**Purpose:** Primary ask and a hard gate: the HD sketch and the full reading open only after purchase. One plan, and the card and the CTA line say exactly what renews and when. Modeled on archetype variant (a) only.
 **Headline A:** Unlock your soulmate sketch
 **Headline B:** {{name}}, see their face
-**Body A:** One-time or Premium. You see every price first.
-**Body B:** Pay once for the sketch, or go Premium.
+**Body A:** One plan. You see the price first.
+**Body B:** Your sketch and full reading, in the app.
 **Plans:** (prices are tokens for the ikame pricing team; do not invent numbers)
-- **Sketch only** — `{{sketch_price}}` one-time. Card line: "One payment · never renews". Includes HD sketch, partner sign, heart-line reading.
-- **Premium Weekly** — `{{week_intro_price}}` first week. Card line: "then `{{week_price}}`/week, renews weekly". Adds full reading + app.
-- **Premium Annual** — pre-selected, "BEST VALUE" badge, per-week equivalent shown small. Card line: "`{{annual_price}}`/year, renews yearly". Adds full reading, daily love forecast, compare-a-match in app.
-**Visual:** Blurred sketch card at top, three stacked plan cards (Annual pre-highlighted), each card showing its renewal line in the same type size as its price. Apple Pay / Google Pay button prominent, card form below.
-**Microcopy:** CTA line under the button changes with the plan. Sketch: "Pay `{{sketch_price}}` once. No subscription." Weekly: "`{{week_intro_price}}` today, then `{{week_price}}`/week until you cancel." Annual: "`{{annual_price}}` today, renews yearly at `{{annual_price}}`." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back" (base nebula uses 7 days; confirm with billing). "We email you 3 days before any renewal." Legal: "For entertainment. Your sketch is an AI illustration, not a real person."
-**Fallback offer:** On ✕, once per session, one bottom sheet: "Just want the sketch?" showing only the Sketch-only card with the same disclosure. Buttons: "Get my sketch" / "Not now". "Not now" returns to #20 with the partner sign kept. No promo codes, no struck-through "93% off" anchors.
+- **1 week, then monthly**: the only plan, pre-selected. `$13.67` for the first week, then `$49.99` every month. Card line: "`$13.67` first week, then `$49.99`/month, renews monthly". No other tiers, no badge, no struck price.
+**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their frosted sketch card and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer, and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
+**Microcopy:** Benefit rows: "Your soulmate sketch in full HD" / "Their nature, and where you may meet" / "Daily love forecast in the app". CTA line: "`$13.67` today for your first week, then `$49.99` every month until you cancel." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment. Your sketch is an AI illustration, not a real person."
 **CTA:** Unlock my sketch
-
 ---
 
 ## G. Payoff
 
-### 23. Your soulmate (reveal)
-**Purpose:** Delivers the thing people paid for, on the web success page, before any app install. It pays off the purchase immediately.
-**Headline A:** Here they are, {{name}}
-**Headline B:** Your soulmate, sketched
-**Body A:** Tap the sketch to read their nature.
-**Visual:** Full sketch on cream paper with a gold "for {{name}}" signature; tappable hotspots on eyes and smile open short tooltips; partner-sign card and heart-line card below; save/share row.
-**Microcopy:** Tooltip sample: "Their eyes: warm and watchful — they notice everything." Share row: "Save image · Share". Disclaimer: "AI illustration for entertainment."
-**CTA:** Read the full reading
-
-### 24. Continue in Nebula (app handoff)
-**Purpose:** The web2app handoff. The full reading, daily love forecast and compare-a-match live in the app, and login uses the same email.
-**Headline A:** Your reading lives in Nebula
-**Headline B:** Take your sketch with you
-**Body A:** Log in with {{email}} to read everything.
-**Body B:** Same email, everything already waiting.
-**Visual:** Phone mockup showing the saved sketch, a "Today in love" card and a "Compare someone new" card; App Store / Google Play badges; QR code on desktop.
-**Microcopy:** In-app rows: "Full soulmate reading" / "Daily love forecast" / "Check a real match against your sketch". Sketch-only buyers see: "Your sketch is saved. Premium is optional." Notification opt-in happens on first app open, not on web.
+### 23. Get the app (after purchase)
+**Purpose:** Purchase confirmation and the web2app handoff. The HD sketch, the partner sign, the heart-line reading and the daily love forecast live in the Starlyn app; there is no free web result and no offer screen.
+**Headline A:** You're in, {{name}}
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges.
+**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase()`.
 **CTA:** Open the app
 
 ---
 
 ## Notes
 
-- **Deliberately not built: the $1 → hidden recurring subscription mechanic.** This is the version flagged in the 2026 FTC case. Here, nothing is charged before #22, the one-time plan is genuinely one-time, and every card and CTA line states its renewal. Hint's "exclusive 93% promo code" screen and struck-through anchors are skipped too, because they're a fake-discount pattern.
-- **Instant, not async.** The sketch is generated live (#19) and shown right after payment (#23). If engineering can't render instantly, the only allowed fallback is an honest "ready in N minutes, we'll email you" message *after* a disclosed purchase, never a charge with no visible result.
+- **Starlyn app policy (2026-10-05):** hard paywall (no close ✕, no "continue free"), exactly one plan (`$13.67` first week, then `$49.99` every month), no sale of any kind (no last-chance offer, struck price, badge or promo code), and a confirmed purchase lands on a get-the-app screen. Under 18 shows a blocking notice with a "Change my birth date" way back. The one-time "sketch only" plan was removed with the other tiers.
+- **Deliberately not built: the $1 → hidden recurring subscription mechanic.** This is the version flagged in the 2026 FTC case. Here, nothing is charged before #22, and the one plan states its renewal on the card and in the CTA line. Hint's "exclusive 93% promo code" screen and struck-through anchors are skipped too, because they're a fake-discount pattern.
+- **Instant, not async.** The sketch is generated live (#19); after payment the HD sketch and full reading open in the app (#23 hands over). If engineering can't render instantly, the only allowed fallback is an honest "ready in N minutes, we'll email you" message *after* a disclosed purchase, never a charge with no visible result.
 - **What was cut from Hint/Nebula's ~20 partner questions:** the ethnicity preference (sensitive, and hair and eye color cover what the drawing needs), elements, head vs. heart, red flags, similar vs. contrast, dynamic, fears, life goals and spirituality. None of them visibly changes the sketch or the reading. The user's own gender was also cut: target is women, but nothing in the output depends on it.
 - **Palm side test (#16-#18):** opt-in, placed after the sketch has started (#15), so the user has sunk cost and the step reads as a bonus. Measure the palm opt-in rate and paywall CVR for palm vs. no-palm users separately. If palm users convert clearly better, test moving the palm offer into the hook (#2 Headline B).
 - **Trust beats:** #10 after the birth data and #18 after the palm photo (the hardest input). Neither uses invented numbers. #10B and any quotes need real ikame data.
 - **Drop-off risk:** #8 birth time (payoff framing + Venus fallback), #17 camera permission (upload fallback + skip), #21 email, #22 paywall.
-- **Monetization layers:** one layer on the web (the #22 plan mix). Track one-time share vs. subscription share and the weekly→renewal rate as separate numbers. No astrologer-chat upsell in the web funnel, and no invented advisor personas.
-- **A/B first:** (1) #22 pre-selection: Annual vs. Sketch-only, to measure revenue per visitor, not just CVR. (2) #1 Headline A vs. B. (3) Palm offer on vs. off. (4) #7 Venus bridge on vs. off, to measure its lift on #8-#9 completion.
+- **One monetization layer:** the hard paywall (#22) with one plan. No offer, no one-time plan, no sale. Purchase → #23 get the app. Track first-week → monthly renewal as its own number.
+- **A/B first:** (1) #22 Headline A vs. B. (2) #1 Headline A vs. B. (3) Palm offer on vs. off. (4) #7 Venus bridge on vs. off, to measure its lift on #8-#9 completion.

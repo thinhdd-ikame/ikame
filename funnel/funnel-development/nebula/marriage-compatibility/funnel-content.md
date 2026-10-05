@@ -1,12 +1,13 @@
 ---
 niche: marriage-compatibility
-display_name: Nebula - Marriage Compatibility (When will you marry?)
+display_name: Starlyn - Marriage Compatibility (When will you marry?)
 archetype: personalization-quiz
 subject: couple
 input: your status (single / dating / engaged), gender, birth date (18+), time and place, partner's birth date (if you have one) or your must-have in a partner (if single), first name, 3 marriage-value answers, love language, feeling and hoped timeline, optional palm photo
 output: a marriage window (a range of years, never a date) with a match or timing score, one blurred peak season, and a full reading with values, bond and timing axes plus a partner profile (single) or what each chart needs (couple)
-screens: 24
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time last-chance offer, then a free window plus one open section
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -18,14 +19,14 @@ motion: >
   opening between them as a year range counts into place
 ---
 
-# Funnel Content - Nebula: Marriage Compatibility
+# Funnel Content - Starlyn: Marriage Compatibility
 
-A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Nebula app) for the "when will I marry?" niche. The user gives **their birth data, a partner's birth date if they have one, and three real marriage-value answers** (children, home, money). They get a **marriage window** (a range of years) plus three axes of fit. Archetype: **personalization-quiz**; the chart inputs are real, the value answers steer the reading, and the one optional upload is a side test, not a gate. 24 screens, two branches.
+A Starlyn web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Starlyn app) for the "when will I marry?" niche. The user gives **their birth data, a partner's birth date if they have one, and three real marriage-value answers** (children, home, money). They get a **marriage window** (a range of years) plus three axes of fit. Archetype: **personalization-quiz**; the chart inputs are real, the value answers steer the reading, and the one optional upload is a side test, not a gate. 23 screens, two branches.
 
 **Modeled on:**
 - Nebula marriage funnel (605 ads, 42 screens) and Hint marriage reading (1,342 ads, 62 screens, paywall captured 2026-09-02), via the AdSpyLab research in `nebula-chai.md` section 1.
 - Sibling funnel `nebula/ex-compatibility` for structure, palette, wheel art and the web paywall. Questions here are new; only the birth-data inputs are shared by necessity.
-- Stages not captured in the library are **unverified**: the exact Nebula marriage paywall and sign-up steps. The paywall here follows the house web-paywall standard from `nebula/palm-reading`, not a copy of theirs.
+- Stages not captured in the library are **unverified**: the exact Starlyn marriage paywall and sign-up steps. The paywall here follows the house web-paywall standard from `nebula/palm-reading`, not a copy of theirs.
 
 **Kept from the references:**
 - A "when" hook, then birth data, then a teaser of a marriage window before the gate.
@@ -36,11 +37,11 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 - **Two branches.** Hint's reading is single-only. Here a partner's date of birth is asked only if the user is dating or engaged; single users get a partner-profile reading built from their own chart and their must-have, not a consolation version.
 - **Values, not just stars.** Three real marriage questions (children, home, money) feed a Values axis next to the Bond and Timing axes, so the reading says something a person can talk through.
 - **A window, never a date.** The result is a range of years and a peak season, with "astrology for reflection" on the reassurance screen, the teaser, the reading and the FAQ. No wedding date, no guarantee.
-- **No dark patterns.** No "MARRIAGE93" style code, no "speed up for 3.99" bump, no secret discount, no renewal that rises when a timer ends. The last-chance offer shows once, has no timer unless a real deadline exists, and renewal is on it.
+- **No dark patterns.** No "MARRIAGE93" style code, no "speed up for 3.99" bump, no secret discount, no renewal that rises when a timer ends. There is no sale and no last-chance offer (Starlyn app policy, 2026-10-05).
 - **Palm photo is optional** with a plain skip link. The reading never depends on it.
 - **Birth data skips have fallbacks** (no time: midday chart; no place: neutral sky; no partner date: your chart and your answers).
 - **Ad-safe:** the ad hook is "When will you marry?", with no claim about the viewer ("Are you still single?") and no guarantee.
-- **Palette:** Nebula navy `#161A27` + gold `#E9C26B`; two wheels plus two rings are the hero objects. The window chip is gold for "window ahead", sage for "steady path".
+- **Palette:** Starlyn navy `#161A27` + gold `#E9C26B`; two wheels plus two rings are the hero objects. The window chip is gold for "window ahead", sage for "steady path".
 
 ---
 
@@ -99,7 +100,7 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Field:** Month / Day / Year selects. Years stop at today minus 18. Sun-sign chip appears once complete.
 **Visual:** Three rounded selects in one row, sign chip fades in.
 **Microcopy:** "You must be 18 or older."
-**Error state:** "Pick your full date of birth"
+**Error state:** "Pick your full date of birth" · Under 18 (exact age from month, day and year): a blocking notice "Starlyn is for adults 18+." with a "Change my birth date" button that returns to this screen; the block persists for the session (sessionStorage) until the date is changed.
 **CTA:** Continue
 
 ### 6. Your birth time
@@ -306,8 +307,8 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 **Headline B:** See your full window
 **Body A:** Peak season, three axes, your next step.
 **Body B:** What each chart needs, and when.
-**Plans:** 1 week ({{price_1w}} intro, then {{renewal_1w}}/week) · 4 weeks ({{price_4w}}, then {{renewal_4w}} every 4 weeks, Recommended, pre-selected) · 12 weeks ({{price_12w}}, then {{renewal_12w}} every 12 weeks, best per-week value). Renewal shown on every plan card and in the CTA line. No trial-price picker, no promo code.
-**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, close X). Sections:
+**Plans:** One plan only, pre-selected: 1 week at `$13.67`, then `$49.99` every month until cancelled. No other tiers, no one-time products, no struck prices, no discount badges.
+**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, no close X (hard paywall)). Sections:
 1. Hero: eyebrow "Your reading is ready", the wheels (`img/paywall-hero.jpg`), 4 fact chips (your sign, partner sign or partner type, window, match or timing).
 2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
 3. "Inside your reading": the window open, then locked rows: Peak season, Values axis (kids, home, money), Bond axis, What each chart needs (couple) or Your partner profile (single), Your next step, Daily guide in the app.
@@ -318,43 +319,26 @@ A Nebula web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Ne
 8. Plan block again.
 9. Footer: legal links, entity, entertainment disclaimer.
 Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
-**Microcopy:** Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your window is ready". FAQ answer on dates: "No. A chart shows a window of tendencies for reflection. It cannot name a day or promise an outcome."
-**Fallback offer:** #23, shown once. Declining it goes to #24 with the window and one section open. Buying the pass opens only the window and peak season in #24; the rest stays locked behind the subscription.
+**Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your window is ready". FAQ answer on dates: "No. A chart shows a window of tendencies for reflection. It cannot name a day or promise an outcome."
 **CTA:** Get my reading
-
-### 23. Last-chance offer (on close)
-**Purpose:** One second chance after a paywall close, shown once per session.
-**Headline A:** Not ready? Get the window
-**Headline B:** One-time offer, shown once
-**Body A:** A smaller pass, paid once. No subscription.
-**Body B:** Just your window and peak season.
-**Plans:** One offer card, a different and smaller product than the 1-week plan: {{offer_name}} (window pass), {{offer_price}} paid once, no renewal, no strike-through price. Includes the full window, the peak season and the reading saved to the email. Not included (stated on the card): three axes, partner profile or what each chart needs, next step, daily guide. Optional {{offer_badge}}.
-**Visual:** Web page in the paywall's style: sticky bar with close X, eyebrow "One-time offer", one gold-bordered card with the wheels thumbnail, price row, 3 checks, a "not included" line, CTA, payment badges, a "paid once, nothing to cancel" line.
-**Microcopy:** No timer unless a real deadline exists (`CONFIG.offer.expiresMin`). Decline link: "No thanks, show my free reading".
-**CTA:** Get the window pass
-
----
 
 ## H. Payoff
 
-### 24. Reading and app handoff
-**Purpose:** Deliver the reading (all sections if paid, window plus one section if not) and move the user into the app.
-**Headline A:** {{name}}'s marriage reading
-**Headline B:** Here is your window
-**Body A:** Chart-based, honest, and yours to use.
-**Body B:** Window first, then what to do next.
-**Visual:** Wheels, the window range large in gold, window chip, section cards: Marriage window (open) · Values axis · Bond axis · Timing axis · What each chart needs (couple) or Your partner profile (single) · Your next step (by status). Then "Continue in the Nebula app", store badges.
-**Microcopy:** "Astrology for reflection. No date or outcome is guaranteed. For entertainment purposes only." Without a name the headline reads "Your marriage reading".
-**CTA:** Open the app (unpaid: Unlock all + Open the app)
-
----
+### 23. Get the app
+**Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your reading is ready
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Body B:** Download Starlyn: Daily Astrology and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
 
 ## Notes
 
-- **Drop-off risk:** #7 and #9 (place and partner data) and #10 (name). Mitigations: skip links with fallbacks, #4 reassurance first, #15 as a break. Measure completion per screen and skip rate for #6, #7, #9, #10.
+- **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Branches:** status (#2) drives #4 copy, skipping #8 (couple) or #9 (single), the result label (match vs timing), the reading card (what each chart needs vs partner profile) and the next-step card. Single and couple readings get the same depth.
 - **Honesty:** the window is a range of years and a peak season, never a date. Score, window and axis percentages in the demo are deterministic placeholders; production needs the host's chart engine. The hoped timeline (#17) is collected for tone only; the demo window does not depend on it, and production must not echo it back into the window.
-- **Monetization:** one subscription layer. Pay-per-minute chat credits exist in Nebula's app; they are not sold here. Measure paywall-to-checkout and offer acceptance separately.
 - **Unverified:** Nebula's and Hint's paywall pricing ladders, promo codes (MARRIAGE93) and the EUR 3.99 "speed up" bump were not copied and not verified here.
 - **Policy:** Meta relationship and personal-attribute rules. Ad copy: no "guaranteed", no "Are you still single?", no "your husband's name". Use "When will you marry?" and the window framing.
 - **Images:** the demo uses SVG/CSS wheels plus three copied placeholder JPGs from `ex-compatibility`. `IKAME_AI_KEY` was not set, so `gen_images.py` was not run; it lists the prompts for `hook-rings`, `result-window`, `paywall-hero` (JPG, 560x840) to drop into `img/` later with the same names.

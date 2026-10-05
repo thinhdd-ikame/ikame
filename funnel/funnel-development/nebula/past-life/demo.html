@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#161A27">
 <meta name="robots" content="noindex">
-<title>Nebula &middot; Past Life</title>
+<title>Starlyn: Daily Astrology &middot; Past Life</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap">
@@ -334,23 +334,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 <script>
 /* ===================== CONFIG - edit before launch ===================== */
 const CONFIG={
-  brand:'Nebula',
+  brand:'Starlyn',
   funnel:'past-life',
   /* TODO(pricing): replace every {{placeholder}} with the real price string. Do not invent numbers.
-     3 plans: 1-week intro / 4-week pre-selected / 12-week anchor. Renewal shown next to every price. */
+     Starlyn policy: ONE plan - first week at $13.67, then $49.99 every month. */
   plans:{
-    '1w':{name:'1 week',price:'{{price_1w}}',renew:'{{renewal_1w}}',per:'week',badge:'',sub:'Intro price',save:''},
-    '4w':{name:'4 weeks',price:'{{price_4w}}',renew:'{{renewal_4w}}',per:'4 weeks',badge:'Recommended',sub:'',save:''},
-    '12w':{name:'12 weeks',price:'{{price_12w}}',renew:'{{renewal_12w}}',per:'12 weeks',badge:'',sub:'Lowest per week',save:''}
+    '1w':{name:'1 week, then monthly',price:'$13.67',renew:'$49.99',per:'month',badge:'',sub:'Renews monthly',save:''}
   },
-  defaultPlan:'4w',
+  defaultPlan:'1w',
   refundDays:'{{refund_days}}',
-  checkoutUrl:{'1w':'','4w':'','12w':''},   /* '' = only emit checkout_click */
+  checkoutUrl:{'1w':''},   /* '' = only emit checkout_click */
   /* Last-chance offer shown ONCE when the paywall is closed without paying.
      Real terms only. One-time "life card": no renewal, not the 1-week SKU, no strike-through price (compareAt null).
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
-  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
-  termsUrl:'',privacyUrl:'',subscriptionTermsUrl:'',
+  offer:{enabled:false},   /* Starlyn policy: no sale, no last-chance offer */
+  termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',
   appUrl:'',appStoreUrl:'',playStoreUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},   /* hidden while unset */
   reviews:[{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'}],
@@ -434,7 +432,7 @@ const art=(img,cls='',sel,o)=>`<div class="art ${cls}">${ring(sel||eraKey(),o)}<
 const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',era:'',deja:'',dream:'',dreamOther:'',place:'',placeOther:'',s1:'',s2:'',s3:'',talent:'',talentOther:'',call:'',callOther:'',name:'',dob:{m:'',d:'',y:''},email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,pass:false,completed:false,offerSeen:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'era',3:'honest_frame',4:'deja_vu',5:'dreams',6:'familiar_place',7:'statement_friends',8:'statement_old_things',9:'statement_fears',10:'echoes_bridge',11:'talent',12:'calling',13:'name',14:'birth_date',15:'loader',16:'past_life_teaser',17:'email',18:'paywall',19:'offer',20:'reading'};
+const SCREENS={1:'hook',2:'era',3:'honest_frame',4:'deja_vu',5:'dreams',6:'familiar_place',7:'statement_friends',8:'statement_old_things',9:'statement_fears',10:'echoes_bridge',11:'talent',12:'calling',13:'name',14:'birth_date',15:'loader',16:'past_life_teaser',17:'email',18:'paywall',19:'get_app'};
 const QN=[2,4,5,6,7,8,9,11,12,13,14];
 const SKIPBACK=[10,15,18,19];
 const PAYWALL=18,OFFER=19,READING=20;
@@ -466,8 +464,8 @@ function checkout(){
 function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
 
-function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===PAYWALL)emit('paywall_view');if(S.i===OFFER)emit('offer_view');if(S.i===READING&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
-function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
+function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===PAYWALL)emit('paywall_view');if(S.i===IK_GET&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
+function go(n,push=true){if(S.i===IK_DOB&&n>S.i&&!S.u18&&S.dob&&S.dob.m&&S.dob.d&&S.dob.y&&ikAge(S.dob)<18){ikBlock();return}clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
 function next(){go(S.i+1)}
 function back(){clearT();let p=S.hist.pop();while(p&&SKIPBACK.includes(p))p=S.hist.pop();if(p){S.i=p;render(true);viewed()}}
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;app.appendChild(e);setTimeout(()=>e.remove(),2700)}
@@ -478,7 +476,7 @@ function nav(){
   const k=QN.indexOf(S.i),done=QN.filter(x=>x<S.i).length;
   const p=k<0?Math.round(done/QN.length*100):Math.round((k+1)/QN.length*100);
   const n=k<0?done:k+1;
-  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('spark',16)} Nebula</div><span class="stepn">${k<0?'':n+'/'+QN.length}</span></div><div class="prog" style="margin:0 8px"><span style="width:${k<0&&S.i>14?100:p}%"></span></div></div>`;
+  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('spark',16)} Starlyn</div><span class="stepn">${k<0?'':n+'/'+QN.length}</span></div><div class="prog" style="margin:0 8px"><span style="width:${k<0&&S.i>14?100:p}%"></span></div></div>`;
 }
 const cta=(l,ok=true,a='next')=>`<button class="btn" data-a="${a}" ${ok?'':'disabled'}>${l}</button>`;
 const opts=(f,o)=>`<div class="opts">${Object.entries(o).map(([k,[e,l]])=>`<button class="opt ${S[f]===k?'on':''}" data-a="pick" data-f="${f}" data-v="${k}" aria-pressed="${S[f]===k}"><span class="well">${e}</span><span class="lbl">${l}</span></button>`).join('')}</div>`;
@@ -488,16 +486,16 @@ const withOther=(f,of,o,h,b)=>`<div class="scr">${q(h,b)}${opts(f,o)}${S[f]==='o
 const sel=(grp,key,label,vals,cur)=>`<div class="box"><select data-${grp}="${key}" aria-label="${label}"><option value="">${label}</option>${vals.map(([v,l])=>`<option value="${v}" ${String(cur)===String(v)?'selected':''}>${l}</option>`).join('')}</select></div>`;
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m,i)=>[i+1,m]);
 const DAYS=Array.from({length:31},(_,i)=>[i+1,i+1]);
-const dobRow=g=>{const ys=[];for(let y=new Date().getFullYear()-18;y>=1930;y--)ys.push([y,y]);const d=S[g];
+const dobRow=g=>{const ys=[];for(let y=new Date().getFullYear()-10;y>=1930;y--)ys.push([y,y]);const d=S[g];
   return `<div class="row3">${sel(g,'m','Month',MONTHS,d.m)}${sel(g,'d','Day',DAYS,d.d)}${sel(g,'y','Year',ys,d.y)}</div>`};
 const skin=(a,l)=>`<button class="link" data-a="${a}">${l}</button>`;
 
 /* ---------- web paywall blocks ---------- */
 const planOf=k=>CONFIG.plans[k];
 const todayLine=()=>`${tok(planOf(S.plan).price)} today`;
-const renewLine=k=>{const p=planOf(k);return k==='1w'?`${tok(p.price)} today (intro), then ${tok(p.renew)} every week until you cancel.`:`${tok(p.price)} today, then ${tok(p.renew)} every ${p.per} until you cancel.`};
+const renewLine=k=>{const p=planOf(k);return `${tok(p.price)} today for your first week, then ${tok(p.renew)} every month until you cancel.`};
 function planBlock(){const keys=Object.keys(CONFIG.plans);
-  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${keys.map(k=>{const p=planOf(k);return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="rib">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renew)} / ${p.per==='week'?'week':p.per}</small></span></button>`}).join('')}</div>
+  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Your plan</h2><div class="plans">${keys.map(k=>{const p=planOf(k);return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="rib">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renew)} / ${p.per==='week'?'week':p.per}</small></span></button>`}).join('')}</div>
    <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
    <div style="height:12px"></div>${cta('Get my reading',true,'pay')}
    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
@@ -566,13 +564,13 @@ const V={
   <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button></div>
   <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our Terms of Use and Privacy Policy.</p></div>`,
 18:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text);
-  const FAQ=[['When will I get my reading?','Right after checkout, on this page and in the Nebula app. Log in with '+esc(S.email||'your email')+'.'],
+  const FAQ=[['When will I get my reading?','Right after checkout, in the Starlyn app. Log in with '+esc(S.email||'your email')+'.'],
     ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
-    ['Will I be charged again?','Yes, unless you cancel: the plan renews at the price and period shown on the card you pick.'],
+    ['Will I be charged again?','Yes, unless you cancel: after your first week the plan renews every month at the price shown. Cancel anytime in your account.'],
     ['Is this real?','Past lives are a belief with no scientific proof. Your story is written from your answers, for reflection and fun.'],
     ['How is my story made?','From the era you picked, your dreams, place, talent, calling and Sun sign. It is a story, not a record.']];
   return `<div class="wp" id="wp">
-  <div class="wbar"><div class="brand">${ic('spark',16)} Nebula</div><button class="mini" data-a="toplans">Get my reading</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
+  <div class="wbar"><div class="brand">${ic('spark',16)} Starlyn</div><button class="mini" data-a="toplans">Get my reading</button></div>
   <div class="wsec tight"><span class="eyebrow">Your reading is ready</span><h1 class="display" style="font-size:29px">${t(nm()?`${esc(nm())}, your story is <em>ready</em>`:'Your story is <em>ready</em>','See your <em>full past life</em>')}</h1>
    <p class="lead" style="margin:8px 0 12px">${t('Where you lived, your story, your lesson.','Who you knew, and what you carry.')}</p>
    <div class="art sm" style="margin:0 -18px;height:150px">${ring(eraKey(),{})}<img src="${im('img/paywall-hero.jpg')}" alt="" onload="this.parentNode.classList.add('hasimg')" onerror="this.remove()"></div>
@@ -581,7 +579,7 @@ const V={
   <div class="wsec"><span class="eyebrow">Inside your reading</span><h2 class="wh2">Everything in your story</h2><p class="lead">Your era, role and gift are open. Unlock the rest.</p>
    <div class="toc"><div class="open"><span class="n">1</span><span>Era and role: ${esc(eraLabel())}, ${esc(role())}</span><span class="l">${ic('check',16,2.4)}</span></div><div class="open"><span class="n">2</span><span>The gift you carry</span><span class="l">${ic('check',16,2.4)}</span></div>${['Where you lived','Your life story','The lesson you carry','Who you may have known','Daily guide in the app'].map((x,i)=>`<div><span class="n">${i+3}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From your answers to your story</h2>
-   <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Read it now','Your full story opens on this page.'],['Keep going in the app','Log in with your email for your daily guide.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
+   <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Get the app','Download Starlyn: Daily Astrology from the App Store or Google Play.'],['Open your reading','Log in with your email. Your reading is waiting.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
   ${R&&R.score&&!/\{\{/.test(R.score)&&RV.length&&!RV.some(r=>/\{\{/.test(r.text))?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">★★★★★</div><div class="hint">${tok(R.count)} ratings</div></div></div>
    <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div><span class="stars" style="margin-left:auto;font-size:12px">★★★★★</span></div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
   ${/\{\{/.test(CONFIG.refundDays)?'':`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`}
@@ -590,30 +588,21 @@ const V={
   <div class="wfoot">${legal()}<div>${NOTE} ${tok(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
-19:()=>{const o=CONFIG.offer,refund=/\{\{/.test(CONFIG.refundDays)?'':` ${esc(CONFIG.refundDays)}-day money-back.`;
-  return `<div class="wp"><div class="wbar"><div class="brand">${ic('spark',16)} Nebula</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">${t('Not ready? Get the <em>life card</em>','One-time offer, <em>shown once</em>')}</h1>
-   <p class="lead" style="margin-top:8px">${t('A smaller pass, paid once. No subscription.','Just your life story and where you lived.')}</p>
-   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
-  <div class="wsec tight"><div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th" style="background:#0E111A">${ring(eraKey(),{})}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${tok(o.name)}</b><div class="hint">Life card · one payment</div></div></div>
-   <div class="oprice"><b>${tok(o.price)}</b><span>once</span></div>
-   <div class="checks" style="margin:14px 0">${['Your life story, in full','Where you lived','Reading saved to your email'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
-   <p class="hint" style="margin-bottom:10px">Not included: the lesson you carry, who you may have known and the daily guide.</p>
-   ${cta('Get the life card',true,'offerbuy')}
-   <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-   <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.${refund}</p></div></div>
-  <div class="wsec tc" style="padding-bottom:calc(var(--sab) + 30px)"><button class="link" data-a="offerno">No thanks, show my free reading</button><div class="note" style="margin-top:6px">For entertainment purposes only.</div></div></div>`},
-20:()=>{const cards=readingCards(),open=i=>S.paid||i<2||(S.pass&&(i===2||i===3));
-  return `<div class="scr" style="gap:14px">${S.paid?'<span class="badge">'+ic('check',13,2.6)+' Unlocked</span>':S.pass?'<span class="badge">'+ic('check',13,2.6)+' Life card unlocked</span>':''}<h1 class="display sm">${t(nm()?esc(nm())+'\'s past life':'Your past life','Here is who you were')}</h1>
-  <p class="lead">${t('A story from your answers, for reflection.','Era and role first, then the story.')}</p>
-  <div class="art sm" style="margin:0 -20px;height:150px">${ring(eraKey(),{})}<img src="${im('img/result-life.jpg')}" alt="" onload="this.parentNode.classList.add('hasimg')" onerror="this.remove()"></div>
-  <div class="tc">${chips()}</div>
-  ${cards.map(([h,tx],i)=>{const o=open(i);return `<div class="card"><h4>${o?'':ic('lock',14)} ${o?esc(h):'<span class="blurred">'+esc(h)+'</span>'}</h4><p class="${o?'':'blurred'}">${esc(tx)}</p></div>`}).join('')}
-  <div class="card" style="text-align:center"><b>Continue in the Nebula app</b><p style="margin-top:4px">Log in with ${esc(S.email||'your email')} for your daily guide.</p></div>
-  <p class="note">${NOTE}</p></div>
-  <div class="foot">${S.paid?'':cta('Unlock all',true,'topw')}<button class="btn ${S.paid?'':'ghost'}" data-a="app">Open the app</button><div class="stores"><span class="store">${ic('apple',18)}<span>Download on the<b>App Store</b></span></span><span class="store">${ic('play',16)}<span>Get it on<b>Google Play</b></span></span></div></div>`}
 };
+
+/* ---------- Starlyn policy: purchase -> get the app (old offer + free reading screens removed) ---------- */
+const IK_GET=19,IK_DOB=14;
+V[IK_GET]=()=>{const n=(typeof S.name==='string'?S.name:'').trim(),em=S.email||'your email';
+  return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
+  <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full reading is waiting in the Starlyn app.</p></div>
+  <div class="how" style="margin-top:4px">${[['Download Starlyn: Daily Astrology','From the App Store or Google Play.'],['Log in with '+esc(em),'Use the email you gave us.'],['Open your reading','It is saved to your account.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div>
+  <p class="note">For entertainment purposes only. Cancel anytime in your account.</p></div>
+  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="app">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div></div>`};
+/* under 18: exact age from month/day/year; notice with a way back to the birth-date screen */
+const ikAge=d=>{const n=new Date();let a=n.getFullYear()-(+d.y);if(n.getMonth()+1<+d.m||(n.getMonth()+1===+d.m&&n.getDate()<+d.d))a--;return a};
+function ikBlock(){S.u18=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render(true)}
+const u18View=()=>`<div class="scr center tc" style="gap:14px"><div class="bigwell" style="font-size:34px">🔞</div><h1 class="display sm">Starlyn is for adults 18+.</h1>
+  <p class="lead">Readings are only for people 18 and older. Picked the wrong date?</p></div><div class="foot">${cta('Change my birth date',true,'agefix')}</div>`;
 
 /* ---------- animated screens ---------- */
 function run10(){const n=echoes(),dots=[...document.querySelectorAll('#dots i')];let k=0;
@@ -627,11 +616,11 @@ function run15(){let p=0;
 
 /* ---------- render ---------- */
 function render(anim){
-  const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');v.innerHTML=nav()+V[S.i]();
+  const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');v.innerHTML=S.u18?u18View():nav()+V[S.i]();
   const old=app.querySelector('.view');if(old)old.replaceWith(v);else app.appendChild(v);
   if(S.i===10)run10();if(S.i===15)run15();
   if(S.i===PAYWALL)bindPaywall(v);
-  if(S.i===OFFER)runOffer();
+  
   const o=v.querySelector('#oth');if(o&&!o.value)o.focus();
 }
 function bindPaywall(v){
@@ -646,6 +635,7 @@ const full=d=>d.m&&d.d&&d.y;
 app.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,v=b.dataset.v;
   switch(a){
+    case 'agefix':S.u18=false;try{sessionStorage.removeItem('ikf_age_block')}catch(e){}S.dob={m:'',d:'',y:''};S.dobErr='';go(IK_DOB,false);break;
     case 'next':if(S.i===1)emit('start');next();break;
     case 'back':back();break;
     case 'pick':{const f=b.dataset.f;S[f]=v;answer(f,v);
@@ -662,7 +652,7 @@ app.addEventListener('click',e=>{
       document.getElementById('sumline').innerHTML=todayLine();document.querySelector('#sticky .sum span').textContent=planOf(v).name;break}
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'pay':checkout();break;
-    case 'closepw':emit('paywall_close');go(offerOpen()?OFFER:READING);break;
+    case 'closepw':break;   /* hard paywall: no exit without purchase */
     case 'offerbuy':S.offerSeen=true;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u)try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}else{S.pass=true;go(READING)}}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(READING);break;
     case 'topw':go(PAYWALL);break;
@@ -685,10 +675,11 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(READING)}});
-if(QS.get('paid')){S.paid=true;S.plan=QS.get('paid')}
+  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_GET)}});
+if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_GET}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{era:S.era||'medieval',deja:S.deja||'some',dream:S.dream||'place',place:S.place||'castle',s1:S.s1||'agree',s2:S.s2||'agree',s3:S.s3||'unsure',talent:S.talent||'music',call:S.call||'healer',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},email:S.email||'demo@example.com'});go(n)}}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
+try{if(sessionStorage.getItem('ikf_age_block')){S.u18=true;S.i=IK_DOB}}catch(e){}
 render();viewed();
 </script>
 </body>

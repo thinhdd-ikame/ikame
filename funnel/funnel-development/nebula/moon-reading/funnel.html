@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B0920">
+<meta name="theme-color" content="#161A27">
 <meta name="robots" content="noindex">
-<title>Nebula &middot; Moon Reading</title>
+<title>Starlyn: Daily Astrology &middot; Moon Reading</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap">
 <style>
 :root{
   color-scheme:dark;
-  --ground:#05040C;
-  --bg:#0B0920;--bg-elev:#130F2E;--surface:#171235;--surface-2:#221B4A;--border:#342A66;
-  --t1:#F5F2FB;--t2:#B3AAD3;--t3:#7D74A0;
-  --acc:#C3A3FF;--acc-dim:#8B5CF633;--btn-text:#fff;
-  --grad:linear-gradient(100deg,#7B4DFF 0%,#B84BE3 55%,#EE5A9F 100%);
-  --gold:#E9C26B;--rose:#F29BB8;--neg:#F29A8A;--pos:#7FD1A8;
+  --ground:#0E111A;
+  --bg:#161A27;--bg-elev:#1C2131;--surface:#212739;--surface-2:#2A3147;--border:#3A4260;
+  --t1:#F6F3EA;--t2:#B5B9C9;--t3:#7C8298;
+  --acc:#E9C26B;--acc-dim:#E9C26B2E;--btn-text:#161A27;--gold-lm:#8A6410;
+  --grad:linear-gradient(100deg,#F4DA96 0%,#E9C26B 50%,#C99A3A 100%);
+  --gold:#E9C26B;--rose:#E8BF5F;--neg:#F29A8A;--pos:#7FD1A8;
   --serif:"Fraunces",Georgia,"Times New Roman",serif;
   --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
@@ -30,8 +30,8 @@ body{margin:0;background:var(--ground);color:var(--t1);font:15px/1.45 var(--sans
 button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 a{color:inherit}
 button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.app{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse 120% 60% at 50% 0%,#1a1240 0%,var(--bg) 60%)}
-@media (min-width:520px){.app{border-inline:1px solid #2E2456}}
+.app{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse 120% 60% at 50% 0%,#1D2235 0%,var(--bg) 60%)}
+@media (min-width:520px){.app{border-inline:1px solid #2B334F}}
 #stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block}
 .stage{position:absolute;inset:0;z-index:1;overflow:hidden}
 .view{position:absolute;inset:0;padding-top:calc(var(--sat) + 6px);display:flex;flex-direction:column}
@@ -51,7 +51,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .foot{flex:none;padding:10px 20px max(20px,calc(var(--sab) + 12px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
 .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
 .note a{color:var(--t2);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:2px}
-.sky{position:absolute;inset:0 0 auto 0;height:340px;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 0%,#4A2A8A55 0%,#2A1F5A33 45%,transparent 100%)}
+.sky{position:absolute;inset:0 0 auto 0;height:340px;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 0%,#97701655 0%,#2A334F33 45%,transparent 100%)}
 .z{position:relative;z-index:1}
 .display{font:600 30px/1.12 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
 .display.xl{font-size:36px}
@@ -64,32 +64,32 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .btn:active{transform:scale(.98)}
 .btn[disabled]{background:var(--surface-2);color:var(--t3);cursor:not-allowed}
 .btn.ghost{background:var(--surface);color:var(--t1);border:1px solid var(--border)}
-.btn.light{background:var(--t1);color:#0B0920}
+.btn.light{background:var(--t1);color:#0E111B}
 .btn.black{background:#000;color:#fff;border:1px solid #3a3a3a}
-.btn:not([disabled]):not(.ghost):not(.light):not(.black){position:relative;overflow:hidden;box-shadow:0 8px 28px -10px #C048E0aa}
+.btn:not([disabled]):not(.ghost):not(.light):not(.black){position:relative;overflow:hidden;box-shadow:0 8px 28px -10px #DFA620aa}
 .btn:not([disabled]):not(.ghost):not(.light):not(.black)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
 @keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
 .link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px 10px;min-height:44px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border)}
 .link:hover{color:var(--t1)}
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{display:flex;align-items:center;gap:14px;padding:11px 14px;min-height:56px;border-radius:999px;background:var(--surface);border:1px solid var(--border);text-align:left;width:100%;transition:border-color .15s,background .15s}
-.opt:hover{border-color:#4f4290}
+.opt:hover{border-color:#A97E18}
 .opt .well{width:36px;height:36px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:18px;line-height:1;overflow:hidden}
 .opt .lbl{flex:1;font-weight:500;font-size:16px;min-width:0}
 .opt .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;color:#fff}
 .opt.on{border-color:transparent;background:var(--grad)}
 .opt.on .well{background:#ffffff2e}
-.opt.on .chk{background:#fff;border-color:#fff;color:#8B3FD0}
+.opt.on .chk{background:#fff;border-color:#fff;color:var(--gold-lm)}
 .opts.cards .opt{border-radius:18px;padding:14px}
-.opts.cards .opt .well{box-shadow:0 0 16px #8B5CF655;background:radial-gradient(circle,#8B5CF640,var(--surface-2))}
-.opts.cards .opt.on{background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);border:1.5px solid #9D6BFF}
+.opts.cards .opt .well{box-shadow:0 0 16px #E3B03A55;background:radial-gradient(circle,#E3B03A40,var(--surface-2))}
+.opts.cards .opt.on{background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);border:1.5px solid #E5B649}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .field{display:flex;flex-direction:column;gap:7px}
 .field label{font:500 13px/1 var(--sans);color:var(--t2)}
 .box{height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3);min-width:0}
-.box.white{background:#F7F5FC;border-color:#F7F5FC;color:#6a6390}
-.box.white input{color:#15102E}
-.box.white input::placeholder{color:#8a84a8}
+.box.white{background:#F7F4EC;border-color:#F7F4EC;color:var(--gold-lm)}
+.box.white input{color:#161A28}
+.box.white input::placeholder{color:#DFA722}
 .box:focus-within{border-color:var(--acc)}
 .box.bad{border-color:var(--neg)}
 .box input,.box select{flex:1;min-width:0;width:100%;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
@@ -107,7 +107,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .results small{color:var(--t3)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-weight:500;font-size:14px}
-.chip.on{background:var(--grad);border-color:transparent;color:#fff}
+.chip.on{background:var(--grad);border-color:transparent;color:var(--btn-text)}
 .chip.sm{font-size:12px;padding:5px 10px;min-height:0;color:var(--t2)}
 .card{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
 .card h4{margin:0 0 3px;font-size:15px;font-weight:600}
@@ -121,7 +121,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .promise{display:flex;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--border)}
 .promise:first-child{border-top:none}
 .promise .well,.iw{width:36px;height:36px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;flex:none;font-size:17px}
-.bigwell{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#8B5CF655,transparent 70%),var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--acc);align-self:center;box-shadow:0 0 40px #8B5CF655}
+.bigwell{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#E3B03A55,transparent 70%),var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--acc);align-self:center;box-shadow:0 0 40px #E3B03A55}
 .steps{display:flex;flex-direction:column;gap:13px}
 .step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:6px;gap:10px}
 .step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
@@ -129,22 +129,22 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .step.done .pct{color:var(--acc)}
 .bar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
 .bar span{display:block;height:100%;background:var(--grad);width:0}
-.dim{position:absolute;inset:0;background:#05040CCC;z-index:4}
+.dim{position:absolute;inset:0;background:#06070ACC;z-index:4}
 .sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:var(--bg-elev);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:10px 20px max(24px,calc(var(--sab) + 14px));display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
 .sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--border);align-self:center}
 @keyframes up{from{transform:translateY(100%)}to{transform:none}}
-.closex{position:absolute;top:calc(var(--sat) + 6px);right:10px;z-index:3;width:44px;height:44px;border-radius:50%;background:#0B0920AA;border:1px solid var(--border);display:grid;place-items:center;color:var(--t2)}
+.closex{position:absolute;top:calc(var(--sat) + 6px);right:10px;z-index:3;width:44px;height:44px;border-radius:50%;background:#0E111BAA;border:1px solid var(--border);display:grid;place-items:center;color:var(--t2)}
 .checks{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t1)}
 .checks div{display:flex;gap:10px;align-items:flex-start}
 .checks svg{color:var(--acc);flex:none;margin-top:2px}
 .plan{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:56px;border-radius:18px;border:1px solid var(--border);background:var(--surface);text-align:left;width:100%;position:relative}
 .plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;color:#fff}
-.plan.on{border:1.5px solid #A778FF;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface)}
+.plan.on{border:1.5px solid #E6B951;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface)}
 .plan.on .radio{background:var(--grad);border-color:transparent}
 .plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .plan .pp{font-size:13px;color:var(--t1);font-variant-numeric:tabular-nums;display:block;margin-top:2px}
 .plan .ps{font-size:11px;color:var(--t3);display:block;margin-top:2px}
-.save{font:600 10px/1 var(--sans);letter-spacing:.05em;background:var(--grad);color:#fff;padding:4px 7px;border-radius:6px}
+.save{font:600 10px/1 var(--sans);letter-spacing:.05em;background:var(--grad);color:var(--btn-text);padding:4px 7px;border-radius:6px}
 .tok{font-variant-numeric:tabular-nums;white-space:nowrap}
 .legal{display:flex;justify-content:center;gap:4px 14px;font-size:12px;color:var(--t3);flex-wrap:wrap}
 .legal a,.legal span{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:inherit;font-size:12px;text-decoration:underline;text-decoration-color:var(--border)}
@@ -155,7 +155,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .checkbox{display:flex;gap:10px;align-items:flex-start;background:none;border:none;text-align:left;color:var(--t2);font-size:13px;padding:10px 0;min-height:44px}
 .checkbox .cb{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);flex:none;display:grid;place-items:center;color:#fff}
 .checkbox.on .cb{background:var(--grad);border-color:transparent}
-.toast{position:absolute;left:50%;top:calc(var(--sat) + 12px);transform:translateX(-50%);z-index:20;background:var(--t1);color:#0B0920;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;max-width:calc(100% - 32px);width:max-content;text-align:center;animation:fade 2.6s ease forwards;box-shadow:0 8px 24px #0008}
+.toast{position:absolute;left:50%;top:calc(var(--sat) + 12px);transform:translateX(-50%);z-index:20;background:var(--t1);color:#0E111B;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;max-width:calc(100% - 32px);width:max-content;text-align:center;animation:fade 2.6s ease forwards;box-shadow:0 8px 24px #0008}
 @keyframes fade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
 .fadein{animation:fi .35s ease both}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -164,7 +164,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .pulse{animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.55}}
 .blurred{filter:blur(6px);user-select:none;-webkit-user-select:none}
-.mock{width:210px;height:380px;border-radius:30px;border:6px solid #221c44;background:var(--bg);align-self:center;overflow:hidden;position:relative;box-shadow:0 20px 50px -10px #000,0 0 40px #8B5CF633;display:flex;flex-direction:column;gap:8px;padding:22px 10px 10px;flex:none}
+.mock{width:210px;height:380px;border-radius:30px;border:6px solid #22283E;background:var(--bg);align-self:center;overflow:hidden;position:relative;box-shadow:0 20px 50px -10px #000,0 0 40px #E3B03A33;display:flex;flex-direction:column;gap:8px;padding:22px 10px 10px;flex:none}
 .mock .mrow{padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:11px;color:var(--t2)}
 .mock .mrow b{display:block;color:var(--t1);font-size:12px;margin-bottom:2px}
 .stores{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
@@ -172,45 +172,69 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .store b{display:block;font-size:13px}
 .qr{display:flex;gap:10px;align-items:center;justify-content:center;font-size:11px;color:var(--t3)}
 .qr img{width:72px;height:72px;background:#fff;border-radius:6px;padding:3px}
-.tips{position:absolute;z-index:6;left:12px;right:12px;padding:12px 14px;border-radius:14px;background:var(--t1);color:#15102E;font-size:13px;box-shadow:0 10px 30px #000a;animation:fi .25s ease}
+.tips{position:absolute;z-index:6;left:12px;right:12px;padding:12px 14px;border-radius:14px;background:var(--t1);color:#161A28;font-size:13px;box-shadow:0 10px 30px #000a;animation:fi .25s ease}
 /* flat map */
-.map{display:block;width:100%;height:auto;border-radius:16px;background:radial-gradient(ellipse at 50% 40%,#1a1446,#0e0b26);border:1px solid var(--border)}
-.map .land{fill:#5C4F9A}
+.map{display:block;width:100%;height:auto;border-radius:16px;background:radial-gradient(ellipse at 50% 40%,#20263B,#111520);border:1px solid var(--border)}
+.map .land{fill:#B8881A}
 .map .ln{fill:none;stroke-width:2;stroke-linecap:round}
 .map .ln.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:mdraw 1.6s ease forwards}
 @keyframes mdraw{to{stroke-dashoffset:0}}
 .map .pin{fill:#fff}
 .map .ping{fill:none;stroke:#fff;transform-box:fill-box;transform-origin:center;animation:ping 2s ease-out infinite}
 @keyframes ping{from{opacity:.9;transform:scale(.4)}to{opacity:0;transform:scale(2.4)}}
+/* last-chance offer (fallback / "upsell on decline"): shown once when the paywall is left without paying */
+.wp{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.wp::-webkit-scrollbar{display:none}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#161A27e6;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar .brand{flex:1;display:flex;align-items:center;gap:7px;font:600 15px var(--serif);letter-spacing:.02em;color:var(--t1)}
+.wbar .brand svg{color:var(--acc)}
+.wbar .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
+.wsec{padding:28px 18px 0}.wsec.tight{padding-top:16px}
+.wp .eyebrow{display:block;margin-bottom:10px;font-size:11.5px;letter-spacing:.12em}
+.wp .display em{font-style:normal;color:var(--acc)}
+.ocard{position:relative;padding:18px 16px;border-radius:24px;border:1.5px solid var(--acc);background:radial-gradient(ellipse at 50% 0%,#E9C26B24,transparent 60%),linear-gradient(180deg,#232A40,#1A1F2F);box-shadow:0 0 0 4px #E9C26B18,0 30px 60px -30px #000}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad);color:var(--btn-text);font:700 11px/1 var(--sans);letter-spacing:.08em;white-space:nowrap}
+.obadge .tok{color:var(--btn-text)}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:58px;height:74px;border-radius:12px;overflow:hidden;position:relative;flex:none;background:#111520;border:1px solid var(--border);display:grid;place-items:center}
+.orow .th.wide{width:84px;height:60px}
+.orow .th img{width:100%;height:100%;object-fit:cover}.orow .th>svg{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0}
+.oprice{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 10px;margin-top:16px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:600 30px var(--serif);color:var(--acc)}.oprice>span{color:var(--t2);font-size:13px}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc);font-variant-numeric:tabular-nums}
+.pay{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F6F3EA;color:#161A27;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin:12px 4px 0;line-height:1.5}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
 }
 
 /* moon reading: canvas moon hero */
 .moonh{position:relative;display:grid;place-items:center;margin:0 auto;flex:none;touch-action:none}
-.moonh::before{content:"";position:absolute;inset:-22%;border-radius:50%;background:radial-gradient(circle,rgba(226,214,255,var(--gl,.25)) 0%,rgba(160,120,255,.08) 45%,transparent 68%);pointer-events:none}
+.moonh::before{content:"";position:absolute;inset:-22%;border-radius:50%;background:radial-gradient(circle,rgba(226,214,255,var(--gl,.25)) 0%,rgba(230,185,81,.08) 45%,transparent 68%);pointer-events:none}
 .moonh canvas{display:block;position:relative}
 .moonh .ring30{position:absolute;inset:0;overflow:visible;pointer-events:none}
-.ring30 circle{fill:#2a2458}
-.ring30 circle.on{fill:#E6DCFF;filter:drop-shadow(0 0 4px #C3A3FF)}
+.ring30 circle{fill:#2B3451}
+.ring30 circle.on{fill:#FAF3E1;filter:drop-shadow(0 0 4px #EAC46C)}
 .ring30 circle.full{fill:#fff}
 .orbit8{position:relative;width:230px;height:230px;margin:0 auto;flex:none}
 .orbit8 .ph{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;gap:2px}
-.orbit8 .ph.on svg{filter:drop-shadow(0 0 8px #E6DCFF)}
+.orbit8 .ph.on svg{filter:drop-shadow(0 0 8px #FAF3E1)}
 .orbit8 .ph.on::after{content:"Today";font-size:10px;color:var(--acc);position:absolute;top:100%;margin-top:2px}
-.orbit8 .mid{position:absolute;inset:0;display:grid;place-items:center;font-size:54px;color:#EDE6FF;text-shadow:0 0 24px #C3A3FF}
+.orbit8 .mid{position:absolute;inset:0;display:grid;place-items:center;font-size:54px;color:#FBF6EA;text-shadow:0 0 24px #EAC46C}
 .zband{position:relative;display:grid;grid-template-columns:repeat(12,1fr);border:1px solid var(--border);border-radius:12px;overflow:visible;height:40px;background:var(--surface)}
 .zband span{display:grid;place-items:center;font-size:13px;color:var(--t3);border-left:1px solid var(--border)}
 .zband span:first-child{border-left:none}
 .zband span.on{color:var(--t1);background:var(--acc-dim)}
-.zband .mk{position:absolute;top:-9px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#F1EBDD;box-shadow:0 0 12px #E6DCFF;transition:left .4s ease}
+.zband .mk{position:absolute;top:-9px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#F1EBDD;box-shadow:0 0 12px #FAF3E1;transition:left .4s ease}
 .cres{display:flex;justify-content:center;align-items:center}
 .toggle{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);width:100%;text-align:left}
 .toggle .sw{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--surface-2);position:relative;flex:none;transition:background .2s}
 .toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
 .toggle.on .sw{background:var(--grad)}
 .toggle.on .sw::after{transform:translateX(18px)}
-.lock{position:relative;border-radius:22px;padding:16px;background:linear-gradient(160deg,#211a4a,#0f0b26);border:1px solid var(--border);overflow:hidden}
+.lock{position:relative;border-radius:22px;padding:16px;background:linear-gradient(160deg,#232A41,#111520);border:1px solid var(--border);overflow:hidden}
 .lock .clock{font:600 40px/1 var(--sans);text-align:center;color:#fff;opacity:.9}
 .lock .dt{text-align:center;font-size:12px;color:var(--t2);margin:4px 0 12px}
 .push{display:flex;gap:10px;padding:11px;border-radius:16px;background:#ffffff17;backdrop-filter:blur(10px);border:1px solid #ffffff1f;font-size:13px}
@@ -218,17 +242,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .push small{color:var(--t2);display:block;font-size:11px}
 .cal{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
 .cal div{border-radius:10px;background:var(--surface);border:1px solid var(--border);padding:5px 2px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--t2);font-variant-numeric:tabular-nums}
-.cal div.key{border-color:#B98CFF;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);color:var(--t1)}
+.cal div.key{border-color:#E8BE5D;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);color:var(--t1)}
 .cal div.today{outline:1.5px solid var(--t1);outline-offset:-1.5px}
 .cal i{font-style:normal;font-size:8px;filter:blur(2.5px);color:var(--acc);user-select:none}
-.mcard{padding:16px;border-radius:20px;background:linear-gradient(160deg,#2a1d5a,var(--surface));border:1px solid #5b47a8;display:flex;flex-direction:column;gap:10px}
-.mcard .g{font-size:40px;line-height:1;color:#EDE6FF;text-shadow:0 0 18px #C3A3FF}
+.mcard{padding:16px;border-radius:20px;background:linear-gradient(160deg,#2A324D,var(--surface));border:1px solid #BB8B1B;display:flex;flex-direction:column;gap:10px}
+.mcard .g{font-size:40px;line-height:1;color:#FBF6EA;text-shadow:0 0 18px #EAC46C}
 .mcard .ln{display:grid;grid-template-columns:62px 1fr;gap:4px;font-size:13px}
 .mcard .ln b{color:var(--t3);font-weight:500}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .two .mcard{padding:12px}
 .two .mcard .ln{grid-template-columns:1fr;gap:0}
-.rit{padding:16px;border-radius:22px;background:#130F2Ee6;border:1px solid var(--border);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.rit{padding:16px;border-radius:22px;background:#151A28e6;border:1px solid var(--border);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
 .rit ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
 .rit li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
 .rit li b{width:26px;height:26px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;flex:none;font-size:13px}
@@ -236,41 +260,83 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .strip div{padding:8px 2px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:4px}
 .strip b{color:var(--t1);font-size:12px;font-weight:500}
 /* AI image layer (SVG/CSS/canvas art stays underneath as the fallback) */
-.sky{background:radial-gradient(ellipse 80% 70% at 50% 0%,#4A2A8A55 0%,#2A1F5A33 45%,transparent 100%),var(--img-sky-night,none) 50% 0/cover no-repeat;opacity:.8;-webkit-mask-image:linear-gradient(#000 45%,#0000);mask-image:linear-gradient(#000 45%,#0000)}
-.sky.hook{height:100%;opacity:1;-webkit-mask-image:none;mask-image:none;background:linear-gradient(180deg,#0B092000 0%,#0B092033 35%,#0B0920aa 60%,#0B0920 84%),var(--img-hook-window,none) -205px -204px/600px 900px no-repeat,var(--bg)}
+.sky{background:radial-gradient(ellipse 80% 70% at 50% 0%,#97701655 0%,#2A334F33 45%,transparent 100%),var(--img-sky-night,none) 50% 0/cover no-repeat;opacity:.8;-webkit-mask-image:linear-gradient(#000 45%,#0000);mask-image:linear-gradient(#000 45%,#0000)}
+.sky.hook{height:100%;opacity:1;-webkit-mask-image:none;mask-image:none;background:linear-gradient(180deg,#0E111B00 0%,#0E111B33 35%,#0E111Baa 60%,#0E111B 84%),var(--img-hook-window,none) -205px -204px/600px 900px no-repeat,var(--bg)}
 .opt .well .wimg{width:100%;height:100%;border-radius:inherit;object-fit:cover;display:block}
-.ritpic{position:relative;height:112px;border-radius:20px;overflow:hidden;border:1px solid var(--border);flex:none;background:linear-gradient(160deg,#211a4a,#0f0b26)}
+.ritpic{position:relative;height:112px;border-radius:20px;overflow:hidden;border:1px solid var(--border);flex:none;background:linear-gradient(160deg,#232A41,#111520)}
 .ritpic img{width:100%;height:100%;object-fit:cover;display:block}
-.ritpic::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0B092000 50%,#0B092088)}
+.ritpic::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0E111B00 50%,#0E111B88)}
 .rit .badge{line-height:1.3}
 
+
+/* ===== web paywall (long-scroll landing page) ===== */
+.wp .whero{display:flex;flex-direction:column;gap:12px}
+.wp .wh1{font:600 29px/1.12 var(--serif);margin:0;text-wrap:balance}
+.wp .wh1 em{font-style:normal;color:var(--acc)}
+.wp .wh2{font:600 24px/1.18 var(--serif);margin:0 0 6px;text-wrap:balance}
+.wp .wlead{color:var(--t2);margin:0;font-size:15px}
+.wp .wart{display:flex;justify-content:center;padding:6px 0}
+.wp .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wp .fact{padding:9px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--t3)}
+.wp .fact b{display:block;color:var(--t1);font-size:13.5px;font-weight:600;margin-top:2px}
+.wp .pick{border-radius:24px;padding:18px 14px 16px;background:linear-gradient(180deg,#232A40,#1A1F2F);border:1px solid #E9C26B40;box-shadow:0 30px 60px -30px #000}
+.wp .pick .wh2{text-align:center;margin-bottom:14px}
+.wp .today{display:flex;justify-content:space-between;font-size:13.5px;padding:12px 4px 0;color:var(--t2)}
+.wp .today b{color:var(--t1)}
+.wp .pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F6F3EA;color:#161A27;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
+.wp .secure{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--t2)}
+.wp .wchecks{display:flex;flex-direction:column;gap:8px;font-size:14px;margin:4px 0 12px}
+.wp .wchecks div{display:flex;gap:10px;align-items:flex-start}.wp .wchecks svg{color:var(--acc);flex:none;margin-top:2px}
+.wp .toc{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.wp .toc div{display:flex;gap:12px;align-items:center;padding:14px;background:var(--surface);border-top:1px solid var(--border);font-size:14px}
+.wp .toc div:first-child{border-top:none}
+.wp .toc .n{width:26px;height:26px;border-radius:50%;background:var(--surface-2,#2A3147);display:grid;place-items:center;font:600 12px var(--sans);color:var(--acc);flex:none}
+.wp .toc .l{margin-left:auto;color:var(--t3);font-size:13px}.wp .toc .open .l{color:#7FD1A8}
+.wp .how{display:flex;flex-direction:column}
+.wp .how>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.wp .how>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--border)}
+.wp .how i{width:34px;height:34px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;font:600 14px var(--sans);font-style:normal;border:1px solid #E9C26B55}
+.wp .how b{display:block;margin-top:6px}.wp .how span{font-size:13.5px;color:var(--t2)}
+.wp .faq details{border-top:1px solid var(--border);padding:4px 0}.wp .faq details:last-child{border-bottom:1px solid var(--border)}
+.wp .faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:12px;padding:14px 2px;font-weight:600;font-size:15px}
+.wp .faq summary::-webkit-details-marker{display:none}
+.wp .faq summary::after{content:"+";color:var(--acc);font-size:20px;line-height:1;transition:transform .2s}
+.wp .faq details[open] summary::after{transform:rotate(45deg)}
+.wp .faq p{margin:0 2px 14px;color:var(--t2);font-size:14px}
+.wp .rate{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
+.wp .rev{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--t2);margin-top:10px}
+.wp .wfoot{padding:28px 18px 120px;font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
+.wp .wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text,#161A27);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
+.wsticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:linear-gradient(180deg,transparent,#161A27 28%);transform:translateY(110%);transition:transform .3s ease}
+.wsticky.show{transform:none}
+.wp .wfoot .legal{display:flex;justify-content:center;gap:4px 14px;flex-wrap:wrap;margin-top:8px}
+.wp .wfoot .legal button{background:none;border:none;color:var(--t2);font-size:12px;text-decoration:underline;text-underline-offset:2px;min-height:44px;padding:0 4px;filter:none;opacity:1}
+.wsticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}.wsticky .sum b{color:var(--t1)}
 </style>
 </head>
 <body>
-<noscript><p style="padding:24px;color:#F5F2FB;font:16px system-ui">Please turn on JavaScript to continue.</p></noscript>
+<noscript><p style="padding:24px;color:#FDF9F0;font:16px system-ui">Please turn on JavaScript to continue.</p></noscript>
 <script>
 /* ===================== CONFIG — edit before launch ===================== */
 const CONFIG={
-  brand:'Nebula',
+  brand:'Starlyn',
   funnel:'moon-reading',
   /* TODO(pricing): replace every {{placeholder}} with the real price string shown to users (e.g. "$9.99"). Do not invent numbers. */
   plans:{
-    weekly:{name:'Weekly',intro:'{{week_intro_price}}',price:'{{week_price}}',renews:'week'},              /* intro first week, then weekly */
-    quarter:{name:'3-Month',price:'{{quarter_price}}',renews:'3 months'},                                  /* decoy tier, no badge */
-    annual:{name:'Annual',price:'{{annual_price}}',weekEquiv:'{{annual_week_equiv}}',renews:'year'},       /* pre-selected */
-    trial:{name:'3-day free trial',trialDays:3,price:'{{annual_price}}',renews:'year'}                    /* paywall ✕ fallback: 3 days free, then annual */
+    weekly:{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'}   /* the only plan: intro first week, then auto-renews monthly. No other tiers, no one-time products */
   },
-  defaultPlan:'annual',
+  defaultPlan:'weekly',
   refundDays:'{{refund_days}}',            /* TODO(billing): base nebula uses 7 days — confirm */
-  /* Checkout per plan. '' = only emit checkout_click (host listens and opens its own checkout).
+  /* Checkout for the one plan. '' = only emit checkout_click (host listens and opens its own checkout).
      When set, the CTA navigates there with ?plan=&email=&utm_*… The checkout should send buyers back to
-     this page with ?paid=<plan> (weekly|quarter|annual|trial) so the ritual reveal (#22) shows with their answers. */
-  checkoutUrl:{weekly:'',quarter:'',annual:'',trial:''},
+     this page with ?paid=weekly so the get-the-app screen (#22) shows. */
+  checkoutUrl:{weekly:''},
   returnParam:'paid',
-  termsUrl:'',                              /* TODO */
-  privacyUrl:'',                            /* TODO */
-  subscriptionTermsUrl:'',                  /* TODO */
-  supportEmail:'{{support_email}}',         /* TODO: shown as a "Support" link on the paywall once it is a real address */
+  termsUrl:'https://squad-xteam.com/termofuse.html',                              /* TODO */
+  privacyUrl:'https://squad-xteam.com/policy.html',                            /* TODO */
+  subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',                  /* TODO */
+  supportEmail:'support@starlyn.co',         /* TODO: shown as a "Support" link on the paywall once it is a real address */
   loginUrl:'',                              /* "log in instead?" on the email step */
   appUrl:'',                                /* TODO: deep link / OneLink for "Open the app" (falls back to the store for the device) */
   appStoreUrl:'',playStoreUrl:'',           /* TODO */
@@ -281,8 +347,8 @@ const CONFIG={
   socialAuth:null                           /* optional async (provider:'Google'|'Apple')=>email; shows the Google/Apple buttons */
 };
 /* Events: window 'ikfunnel:<name>' CustomEvent (cancel checkout_click to stop navigation), parent.postMessage({source:'ikame-funnel',…}),
-   fbq trackCustom, ttq.track. Names: funnel_start, screen_view, answer, lead, paywall_view, plan_select, checkout_click, paywall_close, complete
-   (+ reminders, ritual_done, purchase, share, save_image, app_click, login_click). Host API: window.IkFunnel.completePurchase(plan), .go(n), .data() */
+   fbq trackCustom, ttq.track. Names: funnel_start, screen_view, answer, lead, paywall_view, plan_select, checkout_click, paywall_close, age_block, age_change, complete
+   (+ reminders, ritual_done, purchase, share, save_image, app_handoff, login_click). Host API: window.IkFunnel.completePurchase(plan), .go(n), .data() */
 
 /* ===== shared funnel library (per-funnel code defines CONFIG, TOK, APP, V, FLOW, INIT, NEXT, fillTo, ANSWERS, DERIVED, OK, ACT, INPUT, AFTER, HERO) ===== */
 const IC={
@@ -416,7 +482,7 @@ function checkout(plan,extra){const p=CONFIG.plans[plan]||{},base=(CONFIG.checko
   if(ok&&full){saveState(plan);nav2(full)}}
 function openApp(which){const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),and=/Android/i.test(ua);
   const url=which==='ios'?CONFIG.appStoreUrl:which==='android'?CONFIG.playStoreUrl:(CONFIG.appUrl||(ios?CONFIG.appStoreUrl:and?CONFIG.playStoreUrl:''));
-  if(emit('app_click',{target:which,url:url||''})&&url)nav2(url)}
+  if(emit('app_handoff',{target:which,url:url||''})&&url)nav2(url)}
 function shareIt(text){const url=CONFIG.shareUrl||(location.origin&&location.origin!=='null'?location.origin+location.pathname:'');emit('share',{});
   if(navigator.share){navigator.share(Object.assign({title:CONFIG.brand,text},url?{url}:{})).catch(()=>{})}
   else if(url&&navigator.clipboard){navigator.clipboard.writeText(url).then(()=>toast('Link copied'),()=>{})}}
@@ -432,6 +498,11 @@ const errHTML=()=>S.err?`<div class="err fadein" role="alert">${S.err}</div>`:''
 function dateSel(pre,o){const ys=[],ymax=new Date().getFullYear()-18;for(let y=ymax;y>=ymax-86;y--)ys.push(y);
   return `<div class="row3"><div class="box"><select data-f="${pre}.m" aria-label="Month"><option value="">Month</option>${MONTHS.map((m,i)=>`<option value="${i+1}" ${o.m==i+1?'selected':''}>${m}</option>`).join('')}</select></div><div class="box"><select data-f="${pre}.d" aria-label="Day"><option value="">Day</option>${Array.from({length:31},(_,i)=>`<option ${o.d==i+1?'selected':''}>${i+1}</option>`).join('')}</select></div><div class="box"><select data-f="${pre}.y" aria-label="Year"><option value="">Year</option>${ys.map(y=>`<option ${o.y==y?'selected':''}>${y}</option>`).join('')}</select></div></div>`}
 function dobErr(o,gate=true){if(!(o.m&&o.d&&o.y))return 'Pick a full date to continue';const b=new Date(+o.y,o.m-1,+o.d);if(b.getDate()!=+o.d)return 'Pick a full date to continue';if(!gate)return '';const n=new Date();const a=n.getFullYear()-b.getFullYear()-((n.getMonth()<b.getMonth()||(n.getMonth()===b.getMonth()&&n.getDate()<b.getDate()))?1:0);return a<18?'You must be 18 or older to continue':''}
+/* ----- 18+ gate: a blocking notice with a way back to fix the date; the block persists for the session ----- */
+const U18='You must be 18 or older to continue',AKEY='ikf_age_block';
+function ageBlock(){S.blocked=true;try{sessionStorage.setItem(AKEY,'1')}catch(e){}emit('age_block',{});clearT();render('f')}
+function ageFix(){S.blocked=false;try{sessionStorage.removeItem(AKEY)}catch(e){}S.dob={m:'',d:'',y:''};S.err='';emit('age_change',{});go(APP.dob)}
+const ageBlockHTML=()=>`<div class="scr center tc" style="align-items:center"><div class="bigwell">${ic('lock',34)}</div><h1 class="display sm">Starlyn is for adults 18+.</h1><p class="lead">You must be 18 or older to use Starlyn. Entered the wrong date? Change it below.</p></div><div class="foot">${cta('Change my birth date',true,'agefix')}</div>`;
 function cityField(k,q,{label,err,hint='',ph='City, country'}){CSX[q]={k,err,hint};const val=S[k]||S[q]||'';
   return `<div class="field"><label for="f_${q}">${label}</label><div class="box">${ic('pin',18)}<input id="f_${q}" data-f="${q}" data-cq="1" autocomplete="off" placeholder="${ph}" value="${esc(val)}">${S[k]?`<button class="iconbtn" data-a="clearcity" data-k="${k}" data-q="${q}" aria-label="Clear">${ic('x',16)}</button>`:''}</div><div class="res">${cityRes(q)}</div></div>`}
 function cityRes(q){const c=CSX[q];const s=(S[q]||'').trim().toLowerCase();if(S[c.k])return c.hint?`<div class="hint">${c.hint}</div>`:'';
@@ -442,21 +513,45 @@ const EMRX=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 function emailGate({h,b,card='',taken,optin}){const er=S.err==='taken'?esc(taken).replace('log in instead?','<button class="link" style="padding:0 4px;font-size:13px;color:var(--t1);min-height:32px" data-a="login">log in instead?</button>'):S.err;
   const social=typeof CONFIG.socialAuth==='function';
   return `<div class="scr">${card}<h1 class="display sm">${h}</h1><p class="lead" style="margin-top:-8px">${b}</p>
-  <div class="field"><label for="em">Email</label><div class="box white ${S.err?'bad':''}">${ic('mail',18,'#6a6390')}<input id="em" type="email" inputmode="email" data-f="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err fadein" role="alert">${er}</div>`:''}</div>
+  <div class="field"><label for="em">Email</label><div class="box white ${S.err?'bad':''}">${ic('mail',18,'#BE8D1B')}<input id="em" type="email" inputmode="email" data-f="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err fadein" role="alert">${er}</div>`:''}</div>
   <button class="checkbox ${S.optin?'on':''}" data-a="optin" role="checkbox" aria-checked="${S.optin}"><span class="cb">${S.optin?ic('check',13,'currentColor',3):''}</span><span>${optin}</span></button>
   <div class="note" style="color:var(--t2)">${ic('lock',12)} Nothing is charged on this step.</div></div>
   <div class="foot">${cta('Continue',true,'email')}${social?`<div class="row"><button class="btn light" style="height:48px;font-size:14px" data-a="gauth" data-v="Google">${ic('google',17)} Google</button><button class="btn black" style="height:48px;font-size:14px" data-a="gauth" data-v="Apple">${ic('apple',17)} Apple</button></div>`:''}<div class="note">${agree()}.</div></div>`}
 /* paywall: plans [{k,name,badge,pl,small}] ; lines {k:html}. Checkout happens on CONFIG.checkoutUrl[plan]. */
-function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,fallback}){const p=plans.find(x=>x.k===S.plan)||plans[0];
-  const sup=/@/.test(CONFIG.supportEmail||'')?lnk('Support','mailto:'+CONFIG.supportEmail):'';
-  return `<button class="closex" data-a="close" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:0">${top}
-  <h1 class="display sm">${h}</h1><p class="lead" style="margin-top:-10px">${b}</p>
-  ${benefits?`<div class="checks">${benefits.map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>`:''}
-  <div class="stack" role="radiogroup" aria-label="Plans">${plans.map(x=>`<button class="plan ${S.plan===x.k?'on':''}" data-a="plan" data-v="${x.k}" role="radio" aria-checked="${S.plan===x.k}"><span class="radio">${S.plan===x.k?ic('check',13,'currentColor',3):''}</span><span style="flex:1;min-width:0"><span class="pn">${x.name}${x.badge?`<span class="save">${x.badge}</span>`:''}</span><span class="pp">${x.pl}</span>${x.small?`<span class="ps">${x.small}</span>`:''}</span></button>`).join('')}</div>
-  <div class="trust">🔒 Secure checkout · Cancel anytime in your account · ${tok('refund_days')}-day money-back<br>We email you 3 days before any renewal.</div>
-  <div class="note">${legal}</div><div class="legal">${lnk('Terms',CONFIG.termsUrl)}${lnk('Privacy',CONFIG.privacyUrl)}${lnk('Subscription terms',CONFIG.subscriptionTermsUrl)}${sup}</div></div>
-  <div class="foot" style="padding-top:8px"><div class="note" style="color:var(--t1);font-size:13px">${lines[p.k]}</div>${cta(ctaLabel,true,'pay')}</div>
-  ${S.sheet==='fb'?`<div class="dim" data-a="fbno"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Offer"><span class="grab"></span>${fallback}</div>`:''}`}
+function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){const p=plans.find(x=>x.k===S.plan)||plans[0];S.plan=p.k;
+  const ok=v=>v!=null&&v!==''&&!/^\{\{/.test(String(v));
+  const R=(typeof CONFIG!=='undefined'&&CONFIG.rating)||{},RV=((typeof CONFIG!=='undefined'&&CONFIG.reviews)||[]).filter(r=>r&&ok(r.text)&&ok(r.name));
+  const proof=ok(R.score)&&ok(R.count)&&RV.length;
+  const block=n=>`<div class="pick" id="wplans${n}"><h2 class="wh2">Your plan</h2><div class="stack">${plans.map(x=>`<button class="plan ${S.plan===x.k?'on':''}" data-a="plan" data-v="${x.k}" aria-pressed="${S.plan===x.k}"><span class="radio">${S.plan===x.k?ic('check',13,'currentColor',3):''}</span><span style="flex:1"><span class="pn">${x.name}</span><span class="pp">${x.pl}</span></span></button>`).join('')}</div>
+    <div class="today"><span>Due today</span><b>${tok('price_1w')} today</b></div><div style="height:12px"></div>${cta(ctaLabel,true,'pay')}
+    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+    <div class="secure"><span>🔒 Secure checkout</span><span>✓ Cancel anytime</span></div>
+    <p class="fine">${lines[p.k]}<br>We email you 3 days before any renewal.</p></div>`;
+  const FAQ=[['When do I get my reading?','Right after checkout. Download the Starlyn app and log in with '+esc(S.email||'your email')+'. Your full reading is waiting there.'],
+    ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
+    ['Will I be charged again?','Yes, unless you cancel: after your first week the plan renews every month at the monthly price shown above.'],
+    ['What happens to my data?','Your answers are used only to build your reading. We never sell them.'],
+    ['Is this a prediction?','No. Readings are for entertainment and reflection. They do not predict or change events.']].concat(faqX||[]);
+  setTimeout(bindWP,0);
+  return `<div class="wp" id="wp"><div class="wbar"><div class="brand">✦ Starlyn</div><button class="mini" id="wmini">${ctaLabel}</button></div>
+  <div class="wsec tight whero"><span class="eyebrow">Your reading is ready</span><h1 class="wh1">${h}</h1><p class="wlead">${b}</p>
+   <div class="wart">${top}</div>
+   ${facts&&facts.length?`<div class="facts">${facts.filter(f=>ok(f[1])).map(([k,v])=>`<div class="fact">${k}<b>${v}</b></div>`).join('')}</div>`:''}</div>
+  <div class="wsec">${block(1)}</div>
+  <div class="wsec"><span class="eyebrow">Inside your reading</span><h2 class="wh2">Everything in your reading</h2>
+   ${benefits?`<div class="wchecks">${benefits.map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>`:''}
+   <div class="toc">${(toc||[]).map((x,i)=>`<div class="${i===0?'open':''}"><span class="n">${i+1}</span><span>${x}</span><span class="l">${i===0?'✓ Ready':'🔒'}</span></div>`).join('')}</div></div>
+  <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From checkout to your reading</h2><div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Get the app','Download Starlyn: Daily Astrology from the App Store or Google Play.'],['Open your reading','Log in with '+esc(S.email||'your email')+'. Your reading is waiting.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></div>
+  ${proof?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><b style="font:600 34px var(--serif);color:var(--acc)">${esc(R.score)}</b><div>★★★★★<div class="hint">${esc(R.count)} ratings</div></div></div>${RV.map(r=>`<div class="rev"><b style="color:var(--t1)">${esc(r.name)}</b><br>${esc(r.text)}</div>`).join('')}</div>`:''}
+  <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([x,y])=>`<details><summary>${x}</summary><p>${y}</p></details>`).join('')}</div></div>
+  <div class="wsec">${block(2)}</div>
+  <div class="wfoot"><div class="note">${legal}</div><div class="legal"><a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy</a><a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a></div></div></div>
+  <div class="wsticky" id="wsticky"><div class="sum"><span>${p.name}</span><b>${tok('price_1w')} today</b></div>${cta(ctaLabel,true,'pay')}</div>`}
+function bindWP(){const v=(typeof cur==='function'&&cur())||document;const wp=v.querySelector('.wp'),st=v.querySelector('.wsticky'),mini=v.querySelector('#wmini');if(!wp||wp.dataset.b)return;wp.dataset.b=1;
+  const blocks=[...wp.querySelectorAll('.pick')];if(mini)mini.onclick=()=>{const t=wp.querySelector('#wplans1');if(t)wp.scrollTo({top:t.offsetTop-60,behavior:'smooth'})};
+  const vis=new Set(blocks);const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);if(st)st.classList.toggle('show',!vis.size&&wp.scrollTop>40)};
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));upd()},{root:wp,threshold:.2});blocks.forEach(b=>io.observe(b))}
+  wp.addEventListener('scroll',upd,{passive:true});upd()}
 function appScreen({h,b,mock,rows,note='',ctaLabel='Open the app'}){const qr=CONFIG.qrImage&&!TOUCH;
   return `<div class="scr"><h1 class="display sm tc">${h}</h1><p class="lead tc" style="margin-top:-8px">${b}</p>
   <div class="mock" aria-hidden="true">${mock}</div>
@@ -465,6 +560,13 @@ function appScreen({h,b,mock,rows,note='',ctaLabel='Open the app'}){const qr=CON
   <div class="stores"><button class="store" data-a="store" data-v="ios">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div>
   ${qr?`<div class="qr"><img src="${esc(CONFIG.qrImage)}" alt="QR code to open ${esc(CONFIG.brand)} on your phone"><span>Scan to open ${esc(CONFIG.brand)}<br>on your phone.</span></div>`:''}</div>
   <div class="foot">${cta(ctaLabel,true,'store')}</div>`}
+/* ----- after purchase: get the app. The full reading lives in the app; there is no free path and no offer. ----- */
+function getApp(extra=''){return `<div class="scr center tc" style="align-items:center;gap:16px"><div class="bigwell">${ic('check',34,'currentColor',2.4)}</div>
+  <h1 class="display sm">You're in${S.name?', '+esc(S.name):''}</h1><p class="lead" style="margin-top:-8px">Your full reading is waiting in the Starlyn app.</p>${extra}
+  <div class="card" style="padding:4px 14px;width:100%;text-align:left">${['Download Starlyn: Daily Astrology',`Log in with ${esc(S.email||'your email')}`,'Open your reading'].map((l,i)=>`<div class="promise"><span class="well">${i+1}</span><span>${l}</span></div>`).join('')}</div>
+  <div class="stores"><button class="store" data-a="store" data-v="ios">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div>
+  <p class="hint" style="margin:0">For entertainment purposes only.</p></div>
+  <div class="foot">${cta('Open the app',true,'store')}</div>`}
 function stepsHTML(rows){return `<div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>`}
 function runLoading(total,onTick,done){let row=0,pct=0;const inc=100/(total/4/50);
   timer=setInterval(()=>{const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
@@ -491,19 +593,19 @@ function starfield(){const cv=document.getElementById('stars'),cx=cv.getContext(
   function frame(now){const dt=Math.min(50,now-last);last=now;SKY.mx+=(SKY.tx-SKY.mx)*.05;SKY.my+=(SKY.ty-SKY.my)*.05;SKY.boost*=Math.pow(.94,dt/16);
     const sp=(SKY.base+SKY.boost*0.0011)*dt;cx.clearRect(0,0,w,h);const tt=now/1000;
     const neb=(x,y,r,col)=>{const g=cx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(0,0,w,h)};
-    neb(w*(.25+.06*Math.sin(tt*.07)),h*(.22+.04*Math.cos(tt*.05)),w*.75,'rgba(120,70,220,.17)');neb(w*(.8+.05*Math.cos(tt*.06)),h*(.6+.05*Math.sin(tt*.04)),w*.7,'rgba(220,70,160,.10)');
+    neb(w*(.25+.06*Math.sin(tt*.07)),h*(.22+.04*Math.cos(tt*.05)),w*.75,'rgba(219,163,31,.17)');neb(w*(.8+.05*Math.cos(tt*.06)),h*(.6+.05*Math.sin(tt*.04)),w*.7,'rgba(219,163,31,.10)');
     for(const s of stars){const pz=s.z;s.z-=sp;if(s.z<.04){spawn(s,true);continue}const[x,y]=proj(s,s.z);if(x<-20||x>w+20||y<-20||y>h+20){spawn(s,true);continue}
       const depth=1-s.z,tw=.55+.45*Math.sin(tt*s.f+s.p),a=Math.min(1,depth*1.25)*tw,r=.35+depth*1.9;
       if(sp>0.004&&!RM){const[px,py]=proj(s,Math.min(1,pz+sp*5));cx.strokeStyle=`rgba(${s.c},${a*.8})`;cx.lineWidth=r;cx.beginPath();cx.moveTo(px,py);cx.lineTo(x,y);cx.stroke()}
       cx.fillStyle=`rgba(${s.c},${a})`;cx.beginPath();cx.arc(x,y,r,0,6.283);cx.fill()}
     if(!RM&&now>nextShoot){const an=Math.PI*(.72+Math.random()*.12);shoot.push({x:w*(.3+Math.random()*.7),y:h*Math.random()*.35,vx:Math.cos(an)*.55,vy:Math.sin(an)*.55,l:0});nextShoot=now+4000+Math.random()*5000}
     for(let i=shoot.length-1;i>=0;i--){const m=shoot[i];m.l+=dt;m.x+=m.vx*dt;m.y+=m.vy*dt;const k=1-m.l/1100;if(k<=0){shoot.splice(i,1);continue}
-      const g=cx.createLinearGradient(m.x,m.y,m.x-m.vx*160,m.y-m.vy*160);g.addColorStop(0,`rgba(255,240,250,${k})`);g.addColorStop(1,'rgba(255,240,250,0)');cx.strokeStyle=g;cx.lineWidth=1.6;cx.beginPath();cx.moveTo(m.x,m.y);cx.lineTo(m.x-m.vx*160,m.y-m.vy*160);cx.stroke()}
+      const g=cx.createLinearGradient(m.x,m.y,m.x-m.vx*160,m.y-m.vy*160);g.addColorStop(0,`rgba(255,240,250,${k})`);g.addColorStop(1,'rgba(253,250,242,0)');cx.strokeStyle=g;cx.lineWidth=1.6;cx.beginPath();cx.moveTo(m.x,m.y);cx.lineTo(m.x-m.vx*160,m.y-m.vy*160);cx.stroke()}
     if(!RM)requestAnimationFrame(frame)}
   size();addEventListener('resize',size);if(!RM)requestAnimationFrame(frame);
   phone.addEventListener('pointermove',e=>{const r=phone.getBoundingClientRect();SKY.tx=((e.clientX-r.left)/r.width-.5)*2;SKY.ty=((e.clientY-r.top)/r.height-.5)*2});
   phone.addEventListener('pointerleave',()=>{SKY.tx=0;SKY.ty=0})}
-function render(dir){const n=S.i;const html=nav()+V[n]();const old=cur();
+function render(dir){const n=S.i;const html=S.blocked?ageBlockHTML():nav()+V[n]();const old=cur();
   if(dir&&old&&!RM){old.classList.remove('cur');old.setAttribute('inert','');old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));old.classList.add('out');
     const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);setTimeout(()=>old.remove(),260);setTimeout(()=>nv.classList.remove('in'),380)}
   else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
@@ -522,7 +624,7 @@ function boot(){
   document.body.insertAdjacentHTML('afterbegin',`<main class="app" id="phone" aria-live="polite"></main>`);
   phone=document.getElementById('phone');
   phone.innerHTML=`<canvas id="stars" aria-hidden="true"></canvas><div class="stage" id="stage"></div>`;
-  stage=document.getElementById('stage');S=INIT();S.v=Q.get('v')==='B'?'B':'A';starfield();
+  stage=document.getElementById('stage');S=INIT();S.v=Q.get('v')==='B'?'B':'A';try{if(sessionStorage.getItem(AKEY))S.blocked=true}catch(e){}starfield();
   phone.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,v=b.dataset.v;
     if(ACT(a,v,b))return;
     switch(a){
@@ -532,7 +634,7 @@ function boot(){
       case 'pick':{const k=b.dataset.k;S[k]=v;render();if(v!=='other'){const at=S.i;later(()=>{if(S.i===at)next()},300)}else document.getElementById('oth')?.focus();break}
       case 'multi':{const k=b.dataset.k,max=+b.dataset.max||99,arr=S[k],i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else if(arr.length<max)arr.push(v);else{toast(`Pick up to ${max}`);break}render();if(v==='other'&&arr.includes('other'))document.getElementById('oth')?.focus();break}
       case 'name':if(!S.name.trim()){S.err='Add your name to continue';render()}else{S.name=S.name.trim();next()}break;
-      case 'dob':{const er=dobErr(S.dob);if(er){S.err=er;render()}else next();break}
+      case 'dob':{const er=dobErr(S.dob);if(er===U18)ageBlock();else if(er){S.err=er;render()}else next();break}
       case 'unknown':S.timeUnknown=!S.timeUnknown;if(S.timeUnknown)S.time='';render();break;
       case 'city':S[b.dataset.k]=v;S[b.dataset.q]='';render();break;
       case 'clearcity':S[b.dataset.k]='';S[b.dataset.q]='';render();break;
@@ -544,8 +646,7 @@ function boot(){
       case 'login':emit('login_click',{});if(CONFIG.loginUrl)nav2(CONFIG.loginUrl);break;
       case 'plan':S.plan=v;emit('plan_select',{plan:v});render();break;
       case 'pay':checkout(S.plan,{source:'paywall'});break;
-      case 'close':if(!S.fb){S.fb=true;S.sheet='fb';emit('paywall_close',{fallback_shown:true});render()}else{emit('paywall_close',{fallback_shown:false});go(APP.closeTo)}break;
-      case 'fbno':emit('paywall_close',{fallback_dismissed:true});S.sheet=null;go(APP.closeTo);break;
+      case 'agefix':ageFix();break;
       case 'store':openApp(v||'app');break;
     }});
   phone.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;
@@ -566,7 +667,7 @@ function boot(){
 document.addEventListener('DOMContentLoaded',boot);
 
 /* ===================== moon-reading ===================== */
-/* ===== Nebula · Moon Reading ===== */
+/* ===== Starlyn · Moon Reading ===== */
 const SYN=29.530588,NM0=Date.UTC(2000,0,6,18,14),RAD=Math.PI/180,nrm=x=>((x%360)+360)%360;
 const ageAt=ms=>(((ms-NM0)/864e5)%SYN+SYN)%SYN;
 const illumAt=a=>(1-Math.cos(2*Math.PI*a/SYN))/2;
@@ -583,7 +684,7 @@ const OFF={over:['Overthinking','🌀'],please:['People-pleasing','🙇'],mood:[
 const MINS={'2':['2 minutes','⏱️',2],'5':['5 minutes','🕯️',5],'15':['15 minutes','🛁',15],big:['Big nights only','🌕',15]};
 const STYLE={journal:['Journaling','✍️'],breath:['Breathwork','🌬️'],affirm:['Affirmations','💬'],candle:['Candle','🕯️'],other:['Other','✏️']};
 const PERS={partner:['Partner','💞'],crush:['Crush','✨'],ex:['An ex','💔'],family:['Family member','👪'],me:['Just me','🙂']};
-const INIT=()=>({v:'A',completed:false,i:1,hist:[],feel:'',intent:'',intentOther:'',name:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,place:'',placeQ:'',off:'',offOther:'',mins:'',styles:[],stylesOther:'',person:'',pname:'',pdob:{m:'',d:'',y:''},rem:{nw:true,fu:true,daily:false},remTime:'8:00 PM',remSaved:null,email:'',optin:false,auth:'',plan:CONFIG.defaultPlan||'annual',paid:'',done:false,fb:false,sheet:null,err:''});
+const INIT=()=>({v:'A',completed:false,i:1,hist:[],feel:'',intent:'',intentOther:'',name:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,place:'',placeQ:'',off:'',offOther:'',mins:'',styles:[],stylesOther:'',person:'',pname:'',pdob:{m:'',d:'',y:''},rem:{nw:true,fu:true,daily:false},remTime:'8:00 PM',remSaved:null,email:'',optin:false,auth:'',plan:CONFIG.defaultPlan||'annual',paid:'',done:false,offerSeen:false,sheet:null,err:''});
 const bc=()=>city(S.place)||city(CITIES[0][0]);
 const bd=()=>S.dob.m?S.dob:{m:'8',d:'12',y:'1994'};
 const utc=(o,h,m,tz)=>Date.UTC(+o.y,o.m-1,+o.d,h,m)-tz*36e5;
@@ -601,10 +702,10 @@ const minsN=()=>(MINS[S.mins]||MINS['5'])[2];
 const pn=()=>esc(S.pname||'Jordan');
 const hasP=()=>S.person&&S.person!=='me'&&S.pname;
 const pSign=()=>{const o=S.pdob.m?S.pdob:{m:'6',d:'3',y:'1993'};return signAt(Date.UTC(+o.y,o.m-1,+o.d,12))};
-const TOK=()=>{const P=CONFIG.plans;return {week_intro_price:P.weekly.intro,week_price:P.weekly.price,quarter_price:P.quarter.price,annual_price:P.annual.price,annual_week_equiv:P.annual.weekEquiv,refund_days:CONFIG.refundDays}};
-const APP={load:17,gate:20,pay:21,last:23,inv:[3,4,5,6,7,8,9,10,11,12,13,14,15,16],nav:n=>(n>=2&&n<=16)||n===20,closeTo:18,
-  /* after a confirmed purchase of <plan>: returns the screen to show */
-  paid:plan=>{S.paid=plan;if(CONFIG.plans[plan]&&plan!=='trial')S.plan=plan;return 22},
+const TOK=()=>{const P=CONFIG.plans;return {price_1w:P.weekly.intro,price_month:P.weekly.price,refund_days:CONFIG.refundDays}};
+const APP={load:17,gate:20,pay:21,last:22,dob:5,inv:[3,4,5,6,7,8,9,10,11,12,13,14,15,16],nav:n=>(n>=2&&n<=16)||n===20,
+  /* after a confirmed purchase: the get-the-app screen (hard paywall, no free path) */
+  paid:plan=>{S.paid=plan;if(CONFIG.plans[plan])S.plan=plan;return 22},
   loadH:()=>t(`Reading your Moon, ${nm()}…`,`Building ${nm()}'s moon month…`)};
 const FLOW=[
  ['A · Hook',[[1,'Does the full moon get you?'],[2,"What you'll get"]]],
@@ -613,13 +714,13 @@ const FLOW=[
  ['B · How rituals fit you',[[10,'What throws you off'],[11,'Ritual time'],[12,'Ritual style'],[13,"Tonight's Moon",'live bridge'],[14,'Someone on your mind','optional'],[15,'Their birthday','if person'],[16,'Phase reminders']]],
  ['D · Anticipation',[[17,'Reading your Moon','loading'],[18,'Your Moon sign','free reveal'],[19,'Your moon month','tease']]],
  ['E · Gate',[[20,'Where to send it']]],
- ['F · Monetization',[[21,'Paywall']]],
- ['G · Payoff',[[22,"Tonight's ritual",'reveal'],[23,'Continue in Nebula']]]
+ ['F · Monetization',[[21,'Paywall','hard']]],
+ ['G · Payoff',[[22,'Get app','after purchase']]]
 ];
 /* ---- 2D phase icon ---- */
 function phaseIcon(age,s=22){const k=illumAt(age),r=s/2-1,c=s/2,rx=(Math.abs(1-2*k)*r).toFixed(2),wax=age<SYN/2;
   const d=wax?`M${c} ${c-r}A${r} ${r} 0 0 1 ${c} ${c+r}A${rx} ${r} 0 0 ${k<.5?0:1} ${c} ${c-r}Z`:`M${c} ${c-r}A${r} ${r} 0 0 0 ${c} ${c+r}A${rx} ${r} 0 0 ${k<.5?1:0} ${c} ${c-r}Z`;
-  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="#2a2458" stroke="#4a3f86" stroke-width=".8"/><path d="${d}" fill="#F1EBDD"/></svg>`}
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="#2B3451" stroke="#A17817" stroke-width=".8"/><path d="${d}" fill="#F1EBDD"/></svg>`}
 /* ---- 3D moon hero (per-pixel lit sphere) ---- */
 let MTEX=null;const MIMG=new Image();MIMG.decoding='async';
 function moonTex(){if(MTEX)return MTEX;const W=256,H=128,a=new Float32Array(W*H);
@@ -679,12 +780,12 @@ const V={
   <div class="field"><label>Date of birth</label>${dateSel('dob',S.dob)}${errHTML()}</div><p class="hint">You must be 18 or older.</p></div><div class="foot">${cta('Continue',true,'dob')}</div>`,
 6:()=>`<div class="sky"></div><div class="scr z center tc" style="align-items:center">${moon('still',180,bAge())}
   <span class="hint">${fmtDate(bd())}</span><h1 class="display">${t(`Born under a ${bPhase()}`,`${nm()}, your Moon at birth`)}</h1>
-  <p class="lead" style="color:#E6DCFF">${bPhase()} — ${PHT[phIdx(bAge())]}</p><p class="lead">${t('Two details pin down your exact Moon sign.','Time and place finish your Moon.')}</p><span class="hint">Your Moon: 1 of 3 details</span></div><div class="foot">${cta('Continue')}</div>`,
+  <p class="lead" style="color:#FAF3E1">${bPhase()} — ${PHT[phIdx(bAge())]}</p><p class="lead">${t('Two details pin down your exact Moon sign.','Time and place finish your Moon.')}</p><span class="hint">Your Moon: 1 of 3 details</span></div><div class="foot">${cta('Continue')}</div>`,
 7:()=>`<div class="scr"><div style="margin-top:14px">${zband(birthMs())}</div><h1 class="display">${t('What time were you born?','Know your birth time?')}</h1><p class="lead" style="margin-top:-8px">${t('The Moon changes signs every two or three days.','Time pins your Moon sign exactly.')}</p>
   <div class="field"><label for="tm">Time of birth</label><div class="box">${ic('clock',18)}<input id="tm" type="time" data-f="time" value="${esc(S.time)}" ${S.timeUnknown?'disabled':''}></div></div>
   <button class="link" style="align-self:flex-start;padding:0" data-a="unknown">${S.timeUnknown?'I know it after all':"I don't know my birth time"}</button>
   ${S.timeUnknown?`<p class="hint fadein" style="color:var(--t2)">No problem. If your Moon changed signs that day, we'll show both.</p>`:''}</div><div class="foot">${cta('Continue',S.time||S.timeUnknown)}</div>`,
-8:()=>{const c=city(S.place);return `<div class="scr"><div class="mapwrap" style="position:relative">${mapSVG({step:5,pins:c?pinSVG(c.lon,c.lat,'#E6DCFF',1.5):''})}<span style="position:absolute;right:14px;top:8px">${phaseIcon(SYN*.15,30)}</span></div>
+8:()=>{const c=city(S.place);return `<div class="scr"><div class="mapwrap" style="position:relative">${mapSVG({step:5,pins:c?pinSVG(c.lon,c.lat,'#FAF3E1',1.5):''})}<span style="position:absolute;right:14px;top:8px">${phaseIcon(SYN*.15,30)}</span></div>
   <h1 class="display">${t('Where were you born?','Your birth city, please')}</h1><p class="lead" style="margin-top:-8px">Your time zone sets the Moon's position.</p>
   ${cityField('place','placeQ',{label:'Place of birth',err:"We couldn't find that place. Try a nearby city.",hint:'We never share or sell your details.'})}</div><div class="foot">${cta('Continue',!!S.place)}</div>`},
 9:()=>{const ph=[0,1,2,3].map(i=>{const tgt=[0,.25,.5,.75][i]*SYN,ms=NOW+((tgt-tAge)%SYN+SYN)%SYN*864e5;return[ms,['New','First Q.','Full','Last Q.'][i],tgt]}).sort((a,b)=>a[0]-b[0]);
@@ -696,22 +797,22 @@ const V={
 10:()=>`<div class="scr"><h1 class="display">${t('What throws you off most?','What drains you lately?')}</h1><p class="lead">Your daily tip will target this.</p>
   <div class="opts">${Object.entries(OFF).map(([k,[l,e]])=>pick('off',k,l,e)).join('')}${S.off==='other'?otherIn('off'):''}</div></div>${pickFoot('off')}`,
 11:()=>`<div class="scr"><h1 class="display">${t('How long for a ritual?','How much time tonight?')}</h1><p class="lead">We'll fit rituals to your real day.</p>
-  <div class="opts cards">${Object.entries(MINS).map(([k,[l,e,m]])=>pick('mins',k,l,`<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="11" fill="none" stroke="#3a3170" stroke-width="3"/><circle cx="15" cy="15" r="11" fill="none" stroke="#C3A3FF" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(69.1*(k==='big'?1:m/15)).toFixed(1)} 70" transform="rotate(-90 15 15)"/></svg>`).replace('</span><span class="lbl">',`</span><span class="lbl">${e} `)).join('')}</div></div><div class="foot"><div class="note">Tap one to continue</div></div>`,
+  <div class="opts cards">${Object.entries(MINS).map(([k,[l,e,m]])=>pick('mins',k,l,`<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="11" fill="none" stroke="#8B6714" stroke-width="3"/><circle cx="15" cy="15" r="11" fill="none" stroke="#EAC46C" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(69.1*(k==='big'?1:m/15)).toFixed(1)} 70" transform="rotate(-90 15 15)"/></svg>`).replace('</span><span class="lbl">',`</span><span class="lbl">${e} `)).join('')}</div></div><div class="foot"><div class="note">Tap one to continue</div></div>`,
 12:()=>`<div class="scr"><h1 class="display">${t('Which rituals feel like you?','How do you like to reset?')}</h1><p class="lead">Pick any. We'll mix them through the month.</p>
   <div class="opts">${Object.entries(STYLE).map(([k,[l,e]])=>multi('styles',k,l,RIMG[k]?`<img class="wimg" src="${im('ritual-'+RIMG[k])}" alt="" onerror="this.outerHTML='${e}'">`:e)).join('')}${S.styles.includes('other')?otherIn('styles'):''}</div></div>
   <div class="foot">${S.styles.length?'':'<div class="note">Pick at least one</div>'}${cta('Continue',S.styles.length>0)}</div>`,
 13:()=>`<div class="sky"></div><div class="scr z center tc" style="align-items:center"><div class="fadein">${moon('still',180,tAge)}</div>
-  <div style="font-size:28px;color:#EDE6FF;margin-top:-6px">${gly(tSign)}</div>
+  <div style="font-size:28px;color:#FBF6EA;margin-top:-6px">${gly(tSign)}</div>
   <h1 class="display">${t(`Tonight's Moon is in ${tSign}`,`Tonight: ${tPhase} Moon`)}</h1><p class="lead">${tPhase}, ${tIll}% lit. Your first ritual starts here.</p>
   <span class="hint">Live from astronomical data for ${localDate}</span><span class="hint">2 quick questions left</span></div><div class="foot">${cta('Continue')}</div>`,
-14:()=>`<div class="scr"><div class="cres"><svg width="120" height="70" viewBox="0 0 120 70" aria-hidden="true"><path d="M52 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="#F1EBDD"/><path d="M84 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="none" stroke="#C3A3FF" stroke-width="1.6" stroke-dasharray="4 3"/><text x="78" y="41" fill="#C3A3FF" font-size="14">?</text></svg></div>
+14:()=>`<div class="scr"><div class="cres"><svg width="120" height="70" viewBox="0 0 120 70" aria-hidden="true"><path d="M52 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="#F1EBDD"/><path d="M84 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="none" stroke="#EAC46C" stroke-width="1.6" stroke-dasharray="4 3"/><text x="78" y="41" fill="#EAC46C" font-size="14">?</text></svg></div>
   <h1 class="display">${t('Whose moods confuse you?','Someone on your mind?')}</h1><p class="lead">We'll compare your Moons — your emotional match.</p>
   <div class="opts">${Object.entries(PERS).map(([k,[l,e]])=>pick('person',k,l,e)).join('')}</div></div><div class="foot"><div class="note">Tap one to continue</div></div>`,
 15:()=>`<div class="scr"><div class="cres" id="pcres">${pcres()}</div><h1 class="display">${t("When's their birthday?",'Tell us about them')}</h1><p class="lead">A birthday usually finds their Moon sign.</p>
   <div class="field"><label for="pn">Their name</label><div class="box"><input id="pn" data-f="pname" maxlength="30" placeholder="Name" value="${esc(S.pname)}"></div></div>
   <div class="field"><label>Their birthday</label>${dateSel('pdob',S.pdob)}</div>${errHTML()}<p class="hint" style="margin:0">They won't be notified.</p></div>
   <div class="foot">${cta('Continue',true,'person2')}<button class="link" data-a="skipperson">I'll add them later</button></div>`,
-16:()=>`<div class="scr"><div class="lock"><div class="clock">${S.remTime.replace(' PM','')}</div><div class="dt">${fdate(fullMs)}</div><div class="push"><span class="app">${phaseIcon(SYN/2,20)}</span><div><small>NEBULA · now</small>${pushLine()}</div></div></div>
+16:()=>`<div class="scr"><div class="lock"><div class="clock">${S.remTime.replace(' PM','')}</div><div class="dt">${fdate(fullMs)}</div><div class="push"><span class="app">${phaseIcon(SYN/2,20)}</span><div><small>STARLYN · now</small>${pushLine()}</div></div></div>
   <h1 class="display sm">${t('Want a nudge each phase?','Never miss a full moon')}</h1><p class="lead" style="margin-top:-8px">We'll remind you before new and full moons.</p>
   <div class="stack">${[['nw','🌑','New moon'],['fu','🌕','Full moon'],['daily','☀️','Daily moon line']].map(([k,e,l])=>`<button class="toggle ${S.rem[k]?'on':''}" data-a="rem" data-v="${k}" role="switch" aria-checked="${S.rem[k]}"><span>${e}</span><span>${l}</span><span class="sw"></span></button>`).join('')}</div>
   <button class="chip" style="align-self:flex-start" data-a="remtime">${ic('bell',15)} ${S.remTime} <span style="color:var(--t3)">· change</span></button><p class="hint" style="margin:0">Reminders start once you open the app.</p></div>
@@ -720,40 +821,27 @@ const V={
   ${stepsHTML(['Finding your Moon at birth…',"Lining it up with tonight's sky…",`Writing rituals around ${intentL()}…`,'Almost ready — your first ritual awaits…'])}</div><div class="foot"><div class="note">For entertainment</div></div>`,
 18:()=>{const ss=moonSigns();return `<div class="scr"><h1 class="display sm">${t(`${nm()}, your Moon is ${msign()}`,'Meet your Moon sign')}</h1><p class="lead" style="margin-top:-8px">How you feel, what soothes you, what drains you.</p>
   ${ss.length>1?`<div class="two">${ss.map(s=>signCard(s,true)).join('')}</div><div class="card"><p>Your Moon changed signs on ${fmtDate(bd())}. Add your birth time to choose — we never guess.</p></div><button class="chip" style="align-self:flex-start" data-a="go" data-v="7">${ic('clock',15)} Add your birth time</button>`
-   :`${signCard(ss[0])}<p class="lead" style="color:#E6DCFF">Moon in ${ss[0]} — you feel ${MOONT[ss[0]][0]}.</p>`}
+   :`${signCard(ss[0])}<p class="lead" style="color:#FAF3E1">Moon in ${ss[0]} — you feel ${MOONT[ss[0]][0]}.</p>`}
   <div class="card"><h4>${phaseIcon(bAge(),16)} Born under a ${bPhase()}</h4><p>${PHT[phIdx(bAge())]}</p></div></div><div class="foot">${cta('See my moon month')}</div>`},
 19:()=>`<div class="scr"><h1 class="display sm">${t('Your moon month, mapped','Your next 30 nights')}</h1><p class="lead" style="margin-top:-8px">Dates are yours. Rituals unlock with Premium.</p>${calendar()}
   <div class="card"><p style="color:var(--t1)">${fdate(fullMs)} — Full Moon in ${fullSign}: your release night.</p></div>
   ${lockrows(["Tonight's ritual",'Full moon release','New moon intention',...(hasP()?[`You + ${pn()}: Moon match`]:[])])}<p class="hint tc" style="margin:0">For entertainment.</p></div><div class="foot">${cta('Unlock my rituals')}</div>`,
 20:()=>emailGate({h:t('Where should we send it?','Save your moon month'),b:'Your calendar and app login go here.',card:`<div class="blurred" style="width:200px;align-self:center;max-height:104px;overflow:hidden">${calendar()}</div>`,taken:'This email already has an account — log in instead?',optin:'Email me moon news and tips (optional)'}),
-21:()=>paywall({top:`<div class="blurred" style="width:220px;align-self:center;margin-top:10px;max-height:120px;overflow:hidden">${calendar()}</div>`,h:t('Live with your Moon',`${nm()}, unlock your moon month`),b:t('Rituals for every phase, every month.','Your calendar, rituals and daily moon line.'),
+21:()=>paywall({facts:[['Your Moon',(()=>{try{return msign()}catch(e){return ''}})()],['Sun',S.dob&&S.dob.m?sunSign(+S.dob.m,+S.dob.d):''],['Name',nm()]],toc:['Your Moon sign: '+(()=>{try{return msign()}catch(e){return 'ready'}})(),'Your 30-day moon phase calendar','Rituals sized to your time and style','A daily moon line for you','Moon match for anyone you add'],faqX:[['Do I need candles or supplies?','No. Every ritual has a no-supplies version. Candles and crystals are optional.']],top:`<div class="blurred" style="width:220px;align-self:center;margin-top:10px;max-height:120px;overflow:hidden">${calendar()}</div>`,h:t('Live with your Moon',`${nm()}, unlock your moon month`),b:t('Rituals for every phase, every month.','Your calendar, rituals and daily moon line.'),
   benefits:['Rituals for every new and full moon',`Daily moon line for your ${msign()} Moon`,'Moon match for anyone you add'],
-  plans:[{k:'weekly',name:'Weekly',pl:`${tok('week_intro_price')} first week, then ${tok('week_price')}/week, renews weekly`},{k:'quarter',name:'3-Month',pl:`${tok('quarter_price')} every 3 months, renews`},{k:'annual',name:'Annual',badge:'BEST VALUE',pl:`${tok('annual_price')}/year, renews yearly`,small:`≈ ${tok('annual_week_equiv')}/week`}],
-  lines:{weekly:`${tok('week_intro_price')} today, then ${tok('week_price')}/week until you cancel.`,quarter:`${tok('quarter_price')} today, renews every 3 months.`,annual:`${tok('annual_price')} today, renews yearly.`},
-  legal:'For entertainment only. Not medical or mental-health advice.',ctaLabel:'Unlock my rituals',
-  fallback:`<h2 class="display sm">Try 3 days free</h2><p class="lead" style="color:var(--t1);font-size:16px;font-weight:500;margin:0">Then ${tok('annual_price')}/year after, cancel anytime</p><button class="btn" data-a="trial">Start free trial</button><button class="link" data-a="fbno">Not now</button>`}),
-22:()=>{const kind=[0,7].includes(phIdx(tAge))?'intention':phIdx(tAge)<4?'growing':phIdx(tAge)===4?'release':'letting-go',cand=S.styles.includes('candle');
-  const steps=[cand?'Light your candle. Breathe in for 4, out for 6.':'Breathe in for 4, out for 6.','Write one thing to release.',"Say: 'I let the tide take it.'"];
-  return `<div class="sky"></div><div class="scr z" style="gap:14px"><div style="margin:4px 0 -54px">${moon('still',170,tAge)}</div>
-  <div class="rit"><span class="badge">${cand?'🕯️':'🌬️'} A ${minsN()}-minute ${kind} ritual · ${tPhase}</span>
-  <h1 class="display sm">${t(`Tonight's ritual, ${nm()}`,'Your first moon ritual')}</h1><p class="lead" style="margin-top:-8px">${minsN()} minutes, for your ${msign()} Moon.</p>
-  <ol>${steps.map((s,i)=>`<li><b>${i+1}</b><span>${s}</span></li>`).join('')}</ol>
-  <button class="btn ${S.done?'ghost':''}" data-a="done" style="height:46px">${S.done?ic('check',18)+' Done for tonight':'Mark done'}</button></div>
-  <div class="ritpic"><img src="${im('ritual-'+(cand?'candle':S.styles.includes('journal')?'journal':kind==='release'||kind==='letting-go'?'water':'crystals'))}" alt="" onerror="this.remove()"></div>
-  <p class="hint tc" style="margin:0">For entertainment.</p></div><div class="foot">${cta('Continue in the app')}</div>`},
-23:()=>appScreen({h:t('Your Moon lives in Nebula','Your moon month, in your pocket'),b:`Log in with ${esc(S.email||'your email')} for daily moon guidance.`,
-  mock:`<div style="transform:scale(.72);transform-origin:top center;height:150px">${calendar()}</div><div class="mrow"><b>Tonight's ritual</b>${minsN()} minutes · ${tPhase}</div><div class="mrow"><b>🌕 ${fdate(fullMs)}</b>Full Moon in ${fullSign} — your release night.</div>`,
-  rows:[['🗓️','Your 30-day moon calendar'],['🔔','Reminders before new and full moons'],['💞',hasP()?`Moon match with ${pn()}`:"Add someone's Moon"]],
-  note:S.remSaved?'Your reminder settings apply on first app open, then the system asks for permission.':'The system permission prompt appears on first app open.'})
+  plans:[{k:'weekly',name:'1 week, then monthly',pl:`${tok('price_1w')} first week, then ${tok('price_month')}/month, renews monthly`}],
+  lines:{weekly:`${tok('price_1w')} today for your first week, then ${tok('price_month')} every month until you cancel.`},
+  legal:'For entertainment only. Not medical or mental-health advice.',ctaLabel:'Unlock my rituals'}),
+22:()=>getApp()
 };
-function pcres(){const f=S.pdob.m&&S.pdob.d&&S.pdob.y;return `<svg width="120" height="70" viewBox="0 0 120 70" aria-hidden="true"><path d="M52 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="#F1EBDD"/><path d="M84 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="${f?'#C3A3FF':'none'}" stroke="#C3A3FF" stroke-width="1.6" ${f?'':'stroke-dasharray="4 3"'}/>${f?'':'<text x="78" y="41" fill="#C3A3FF" font-size="14">?</text>'}</svg>`}
-function NEXT(n){if(n===14)return S.person==='me'?16:15;if(n===22)return 23;return n+1}
+function pcres(){const f=S.pdob.m&&S.pdob.d&&S.pdob.y;return `<svg width="120" height="70" viewBox="0 0 120 70" aria-hidden="true"><path d="M52 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="#F1EBDD"/><path d="M84 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="${f?'#EAC46C':'none'}" stroke="#EAC46C" stroke-width="1.6" ${f?'':'stroke-dasharray="4 3"'}/>${f?'':'<text x="78" y="41" fill="#EAC46C" font-size="14">?</text>'}</svg>`}
+function NEXT(n){if(n===14)return S.person==='me'?16:15;return n+1}
 function PREV(n){if(n===16)return S.person==='me'?14:15;return n-1}
 /* debug deep links only (?debug=1#s=N): fills earlier answers with sample values */
 function fillTo(n){if(n>1&&!S.feel)S.feel='restless';if(n>3&&!S.intent)S.intent='calm';if(n>4&&!S.name)S.name='Maya';if(n>5&&!S.dob.m)S.dob={m:'8',d:'12',y:'1994'};
   if(n>7&&!S.time&&!S.timeUnknown)S.time='07:40';if(n>8&&!S.place)S.place=CITIES[0][0];if(n>10&&!S.off)S.off='over';if(n>11&&!S.mins)S.mins='5';if(n>12&&!S.styles.length)S.styles=['breath','journal'];
   if(n>14&&!S.person)S.person='partner';if(n===15&&S.person==='me')S.person='partner';if(n>15&&S.person!=='me'&&!S.pname){S.pname='Jordan';S.pdob={m:'6',d:'3',y:'1993'}}
-  if(n>16&&S.remSaved===null)S.remSaved=true;if(n>20&&!S.email)S.email='maya@example.com';if(n>21&&!S.paid)S.paid='annual'}
+  if(n>16&&S.remSaved===null)S.remSaved=true;if(n>20&&!S.email)S.email='maya@example.com';if(n>21&&!S.paid)S.paid='weekly'}
 const OK={3:()=>!!S.intentOther.trim(),7:()=>!!(S.time||S.timeUnknown),8:()=>!!S.place,10:()=>!!S.offOther.trim(),12:()=>S.styles.length>0};
 function ACT(a,v,b){switch(a){
   case 'person2':if(!S.pname.trim()||dobErr(S.pdob,false)){S.err='Add their name and birthday';render()}else next();return true;
@@ -762,7 +850,6 @@ function ACT(a,v,b){switch(a){
   case 'remtime':{const o=['7:00 PM','8:00 PM','9:00 PM','10:00 PM'];S.remTime=o[(o.indexOf(S.remTime)+1)%o.length];render();return true}
   case 'remsave':S.remSaved=true;emit('reminders',{saved:true,rem:S.rem,time:S.remTime});toast('Saved — applied when you open the app');next();return true;
   case 'remno':S.remSaved=false;emit('reminders',{saved:false});next();return true;
-  case 'trial':emit('plan_select',{plan:'trial',source:'fallback'});checkout('trial',{source:'fallback',trial_days:CONFIG.plans.trial.trialDays});return true;
   case 'done':S.done=!S.done;if(S.done)emit('ritual_done',{});render();return true}
   return false}
 function INPUT(f,e){if(f.startsWith('dob.')){const m=document.getElementById('dobm');if(m&&S.dob.m&&S.dob.d&&S.dob.y&&!dobErr(S.dob,false))m.innerHTML=phaseIcon(bAge(),64)}
