@@ -1,0 +1,147 @@
+[
+  {
+    "prev": 1,
+    "title": "[UI/UX][Intro 1] Link \"Terms\" và \"Privacy Policy\" có tap target quá nhỏ",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "- Link Terms/Privacy Policy đã underline, auto-check lượt 2 không còn cảnh báo tap target nhỏ ở id 1 và id 20 (cả small/large).",
+    "attachment": "Screenshot/Video: screens/01-1-small.png, screens/01-1-large.png, screens/20-20-small.png, screens/20-20-large.png, capture.json"
+  },
+  {
+    "prev": 2,
+    "title": "[UI][Intro 1] Globe hero không hiển thị các planetary line màu theo spec",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- Intro 1: globe có 3 line màu (cam, hồng, bạc) chạy qua và chấm vị trí user. Intro 17: line màu đang trace pole-to-pole và có city pin vàng (Chicago) đang ping. Ảnh chụp ở 1.2s (bước 47%) nên mới thấy 1 pin, các pin top 3 xuất hiện lần lượt sau đó (timing animation). Dev ghi Partly fixed, QA thấy đủ yếu tố brief – độ tin cậy trung bình.",
+    "attachment": "Screenshot/Video: screens/01-1-small.png, screens/01-1-large.png, screens/17-17-small.png, screens/17-17-large.png"
+  },
+  {
+    "prev": 3,
+    "title": "[UI][Intro 2] Venus và Jupiter hiển thị cùng màu vàng, không phân biệt được line",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Venus hiển thị màu hồng (rose), Jupiter vàng, Sun cam, Moon bạc, đồng nhất giữa legend và line ở Intro 2, 4, 9, 18. Intro 2 mới thấy 3/4 chip (thiếu chip Moon) do chip fade-in lần lượt, chip thứ 4 chưa hiện lúc chụp 1.2s – timing, không phải bug.",
+    "attachment": "Screenshot/Video: screens/02-2-small.png, screens/04-4-small.png, screens/09-9-small-p1.png, screens/18-18-small-p1.png"
+  },
+  {
+    "prev": 4,
+    "title": "[UI][Intro 5] Label trên map card nằm đè lên lưới chấm bản đồ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Label \"test's map\" (Intro 5) và \"Chicago\" (Intro 11) đã có nền pill tối đặc + viền, đọc rõ trên lưới chấm.",
+    "attachment": "Screenshot/Video: screens/05-5-small.png, screens/05-5-large.png, screens/11-11-small.png, screens/11-11-large.png"
+  },
+  {
+    "prev": 5,
+    "title": "[UI/UX][Intro 6] Button Continue hiển thị enabled khi chưa chọn ngày sinh, không đồng nhất với các màn input khác",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Khi Month/Day/Year trống, button Continue hiển thị disabled (xám), đồng nhất với Intro 7, 8, 10, 12, 15.",
+    "attachment": "Screenshot/Video: screens/06-6-small.png, screens/06-6-large.png"
+  },
+  {
+    "prev": 6,
+    "title": "[UI][Intro 7] Field Time of birth hiển thị hai icon đồng hồ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Field Time of birth chỉ còn một icon đồng hồ bên trái.",
+    "attachment": "Screenshot/Video: screens/07-7-small.png, screens/07-7-large.png"
+  },
+  {
+    "prev": 7,
+    "title": "[UI][Responsive][Intro 9] Map card bị thu thấp và cắt mất phần dưới bản đồ trên màn hình nhỏ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Trên small map card hiển thị đủ chiều cao (thấy Nam Mỹ, Úc), màn cho cuộn để xem promise rows, cùng tỉ lệ với large.",
+    "attachment": "Screenshot/Video: screens/09-9-small-p1.png, screens/09-9-small-p2.png, screens/09-9-large.png"
+  },
+  {
+    "prev": 8,
+    "title": "[UI][Intro 14] Các image card hiển thị viền màu khác nhau khi chưa chọn",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- 4 image card Big city / Coast / Mountains / Small town dùng chung viền xám mặc định khi chưa chọn, giống option \"Other\".",
+    "attachment": "Screenshot/Video: screens/14-14-small.png, screens/14-14-large.png"
+  },
+  {
+    "prev": 9,
+    "title": "[UI][Responsive][Intro 15] Option \"Anywhere\" bị footer che và microcopy bị đẩy xuống dưới fold trên màn hình nhỏ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Trên small cả 4 option, microcopy \"Your full map still covers the whole world.\" và \"Pick at least one\" + Continue đều nằm trong viewport, không bị che.",
+    "attachment": "Screenshot/Video: screens/15-15-small.png, screens/15-15-large.png"
+  },
+  {
+    "prev": 10,
+    "title": "[UI][Intro 18] Màn không có back button và progress bar, nội dung sát mép trên, không đồng nhất header",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- Intro 18 và 19 đã có khoảng đệm bằng chiều cao header phía trên, title không còn sát mép trên. Hai màn vẫn không có back button/progress bar (màn kết quả) – Spec chưa định nghĩa, nếu PM muốn có header đầy đủ thì log riêng.",
+    "attachment": "Screenshot/Video: screens/18-18-small-p1.png, screens/18-18-large.png, screens/19-19-small.png, screens/19-19-large.png"
+  },
+  {
+    "prev": 11,
+    "title": "[UI][Intro 19] Hiển thị dòng copy \"Shown only because a line truly falls within 600 miles...\" không có trong spec",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- Dòng \"Shown only because a line truly falls within 600 miles...\" đã bị bỏ, màn chỉ còn Headline, Body và một meaning card theo brief.",
+    "attachment": "Screenshot/Video: screens/19-19-small.png, screens/19-19-large.png"
+  },
+  {
+    "prev": 12,
+    "title": "[UI][Responsive][Paywall 1] CTA \"Unlock my map\" bị cắt ở mép dưới viewport đầu trên màn hình nhỏ",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "- Trên small 375×667, button \"Unlock my map\" trong plan block hiển thị trọn vẹn ở viewport đầu (cả deep-jump và walk thật).",
+    "attachment": "Screenshot/Video: screens/21-21-small-p1.png, screens/walk-end-21 (paywall).png, screens/21-21-large-p1.png"
+  },
+  {
+    "prev": 13,
+    "title": "[UI][Paywall 1] Sticky bottom CTA không có nền che, text phía sau đè lên label gói",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Sticky bottom bar đã có nền đặc + viền trên, nội dung phía sau (QUESTIONS, Good to know, Your plan) bị che gọn, không còn chữ đè lên \"1 week, then monthly · $13.67 today\".",
+    "attachment": "Screenshot/Video: screens/21-21-large-p2.png, screens/21-21-small-p2.png, screens/21-21-small-p3.png"
+  },
+  {
+    "prev": 14,
+    "title": "[UI][Responsive][Upsale 1] Microcopy dưới card bị ẩn sau sticky CTA trên màn hình nhỏ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Trên small dòng \"One-time payment at a secure checkout. No subscription.\" hiển thị ngay dưới card, CTA \"Add for $19.99\" và link skip nằm bên dưới, không bị che.",
+    "attachment": "Screenshot/Video: screens/22-22-small.png, screens/22-22-large.png"
+  },
+  {
+    "prev": null,
+    "id": "N1",
+    "status": "New",
+    "screen": "Intro 6",
+    "title": "[UI][Intro 6] Select Month/Day/Year không có chevron dropdown",
+    "severity": "Low",
+    "actual": "- 3 ô Month / Day / Year (id: 6) chỉ hiển thị placeholder, không có chevron hay affordance dropdown nào, trên cả small và large. Commit fix ghi \"chevrons on date selects\" và aura-tarot đã có chevron, nhưng astrocartography chưa được áp dụng nên không đồng nhất giữa các funnel Starlyn. Chưa log ở lượt 1.",
+    "expected": "- Select ngày sinh hiển thị chevron dropdown giống các funnel Starlyn đã fix (vd. aura-tarot) – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/06-6-small.png, screens/06-6-large.png"
+  },
+  {
+    "prev": null,
+    "id": "N2",
+    "status": "New",
+    "screen": "Intro 11",
+    "title": "[Logic][Intro 11] Headline \"Chicago sits between your lines\" mâu thuẫn với card \"Near Chicago: your Venus line\" ở Intro 18",
+    "severity": "High",
+    "actual": "- Với data test (current city Chicago), Intro 11 (id: 11) hiển thị \"Chicago sits between your lines\" (nghĩa là không có line nào gần), nhưng map zoom của chính màn này vẫn vẽ một line chạy sát pin, và Intro 18 (id: 18) lại mở card \"Near Chicago: your Venus line – Venus ASC · love and beauty come easier here...\", nên user thấy hai kết quả trái ngược. Không phải regression: lỗi đã có từ lượt 1 nhưng bị sót.",
+    "expected": "- Kết quả về line gần current city phải nhất quán giữa Intro 11 và Intro 18 (brief #11: 0 line thì \"{{current_city}} sits between your lines\"; brief #18: card mở \"one real result (the line nearest home)\"). Copy của #18 khi không có line trong orb – Spec chưa định nghĩa – cần PM confirm.",
+    "attachment": "Screenshot/Video: screens/11-11-small.png, screens/11-11-large.png, screens/18-18-small-p1.png, screens/18-18-large.png"
+  },
+  {
+    "prev": null,
+    "id": "N3",
+    "status": "New",
+    "screen": "Intro 20",
+    "title": "[UI][Intro 20] Dấu chấm cuối dòng legal bị tách khỏi link \"Privacy Policy\"",
+    "severity": "Low",
+    "actual": "- Sau khi tăng vùng bấm của link legal, dòng \"By continuing, you agree to our Terms & Privacy Policy.\" ở Intro 20 (id: 20) hiển thị dấu \".\" cách hẳn chữ \"Policy\" (\"Privacy Policy .\"); khoảng cách quanh \"&\" ở Intro 1 (id: 1) và Intro 20 cũng rộng hơn khoảng cách chữ bình thường. Regression nhỏ từ fix bug #1.",
+    "expected": "- Dấu chấm liền sau \"Policy\" và khoảng cách quanh \"&\" như text thường, vùng bấm 44px không làm thay đổi spacing của dòng chữ (như cách aura-tarot giữ nguyên dòng) – Cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/20-20-small.png, screens/20-20-large.png, screens/01-1-small.png"
+  }
+]

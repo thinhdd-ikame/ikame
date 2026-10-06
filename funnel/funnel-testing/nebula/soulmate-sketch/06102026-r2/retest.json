@@ -1,0 +1,152 @@
+[
+  {
+    "prev": 1,
+    "title": "[UI/UX][Intro 1] Link \"Terms\" và \"Privacy Policy\" có tap target nhỏ",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "Auto-check trong capture.json lượt 2 không còn báo tap target nhỏ; link \"Terms\" và \"Privacy Policy\" có gạch chân. Kích thước vùng bấm dựa vào auto-check, ảnh tĩnh không đo được.",
+    "attachment": "Screenshot/Video: screens/01-1-small.png, screens/01-1-large.png, screens/21-21-small.png"
+  },
+  {
+    "prev": 2,
+    "title": "[UI][Intro 1] Nét outline gold lệch khỏi khuôn mặt trong ảnh sketch hero",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Không còn nét outline gold lệch trên card hero; chỉ còn phần tô gold trên tóc trùng với ảnh sketch.",
+    "attachment": "Screenshot/Video: screens/01-1-small.png, screens/01-1-large.png"
+  },
+  {
+    "prev": 3,
+    "title": "[UI][Intro 2] Hiệu ứng sao băng vẽ đè lên card và text",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Ở thời điểm chụp không có vệt sao băng nào đè lên card/text ở Intro 2 và Intro 11; ở Intro 8, Intro 18 vệt sao băng chỉ chạy ở vùng phía trên headline. Đây là animation ngẫu nhiên nên kết luận dựa trên ảnh tĩnh (độ tin cậy trung bình).",
+    "attachment": "Screenshot/Video: screens/02-2-small.png, screens/02-2-large.png, screens/11-11-small-p1.png, screens/08-8-small.png, screens/18-18-large.png"
+  },
+  {
+    "prev": 4,
+    "title": "[UI/UX][Intro 6] Button Continue hiển thị enabled khi Month/Day/Year đang trống",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Khi Month/Day/Year còn trống, Continue hiển thị disabled, đồng nhất với Intro 8 và Intro 9.",
+    "attachment": "Screenshot/Video: screens/06-6-small.png, screens/06-6-large.png, screens/08-8-large.png"
+  },
+  {
+    "prev": 5,
+    "title": "[UI/UX][Intro 6] Ô Month/Day/Year không có icon dropdown",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "3 ô Month/Day/Year đã có chevron.",
+    "attachment": "Screenshot/Video: screens/06-6-small.png, screens/06-6-large.png"
+  },
+  {
+    "prev": 6,
+    "title": "[UI][Intro 8] Ô Time of birth hiển thị 2 icon đồng hồ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Ô \"Time of birth\" chỉ còn 1 icon đồng hồ bên trái.",
+    "attachment": "Screenshot/Video: screens/08-8-small.png, screens/08-8-large.png"
+  },
+  {
+    "prev": 7,
+    "title": "[UI][Intro 11] Chip selected có một vệt viền sáng mảnh ở mép phải",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Chip selected không còn vệt sáng ở mép phải.",
+    "attachment": "Screenshot/Video: screens/11-11-small-p1.png, screens/11-11-large.png"
+  },
+  {
+    "prev": 8,
+    "title": "[UI][Intro 11] Emoji ✨ trên chip \"Chart decides\" gần như không thấy trên nền gold",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Emoji ✨ trên chip \"Chart decides\" selected đã có viền tối, nhìn rõ trên nền gold.",
+    "attachment": "Screenshot/Video: screens/11-11-small-p1.png, screens/11-11-large.png"
+  },
+  {
+    "prev": 9,
+    "title": "[UI/UX][Intro 12] Màn multi-select dùng indicator dạng radio tròn",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Indicator đổi sang checkbox vuông, có hint \"Pick at least one\" khi chưa chọn.",
+    "attachment": "Screenshot/Video: screens/12-12-small.png, screens/12-12-large.png"
+  },
+  {
+    "prev": 10,
+    "title": "[UI][Intro 17] Outline bàn tay nét đứt bị hở giữa các ngón",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Outline bàn tay là một đường nét đứt liền: mỗi ngón khép kín và nối vào lòng bàn tay, không còn nét chồng nhau. (Khung camera hiện \"Camera blocked\" do headless Chromium, không phải bug.)",
+    "attachment": "Screenshot/Video: screens/17-17-small.png, screens/17-17-large.png"
+  },
+  {
+    "prev": 11,
+    "title": "[UI][Intro 20] Headline sát mép trên màn, không đồng nhất với các màn khác",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Headline đã được đẩy xuống ngang vị trí headline các màn có header (khoảng cách phía trên đồng nhất); màn vẫn không có hàng back/progress, coi là chủ ý thiết kế.",
+    "attachment": "Screenshot/Video: screens/20-20-small-p1.png, screens/20-20-large.png"
+  },
+  {
+    "prev": 12,
+    "title": "[UI/UX][Paywall 1] Không có sticky bottom CTA khi không còn plan block trên màn",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "Khi plan block đã cuộn khỏi màn, đáy màn có sticky bar \"1 week, then monthly · $13.67 today\" + CTA \"Unlock my sketch\"; bar ẩn khi plan block thứ 2 hiện ra.",
+    "attachment": "Screenshot/Video: screens/22-22-small-p2.png, screens/22-22-small-p3.png, screens/22-22-large-p2.png, screens/22-22-small-p4.png"
+  },
+  {
+    "prev": 13,
+    "title": "[UI][Paywall 1] Nội dung cuộn hiện xuyên qua sticky header",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Sticky header đã che kín nội dung phía sau khi cuộn.",
+    "attachment": "Screenshot/Video: screens/22-22-small-p3.png, screens/22-22-small-p4.png, screens/22-22-large-p3.png"
+  },
+  {
+    "prev": 14,
+    "title": "[UI][Paywall 1] Danh sách benefit không khớp copy trong brief",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Mục \"Everything in your reading\" hiển thị đúng 3 dòng theo brief: \"Your soulmate sketch in full HD\" / \"Their nature, and where you may meet\" / \"Daily love forecast in the app\".",
+    "attachment": "Screenshot/Video: screens/22-22-small-p2.png, screens/22-22-large-p2.png"
+  },
+  {
+    "prev": 15,
+    "title": "[UI][Paywall 1] Icon khóa không đồng nhất với các màn trước",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "\"Secure checkout\" dùng icon khóa dạng line màu gold, cùng style với Intro 20; danh sách benefit không còn emoji 🔒.",
+    "attachment": "Screenshot/Video: screens/22-22-small-p2.png, screens/22-22-small-p4.png, screens/20-20-small-p2.png"
+  },
+  {
+    "prev": 16,
+    "title": "[UI][Paywall 1] Lưới fact chip bị trống một ô",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Chip \"Sketch\" giãn full width ở hàng 2, không còn ô trống.",
+    "attachment": "Screenshot/Video: screens/22-22-small-p1.png, screens/22-22-large-p1.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "id": "N1",
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Sticky header không sát mép trên, hở một dải nền sao phía trên",
+    "severity": "Low",
+    "actual": "- Ở Paywall 1 (id: 22), phía trên sticky brand bar có một dải cao khoảng 6px vẫn thấy nền sao (màu khác header, có chấm sao), lặp lại ở mọi vị trí cuộn trên cả small và large; Paywall của past-life không có dải này. Lượt 1 không log nên chưa rõ có từ trước hay do fix header.",
+    "expected": "- Cần đối chiếu Figma: sticky header cần sát mép trên viewport, không để lộ nền phía sau.",
+    "attachment": "Screenshot/Video: screens/22-22-small-p1.png, screens/22-22-small-p3.png, screens/22-22-large-p1.png, screens/22-22-large-p3.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "id": "N2",
+    "screen": "Download App",
+    "title": "[UI][Download App] Icon trên badge Google Play là outline trắng đơn sắc, không phải logo chính thức",
+    "severity": "Low",
+    "actual": "- Badge \"GET IT ON Google Play\" dùng icon tam giác Play dạng outline trắng đơn sắc, trong khi badge App Store đã đổi sang logo Apple chính thức ở lượt fix này; lượt 1 không log điểm này nên có thể đã tồn tại từ trước.",
+    "expected": "- Cần đối chiếu Figma: badge store cần dùng đúng asset badge chính thức của Google Play (logo Play nhiều màu).",
+    "attachment": "Screenshot/Video: screens/24-24-small.png, screens/24-24-large.png"
+  }
+]

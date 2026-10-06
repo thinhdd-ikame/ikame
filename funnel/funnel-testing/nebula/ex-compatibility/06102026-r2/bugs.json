@@ -1,0 +1,122 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "title": "[UI][Intro 2] Counter \"n/14\" lệch ra ngoài mép phải progress bar mới, progress bar sát headline",
+    "severity": "Low",
+    "actual": "- Trên header các màn câu hỏi (Intro 2, 3, 5–13, 15–17), counter \"1/14\"…\"14/14\" có mép phải lệch ra ngoài mép phải của progress bar mới khoảng 7–8pt (progress bar và nội dung căn lề 20pt, counter chỉ cách mép màn ~12pt); progress bar cũng nằm khá sát headline bên dưới (~12pt), cả small và large.",
+    "expected": "- Counter và progress bar cần căn cùng lề phải, có khoảng cách rõ giữa progress bar và headline – Cần đối chiếu Figma (giá trị spacing).",
+    "attachment": "Screenshot/Video: screens/02-gender-small.png, screens/02-gender-large.png, screens/12-contact-small.png, screens/17-fate_2-small.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 21",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu tên pháp nhân (entity) theo spec",
+    "severity": "High",
+    "actual": "- [Lượt 2] Footer vẫn chỉ có \"Terms of Use\" · \"Privacy Policy\" · \"Subscription terms\" và \"For entertainment purposes only.\", chưa có tên pháp nhân. Đúng như dev báo, chờ PM cung cấp entity.",
+    "expected": "- Theo spec mục 22 – section 9 \"Footer: legal links, entity, entertainment disclaimer\": footer cần hiển thị tên pháp nhân bên cạnh legal links và disclaimer.",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p4.png, screens/22-paywall-large-p4.png",
+    "retest": "Cần PM"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Ảnh hero hiển thị thành dải chữ nhật cắt cứng, wheel bị cắt phẳng ở đáy",
+    "severity": "Low",
+    "actual": "- Ảnh hero Paywall 1 hiển thị thành một dải chữ nhật full-width ngay dưới subtitle: cạnh trên có đường nối màu nền rõ (nền khối headline tối hơn nền ảnh) và cạnh dưới cắt phẳng ngang qua vạch chia của 2 wheel; tương tự ở hero Intro 20 (dưới header, đáy cắt phẳng qua wheel), cả small và large. Có thể đã tồn tại từ lượt 1 nhưng chưa được log.",
+    "expected": "- Spec #22 Hero: \"the two wheels\" – ảnh hero cần fade mềm vào nền, không thấy cạnh cắt cứng/wheel bị cắt – Cần đối chiếu Figma (crop/fade của hero).",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p1.png, screens/22-paywall-large-p1.png, screens/20-result_teaser-small-p1.png, screens/20-result_teaser-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App",
+    "title": "[UI][Download App] Badge Google Play dùng logo Play outline đơn sắc, không phải badge chính thức",
+    "severity": "Low",
+    "actual": "- [Lượt 2] Badge \"Download on the App Store\" đã đúng dạng badge chính thức. Badge \"GET IT ON Google Play\" có layout giống badge chính thức nhưng logo Play là tam giác outline trắng đơn sắc, không phải logo Google Play nhiều màu như artwork chính thức (hạ từ Medium xuống Low vì phần còn lại chỉ là chi tiết logo).",
+    "expected": "- Spec mục 24 yêu cầu \"App Store and Google Play badges\"; cần dùng badge chính thức theo brand guideline của Apple/Google – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/24-get_app-small.png, screens/24-get_app-large.png",
+    "retest": "Partly fixed"
+  }
+]

@@ -1,0 +1,120 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "title": "[UI][Intro 2] Headline nằm sát progress bar mới, gần như không có khoảng cách",
+    "severity": "Low",
+    "actual": "- Progress bar mới thêm ở header nằm ngay trên headline, khoảng cách chỉ ~6–8pt (vd. \"How do you feel right now?\", \"Which color pulls you in?\", \"When were you born?\", \"Pick three cards\"), trên mọi màn có header Intro 2–7, 9–12, 16–18, cả small và large; nhìn chật so với khoảng cách headline–body bên dưới.",
+    "expected": "- Có khoảng cách rõ giữa progress bar và headline – Cần đối chiếu Figma (giá trị spacing).",
+    "attachment": "Screenshot/Video: screens/02-energy_now-small.png, screens/02-energy_now-large.png, screens/09-color_pull-small.png, screens/11-birth_date-small.png, screens/16-pull-small.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "title": "[UI/UX][Intro 8] Progress bar nhảy lên 100% ở màn bridge rồi tụt về 7/10 ở màn sau",
+    "severity": "Medium",
+    "actual": "- Intro 7 hiển thị \"6/10\" (bar ~60%), Intro 8 \"Your colors are showing\" hiển thị progress bar full 100% và không có bộ đếm, sang Intro 9 bar tụt về ~70% với \"7/10\", khiến user tưởng đã xong rồi lại bị lùi. Chọn Medium thay vì High vì màn bridge không hiển thị số đếm.",
+    "expected": "- Progress bar tăng dần liên tục giữa các màn (vd. giữ ~60–65% hoặc ẩn bar ở màn bridge) – Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/07-crave-small.png, screens/08-bridge-small.png, screens/08-bridge-large.png, screens/09-color_pull-small.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 9",
+    "title": "[UI][Intro 9] Các orb màu chưa chọn bị cắt vuông 4 cạnh và có vệt tối hình lưỡi liềm",
+    "severity": "Medium",
+    "actual": "- Retest lượt 2: vệt tối lưỡi liềm đã gần hết, nhưng 5 orb chưa chọn (Red, Amber, Green, Blue, Violet) ở màn chọn màu (id: color_pull) vẫn bị cắt phẳng ở mép trái/phải/trên/dưới, không tròn trọn vẹn; chỉ orb đang chọn (Indigo, viền vàng) tròn đúng. Xảy ra cả small và large.",
+    "expected": "- Theo Spec #9: \"Six large color orbs ... each glowing softly in its own color\" – mọi orb cần hiển thị tròn trọn vẹn với glow mềm, không bị cắt.",
+    "attachment": "Screenshot/Video: screens/09-color_pull-small.png, screens/09-color_pull-large.png",
+    "retest": "Partly fixed"
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 19",
+    "title": "[UI][Intro 19] Ảnh hero vẫn còn 2 đường kẻ dọc mờ ở mép trái/phải (bug cũ #1)",
+    "severity": "Medium",
+    "actual": "- Retest lượt 2: khung/viền lạ ở Intro 1 và Intro 14 đã hết, nhưng ảnh hero Intro 19 (id: teaser) vẫn còn 2 đường kẻ dọc mảnh, mờ ở mép trái và mép phải ảnh, cả small và large; Intro 14 còn một vệt dọc rất mờ ở mép phải.",
+    "expected": "- Ảnh hero chỉ hiển thị halo quanh silhouette trên nền sao, không có đường kẻ/khung lạ (Spec Visual #14, #19). Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png, screens/14-aura_reveal-large.png, screens/19-teaser-large.png, screens/19-teaser-small-p1.png",
+    "retest": "Partly fixed"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity (tên pháp nhân)",
+    "severity": "High",
+    "actual": "- Footer chỉ hiển thị \"Terms of Use\", \"Privacy Policy\", \"Subscription terms\", \"Support: support@starlyn.co\" và \"For entertainment purposes only.\"; không thấy tên pháp nhân/entity.",
+    "expected": "- Theo Spec #20 mục 9: \"Footer: legal links, entity, entertainment disclaimer.\" Cần PM confirm nếu entity đang ẩn do chưa cấu hình.",
+    "attachment": "Screenshot/Video: screens/20-paywall-small-p4.png, screens/20-paywall-large-p4.png",
+    "retest": "Cần PM"
+  },
+  {
+    "screen": "Upsale 1",
+    "title": "[UI][Responsive][Upsale 1] Microcopy dưới report card bị đẩy xuống dưới CTA trên màn hình nhỏ",
+    "severity": "Low",
+    "actual": "- Trên small 375×667, ở viewport đầu dòng \"Paid once through secure checkout. No subscription.\" dưới report card không hiển thị (CTA \"Add for $19.99\" nằm ngay dưới card), chỉ thấy sau khi cuộn; trên large dòng này hiển thị ngay dưới card. Low vì price row đã có \"Paid once · no subscription\".",
+    "expected": "- Microcopy hiển thị dưới card (brief #21: Under the card) và thấy được ở viewport đầu trên màn nhỏ – Spec chưa định nghĩa cho màn nhỏ – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/21-report_upsell-small-p1.png, screens/21-report_upsell-small-p2.png, screens/21-report_upsell-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Download App",
+    "no_bug": true
+  }
+]
