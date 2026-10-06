@@ -14,25 +14,38 @@ Luôn đặt `[Screen/Feature]` ngay sau type → filter bug theo feature nhanh 
 | `[Crash]` | App crash | `[Crash][Intro] App crash khi kill app và reopen` |
 | `[Performance]` | Chậm, giật, lag | `[Performance][Home] Scroll danh sách bị giật trên thiết bị cấu hình thấp` |
 
-## Bảng note bug (format mặc định)
-Dùng để QA note nhanh trong quá trình test. Giữ đúng 4 cột nội dung + cột số thứ tự; khi dùng Google Sheet/Excel thì giữ 4 cột `Title | Actual Result | Expected Result | Attachment`.
+## Severity
+Đánh theo **tác động lên user/doanh thu/pháp lý**, không theo độ khó sửa. Lỗi lặp nhiều màn vẫn chỉ một mức (theo màn nặng nhất).
 
-| # | Title | Actual Result | Expected Result | Attachment |
-|---|---|---|---|---|
-| 1 | `[Bug Type][Screen/Feature] Mô tả lỗi ngắn gọn` | - | - | Screenshot/Video: |
+| Severity | Khi nào | Ví dụ |
+|---|---|---|
+| `Critical` | Chặn luồng hoặc tiền: crash, không đi tiếp được, không thanh toán được, sai giá/sai gói, mất dữ liệu đã nhập | Button Continue không bấm được; paywall hiển thị sai giá; app crash khi reopen |
+| `High` | Không chặn nhưng ảnh hưởng conversion, pháp lý hoặc logic hiển thị sai cho user | Không thấy CTA ở first view màn nhỏ; Terms/Privacy không bấm được; thiếu tên pháp nhân ở footer; step counter nhảy số; kết quả hiển thị mâu thuẫn giữa 2 màn |
+| `Medium` | Lỗi nhìn thấy rõ, làm giảm tin tưởng hoặc khó dùng | Overlap/che chữ; component bị cắt; icon trùng; ảnh placeholder; không đồng nhất state/màu giữa các màn |
+| `Low` | Cosmetic hoặc lệch nhỏ so với spec, cần Designer confirm | Thiếu chevron; spacing/khoảng trống; art lệch brief; copy lặp từ |
+
+Không chắc giữa 2 mức thì chọn mức thấp hơn và ghi lý do ngắn trong Actual.
+
+## Bảng note bug (format mặc định)
+Dùng để QA note nhanh trong quá trình test. Giữ đúng 5 cột nội dung + cột số thứ tự; khi dùng Google Sheet/Excel thì giữ 5 cột `Title | Severity | Actual Result | Expected Result | Attachment`.
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 1 | `[Bug Type][Screen/Feature] Mô tả lỗi ngắn gọn` | Critical / High / Medium / Low | - | - | Screenshot/Video: |
 
 Ví dụ:
 
-| # | Title | Actual Result | Expected Result | Attachment |
-|---|---|---|---|---|
-| 1 | `[UI][Paywall 1] Option selected không đồng bộ highlight color` | - Option được chọn hiển thị highlight color khác với các màn Paywall khác. | - Option selected cần hiển thị cùng highlight color theo Design. | Screenshot/Video: |
-| 2 | `[UI][Intro 3] Title và Description hiển thị ngược font weight` | - Title đang hiển thị font weight thường, Description hiển thị bold. | - Title cần bold/uppercase, Description cần font weight thường theo Design. | Screenshot/Video: |
-| 3 | `[Logic][Cancel Subscription] Click "Cancel It For Me" không điều hướng` | - Click card nhưng không chuyển đến màn Draft Email/Send Mail. | - Click card cần điều hướng đến màn Draft Email/Send Mail. | Screenshot/Video: |
-| 4 | `[UI][Intro 1] Progress bar chưa hiển thị background phía dưới` | - Progress bar không có phần background/faded cue phía dưới. | - Hiển thị background/faded cue phía dưới progress bar theo Design. | Screenshot/Video: |
-| 5 | `[UI][Intro 2] Text "Age" không được căn giữa textbox` | - Text "Age" đang lệch khỏi vị trí center của textbox. | - Text "Age" cần được căn giữa textbox theo Design. | Screenshot/Video: |
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 1 | `[UI][Paywall 1] Option selected không đồng bộ highlight color` | Medium | - Option được chọn hiển thị highlight color khác với các màn Paywall khác. | - Option selected cần hiển thị cùng highlight color theo Design. | Screenshot/Video: |
+| 2 | `[UI][Intro 3] Title và Description hiển thị ngược font weight` | Medium | - Title đang hiển thị font weight thường, Description hiển thị bold. | - Title cần bold/uppercase, Description cần font weight thường theo Design. | Screenshot/Video: |
+| 3 | `[Logic][Cancel Subscription] Click "Cancel It For Me" không điều hướng` | High | - Click card nhưng không chuyển đến màn Draft Email/Send Mail. | - Click card cần điều hướng đến màn Draft Email/Send Mail. | Screenshot/Video: |
+| 4 | `[UI][Intro 1] Progress bar chưa hiển thị background phía dưới` | Low | - Progress bar không có phần background/faded cue phía dưới. | - Hiển thị background/faded cue phía dưới progress bar theo Design. | Screenshot/Video: |
+| 5 | `[UI][Intro 2] Text "Age" không được căn giữa textbox` | Low | - Text "Age" đang lệch khỏi vị trí center của textbox. | - Text "Age" cần được căn giữa textbox theo Design. | Screenshot/Video: |
 
 Lưu ý khi viết trong bảng:
 - Actual/Expected ngắn gọn 1–2 câu, bắt đầu bằng `- `; không xuống dòng trong ô.
+- Cột Severity luôn có một trong `Critical` / `High` / `Medium` / `Low`.
 - Cột Attachment luôn có `Screenshot/Video:`; chỉ điền tên file/link khi có thật, không bịa.
 
 ### Test Web: chia bảng theo từng màn
@@ -40,17 +53,17 @@ Mỗi màn một heading, theo thứ tự flow; số `#` đánh liên tục trê
 
 ```
 ### Intro 1
-| # | Title | Actual Result | Expected Result | Attachment |
-|---|---|---|---|---|
-| 1 | [UI][Intro 1] ... | - ... | - ... | Screenshot/Video: |
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 1 | [UI][Intro 1] ... | Medium | - ... | - ... | Screenshot/Video: |
 
 ### Intro 2
 Không phát hiện lỗi.
 
 ### Paywall 1
-| # | Title | Actual Result | Expected Result | Attachment |
-|---|---|---|---|---|
-| 2 | [UI][Paywall 1] ... | - ... | - ... | Screenshot/Video: |
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 2 | [UI][Paywall 1] ... | Medium | - ... | - ... | Screenshot/Video: |
 
 ### Upsale 1
 ...
@@ -60,10 +73,13 @@ Không phát hiện lỗi.
 ```
 
 ## Template bug report đầy đủ
-Dùng khi user yêu cầu bug report chi tiết cho một bug (sau khi đã verify từ bảng note). Chỉ dùng đúng các mục dưới đây, không thêm Severity, Environment, Pre-condition hay Steps to Reproduce.
+Dùng khi user yêu cầu bug report chi tiết cho một bug (sau khi đã verify từ bảng note). Chỉ dùng đúng các mục dưới đây, không thêm Environment, Pre-condition hay Steps to Reproduce.
 ```
 Title:
 [Bug Type][Screen/Feature] Mô tả lỗi ngắn gọn
+
+Severity:
+Critical / High / Medium / Low
 
 Actual Result:
 - 
@@ -99,6 +115,9 @@ Trả lời được **Ở đâu + lỗi gì**.
 ```
 Title:
 [UI][Paywall] Option selected không đồng bộ highlight color giữa các màn
+
+Severity:
+Medium
 
 Actual Result:
 - Khi chọn cùng loại Option trên các màn Paywall khác nhau, highlight color của option được selected hiển thị khác nhau giữa các màn, khiến giao diện chọn gói không đồng nhất.

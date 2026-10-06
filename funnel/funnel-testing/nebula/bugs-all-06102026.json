@@ -1,0 +1,1510 @@
+[
+  {
+    "screen": "astrocartography · Intro 1",
+    "title": "[UI/UX][Intro 1] Link \"Terms\" và \"Privacy Policy\" có tap target quá nhỏ",
+    "severity": "High",
+    "actual": "- Ở dòng legal \"By continuing, you agree to our Terms & Privacy Policy\" (id: 1) và dưới button Continue ở Intro 20 (id: 20), vùng bấm của link \"Terms\" chỉ khoảng 35x15 và \"Privacy Policy\" khoảng 79x15 (đo tự động), trên cả small và large.",
+    "expected": "- Tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/01-1-small.png, astrocartography/06102026/screens/01-1-large.png, astrocartography/06102026/screens/20-20-small.png, astrocartography/06102026/screens/20-20-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 1",
+    "title": "[UI][Intro 1] Globe hero không hiển thị các planetary line màu theo spec",
+    "severity": "Low",
+    "actual": "- Globe 3D ở Intro 1 (id: 1) và Intro 17 (id: 17, loading) chỉ hiển thị chấm lục địa và viền glow vàng, không thấy line màu nào chạy qua globe, Intro 17 cũng không thấy city pin, trên cả small và large.",
+    "expected": "- Intro 1: globe có ba line màu phát sáng chạy qua; Intro 17: line màu chạy từ cực này sang cực kia, có city pin sáng dần dọc theo line (Visual note trong brief #1, #17). Cần verify thêm vì có thể phụ thuộc thời điểm animation.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/01-1-small.png, astrocartography/06102026/screens/01-1-large.png, astrocartography/06102026/screens/17-17-small.png, astrocartography/06102026/screens/17-17-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 2",
+    "title": "[UI][Intro 2] Venus và Jupiter hiển thị cùng màu vàng, không phân biệt được line",
+    "severity": "Medium",
+    "actual": "- Chip legend và line của Venus đang cùng tông vàng với Jupiter ở Intro 2 (id: 2), Intro 4 (id: 4), Intro 9 (id: 9) và trên map ở Intro 18 (id: 18), nên user không phân biệt được line Venus với line Jupiter trên map.",
+    "expected": "- Venus dùng màu rose, Jupiter gold, Sun amber, Moon silver theo Visual note của brief #2, áp dụng đồng nhất cho legend và line trên mọi màn map.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/02-2-small.png, astrocartography/06102026/screens/04-4-small.png, astrocartography/06102026/screens/09-9-small.png, astrocartography/06102026/screens/18-18-small-p1.png"
+  },
+  {
+    "screen": "astrocartography · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 5",
+    "title": "[UI][Intro 5] Label trên map card nằm đè lên lưới chấm bản đồ",
+    "severity": "Medium",
+    "actual": "- Label \"test's map\" (Intro 5, id: 5) và label \"Chicago\" (Intro 11, id: 11) nằm ở góc trên trái map card, đè trực tiếp lên các chấm vàng của bản đồ (Intro 11 còn đè lên cả line), nền label gần như trong suốt nên chữ bị lẫn với chấm phía sau.",
+    "expected": "- Label không bị lẫn với nội dung map, đọc rõ – Cần đối chiếu Figma (vị trí/nền label).",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/05-5-small.png, astrocartography/06102026/screens/05-5-large.png, astrocartography/06102026/screens/11-11-small.png, astrocartography/06102026/screens/11-11-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 6",
+    "title": "[UI/UX][Intro 6] Button Continue hiển thị enabled khi chưa chọn ngày sinh, không đồng nhất với các màn input khác",
+    "severity": "Medium",
+    "actual": "- Ở Intro 6 (id: 6), khi Month/Day/Year đều trống, button Continue vẫn hiển thị trạng thái enabled (màu vàng). Các màn input khác (Intro 7, 8, 10, 12, 15) hiển thị Continue disabled (xám) khi chưa nhập.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. (trạng thái button Continue khi input trống cần đồng nhất giữa các màn; brief #6 chỉ định nghĩa lỗi \"Pick a full date to continue\").",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/06-6-small.png, astrocartography/06102026/screens/06-6-large.png, astrocartography/06102026/screens/07-7-small.png"
+  },
+  {
+    "screen": "astrocartography · Intro 7",
+    "title": "[UI][Intro 7] Field Time of birth hiển thị hai icon đồng hồ",
+    "severity": "Medium",
+    "actual": "- Field \"Time of birth\" (id: 7) hiển thị một icon đồng hồ ở bên trái và thêm một icon đồng hồ khác ở bên phải (icon picker mặc định của trình duyệt), trên cả small và large.",
+    "expected": "- Field chỉ hiển thị một icon đồng hồ – Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/07-7-small.png, astrocartography/06102026/screens/07-7-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 9",
+    "title": "[UI][Responsive][Intro 9] Map card bị thu thấp và cắt mất phần dưới bản đồ trên màn hình nhỏ",
+    "severity": "Medium",
+    "actual": "- Trên small 375×667 (id: 9), map card dưới bảng vị trí hành tinh bị thu thấp, phần dưới bản đồ (Nam Mỹ, Úc) bị cắt. Trên large 430×932 map hiển thị đầy đủ.",
+    "expected": "- Map hiển thị đủ nội dung, cùng tỉ lệ như trên large – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/09-9-small.png, astrocartography/06102026/screens/09-9-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 14",
+    "title": "[UI][Intro 14] Các image card hiển thị viền màu khác nhau khi chưa chọn",
+    "severity": "Medium",
+    "actual": "- Khi chưa chọn option nào (id: 14), 4 image card Big city / Coast / Mountains / Small town có viền gradient mỗi card một màu (vàng, cam, vàng-tím, xanh ngọc), nhìn giống selected state; option \"Other\" và option ở các màn khác dùng viền xám mặc định.",
+    "expected": "- Option ở trạng thái default dùng chung một style viền, chỉ option được chọn mới highlight (brief #3: \"purple border on select\") – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/14-14-small.png, astrocartography/06102026/screens/14-14-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 15",
+    "title": "[UI][Responsive][Intro 15] Option \"Anywhere\" bị footer che và microcopy bị đẩy xuống dưới fold trên màn hình nhỏ",
+    "severity": "Medium",
+    "actual": "- Trên small 375×667 (id: 15), option cuối \"Anywhere\" bị cắt ngang bởi vùng footer (\"Pick at least one\" + Continue); dòng \"Your full map still covers the whole world.\" chỉ thấy sau khi cuộn. Trên large cả 4 option và microcopy hiển thị đủ.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. (option và microcopy không bị footer che trên màn hình nhỏ).",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/15-15-small-p1.png, astrocartography/06102026/screens/15-15-small-p2.png, astrocartography/06102026/screens/15-15-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Intro 18",
+    "title": "[UI][Intro 18] Màn không có back button và progress bar, nội dung sát mép trên, không đồng nhất header",
+    "severity": "Low",
+    "actual": "- Intro 18 (id: 18) và Intro 19 (id: 19) không có back button và progress bar; title \"test, your map is ready\" / map card bắt đầu sát mép trên màn hình, trong khi các màn intro trước đều có hàng header (back + progress) phía trên nội dung.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. (header và khoảng cách phía trên cần đồng nhất giữa các màn).",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/18-18-small-p1.png, astrocartography/06102026/screens/18-18-large.png, astrocartography/06102026/screens/19-19-small.png, astrocartography/06102026/screens/19-19-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 19",
+    "title": "[UI][Intro 19] Hiển thị dòng copy \"Shown only because a line truly falls within 600 miles...\" không có trong spec",
+    "severity": "Low",
+    "actual": "- Màn \"Why Seattle felt right\" (id: 19) hiển thị dòng \"Shown only because a line truly falls within 600 miles. We never invent a match.\" dưới card meaning. Brief #19 chỉ ghi điều kiện này như path rule nội bộ, không phải copy hiển thị.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. (copy hiển thị trên Intro 19 cần bám theo brief: Headline, Body và một meaning card).",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/19-19-small.png, astrocartography/06102026/screens/19-19-large.png"
+  },
+  {
+    "screen": "astrocartography · Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "astrocartography · Paywall 1",
+    "title": "[UI][Responsive][Paywall 1] CTA \"Unlock my map\" bị cắt ở mép dưới viewport đầu trên màn hình nhỏ",
+    "severity": "High",
+    "actual": "- Trên small 375×667, khi vào Paywall (id: 21) thì button \"Unlock my map\" trong plan block chỉ hiện nửa trên ở mép dưới màn hình, chưa có sticky CTA (header chưa có mini CTA); user phải cuộn mới thấy đủ button. Trên large button hiển thị đầy đủ.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. (CTA cần hiển thị trọn vẹn trong viewport đầu hoặc có sticky CTA thay thế).",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/21-21-small-p1.png, astrocartography/06102026/screens/walk-end-21 (paywall).png, astrocartography/06102026/screens/21-21-large-p1.png"
+  },
+  {
+    "screen": "astrocartography · Paywall 1",
+    "title": "[UI][Paywall 1] Sticky bottom CTA không có nền che, text phía sau đè lên label gói",
+    "severity": "Medium",
+    "actual": "- Khi cuộn Paywall trên large (id: 21), dòng \"1 week, then monthly · $13.67 today\" của sticky bottom CTA nằm đè lên eyebrow \"QUESTIONS\" của section phía sau, hai dòng chữ chồng lên nhau.",
+    "expected": "- Sticky CTA không overlap với nội dung phía sau (checklist A – Layout); nền/vùng che của sticky bar – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/21-21-large-p2.png"
+  },
+  {
+    "screen": "astrocartography · Upsale 1",
+    "title": "[UI][Responsive][Upsale 1] Microcopy dưới card bị ẩn sau sticky CTA trên màn hình nhỏ",
+    "severity": "Medium",
+    "actual": "- Trên small 375×667 (id: 22), dòng \"One-time payment at a secure checkout. No subscription.\" dưới report card không hiển thị ở viewport đầu (CTA \"Add for $19.99\" nằm ngay dưới card), chỉ thấy khi cuộn; trên large dòng này hiển thị ngay dưới card.",
+    "expected": "- Microcopy hiển thị dưới card (brief #22) và không bị CTA che trên màn hình nhỏ – Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: astrocartography/06102026/screens/22-22-small-p1.png, astrocartography/06102026/screens/22-22-small-p2.png, astrocartography/06102026/screens/22-22-large.png"
+  },
+  {
+    "screen": "astrocartography · Download App",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 1",
+    "title": "[UI][Intro 1] Ảnh hero có đường viền hình chữ nhật lạ đè lên silhouette",
+    "severity": "Medium",
+    "actual": "- Ở ảnh hero (id: hook), một đường viền mảnh màu vàng-xanh hình chữ nhật/vòm đè ngang thân silhouette (ngang eo), cả small và large; lỗi tương tự ở Intro 14 (khung chữ nhật quanh thân + 2 đường kẻ dọc mép trái/phải ảnh) và Intro 19 (2 đường kẻ dọc mép ảnh).",
+    "expected": "- Ảnh hero chỉ hiển thị halo quanh silhouette trên nền sao, không có đường viền/khung lạ (Spec Visual #1, #14, #19). Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/01-hook-small.png, aura-tarot/06102026/screens/01-hook-large.png, aura-tarot/06102026/screens/14-aura_reveal-large.png, aura-tarot/06102026/screens/14-aura_reveal-small-p1.png, aura-tarot/06102026/screens/19-teaser-large.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 1",
+    "title": "[UI/UX][Intro 1] Text \"Terms of Use\" / \"Privacy Policy\" không nhận biết được là link",
+    "severity": "High",
+    "actual": "- Microcopy \"By continuing you confirm you're 18+ and agree to our Terms of Use and Privacy Policy...\" hiển thị \"Terms of Use\" và \"Privacy Policy\" cùng màu, cùng kiểu với text thường, không underline; tương tự ở Intro 18 (email). Trong khi footer Paywall 1 có underline cho các link này.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. Đề xuất \"Terms of Use\"/\"Privacy Policy\" là link bấm được, style đồng nhất với footer Paywall; nếu là link thì tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/01-hook-small.png, aura-tarot/06102026/screens/18-email-small.png, aura-tarot/06102026/screens/20-paywall-small-p4.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 1",
+    "title": "[UI][Responsive][Intro 1] Khoảng trống lớn giữa cụm chip và CTA trên màn hình large",
+    "severity": "Low",
+    "actual": "- Ở viewport 430×932, sau dòng chip \"2-min quiz · Your color · 3 cards\" là một vùng trống rất lớn (gần nửa màn hình) trước button \"Start quiz\"; ở small khoảng trống này nhỏ hơn nhiều.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm bố cục trên màn hình cao (vd. căn giữa nội dung hoặc tăng kích thước hero).",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/01-hook-large.png, aura-tarot/06102026/screens/01-hook-small.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 2",
+    "title": "[UI/UX][Intro 2] Hiển thị đồng thời 2 bộ đếm tiến trình khác nhau \"1/10\" và \"1 OF 6\"",
+    "severity": "Medium",
+    "actual": "- Trên các màn câu hỏi Intro 2–7 (id: energy_now → crave), header góc phải hiển thị \"1/10\"…\"6/10\" trong khi tag phía trên câu hỏi hiển thị \"1 OF 6\"…\"6 OF 6\"; hai con số khác nhau cùng lúc khiến user khó hiểu còn bao nhiêu bước. Không có progress bar.",
+    "expected": "- Spec chỉ định nghĩa tag \"1 of 6\" phía trên câu hỏi; bộ đếm \"x/10\" trên header Spec chưa định nghĩa – cần PM/Designer confirm giữ một kiểu chỉ báo tiến trình.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/02-energy_now-small.png, aura-tarot/06102026/screens/03-around_people-small.png, aura-tarot/06102026/screens/07-crave-small.png, aura-tarot/06102026/screens/02-energy_now-large.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 8",
+    "title": "[UI][Intro 8] Ảnh halo hiển thị dạng khối chữ nhật full-width, cạnh trên cắt cứng thay vì \"round well\"",
+    "severity": "Low",
+    "actual": "- Ảnh halo (id: bridge) là một khối chữ nhật full-width, cạnh trên cắt thẳng tạo đường ranh giới rõ với nền; trên large ảnh nằm giữa màn với khoảng trống lớn phía trên và dưới. Màn loader Intro 13 cũng có ảnh hero cạnh trên cắt cứng ngay dưới band tiêu đề.",
+    "expected": "- Theo Spec #8: \"A soft halo shifting through hues in a round well\" – ảnh cần nằm trong khung tròn, mép mềm. Với Intro 13: Spec chưa định nghĩa – cần Designer confirm. Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/08-bridge-small.png, aura-tarot/06102026/screens/08-bridge-large.png, aura-tarot/06102026/screens/13-loader-small.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 9",
+    "title": "[UI][Intro 9] Các orb màu chưa chọn bị cắt vuông 4 cạnh và có vệt tối hình lưỡi liềm",
+    "severity": "Medium",
+    "actual": "- Ở màn chọn màu (id: color_pull), 5 orb chưa chọn (Red, Amber, Green, Blue, Violet) bị cắt phẳng ở mép trên/dưới/trái/phải và có vệt tối lệch ở góc dưới phải, không còn tròn; chỉ orb đang chọn (Indigo, viền vàng) hiển thị tròn đúng. Xảy ra cả small và large.",
+    "expected": "- Theo Spec #9: \"Six large color orbs ... each glowing softly in its own color\" – mọi orb cần hiển thị tròn trọn vẹn với glow mềm, không bị cắt.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/09-color_pull-small.png, aura-tarot/06102026/screens/09-color_pull-large.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 11",
+    "title": "[UI/UX][Intro 11] Ba ô chọn Month / Day / Year không có icon dropdown",
+    "severity": "Low",
+    "actual": "- Ba ô \"May\", \"14\", \"1994\" (id: birth_date) hiển thị như text box thường, không có chevron/icon dropdown, user khó nhận biết đây là select có thể bấm để đổi.",
+    "expected": "- Spec #11 chỉ ghi \"Three rounded selects in one row\"; affordance dropdown Spec chưa định nghĩa – cần PM/Designer confirm. Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/11-birth_date-small.png, aura-tarot/06102026/screens/11-birth_date-large.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 17",
+    "title": "[UI/UX][Intro 17] Tiêu đề các dòng bị khóa bị blur hoàn toàn, không đọc được",
+    "severity": "Medium",
+    "actual": "- Dòng khóa dưới 3 lá bài (id: three_cards) hiển thị text bị blur hoàn toàn, chỉ thấy icon khóa; tương tự 4 dòng khóa ở Intro 19 (teaser). User không biết nội dung bị khóa là gì.",
+    "expected": "- Theo Spec #17: faded row \"How the three connect\" with a lock; Spec #19: locked rows \"How the three connect\", \"Your 30-day aura plan\", \"Your {{focus}} guidance\", \"Your aura in each area of life\" – tiêu đề cần đọc được (faded), chỉ phần nội dung bị khóa. Cần Designer confirm.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/17-three_cards-small.png, aura-tarot/06102026/screens/17-three_cards-large.png, aura-tarot/06102026/screens/19-teaser-small-p2.png, aura-tarot/06102026/screens/19-teaser-large.png"
+  },
+  {
+    "screen": "aura-tarot · Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "aura-tarot · Intro 19",
+    "title": "[UI][Intro 19] Câu link aura–card khác copy trong Spec",
+    "severity": "Low",
+    "actual": "- Màn teaser (id: teaser) hiển thị \"Your Indigo aura meets The High Priestess.\" / \"Your Indigo aura meets The Devil.\".",
+    "expected": "- Theo Spec #19: \"Your {{aura}} aura leans toward {{card}}\".",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/19-teaser-small-p1.png, aura-tarot/06102026/screens/19-teaser-large.png"
+  },
+  {
+    "screen": "aura-tarot · Paywall 1",
+    "title": "[UI][Paywall 1] Hero không hiển thị 3 card backs, có khung chữ nhật nhỏ lạc giữa ảnh",
+    "severity": "Medium",
+    "actual": "- Hero paywall (id: paywall) chỉ có ảnh nến + luồng sáng tím; không thấy 3 lá bài úp, giữa ảnh có một khung chữ nhật viền mảnh nhỏ và một vệt ngang mờ ở mép dưới ảnh. Xảy ra cả small và large.",
+    "expected": "- Theo Spec #20 mục Hero: \"the aura halo with the three card backs\" – hiển thị 3 card backs rõ ràng, không có khung/viền lạ.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/20-paywall-small-p1.png, aura-tarot/06102026/screens/20-paywall-large-p1.png"
+  },
+  {
+    "screen": "aura-tarot · Paywall 1",
+    "title": "[UI][Paywall 1] Màu halo trên hero không đổi theo màu aura kết quả",
+    "severity": "Medium",
+    "actual": "- Khi walk thật cho kết quả \"Your Red aura\" (chip \"Your aura: Red\"), hero paywall vẫn hiển thị halo màu tím/indigo giống hệt kết quả Indigo.",
+    "expected": "- Theo Spec: \"the aura color is the one accent that changes per result\" – halo hero cần theo màu aura của user. Cần PM/Designer confirm nếu hero là ảnh tĩnh.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/walk-end-paywall (paywall).png, aura-tarot/06102026/screens/20-paywall-small-p1.png"
+  },
+  {
+    "screen": "aura-tarot · Paywall 1",
+    "title": "[UI][Paywall 1] Dòng \"Due today\" lặp chữ \"today\" ở giá trị",
+    "severity": "Low",
+    "actual": "- Trong cả 2 plan block, dòng tổng hiển thị \"Due today\" bên trái và \"$13.67 today\" bên phải, lặp từ \"today\".",
+    "expected": "- Spec #20 chỉ ghi \"Due today\"; format giá trị Spec chưa định nghĩa – cần PM/Designer confirm (vd. chỉ \"$13.67\").",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/20-paywall-small-p4.png, aura-tarot/06102026/screens/20-paywall-large-p1.png"
+  },
+  {
+    "screen": "aura-tarot · Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity (tên pháp nhân)",
+    "severity": "High",
+    "actual": "- Footer chỉ hiển thị \"Terms of Use\", \"Privacy Policy\", \"Subscription terms\", \"Support: support@starlyn.co\" và \"For entertainment purposes only.\"; không thấy tên pháp nhân/entity.",
+    "expected": "- Theo Spec #20 mục 9: \"Footer: legal links, entity, entertainment disclaimer.\" Cần PM confirm nếu entity đang ẩn do chưa cấu hình.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/20-paywall-small-p4.png, aura-tarot/06102026/screens/20-paywall-large-p4.png"
+  },
+  {
+    "screen": "aura-tarot · Upsale 1",
+    "title": "[UI][Upsale 1] Ảnh cover report là silhouette đen phẳng thay vì ảnh reveal-aura",
+    "severity": "Medium",
+    "actual": "- Cover card \"Chakra Balance Report\" (id: report_upsell) hiển thị một khối silhouette đen phẳng (đầu + vai) trên nền gradient tím, đè lên label \"STARLYN REPORT\" và tên report.",
+    "expected": "- Theo Spec #21: \"Report cover card (img/reveal-aura.jpg under a dark fade, 'Starlyn report' label, the report name)\".",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/21-report_upsell-small-p1.png, aura-tarot/06102026/screens/21-report_upsell-large.png"
+  },
+  {
+    "screen": "aura-tarot · Download App",
+    "title": "[UI][Download App] Icon trên badge \"Download on the App Store\" không phải logo Apple",
+    "severity": "Medium",
+    "actual": "- Badge App Store (id: get_app) hiển thị icon dạng outline giống hình răng/trái tim thay vì logo Apple; badge Google Play dùng icon tam giác outline.",
+    "expected": "- Spec #22 ghi \"App Store and Google Play badges\"; style badge Spec chưa định nghĩa – cần PM/Designer confirm (đề xuất dùng badge chính thức). Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: aura-tarot/06102026/screens/22-get_app-small.png, aura-tarot/06102026/screens/22-get_app-large.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 1",
+    "title": "[UI/UX][Intro 1] \"Terms of Use\" và \"Privacy Policy\" trong microcopy hiển thị dạng text thường, không phải link",
+    "severity": "High",
+    "actual": "- Ở microcopy dưới CTA \"Start reading\" (id: hook) và dưới CTA \"Continue\" của màn email (Intro 21, id: email), cụm \"Terms of Use\" và \"Privacy Policy\" hiển thị cùng màu/kiểu với phần text còn lại, không gạch chân, không có affordance bấm được; trong khi footer Paywall 1 có link \"Terms of Use\" / \"Privacy Policy\" gạch chân.",
+    "expected": "- \"Terms of Use\" và \"Privacy Policy\" ở màn hook và màn email cần là link mở đúng trang tương ứng, style đồng nhất với link ở footer Paywall 1. Spec chưa định nghĩa rõ dạng link – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/01-hook-small.png, ex-compatibility/06102026/screens/01-hook-large.png, ex-compatibility/06102026/screens/21-email-small.png, ex-compatibility/06102026/screens/21-email-large.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 2",
+    "title": "[UI][Intro 2] Header các màn câu hỏi chỉ có counter \"n/14\", không hiển thị progress bar",
+    "severity": "Low",
+    "actual": "- Trên header các màn câu hỏi (Intro 2, 3, 5–13, 15–17) chỉ thấy nút back, logo \"Starlyn\" và counter \"n/14\"; không có thanh progress bar nào hiển thị dưới header ở cả viewport small và large.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm header có cần progress bar (trên header đang có sẵn vùng dành cho progress bar nhưng không hiển thị) hay chỉ dùng counter \"n/14\".",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/02-gender-small.png, ex-compatibility/06102026/screens/02-gender-large.png, ex-compatibility/06102026/screens/10-who_ended-small.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 6",
+    "title": "[UI][Intro 6] Thiếu line-art minh hoạ theo spec ở các màn nhập giờ/ngày sinh (clock-face, wheel thứ hai)",
+    "severity": "Low",
+    "actual": "- Màn birth_time (Intro 6) và ex_birth_time (Intro 9) chỉ có 3 select Hour/Min/AM và dòng hint, không có hình clock-face; màn ex_birth_date (Intro 8) không hiển thị wheel thứ hai mờ bên cạnh; phần giữa màn để trống.",
+    "expected": "- Theo spec: #6 \"Clock-face line art with tiny zodiac glyphs on the rim\"; #8 \"a second wheel appears faintly beside the first\"; #9 \"Clock face as in #6, second wheel glows\".",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/06-birth_time-small.png, ex-compatibility/06102026/screens/08-ex_birth_date-small.png, ex-compatibility/06102026/screens/09-ex_birth_time-small.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 8",
+    "title": "[UI][Intro 8] Chip Sun sign của người kia dùng icon mặt trăng, khác icon mặt trời của chip Sun sign người dùng",
+    "severity": "Low",
+    "actual": "- Sau khi chọn ngày sinh (Oct 3 1992) ở màn ex_birth_date, chip \"Libra\" hiển thị icon mặt trăng màu xanh; trong khi chip Sun sign của người dùng ở màn birth_date (\"Taurus\") dùng icon mặt trời màu vàng. Icon mặt trăng dễ bị hiểu là Moon sign.",
+    "expected": "- Cần đối chiếu Figma: icon của chip Sun sign người kia. Spec chưa định nghĩa – cần Designer confirm.",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/08-ex_birth_date-small.png, ex-compatibility/06102026/screens/05-birth_date-small.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 14",
+    "title": "[UI][Intro 14] Thiếu sign chip dưới mỗi wheel ở màn \"Taurus meets Libra\"",
+    "severity": "Low",
+    "actual": "- Màn bridge (id: charts_meet) hiển thị 2 wheel chồng nhau, headline \"Taurus meets Libra\", progress ring và step text; không có chip tên cung dưới mỗi wheel.",
+    "expected": "- Theo spec #14 Visual: \"The two wheels drift together and overlap, sign chips appear under each.\"",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/14-charts_meet-small.png, ex-compatibility/06102026/screens/14-charts_meet-large.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 19",
+    "title": "[UI][Intro 19] Title loader \"Comparing your two charts\" nằm sát mép trên, nội dung dồn lên trên và để trống lớn phía dưới trên large",
+    "severity": "Low",
+    "actual": "- Màn loader (id: loader) không có header; title \"Comparing your two charts\" nằm sát mép trên màn hình (cao hơn vị trí title của các màn khác có header), toàn bộ wheel + progress ring + 4 task row dồn lên nửa trên; trên large (430×932) khoảng trống phía dưới chiếm gần một nửa màn. Màn bridge (charts_meet) cùng loại lại căn giữa theo chiều dọc.",
+    "expected": "- Cần đối chiếu Figma: top padding của title và vertical alignment của màn loader nên đồng nhất với màn bridge (charts_meet) / các màn có header. Spec chưa định nghĩa – cần Designer confirm.",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/19-loader-small.png, ex-compatibility/06102026/screens/19-loader-large.png"
+  },
+  {
+    "screen": "ex-compatibility · Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Intro 21",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu tên pháp nhân (entity) theo spec",
+    "severity": "High",
+    "actual": "- Footer cuối Paywall 1 chỉ hiển thị 3 link \"Terms of Use\" · \"Privacy Policy\" · \"Subscription terms\" và dòng \"For entertainment purposes only.\"; không có dòng tên pháp nhân/công ty.",
+    "expected": "- Theo spec mục 22 – section 9 \"Footer: legal links, entity, entertainment disclaimer\": footer cần hiển thị tên pháp nhân bên cạnh legal links và disclaimer.",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/22-paywall-small-p4.png, ex-compatibility/06102026/screens/22-paywall-large-p4.png"
+  },
+  {
+    "screen": "ex-compatibility · Paywall 1",
+    "title": "[UI][Paywall 1] Dòng \"Due today\" lặp chữ \"today\" ở giá trị \"$13.67 today\"",
+    "severity": "Low",
+    "actual": "- Trong plan block (cả block đầu và block cuối trang), dòng tổng hiển thị label \"Due today\" và giá trị \"$13.67 today\", chữ \"today\" bị lặp trên cùng một dòng.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm copy dòng \"Due today\" (vd. giá trị chỉ hiển thị \"$13.67\").",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/22-paywall-small-p4.png, ex-compatibility/06102026/screens/22-paywall-large-p1.png"
+  },
+  {
+    "screen": "ex-compatibility · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "ex-compatibility · Download App",
+    "title": "[UI][Download App] Badge App Store / Google Play dùng icon outline tự vẽ, không phải badge chính thức",
+    "severity": "Medium",
+    "actual": "- Hai badge dưới CTA \"Open the app\" dùng icon outline (hình quả táo không lá, tam giác play) với text \"Download on the App Store\" / \"Get it on Google Play\", không phải artwork badge chính thức của Apple/Google.",
+    "expected": "- Spec mục 24 yêu cầu \"App Store and Google Play badges\"; cần dùng badge chính thức theo brand guideline của Apple/Google – cần Designer confirm.",
+    "attachment": "Screenshot/Video: ex-compatibility/06102026/screens/24-get_app-small.png, ex-compatibility/06102026/screens/24-get_app-large.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 1",
+    "title": "[UI/UX][Intro 1] \"Terms of Use\" và \"Privacy Policy\" trong microcopy hiển thị dạng text thường, không phải link",
+    "severity": "High",
+    "actual": "- Ở microcopy dưới CTA \"Start reading\" (id: hook) và dưới CTA \"Continue\" của màn email (Intro 21, id: email), cụm \"Terms of Use\" và \"Privacy Policy\" hiển thị cùng màu/kiểu với phần text còn lại, không gạch chân, không có affordance bấm được; trong khi footer Paywall 1 có link \"Terms of Use\" / \"Privacy Policy\" gạch chân.",
+    "expected": "- \"Terms of Use\" và \"Privacy Policy\" ở màn hook và màn email cần là link mở đúng trang tương ứng, style đồng nhất với link ở footer Paywall 1. Spec chưa định nghĩa rõ dạng link – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/01-hook-small.png, marriage-compatibility/06102026/screens/01-hook-large.png, marriage-compatibility/06102026/screens/21-email-small.png, marriage-compatibility/06102026/screens/21-email-large.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 1",
+    "title": "[UI][Intro 1] Hero art chưa đúng visual spec: thiếu 2 nhẫn vàng (Intro 1) và vòm sáng (Intro 20)",
+    "severity": "Medium",
+    "actual": "- Hero màn hook chỉ có 2 wheel chồng nhau, không có \"two small gold rings\" ở giữa; hero màn window_teaser (Intro 20) cũng là cùng ảnh 2 wheel, không có \"soft arch of light\". Ảnh này cũng dùng lại ở hero Paywall 1 và cover Upsale 1, giống hệt ảnh của funnel ex-compatibility.",
+    "expected": "- Theo spec #1 Visual: wheels \"with two small gold rings between them\" (`img/hook-rings.jpg`); #20: \"Wheels over a soft arch of light\" (`img/result-window.jpg`). Spec Notes ghi ảnh hiện tại là placeholder – cần PM/Designer confirm thời điểm thay ảnh thật.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/01-hook-small.png, marriage-compatibility/06102026/screens/20-window_teaser-small-p1.png, marriage-compatibility/06102026/screens/22-paywall-small-p1.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 2",
+    "title": "[UI][Intro 2] Header các màn câu hỏi chỉ có counter \"n/14\", không hiển thị progress bar",
+    "severity": "Low",
+    "actual": "- Trên header các màn câu hỏi (Intro 2, 3, 5–14, 16, 17) chỉ thấy nút back, logo \"Starlyn\" và counter \"n/14\"; không có thanh progress bar nào hiển thị dưới header ở cả viewport small và large.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm header có cần progress bar (trên header đang có sẵn vùng dành cho progress bar nhưng không hiển thị) hay chỉ dùng counter \"n/14\".",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/02-status-small.png, marriage-compatibility/06102026/screens/02-status-large.png, marriage-compatibility/06102026/screens/12-home-small.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 6",
+    "title": "[UI][Intro 6] Thiếu line-art minh hoạ theo spec ở các màn nhập giờ/nơi/ngày sinh (clock-face, globe, wheel thứ hai)",
+    "severity": "Low",
+    "actual": "- Màn birth_time (Intro 6) chỉ có select Hour/Min/AM, không có clock-face; màn birth_place (Intro 7) chỉ có input \"City, country\", không có globe + pin; màn partner_birth_date (Intro 9) không hiển thị wheel thứ hai mờ; phần giữa màn để trống.",
+    "expected": "- Theo spec: #6 \"Clock-face line art with tiny zodiac glyphs on the rim\"; #7 \"Light line-art globe with a gold pin, one input under it\"; #9 \"a second wheel appears faintly beside the first\".",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/06-birth_time-small.png, marriage-compatibility/06102026/screens/07-birth_place-small.png, marriage-compatibility/06102026/screens/09-partner_birth_date-small.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 8",
+    "title": "[Logic][Intro 8] Step counter nhảy cóc một bước và tính cả màn bị skip theo branch",
+    "severity": "High",
+    "actual": "- Counter cố định theo màn: partner_wish hiển thị \"6/14\", partner_birth_date \"7/14\", name \"8/14\". Theo walk thực tế (branch Single: birth_place → partner_wish → name) user thấy 5/14 → 6/14 → 8/14; branch Dating/Engaged sẽ thấy 5/14 → 7/14. Tổng chỉ 13 câu hỏi nhưng màn timeline vẫn hiển thị \"14/14\".",
+    "expected": "- Spec #8/#9: mỗi user chỉ thấy một trong hai màn (Single → #8, Dating/Engaged → #9), nên counter cần đếm liên tục không nhảy số và tổng đúng số câu của branch. Cách hiển thị cụ thể – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/07-birth_place-small.png, marriage-compatibility/06102026/screens/08-partner_wish-small.png, marriage-compatibility/06102026/screens/09-partner_birth_date-small.png, marriage-compatibility/06102026/screens/10-name-small.png, marriage-compatibility/06102026/screens/17-timeline-small.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 9",
+    "title": "[UI][Intro 9] Chip Sun sign của người kia dùng icon mặt trăng, khác icon mặt trời của chip Sun sign người dùng",
+    "severity": "Low",
+    "actual": "- Sau khi chọn ngày sinh (Oct 3 1992) ở màn partner_birth_date, chip \"Libra\" hiển thị icon mặt trăng màu xanh; trong khi chip Sun sign của người dùng ở màn birth_date (\"Taurus\") dùng icon mặt trời màu vàng. Icon mặt trăng dễ bị hiểu là Moon sign.",
+    "expected": "- Cần đối chiếu Figma: icon của chip Sun sign người kia. Spec chưa định nghĩa – cần Designer confirm.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/09-partner_birth_date-small.png, marriage-compatibility/06102026/screens/05-birth_date-small.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 10",
+    "title": "[UI][Intro 10] Input \"First name\" hiển thị nền tối, khác \"light input\" theo spec",
+    "severity": "Low",
+    "actual": "- Ô nhập tên ở màn name dùng nền tối cùng tông với nền màn (text \"test\" màu trắng); trong khi ô email ở Intro 21 dùng nền sáng.",
+    "expected": "- Theo spec #10 Visual: \"Single light input on the navy field, gold caret\". Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/10-name-small.png, marriage-compatibility/06102026/screens/10-name-large.png, marriage-compatibility/06102026/screens/21-email-small.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 19",
+    "title": "[UI][Intro 19] Title loader \"Finding your marriage window\" nằm sát mép trên, nội dung dồn lên trên và để trống lớn phía dưới trên large",
+    "severity": "Low",
+    "actual": "- Màn loader (id: loader) không có header; title \"Finding your marriage window\" nằm sát mép trên màn hình (cao hơn vị trí title của các màn khác có header), toàn bộ wheel + progress ring + 4 task row dồn lên nửa trên; trên large (430×932) khoảng trống phía dưới chiếm gần một nửa màn. Màn bridge (charts_meet) cùng loại lại căn giữa theo chiều dọc.",
+    "expected": "- Cần đối chiếu Figma: top padding của title và vertical alignment của màn loader nên đồng nhất với màn bridge (charts_meet) / các màn có header. Spec chưa định nghĩa – cần Designer confirm.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/19-loader-small.png, marriage-compatibility/06102026/screens/19-loader-large.png"
+  },
+  {
+    "screen": "marriage-compatibility · Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Intro 21",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu tên pháp nhân (entity) theo spec",
+    "severity": "High",
+    "actual": "- Footer cuối Paywall 1 chỉ hiển thị 3 link \"Terms of Use\" · \"Privacy Policy\" · \"Subscription terms\" và dòng \"For entertainment purposes only.\"; không có dòng tên pháp nhân/công ty.",
+    "expected": "- Theo spec mục 22 – section 9 \"Footer: legal links, entity, entertainment disclaimer\": footer cần hiển thị tên pháp nhân bên cạnh legal links và disclaimer.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/22-paywall-small-p4.png, marriage-compatibility/06102026/screens/22-paywall-large-p4.png"
+  },
+  {
+    "screen": "marriage-compatibility · Paywall 1",
+    "title": "[UI][Paywall 1] Dòng \"Due today\" lặp chữ \"today\" ở giá trị \"$13.67 today\"",
+    "severity": "Low",
+    "actual": "- Trong plan block (cả block đầu và block cuối trang), dòng tổng hiển thị label \"Due today\" và giá trị \"$13.67 today\", chữ \"today\" bị lặp trên cùng một dòng.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm copy dòng \"Due today\" (vd. giá trị chỉ hiển thị \"$13.67\").",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/22-paywall-small-p4.png, marriage-compatibility/06102026/screens/22-paywall-large-p1.png"
+  },
+  {
+    "screen": "marriage-compatibility · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "marriage-compatibility · Download App",
+    "title": "[UI][Download App] Badge App Store / Google Play dùng icon outline tự vẽ, không phải badge chính thức",
+    "severity": "Medium",
+    "actual": "- Hai badge dưới CTA \"Open the app\" dùng icon outline (hình quả táo không lá, tam giác play) với text \"Download on the App Store\" / \"Get it on Google Play\", không phải artwork badge chính thức của Apple/Google.",
+    "expected": "- Spec mục 24 yêu cầu \"App Store and Google Play badges\"; cần dùng badge chính thức theo brand guideline của Apple/Google – cần Designer confirm.",
+    "attachment": "Screenshot/Video: marriage-compatibility/06102026/screens/24-get_app-small.png, marriage-compatibility/06102026/screens/24-get_app-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 1",
+    "title": "[UI/UX][Intro 1] Link \"Terms\" và \"Privacy Policy\" có tap target quá nhỏ",
+    "severity": "High",
+    "actual": "- Ở dòng legal \"By continuing, you agree to our Terms & Privacy Policy\", link \"Terms\" chỉ cao khoảng 15px (35x15) và \"Privacy Policy\" khoảng 79x15, nằm sát nhau, khó bấm chính xác trên mobile. Lỗi tương tự ở Intro 20 (màn Email, id: 20) trên cả 2 viewport.",
+    "expected": "- Tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/01-1-small.png, moon-reading/06102026/screens/01-1-large.png, moon-reading/06102026/screens/20-20-small.png, moon-reading/06102026/screens/20-20-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 1",
+    "title": "[UI][Responsive][Intro 1] Ảnh background không phủ hết màn hình trên viewport large",
+    "severity": "Medium",
+    "actual": "- Trên 430x932, ảnh nền (người phụ nữ + mặt trăng) chỉ phủ khoảng 395px chiều ngang và dừng ở khoảng 2/3 chiều cao: lộ một dải tối bên phải và cả nửa dưới màn hình là nền trơn, headline đè lên mặt nhân vật. Trên 375x667 ảnh phủ kín.",
+    "expected": "- Ảnh nền cần phủ full màn hình (full-bleed) trên mọi kích thước như ở viewport small – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/01-1-large.png, moon-reading/06102026/screens/01-1-small.png"
+  },
+  {
+    "screen": "moon-reading · Intro 1",
+    "title": "[UI][Intro 1] Mặt trăng hero đè lên mặt trăng có sẵn trong ảnh nền",
+    "severity": "Medium",
+    "actual": "- Mặt trăng hero (đang hiển thị phần tối lớn) nằm chồng lên mặt trăng tròn vẽ sẵn trong ảnh background, tạo thành 2 mặt trăng chồng nhau giống hiện tượng nhật thực, trên cả 2 viewport.",
+    "expected": "- Spec (Visual) mô tả một mặt trăng 3D lớn làm hero duy nhất trên nền trời tối; vị trí hero và ảnh nền không nên chồng 2 mặt trăng – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/01-1-small.png, moon-reading/06102026/screens/01-1-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 2",
+    "title": "[UI][Responsive][Intro 2] List bị cắt ngang bởi vùng CTA ở first view trên màn nhỏ",
+    "severity": "Medium",
+    "actual": "- Trên 375x667, card 3 dòng bị cắt ngang ngay dưới dòng \"Tonight's phase, for you\", dòng \"A ritual that fits your day\" chỉ thấy khi cuộn và không có dấu hiệu cho biết còn nội dung bên dưới. Tương tự ở Intro 14 (id: 14): option \"Just me\" bị cắt một nửa bởi vùng \"Tap one to continue\".",
+    "expected": "- Nội dung và option cần hiển thị trọn vẹn hoặc có scroll cue (fade/shadow) rõ ràng trên màn nhỏ – Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/02-2-small-p1.png, moon-reading/06102026/screens/02-2-small-p2.png, moon-reading/06102026/screens/14-14-small-p1.png, moon-reading/06102026/screens/14-14-small-p2.png"
+  },
+  {
+    "screen": "moon-reading · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 7",
+    "title": "[UI][Intro 7] Ô \"Time of birth\" hiển thị 2 icon đồng hồ",
+    "severity": "Medium",
+    "actual": "- Ô nhập giờ sinh có một icon đồng hồ ở bên trái và thêm một icon đồng hồ ở bên phải (icon time picker của trình duyệt), trùng lặp trên cả 2 viewport.",
+    "expected": "- Ô nhập chỉ nên có một icon đồng hồ – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/07-7-small.png, moon-reading/06102026/screens/07-7-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 8",
+    "title": "[UI][Intro 8] Bản đồ chấm bị cắt ở viền trên card, icon mặt trăng đè lên bản đồ",
+    "severity": "Medium",
+    "actual": "- Hàng chấm trên cùng của bản đồ (Bắc Mỹ, Nga) chạm/bị cắt bởi viền trên của card, icon mặt trăng ở góc phải đè lên các chấm bản đồ. Không thấy pin vị trí trên bản đồ.",
+    "expected": "- Spec (Visual): \"Search field, pin on a stylized map under a crescent\" – bản đồ cần nằm gọn trong card, có pin và crescent không đè lên bản đồ – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/08-8-small.png, moon-reading/06102026/screens/08-8-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 16",
+    "title": "[UI][Responsive][Intro 16] Màn nhỏ không hiển thị sample push trên lock-screen mock",
+    "severity": "Medium",
+    "actual": "- Trên 375x667, khung lock-screen chỉ có \"8:00 / October 26\", không có thông báo mẫu. Trên 430x932 có thông báo \"STARLYN · now – Full Moon in Taurus tonight, test. Your 5-minute release ritual is ready.\"",
+    "expected": "- Spec (Visual/Microcopy): lock-screen mock có một sample push \"🌕 Full Moon in Aries tonight, {{name}}. Your 5-minute release ritual is ready.\" – cần hiển thị trên mọi viewport.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/16-16-small.png, moon-reading/06102026/screens/16-16-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 18",
+    "title": "[UI][Intro 18] Headline sát mép trên màn hình, không có khoảng cách top",
+    "severity": "Low",
+    "actual": "- Headline \"test, your Moon is Libra\" bắt đầu gần sát mép trên viewport, không có header/khoảng đệm phía trên, trong khi các màn khác bắt đầu nội dung bên dưới thanh back/progress. Lỗi tương tự ở Intro 19 (id: 19) với headline \"Your moon month, mapped\".",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm (khoảng cách top cần đồng nhất với các màn khác trong funnel).",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/18-18-small.png, moon-reading/06102026/screens/18-18-large.png, moon-reading/06102026/screens/19-19-small-p1.png, moon-reading/06102026/screens/19-19-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 18",
+    "title": "[UI/UX][Intro 18] Câu \"you feel through the people around you\" bị lặp 3 lần",
+    "severity": "Medium",
+    "actual": "- Cùng một nội dung xuất hiện 3 lần trên màn: subtitle trong card (\"you feel through the people around you.\"), dòng \"Feel\" của card và câu bên dưới card (\"Moon in Libra — you feel through the people around you.\"). Subtitle card và subtitle phase bắt đầu bằng chữ thường.",
+    "expected": "- Spec (Visual): card gồm glyph và 3 dòng ngắn (feel / soothe / drain) cùng một câu mẫu; không định nghĩa subtitle lặp trong card – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/18-18-small.png, moon-reading/06102026/screens/18-18-large.png"
+  },
+  {
+    "screen": "moon-reading · Intro 18",
+    "title": "[Logic][Intro 18] Birth phase hiển thị khác với Intro 6 cho cùng ngày sinh",
+    "severity": "High",
+    "actual": "- Intro 6 (id: 6) hiển thị \"Born under a First Quarter\" cho ngày \"August 12, 1994\" (ảnh mặt trăng sáng chưa tới nửa), nhưng Intro 18 hiển thị \"Born under a Waxing Crescent\" trong card birth phase. Data test qua deep-jump, Intro 18 có thể đã có thêm giờ/nơi sinh.",
+    "expected": "- Cùng ngày sinh cần ra cùng một tên phase ở Intro 6 và Intro 18, hoặc báo rõ phase đã được chính xác lại sau khi nhập giờ sinh – Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/06-6-small.png, moon-reading/06102026/screens/18-18-small.png"
+  },
+  {
+    "screen": "moon-reading · Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Paywall 1",
+    "title": "[UI/UX][Responsive][Paywall 1] Màn nhỏ không thấy CTA nào ở first view",
+    "severity": "High",
+    "actual": "- Trên 375x667, first view chỉ có brand bar (không có mini CTA), hero và đầu plan card; dòng \"Due today\" bị cắt ở mép dưới, button \"Unlock my rituals\" và sticky bottom CTA đều không hiển thị. Trên 430x932 CTA trong plan block hiển thị ngay first view.",
+    "expected": "- Spec: sticky bottom CTA hiển thị khi không có plan block nào trong màn hình; trường hợp plan block chỉ lộ một phần chưa được định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/21-21-small-p1.png, moon-reading/06102026/screens/21-21-large-p1.png"
+  },
+  {
+    "screen": "moon-reading · Paywall 1",
+    "title": "[UI][Paywall 1] Sticky bar trong suốt, text bên dưới lộ ra/chồng lên nội dung",
+    "severity": "Medium",
+    "actual": "- Khi cuộn, sticky bottom bar \"1 week, then monthly – $13.67 today\" chồng lên câu hỏi FAQ \"Do I need candles or supplies?\" (2 dòng text đè lên nhau). Brand bar phía trên cũng lộ mờ dòng \"Secure checkout · Cancel anytime\" phía sau.",
+    "expected": "- Sticky bar cần có nền đủ che nội dung phía sau, không để text chồng nhau – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/21-21-small-p3.png, moon-reading/06102026/screens/21-21-small-p2.png"
+  },
+  {
+    "screen": "moon-reading · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "moon-reading · Download App",
+    "title": "[UI][Download App] Badge \"Download on the App Store\" dùng icon không phải logo Apple",
+    "severity": "Medium",
+    "actual": "- Badge App Store hiển thị icon dạng outline quả táo chung chung thay vì logo Apple chính thức; badge Google Play dùng icon tam giác play outline, trên cả 2 viewport.",
+    "expected": "- Spec (Visual): App Store và Google Play badges – nên dùng badge/logo chính thức của store – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: moon-reading/06102026/screens/23-23-small.png, moon-reading/06102026/screens/23-23-large.png"
+  },
+  {
+    "screen": "palm-reading · Intro 1",
+    "title": "[UI/UX][Intro 1] Link \"Terms of Use\" / \"Privacy Policy\" có tap target quá nhỏ",
+    "severity": "High",
+    "actual": "- Ở màn Hook (id: hook) và màn Email (Intro 20, id: email), link \"Terms of Use\" và \"Privacy Policy\" trong dòng microcopy chỉ là text inline, vùng bấm đo được cao 27px (76×27 và 79×27), dễ bấm trượt trên mobile.",
+    "expected": "- Tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm.",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/01-hook-small.png, palm-reading/06102026/screens/01-hook-large.png, palm-reading/06102026/screens/20-email-small.png, palm-reading/06102026/screens/20-email-large.png"
+  },
+  {
+    "screen": "palm-reading · Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 6",
+    "title": "[UI/UX][Intro 6] 3 ô Month / Day / Year không có icon dropdown để nhận biết là select",
+    "severity": "Low",
+    "actual": "- Ở màn Date of birth (id: dob), 3 ô \"May\", \"14\", \"1994\" chỉ hiển thị giá trị trong khung bo góc, không có chevron/icon dropdown, nhìn giống text field tĩnh nên user khó biết có thể bấm để đổi ngày.",
+    "expected": "- Spec chỉ ghi \"Month / Day / Year selects… Three rounded selects in one row\", chưa định nghĩa affordance – cần PM/Designer confirm có cần icon dropdown hay không.",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/06-dob-small.png, palm-reading/06102026/screens/06-dob-large.png"
+  },
+  {
+    "screen": "palm-reading · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 8",
+    "title": "[UI][Intro 8] Hình minh họa bàn tay không hiển thị đủ 5 đường chỉ tay theo legend",
+    "severity": "Low",
+    "actual": "- Ở màn Palm intro (id: palm_intro), hình bàn tay chỉ thấy rõ đường hồng (Heart), xanh dương (Head) và một đoạn ngắn xanh lá (Life); không thấy đường vàng (Fate & money), đường tím (Marriage) chỉ là một chấm nhỏ, trong khi legend bên dưới liệt kê đủ 5 đường. Trạng thái giống nhau ở cả small và large.",
+    "expected": "- Theo spec: \"Gold palm outline with the five coloured lines drawing in, plus a 2-column colour legend\" – sau khi animation chạy xong cần thấy đủ 5 đường đúng màu legend (như hình minh họa ở màn Upload). Nếu ảnh chụp đang ở giữa animation thì cần Dev confirm trạng thái cuối.",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/08-palm_intro-small.png, palm-reading/06102026/screens/08-palm_intro-large.png, palm-reading/06102026/screens/16-upload-small.png"
+  },
+  {
+    "screen": "palm-reading · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 18",
+    "title": "[UI][Intro 18] Chấm vàng đầu ngón tay và đường chỉ tay không khớp vị trí bàn tay trên ảnh",
+    "severity": "Medium",
+    "actual": "- Ở màn Line trace (id: line_trace), khi label là \"Analyzing Thumb\", chấm vàng nằm ở mép trái gốc ngón trỏ chứ không nằm trên đầu ngón cái. Ở Intro 19 (id: report_teaser) và hero Paywall 1, các chấm nằm ở khe giữa các ngón/giữa thân ngón thay vì đầu ngón (đầu ngón cái và ngón út không có chấm), đường Life (xanh lá) chạy thẳng giữa lòng bàn tay thay vì vòng quanh gò ngón cái. Ở ảnh test của walk, overlay co cụm lệch khỏi lòng bàn tay.",
+    "expected": "- Theo spec: \"A gold dot pops onto each fingertip in turn\" và overlay \"scaled to the hand box found in the photo\" – chấm cần nằm trên đầu từng ngón tương ứng với label, các đường cần nằm trong vùng lòng bàn tay của ảnh.",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/18-line_trace-small.png, palm-reading/06102026/screens/18-line_trace-large.png, palm-reading/06102026/screens/19-report_teaser-small-p1.png, palm-reading/06102026/screens/19-report_teaser-large.png, palm-reading/06102026/screens/21-paywall-small-p1.png, palm-reading/06102026/screens/walk-end-paywall (paywall).png"
+  },
+  {
+    "screen": "palm-reading · Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Intro 20",
+    "title": "[UI][Intro 20] Màn Email thiếu header (nút Back + logo Starlyn), title sát mép trên",
+    "severity": "Low",
+    "actual": "- Ở màn Email (id: email), không có header như các màn quiz trước (nút Back, logo \"Starlyn\"); title \"Where should we send your reading?\" bắt đầu gần sát mép trên màn hình ở cả small và large, khoảng cách phía trên khác hẳn các màn có header.",
+    "expected": "- Spec chưa định nghĩa header cho màn Email – cần PM/Designer confirm; nếu không dùng header thì title cần có khoảng cách phía trên đồng nhất với các màn khác (Cần đối chiếu Figma).",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/20-email-small.png, palm-reading/06102026/screens/20-email-large.png, palm-reading/06102026/screens/14-main_line-small.png"
+  },
+  {
+    "screen": "palm-reading · Paywall 1",
+    "title": "[UI][Paywall 1] Thiếu section Rating + reviews và tên entity ở footer so với spec",
+    "severity": "High",
+    "actual": "- Trên cả small và large, sau section \"How it works\" (From your photo to your guide) là ngay section FAQ \"Good to know\", không có section Rating + reviews. Footer chỉ có \"Terms of Use · Privacy Policy · Subscription terms\", \"Support: support@starlyn.co\" và \"For entertainment purposes only.\", không có tên pháp nhân (entity).",
+    "expected": "- Theo spec thứ tự section: \"5. Rating + reviews (from CONFIG, placeholders until real)\" và \"9. Footer with legal links and entity\". Nếu cố ý ẩn reviews khi chưa có data thật thì cần PM confirm.",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/21-paywall-large-p2.png, palm-reading/06102026/screens/21-paywall-large-p3.png, palm-reading/06102026/screens/21-paywall-large-p4.png, palm-reading/06102026/screens/21-paywall-small-p4.png"
+  },
+  {
+    "screen": "palm-reading · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "palm-reading · Download App",
+    "title": "[UI][Download App] Badge \"Download on the App Store\" dùng icon không phải logo Apple",
+    "severity": "Medium",
+    "actual": "- Ở màn Get the app (id: get_app), badge \"Download on the App Store\" hiển thị một icon outline giống hình trái tim/khiên thay cho logo Apple, trong khi badge Google Play dùng icon tam giác play.",
+    "expected": "- Spec ghi \"App Store and Google Play badges under the CTA\" – badge cần đúng logo/nhận diện của store (Cần đối chiếu Figma / badge chính thức của Apple).",
+    "attachment": "Screenshot/Video: palm-reading/06102026/screens/23-get_app-small.png, palm-reading/06102026/screens/23-get_app-large.png"
+  },
+  {
+    "screen": "past-life · Intro 1",
+    "title": "[UI][Intro 1] Silhouette trong hero nằm đè lên vòng era, che chấm era phía dưới",
+    "severity": "Low",
+    "actual": "- Ở màn Hook (id: hook), hình silhouette màu đen nằm phía trước vòng tròn era, tràn ra ngoài vòng trong và che một phần chấm era ở góc dưới trái; cùng hình này lặp lại ở Intro 16, Paywall 1 và Upsale 1.",
+    "expected": "- Theo brief (Visual màn 1): silhouette \"fading in behind\" – nằm phía sau vòng era, không che các chấm era.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/01-hook-small.png, past-life/06102026/screens/01-hook-large.png"
+  },
+  {
+    "screen": "past-life · Intro 1",
+    "title": "[UI/UX][Intro 1] Text \"Terms of Use\" và \"Privacy Policy\" không hiển thị dạng link",
+    "severity": "High",
+    "actual": "- Ở Intro 1 (id: hook) và Intro 17 (id: email), \"Terms of Use\" và \"Privacy Policy\" trong dòng legal cùng màu, không gạch chân, không khác gì text thường, trong khi footer Paywall 1 hiển thị các link này có gạch chân.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. Đề xuất hiển thị link đồng nhất với footer Paywall 1 để user nhận ra có thể bấm.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/01-hook-small.png, past-life/06102026/screens/17-email-small.png, past-life/06102026/screens/18-paywall-small-p4.png"
+  },
+  {
+    "screen": "past-life · Intro 2",
+    "title": "[UI][Intro 2] Option selected có một vệt viền sáng mảnh ở mép phải",
+    "severity": "Low",
+    "actual": "- Option đang selected (nền gold gradient) hiện một đường sáng mảnh dọc mép phải, không có ở mép trái; lặp lại trên mọi màn chọn option (Intro 2, 4, 5, 6, 7, 8, 9, 11, 12).",
+    "expected": "- Cần đối chiếu Figma: viền option selected cần đồng đều cả 4 cạnh.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/02-era-small.png, past-life/06102026/screens/02-era-large.png, past-life/06102026/screens/04-deja_vu-small.png"
+  },
+  {
+    "screen": "past-life · Intro 2",
+    "title": "[UI][Intro 2] Không có vòng era ở background sáng lên theo era đã chọn",
+    "severity": "Low",
+    "actual": "- Màn \"Which era feels like home?\" (id: era) chỉ có 5 option trên nền sao, không có vòng era nào ở background.",
+    "expected": "- Theo brief (Visual màn 2): \"The ring in the background lights the picked era.\"",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/02-era-small.png, past-life/06102026/screens/02-era-large.png"
+  },
+  {
+    "screen": "past-life · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 7",
+    "title": "[UI][Intro 7] Statement không hiển thị dạng statement card lớn",
+    "severity": "Low",
+    "actual": "- Ở Intro 7, 8, 9 (id: statement_friends, statement_old_things, statement_fears), câu statement chỉ hiển thị như headline thường, phía dưới là 3 option, không có card.",
+    "expected": "- Theo brief (Visual màn 7–9): \"Large statement card, three pill options\".",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/07-statement_friends-small.png, past-life/06102026/screens/08-statement_old_things-small.png, past-life/06102026/screens/09-statement_fears-small.png"
+  },
+  {
+    "screen": "past-life · Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Intro 14",
+    "title": "[UI/UX][Intro 14] Ô Month/Day/Year không có icon dropdown",
+    "severity": "Low",
+    "actual": "- 3 ô chọn ngày sinh (id: birth_date) hiển thị giống text field, không có icon mũi tên/chevron báo đây là ô chọn.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/14-birth_date-small.png, past-life/06102026/screens/14-birth_date-large.png"
+  },
+  {
+    "screen": "past-life · Intro 15",
+    "title": "[UI][Intro 15] Icon era trên cùng của vòng era bị cắt mất nửa trên",
+    "severity": "Medium",
+    "actual": "- Ở màn loader (id: loader), icon era trên cùng (Ancient) bị cắt ngang phần trên, sát dưới headline \"Finding your past life\", trên cả small và large.",
+    "expected": "- Icon era cần hiển thị đầy đủ, không bị cắt (các icon era khác trên vòng và vòng ở Intro 10 đều hiển thị đủ).",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/15-loader-small.png, past-life/06102026/screens/15-loader-large.png"
+  },
+  {
+    "screen": "past-life · Intro 15",
+    "title": "[UI][Intro 15] Loader hiển thị số phần trăm \"15%\" trong progress ring",
+    "severity": "Low",
+    "actual": "- Progress ring của loader hiển thị số phần trăm (\"15%\") ở giữa.",
+    "expected": "- Brief màn 15 ghi \"a short progress ring\" và \"No percentage claims\" – cần PM/Designer confirm có hiển thị số % hay không.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/15-loader-small.png, past-life/06102026/screens/15-loader-large.png"
+  },
+  {
+    "screen": "past-life · Intro 16",
+    "title": "[UI][Intro 16] Role chip hiển thị màu xanh lá, không đồng bộ với era chip",
+    "severity": "Low",
+    "actual": "- Ở teaser (id: past_life_teaser), era chip \"Medieval\" màu gold còn role chip \"village herbalist\" màu xanh lá, chiều cao 2 chip cũng không bằng nhau.",
+    "expected": "- Theo brief (Visual màn 16): \"an era chip and a role chip in gold\".",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/16-past_life_teaser-small-p1.png, past-life/06102026/screens/16-past_life_teaser-large.png"
+  },
+  {
+    "screen": "past-life · Intro 16",
+    "title": "[UI][Intro 16] Hero không phải medallion tròn, ảnh chữ nhật lộ cạnh trên",
+    "severity": "Low",
+    "actual": "- Hero của teaser là ảnh chữ nhật full width, có một dải nền khác màu rõ rệt ở cạnh trên ngay dưới header, không có dạng medallion tròn.",
+    "expected": "- Theo brief (Visual màn 16): \"A round medallion\" chứa vòng era và silhouette.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/16-past_life_teaser-small-p1.png, past-life/06102026/screens/16-past_life_teaser-large.png"
+  },
+  {
+    "screen": "past-life · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "past-life · Paywall 1",
+    "title": "[UI][Paywall 1] Ảnh hero bị cắt phần trên vòng era ngay dưới khối headline",
+    "severity": "Medium",
+    "actual": "- Ảnh hero ở Paywall 1 (id: paywall) bị cắt ngang mép trên: phần trên vòng era và chấm era trên cùng bị mất, tạo cạnh thẳng ngay dưới dòng \"Where you lived, your story, your lesson.\".",
+    "expected": "- Ảnh hero (medallion) cần hiển thị đầy đủ, không bị cắt mép theo brief (Visual màn 18, mục Hero).",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/18-paywall-small-p1.png, past-life/06102026/screens/18-paywall-large-p1.png"
+  },
+  {
+    "screen": "past-life · Paywall 1",
+    "title": "[UI][Paywall 1] Nội dung cuộn hiện xuyên qua sticky header",
+    "severity": "Low",
+    "actual": "- Khi cuộn Paywall 1, text phía sau (vd. headline \"From your answers to your story\", payment badges, câu FAQ) vẫn nhìn thấy mờ xuyên qua sticky header, chồng lên vùng logo \"Starlyn\".",
+    "expected": "- Cần đối chiếu Figma: sticky header cần che nội dung phía sau để không bị chồng chữ.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/18-paywall-small-p3.png, past-life/06102026/screens/18-paywall-large-p2.png, past-life/06102026/screens/18-paywall-large-p4.png"
+  },
+  {
+    "screen": "past-life · Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity",
+    "severity": "High",
+    "actual": "- Footer Paywall 1 chỉ có link Terms of Use / Privacy Policy / Subscription terms và dòng disclaimer, không có tên entity.",
+    "expected": "- Theo brief (màn 18, mục 9): \"Footer: legal links, entity, entertainment disclaimer\".",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/18-paywall-small-p4.png, past-life/06102026/screens/18-paywall-large-p4.png"
+  },
+  {
+    "screen": "past-life · Upsale 1",
+    "title": "[UI][Upsale 1] Ảnh cover report bị cắt phần trên vòng era",
+    "severity": "Medium",
+    "actual": "- Ở màn add-on (id: report_upsell), ảnh trong cover card \"Karmic Lessons Report\" bị cắt ở mép trên card: phần trên vòng era và các chấm era trên cùng bị mất.",
+    "expected": "- Cần đối chiếu Figma: ảnh cover cần được căn/crop để chủ thể không bị cắt.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/19-report_upsell-small-p1.png, past-life/06102026/screens/19-report_upsell-large.png"
+  },
+  {
+    "screen": "past-life · Download App",
+    "title": "[UI][Download App] Icon trên badge App Store không giống logo Apple",
+    "severity": "Medium",
+    "actual": "- Badge \"Download on the App Store\" dùng icon hình quả táo không có cuống/lá, nhìn giống hình răng, không phải logo Apple.",
+    "expected": "- Cần đối chiếu Figma: badge store cần dùng đúng asset badge chính thức của App Store.",
+    "attachment": "Screenshot/Video: past-life/06102026/screens/20-get_app-small.png, past-life/06102026/screens/20-get_app-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 1",
+    "title": "[UI/UX][Intro 1] Link \"Terms\" và \"Privacy Policy\" có tap target nhỏ",
+    "severity": "High",
+    "actual": "- Ở Intro 1 (id: 1) và Intro 21 (id: 21, màn email), link \"Terms\" chỉ có vùng bấm 35×27 và \"Privacy Policy\" 79×27 (đo tự động), nằm sát nhau trong dòng legal.",
+    "expected": "- Tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/01-1-small.png, soulmate-sketch/06102026/screens/01-1-large.png, soulmate-sketch/06102026/screens/21-21-small.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 1",
+    "title": "[UI][Intro 1] Nét outline gold lệch khỏi khuôn mặt trong ảnh sketch hero",
+    "severity": "Low",
+    "actual": "- Trên card hero, nét outline gold (mặt + vai) bị lệch sang phải so với khuôn mặt trong ảnh sketch, không trùng với đường nét khuôn mặt.",
+    "expected": "- Cần đối chiếu Figma: nét gold cần khớp với portrait (brief: \"a half-drawn pencil portrait ... the finished strokes glowing gold\").",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/01-1-small.png, soulmate-sketch/06102026/screens/01-1-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 2",
+    "title": "[UI][Intro 2] Hiệu ứng sao băng vẽ đè lên card và text",
+    "severity": "Low",
+    "actual": "- Vệt sao băng trang trí chạy đè lên nội dung: ở large cắt ngang dòng \"Your sketch is an AI illustration.\", ở small chạm vào card step 2; lặp lại ở Intro 11.",
+    "expected": "- Cần đối chiếu Figma: hiệu ứng nền cần nằm dưới layer nội dung, không đè lên text/card.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/02-2-small.png, soulmate-sketch/06102026/screens/02-2-large.png, soulmate-sketch/06102026/screens/11-11-small-p1.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 6",
+    "title": "[UI/UX][Intro 6] Button Continue hiển thị enabled khi Month/Day/Year đang trống",
+    "severity": "Medium",
+    "actual": "- Ở màn ngày sinh (id: 6), cả 3 ô Month/Day/Year đang hiển thị placeholder nhưng button Continue vẫn ở trạng thái enabled (gold), trong khi Intro 8 và Intro 9 để Continue ở trạng thái disabled khi input trống.",
+    "expected": "- Trạng thái Continue khi chưa nhập cần đồng nhất giữa các màn input – Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/06-6-small.png, soulmate-sketch/06102026/screens/06-6-large.png, soulmate-sketch/06102026/screens/08-8-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 6",
+    "title": "[UI/UX][Intro 6] Ô Month/Day/Year không có icon dropdown",
+    "severity": "Low",
+    "actual": "- 3 ô chọn ngày sinh hiển thị giống text field, không có icon mũi tên/chevron báo đây là ô chọn.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/06-6-small.png, soulmate-sketch/06102026/screens/06-6-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 8",
+    "title": "[UI][Intro 8] Ô Time of birth hiển thị 2 icon đồng hồ",
+    "severity": "Medium",
+    "actual": "- Ô \"Time of birth\" (id: 8) có icon đồng hồ ở bên trái và thêm một icon đồng hồ khác ở bên phải, cả 2 cùng hiển thị.",
+    "expected": "- Cần đối chiếu Figma: ô input chỉ nên có 1 icon đồng hồ.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/08-8-small.png, soulmate-sketch/06102026/screens/08-8-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 11",
+    "title": "[UI][Intro 11] Chip selected có một vệt viền sáng mảnh ở mép phải",
+    "severity": "Low",
+    "actual": "- Chip \"Chart decides\" đang selected (nền gold gradient) hiện một đường sáng mảnh dọc mép phải, không có ở mép trái.",
+    "expected": "- Cần đối chiếu Figma: viền chip selected cần đồng đều cả 4 cạnh.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/11-11-small-p1.png, soulmate-sketch/06102026/screens/11-11-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 11",
+    "title": "[UI][Intro 11] Emoji ✨ trên chip \"Chart decides\" gần như không thấy trên nền gold",
+    "severity": "Low",
+    "actual": "- Khi chip \"Chart decides\" ở trạng thái selected, emoji ✨ màu vàng nằm trên nền gold nên rất khó nhìn thấy.",
+    "expected": "- Cần đối chiếu Figma: icon trên chip selected cần đủ độ tương phản.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/11-11-small-p1.png, soulmate-sketch/06102026/screens/11-11-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 12",
+    "title": "[UI/UX][Intro 12] Màn multi-select dùng indicator dạng radio tròn",
+    "severity": "Low",
+    "actual": "- Màn \"What must they have?\" cho chọn tối đa 3 nhưng mỗi option có indicator hình tròn giống radio button (single-select).",
+    "expected": "- Cần đối chiếu Figma: brief ghi \"Multi-select, 1-3 picks\" và \"selected ones fill solid with a small check\"; indicator nên thể hiện được là chọn nhiều.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/12-12-small.png, soulmate-sketch/06102026/screens/12-12-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 17",
+    "title": "[UI][Intro 17] Outline bàn tay nét đứt bị hở giữa các ngón",
+    "severity": "Low",
+    "actual": "- Trong khung camera (id: 17), outline bàn tay dạng nét đứt không liền: cạnh trong của các ngón dừng giữa chừng, không nối vào lòng bàn tay, nét ngón trỏ và ngón giữa chồng lên nhau.",
+    "expected": "- Cần đối chiếu Figma: outline cần là một đường liền mạch quanh bàn tay (brief: \"palm-outline overlay\").",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/17-17-small.png, soulmate-sketch/06102026/screens/17-17-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Intro 20",
+    "title": "[UI][Intro 20] Headline sát mép trên màn, không đồng nhất với các màn khác",
+    "severity": "Low",
+    "actual": "- Ở màn \"test, your sketch is ready\" (id: 20), headline nằm sát mép trên viewport, không có hàng back/progress, trong khi các màn trước đều có header và khoảng cách phía trên headline.",
+    "expected": "- Cần đối chiếu Figma: khoảng cách phía trên headline cần đồng nhất với các màn khác trong funnel.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/20-20-small-p1.png, soulmate-sketch/06102026/screens/20-20-large.png"
+  },
+  {
+    "screen": "soulmate-sketch · Intro 21",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Paywall 1",
+    "title": "[UI/UX][Paywall 1] Không có sticky bottom CTA khi không còn plan block trên màn",
+    "severity": "High",
+    "actual": "- Khi cuộn qua các phần \"Inside your reading\", \"How it works\", FAQ (không có plan block trên màn), đáy màn không có thanh sticky CTA; chỉ còn mini CTA trên header.",
+    "expected": "- Theo brief (Visual màn 22): \"a sticky bottom CTA while no plan block is visible\".",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/22-22-small-p2.png, soulmate-sketch/06102026/screens/22-22-small-p3.png, soulmate-sketch/06102026/screens/22-22-large-p2.png"
+  },
+  {
+    "screen": "soulmate-sketch · Paywall 1",
+    "title": "[UI][Paywall 1] Nội dung cuộn hiện xuyên qua sticky header",
+    "severity": "Low",
+    "actual": "- Khi cuộn Paywall 1, text phía sau (vd. \"Log in with test@gmail.com...\", eyebrow \"QUESTIONS\") vẫn nhìn thấy mờ xuyên qua sticky header, chồng lên vùng logo \"Starlyn\".",
+    "expected": "- Cần đối chiếu Figma: sticky header cần che nội dung phía sau để không bị chồng chữ.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/22-22-small-p3.png, soulmate-sketch/06102026/screens/22-22-large-p3.png"
+  },
+  {
+    "screen": "soulmate-sketch · Paywall 1",
+    "title": "[UI][Paywall 1] Danh sách benefit không khớp copy trong brief",
+    "severity": "Low",
+    "actual": "- Mục \"Everything in your reading\" hiển thị 5 dòng: \"Your partner sign\", \"Your soulmate sketch\", \"Their traits and what draws you\", \"Where and how you may meet\", \"Your love guidance in the app\".",
+    "expected": "- Theo brief (Microcopy màn 22): benefit rows \"Your soulmate sketch in full HD\" / \"Their nature, and where you may meet\" / \"Daily love forecast in the app\".",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/22-22-small-p2.png, soulmate-sketch/06102026/screens/22-22-large-p2.png"
+  },
+  {
+    "screen": "soulmate-sketch · Paywall 1",
+    "title": "[UI][Paywall 1] Icon khóa không đồng nhất với các màn trước",
+    "severity": "Low",
+    "actual": "- Paywall 1 dùng emoji 🔒 màu (ở các dòng locked và \"Secure checkout\"), trong khi Intro 20 dùng icon khóa dạng line màu gold cho các dòng locked.",
+    "expected": "- Cần đối chiếu Figma: icon khóa cần cùng một style trong toàn funnel.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/22-22-small-p2.png, soulmate-sketch/06102026/screens/22-22-small-p4.png, soulmate-sketch/06102026/screens/20-20-small-p2.png"
+  },
+  {
+    "screen": "soulmate-sketch · Paywall 1",
+    "title": "[UI][Paywall 1] Lưới fact chip bị trống một ô",
+    "severity": "Low",
+    "actual": "- Khối fact chip ở hero có 3 chip (Sun, Name, Sketch) xếp lưới 2 cột nên ô bên phải hàng thứ 2 bị trống.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: soulmate-sketch/06102026/screens/22-22-small-p1.png, soulmate-sketch/06102026/screens/22-22-large-p1.png"
+  },
+  {
+    "screen": "soulmate-sketch · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "soulmate-sketch · Download App",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 1",
+    "title": "[UI][Intro 1] Ảnh hero không full-bleed, lộ dải nền ở mép trên",
+    "severity": "Low",
+    "actual": "- Ở màn Intro 1 (id: hook), ảnh hero không bắt đầu từ mép trên màn hình: phía trên ảnh lộ một dải nền navy mỏng (cả small và large).",
+    "expected": "- Spec: \"Full-bleed img/hook-tarot.jpg\" – ảnh cần phủ sát mép trên màn hình, không lộ dải nền.",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/01-hook-small.png, tarot/06102026/screens/01-hook-large.png"
+  },
+  {
+    "screen": "tarot · Intro 1",
+    "title": "[UI][Intro 1] Chip thứ 3 hiển thị \"You pull\" thay vì \"You pull the cards\"",
+    "severity": "Low",
+    "actual": "- Hàng chip dưới body hiển thị: \"2-min · Your question · You pull\" trên cả small và large.",
+    "expected": "- Theo spec: Chips \"2-min · Your question · You pull the cards\".",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/01-hook-small.png, tarot/06102026/screens/01-hook-large.png"
+  },
+  {
+    "screen": "tarot · Intro 1",
+    "title": "[UI][Responsive][Intro 1] Viewport large: khoảng trống lớn giữa nội dung và CTA ghim đáy",
+    "severity": "Low",
+    "actual": "- Trên viewport large (430×932), nội dung dồn lên nửa trên, CTA ghim sát đáy, để lại vùng trống rất lớn ở giữa. Lặp lại ở Intro 17 (teaser), Upsale 1 (report_upsell), Download App (get_app).",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm (cân nhắc đưa CTA lên gần nội dung hoặc giãn layout trên màn cao).",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/01-hook-large.png, tarot/06102026/screens/17-teaser-large.png, tarot/06102026/screens/19-report_upsell-large.png, tarot/06102026/screens/20-get_app-large.png"
+  },
+  {
+    "screen": "tarot · Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 6",
+    "title": "[UI][Responsive][Intro 6] Ảnh card-back bị cắt mép trên trên màn small",
+    "severity": "Medium",
+    "actual": "- Trên viewport small (375×667), ảnh card-back ngay dưới header bị cắt phẳng ở mép trên (mất 2 góc bo phía trên của lá bài). Trên large lá bài hiển thị đầy đủ.",
+    "expected": "- Lá bài hiển thị đầy đủ, không bị cắt, giống viewport large.",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/06-bridge-small.png, tarot/06102026/screens/06-bridge-large.png"
+  },
+  {
+    "screen": "tarot · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 12",
+    "title": "[UI/UX][Intro 12] Màn Shuffle và Pull không có header (nút Back + logo Starlyn)",
+    "severity": "Low",
+    "actual": "- Intro 12 (id: shuffle_cut) và Intro 13 (id: pull) không hiển thị header (nút Back, logo \"✦ Starlyn\") trong khi các màn Intro khác đều có; user không có nút quay lại trên 2 màn này.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm có giữ header/nút Back cho màn ritual hay không.",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/12-shuffle_cut-small.png, tarot/06102026/screens/13-pull-small.png"
+  },
+  {
+    "screen": "tarot · Intro 13",
+    "title": "[UI][Responsive][Intro 13] Quạt 22 lá bài sát và bị cắt ở mép trái/phải trên màn small",
+    "severity": "Medium",
+    "actual": "- Trên viewport small, lá ngoài cùng bên trái của quạt bài bị cắt tại mép màn hình và lá ngoài cùng bên phải sát mép, không còn lề; trên large quạt nằm gọn trong màn.",
+    "expected": "- Quạt bài nằm gọn trong màn hình có lề hai bên như trên viewport large – cần Designer confirm.",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/13-pull-small.png, tarot/06102026/screens/13-pull-large.png"
+  },
+  {
+    "screen": "tarot · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 15",
+    "title": "[UI][Intro 15] Nội dung push mock khác copy trong spec",
+    "severity": "Low",
+    "actual": "- Lock-screen mock hiển thị push: \"Today's card: The Star. Hope returns, quietly.\"",
+    "expected": "- Theo spec: push \"Today's card: The Star. Rest and trust.\"",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/15-daily_card-small.png, tarot/06102026/screens/15-daily_card-large.png"
+  },
+  {
+    "screen": "tarot · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Paywall 1",
+    "title": "[UI/UX][Paywall 1] Eyebrow \"YOUR READING IS READY\" lặp nguyên văn headline ngay bên dưới",
+    "severity": "Low",
+    "actual": "- Hero hiển thị eyebrow \"YOUR READING IS READY\" và ngay dưới là headline \"Your reading is ready\" – cùng một câu lặp 2 lần liền nhau.",
+    "expected": "- Spec chưa định nghĩa eyebrow cho màn này – cần PM/Designer confirm (đổi eyebrow hoặc dùng Headline B \"Read what your cards mean\").",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/18-paywall-small-p1.png, tarot/06102026/screens/18-paywall-large-p1.png"
+  },
+  {
+    "screen": "tarot · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "tarot · Download App",
+    "title": "[UI][Download App] Badge App Store / Google Play dùng icon generic, không phải logo chính thức",
+    "severity": "Medium",
+    "actual": "- Ở màn Download App, badge \"Download on the App Store\" hiển thị icon dạng outline giống chiếc răng thay vì logo Apple; badge \"Get it on Google Play\" chỉ là tam giác outline thay vì logo Google Play.",
+    "expected": "- Spec yêu cầu \"App Store and Google Play badges\" – hiển thị badge chính thức theo brand guideline của Apple/Google; cần Designer confirm asset.",
+    "attachment": "Screenshot/Video: tarot/06102026/screens/20-get_app-small.png, tarot/06102026/screens/20-get_app-large.png"
+  },
+  {
+    "screen": "witch-power · Intro 1",
+    "title": "[UI][Intro 1] Ảnh hero không full-bleed, dải nền ở mép trên cắt mất đỉnh trăng",
+    "severity": "Low",
+    "actual": "- Ở màn Intro 1 (id: hook), ảnh hero không bắt đầu từ mép trên màn hình: phía trên ảnh lộ một dải nền navy mỏng (cả small và large), làm phần đỉnh hình trăng khuyết bị cắt ngang.",
+    "expected": "- Ảnh hero (img/hook-moon.jpg) cần phủ sát mép trên màn hình, hình trăng không bị cắt.",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/01-hook-small.png, witch-power/06102026/screens/01-hook-large.png"
+  },
+  {
+    "screen": "witch-power · Intro 1",
+    "title": "[UI][Intro 1] Ảnh minh họa trăng/chart wheel bị răng cưa và lộ khung chữ nhật của ảnh",
+    "severity": "Medium",
+    "actual": "- Ảnh trăng khuyết + chart wheel hiển thị viền răng cưa/vỡ nét và có mép chữ nhật lộ rõ, không hòa vào nền: Intro 1 (hook), Intro 18 (loader – hộp vuông sáng quanh hình trăng), Intro 19 (big_three – mép trên ảnh cắt ngang nền), Paywall 1 (hero).",
+    "expected": "- Ảnh hiển thị sắc nét, nền ảnh hòa vào nền trang, không lộ mép/khung – Cần đối chiếu Figma/asset final với Designer.",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/01-hook-large.png, witch-power/06102026/screens/18-loader-small.png, witch-power/06102026/screens/19-big_three-small-p1.png, witch-power/06102026/screens/22-paywall-small-p1.png"
+  },
+  {
+    "screen": "witch-power · Intro 1",
+    "title": "[UI][Responsive][Intro 1] Viewport large: khoảng trống lớn giữa nội dung và CTA ghim đáy",
+    "severity": "Low",
+    "actual": "- Trên viewport large (430×932), nội dung dồn lên nửa trên, CTA ghim sát đáy, để lại vùng trống rất lớn ở giữa. Lặp lại ở Intro 20 (email), Intro 21 (power_teaser), Upsale 1 (report_upsell), Download App (get_app).",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm (cân nhắc đưa CTA lên gần nội dung hoặc giãn layout trên màn cao).",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/01-hook-large.png, witch-power/06102026/screens/20-email-large.png, witch-power/06102026/screens/21-power_teaser-large.png, witch-power/06102026/screens/23-report_upsell-large.png, witch-power/06102026/screens/24-get_app-large.png"
+  },
+  {
+    "screen": "witch-power · Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 19",
+    "title": "[UI][Intro 19] Dòng mô tả Sun viết thường chữ đầu, không đồng nhất với Moon/Rising",
+    "severity": "Low",
+    "actual": "- Card \"Sun in Taurus\" hiển thị mô tả \"your steady root: how you shine.\" (chữ \"y\" viết thường), trong khi Moon và Rising viết hoa chữ đầu (\"How you feel, heal and recharge.\", \"The first thing people sense in you.\").",
+    "expected": "- Mô tả cả 3 card viết hoa chữ đầu đồng nhất (spec mẫu: \"Sun in {{sun}}: your core fire\" – cần PM confirm câu chuẩn).",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/19-big_three-small-p1.png, witch-power/06102026/screens/19-big_three-large.png"
+  },
+  {
+    "screen": "witch-power · Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Intro 21",
+    "title": "[UI][Intro 21] Disc glyph power bị lệch trái và quầng glow bị cắt phẳng ở mép trên",
+    "severity": "Medium",
+    "actual": "- Disc chứa glyph (👁️) nằm sát lề trái trong khi headline, mô tả, chips và list đều căn giữa; quầng glow của disc bị cắt thành cạnh thẳng tại mép dưới header (small và large).",
+    "expected": "- Spec: \"One large glyph for the power type on a glowing disc\" – disc cần căn giữa cùng các thành phần khác, glow không bị cắt; cần Designer confirm.",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/21-power_teaser-small-p1.png, witch-power/06102026/screens/21-power_teaser-large.png"
+  },
+  {
+    "screen": "witch-power · Paywall 1",
+    "title": "[UI][Paywall 1] Hero hiển thị trăng khuyết thay vì glyph power trên chart wheel",
+    "severity": "Low",
+    "actual": "- Hero paywall hiển thị ảnh trăng khuyết trên chart wheel (giống ảnh hook), không có glyph của power type (power = Seer).",
+    "expected": "- Spec mục 1: \"Hero: eyebrow 'Your reading is ready', the power glyph on the chart wheel, 4 fact chips\".",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/22-paywall-small-p1.png, witch-power/06102026/screens/22-paywall-large-p1.png"
+  },
+  {
+    "screen": "witch-power · Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity",
+    "severity": "High",
+    "actual": "- Footer chỉ có \"Terms of Use · Privacy Policy · Subscription terms\" và \"For entertainment purposes only.\", không có dòng entity (tên pháp nhân/địa chỉ).",
+    "expected": "- Spec mục 9: \"Footer: legal links, entity, entertainment disclaimer\".",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/22-paywall-small-p4.png, witch-power/06102026/screens/22-paywall-large-p4.png"
+  },
+  {
+    "screen": "witch-power · Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "witch-power · Download App",
+    "title": "[UI][Download App] Badge App Store / Google Play dùng icon generic, không phải logo chính thức",
+    "severity": "Medium",
+    "actual": "- Ở màn Download App, badge \"Download on the App Store\" hiển thị icon dạng outline giống chiếc răng thay vì logo Apple; badge \"Get it on Google Play\" chỉ là tam giác outline thay vì logo Google Play.",
+    "expected": "- Spec yêu cầu \"App Store and Google Play badges\" – hiển thị badge chính thức theo brand guideline của Apple/Google; cần Designer confirm asset.",
+    "attachment": "Screenshot/Video: witch-power/06102026/screens/24-get_app-small.png, witch-power/06102026/screens/24-get_app-large.png"
+  }
+]

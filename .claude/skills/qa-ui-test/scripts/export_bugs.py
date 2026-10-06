@@ -7,6 +7,7 @@ Usage:
 bugs.json: list các object, giữ đúng thứ tự màn trong flow:
     [{"screen": "Intro 1",
       "title": "[UI][Intro 1] Title bị lệch lên trên so với Design",
+      "severity": "Medium",
       "actual": "- ...", "expected": "- ...",
       "attachment": "Screenshot/Video: "}]
 Màn không có lỗi: {"screen": "Intro 2", "no_bug": true}
@@ -24,6 +25,9 @@ THIN = Side(style="thin", color="BFBFBF")
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 WRAP = Alignment(wrap_text=True, vertical="top")
 CENTER = Alignment(horizontal="center", vertical="center", wrap_text=True)
+SEVERITIES = ["Critical", "High", "Medium", "Low"]
+SEV_FILL = {k: PatternFill("solid", start_color=c) for k, c in
+            zip(SEVERITIES, ["F4B6B6", "F8CBAD", "FFE699", "E2EFDA"])}
 
 def bug_type(title):
     tags = re.findall(r"\[([^\]]+)\]", title or "")
@@ -48,8 +52,8 @@ def main():
 
     wb = Workbook()
     ws = wb.active; ws.title = "Bug List"
-    headers = ["#", "Screen", "Bug Type", "Title", "Actual Result", "Expected Result", "Attachment"]
-    widths = [5, 16, 13, 45, 50, 50, 26]
+    headers = ["#", "Screen", "Bug Type", "Severity", "Title", "Actual Result", "Expected Result", "Attachment"]
+    widths = [5, 16, 13, 10, 45, 50, 50, 26]
     ws.append(headers); style_header(ws, 1, len(headers))
     for i, w in enumerate(widths, 1):
         ws.column_dimensions[get_column_letter(i)].width = w
@@ -60,16 +64,18 @@ def main():
         if sc and sc not in screens:
             screens.append(sc)
         if it.get("no_bug"):
-            vals = ["", sc, "", "Không phát hiện lỗi", "", "", ""]
+            vals = ["", sc, "", "", "Không phát hiện lỗi", "", "", ""]
         else:
             n += 1
-            vals = [n, sc, bug_type(it.get("title", "")), it.get("title", ""),
+            vals = [n, sc, bug_type(it.get("title", "")), it.get("severity", ""), it.get("title", ""),
                     it.get("actual", ""), it.get("expected", ""),
                     it.get("attachment", "Screenshot/Video: ")]
         for c, v in enumerate(vals, 1):
             cell = ws.cell(row=r, column=c, value=v)
             cell.font, cell.border = BODY_FONT, BORDER
-            cell.alignment = CENTER if c in (1, 2, 3) else WRAP
+            cell.alignment = CENTER if c in (1, 2, 3, 4) else WRAP
+            if c == 4 and v in SEV_FILL:
+                cell.fill = SEV_FILL[v]
             if it.get("no_bug"):
                 cell.font = Font(name="Arial", size=10, italic=True, color="808080")
         r += 1
@@ -114,6 +120,18 @@ def main():
         cell = sm.cell(row=tr, column=c)
         cell.font, cell.border, cell.fill = Font(name="Arial", bold=True), BORDER, SCREEN_FILL
         cell.alignment = CENTER if c > 1 else Alignment(vertical="center")
+    # Severity counts
+    sr = tr + 2
+    for c, v in enumerate(["Severity", "Số bug"], 1):
+        sm.cell(row=sr, column=c, value=v)
+    style_header(sm, sr, 2)
+    rng_v = f"'Bug List'!$D$2:$D${last}"
+    for i, sv in enumerate(SEVERITIES):
+        rr = sr + 1 + i
+        sm.cell(row=rr, column=1, value=sv).fill = SEV_FILL[sv]
+        sm.cell(row=rr, column=2, value=f"=COUNTIF({rng_v},A{rr})")
+        for c in (1, 2):
+            cell = sm.cell(row=rr, column=c); cell.border, cell.font = BORDER, BODY_FONT
     sm.column_dimensions["A"].width = 20
     for c in range(2, len(head) + 1):
         sm.column_dimensions[get_column_letter(c)].width = 13
