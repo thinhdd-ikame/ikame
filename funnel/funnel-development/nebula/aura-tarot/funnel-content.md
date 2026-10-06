@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: 6 feeling and energy taps, the color you are drawn to, your focus area, birth date (18+), an optional first name, and 3 tarot cards you pick yourself
 output: your aura color (Red / Amber / Green / Blue / Indigo / Violet) with a free reading, a 3-card tarot spread you pulled, and a full reading with a 30-day aura plan
-screens: 21
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 22
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own Paddle checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content - Starlyn: Aura and Tarot
 
-A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "what color is my aura?" niche. The user gives **six feeling taps, the color they are drawn to, a focus area and their birth date**. They get **an aura color and a free reading**, then **pull three tarot cards by touch** as a second aha, and pay for the full reading. Archetype: **personalization-quiz**. The quiz answers and the color pull decide the aura; the birth date adds the Sun sign and breaks ties. 21 screens.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "what color is my aura?" niche. The user gives **six feeling taps, the color they are drawn to, a focus area and their birth date**. They get **an aura color and a free reading**, then **pull three tarot cards by touch** as a second aha, and pay for the full reading. Archetype: **personalization-quiz**. The quiz answers and the color pull decide the aura; the birth date adds the Sun sign and breaks ties. 22 screens.
 
 **Modeled on:**
 - Nebula aura ads (3,162 ads, 53 screens in the library; research `nebula-chai.md` section 4): a short feeling quiz, a free reveal of an aura color ("Indigo") plus a breakdown, then a paywall with an upsell report bundle. The screen-level flow comes from the research summary; the live funnel was not re-crawled, so exact copy and order are **unverified**.
@@ -242,7 +242,7 @@ A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "
 **Headline B:** Save your reading
 **Body A:** Get your reading and log in to the app.
 **Body B:** One email, no spam.
-**Field:** Email (light field), optional marketing checkbox (unticked by default).
+**Field:** Email (light field), validated. Mandatory: no skip, no guest, no Google or Apple sign-in; the email activates the subscription and is the app login. Emits `lead` (method `email`). Optional marketing checkbox (unticked by default).
 **Error state:** "Enter a valid email address"
 **Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy."
 **CTA:** Continue
@@ -282,20 +282,32 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 **Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ on outcomes: "Aura colors here are a reflective reading from your answers. Not a scan, not a measurement."
 **CTA:** Get my reading
 
+### 21. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your chakra report
+**Headline B:** Balance all seven chakras
+**Body A:** Seven chakras read from your aura, one practice each.
+**Body B:** See which chakra needs you most right now.
+**Plans:** One add-on, paid once: "Chakra Balance Report" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens its own Paddle one-time checkout: a hidden plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, never listed on the paywall), opened with the engine's normal `checkout('addon')`; in FunnelFox that is the native screen `checkout_addon (one-time)`. Paying marks the add-on bought and lands on the get-the-app screen with the report line; closing the checkout without paying lands there without it (`CONFIG.declineFlow = {addon:'get_app'}`).
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/reveal-aura.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (All seven chakras, read from your aura · One short practice for each · Saved with your aura reading in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "Paid once through secure checkout. No subscription." Skip link: "No thanks, take me to the app". A failed or closed charge lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`, `checkout_decline` with plan `addon` when the checkout is closed.
+**CTA:** Add for $19.99
+
 ## H. Payoff
 
-### 21. Get the app
+### 22. Get the app
 **Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
 **Headline A:** You're in, {{name}}
 **Headline B:** Your reading is ready
 **Body A:** Your full reading is waiting in the Starlyn app.
 **Body B:** Download Starlyn: Daily Astrology and log in to open it.
-**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Chakra Balance Report added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
 **CTA:** Open the app
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 21 offers one add-on, "Chakra Balance Report", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Reference unverified.** The Nebula aura funnel (3,162 ads, 53 screens) is known from the research summary only; screen order and exact copy are inferred, not captured. Treat the competitor beats as unverified.
 - **Scoring (demo, deterministic).** Six aura colors (Red, Amber, Green, Blue, Indigo, Violet). Each option in #2, #3, #5, #7 adds 2 to one color and 1 to another; #4 and #6 add to the intuitive and deep colors by 3/2/1/0; the color pull #9 adds 3 to the picked color. Highest wins; an exact tie goes to the picked color, then the Sun element. "Other" on #7 adds nothing, so it never skews.

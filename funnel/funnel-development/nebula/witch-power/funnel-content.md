@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: your gender, 8 agree/disagree statements, whether witches run in your family, one image test, birth date (18+), birth time and birth city
 output: your witch power type (Seer / Healer / Dreamwalker / Moon Weaver / Earth Keeper), your free Sun, Moon and Rising signs, and a full reading with a 30-day ritual and a moon-timed practice
-screens: 23
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 24
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own Paddle one-time checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -22,7 +22,7 @@ motion: >
 
 # Funnel Content - Starlyn: Witch Power
 
-A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "what is my witch power?" niche. The user gives **a short intuition quiz, a family-lineage answer, one image test and their birth data**. They get **a witch power type and their real Big Three (Sun, Moon, Rising) for free**, and pay for the full reading. Archetype: **personalization-quiz**; the birth data is real and powers the free reveal, the quiz answers decide the power type. 23 screens.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "what is my witch power?" niche. The user gives **a short intuition quiz, a family-lineage answer, one image test and their birth data**. They get **a witch power type and their real Big Three (Sun, Moon, Rising) for free**, and pay for the full reading. Archetype: **personalization-quiz**; the birth data is real and powers the free reveal, the quiz answers decide the power type. 24 screens.
 
 **This brief replaces the older, never-demoed `nebula/funnel-content.md` (generic 25-screen horoscope brief).** That file stays in the repo for history; do not build from it.
 
@@ -272,7 +272,7 @@ A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "
 **Headline B:** Save your reading
 **Body A:** Get your reading and log in to the app.
 **Body B:** One email, no spam.
-**Field:** Email (light field), optional marketing checkbox (unticked by default).
+**Field:** Email only (light field), optional marketing checkbox (unticked by default). No Google or Apple sign-in, no skip or guest path: the email is required, validated, and activates the subscription in the app. Emits `lead` (method `email`); the FunnelFox build passes S.email to the checkout as the customer email.
 **Error state:** "Enter a valid email address"
 **Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy."
 **CTA:** Continue
@@ -312,20 +312,32 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 **Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." FAQ on outcomes: "It is a reflective practice built on your chart and answers. It does not predict or change events."
 **CTA:** Get my reading
 
+### 23. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your personal spellbook
+**Headline B:** 13 rituals for your power
+**Body A:** 13 moon-timed rituals made for your power type.
+**Body B:** One ritual for each new moon of the year.
+**Plans:** One add-on, paid once: "Personal Spellbook" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens a real Paddle one-time checkout for the add-on, the same mechanism as the plan: a hidden one-time plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, so it never shows on the paywall) opened with `checkout('addon')`. In FunnelFox that is its own native screen `checkout_addon (one-time)`; paying runs `completePurchase('addon')` and lands on the get-the-app screen with the added line. Closing it without paying goes to the get-the-app screen without the add-on (`CONFIG.declineFlow = {addon:'get_app'}`, the checkout's × in FunnelFox). The demo shows a stand-in sheet (Pay / Close without paying) when no checkout URL is set.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/hook-moon.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (13 rituals for your power type · Timed to the moon, step by step · Saved with your reading in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". A closed or failed add-on checkout lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `upsell_decline`, `purchase_complete` with plan `addon`, `checkout_decline` with plan `addon` when the checkout is closed.
+**CTA:** Add for $19.99
+
 ## H. Payoff
 
-### 23. Get the app
+### 24. Get the app
 **Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
 **Headline A:** You're in, {{name}}
 **Headline B:** Your reading is ready
 **Body A:** Your full reading is waiting in the Starlyn app.
 **Body B:** Download Starlyn: Daily Astrology and log in to open it.
-**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Personal Spellbook added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
 **CTA:** Open the app
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 23 offers one add-on, "Personal Spellbook", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Replaces `nebula/funnel-content.md`.** The old 25-screen generic horoscope brief (never demoed) is superseded by this one for the witch/birth-chart angle. Do not build a demo from the old file.
 - **Scoring (demo, deterministic).** Five axes, each scaled to its own maximum: Seer (#3, #5, #6, image eye), Dreamwalker (#4, #6, image butterfly), Moon Weaver (#7, image moon), Earth Keeper (#8), Healer (#10, #11). Options score 3/2/1/0. Highest wins; an exact tie goes to the Sun element (water Healer, earth Earth Keeper, air Seer, fire Moon Weaver). "Other" on #14 adds nothing, so Other never blocks or skews.

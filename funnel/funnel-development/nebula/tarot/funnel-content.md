@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: a topic, where they stand, one question in their own words, how they feel about it, birth date (18+), an optional first name, a spread (1, 3 or 5 cards), and the cards they shuffle, cut and pull themselves
 output: their birth card (free, computed from the birth date), the cards they pulled with one line each (free), and a full reading of their question card by card plus 30 days of daily cards
-screens: 19
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 20
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own Paddle checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -22,7 +22,7 @@ motion: >
 
 # Funnel Content - Starlyn: Tarot Reading
 
-A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for people who want **a tarot reading about one real question**. The user picks a topic, says where they stand, writes the question in their own words, says how they feel about it, gives a birth date, picks a spread, then **shuffles, cuts and pulls the cards with their own hand**. They get their **birth card** and **the cards they pulled, one line each, for free**, and pay for the full reading of their question plus 30 days of daily cards. Archetype: **personalization-quiz**, the interactive-ritual variant. 19 screens.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for people who want **a tarot reading about one real question**. The user picks a topic, says where they stand, writes the question in their own words, says how they feel about it, gives a birth date, picks a spread, then **shuffles, cuts and pulls the cards with their own hand**. They get their **birth card** and **the cards they pulled, one line each, for free**, and pay for the full reading of their question plus 30 days of daily cards. Archetype: **personalization-quiz**, the interactive-ritual variant. 20 screens.
 
 **Modeled on (unverified):** the AdSpyLab funnels library holds no pure tarot funnel today (search 2026-10-05: tarot shows up only inside Nordastro, Hint and Spirio, and in Nebula's psychic-chat landing). The flow is derived from category reasoning, the tarot reading apps' own in-app flow (topic, question, spread, draw) and our `nebula/aura-tarot` funnel, which already proved the pull-by-touch mechanic.
 
@@ -222,7 +222,7 @@ A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for peopl
 **Headline B:** Save your reading
 **Body A:** Your reading and app login go here.
 **Body B:** So your cards are never lost.
-**Field:** Email, validated. Optional marketing opt-in checkbox.
+**Field:** Email, validated. Mandatory: no skip, no guest, no Google or Apple sign-in; the email activates the subscription and is the app login. Emits `lead` (method `email`). Optional marketing opt-in checkbox.
 **Visual:** Mini spread thumbnail above the field.
 **Error state:** "Enter a valid email address"
 **Microcopy:** "Nothing is charged on this step."
@@ -252,22 +252,34 @@ A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for peopl
 **Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line under every CTA. FAQ: "Are the cards really random? Yes, shuffled fresh and picked by your taps." · "Can tarot predict the future? No. It is a prompt for reflection." · "How do I cancel?" · "Will I be charged again?" · "Is my question private?"
 **CTA:** Get my reading
 
+### 19. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your 2027 tarot year
+**Headline B:** See your year ahead
+**Body A:** Twelve cards, one for each month of 2027.
+**Body B:** One card for every month, read for you.
+**Plans:** One add-on, paid once: "Your 2027 Tarot Year" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens its own Paddle one-time checkout: a hidden plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, never listed on the paywall), opened with the engine's normal `checkout('addon')`; in FunnelFox that is the native screen `checkout_addon (one-time)`. Paying marks the add-on bought and lands on the get-the-app screen with the report line; closing the checkout without paying lands there without it (`CONFIG.declineFlow = {addon:'get_app'}`).
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/card-back.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (A card for each month of 2027 · What each month asks of you · Saved with your reading in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "Paid once through secure checkout. No subscription." Skip link: "No thanks, take me to the app". A failed or closed charge lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`, `checkout_decline` with plan `addon` when the checkout is closed.
+**CTA:** Add for $19.99
+
 ## G. Payoff
 
-### 19. Get the app
+### 20. Get the app
 **Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
 **Headline A:** You're in, {{name}}
 **Headline B:** Your reading is ready
 **Body A:** Your full reading is waiting in the Starlyn app.
 **Body B:** Download Starlyn: Daily Astrology and log in to open it.
-**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Your 2027 Tarot Year added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
 **CTA:** Open the app
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 19 offers one add-on, "Your 2027 Tarot Year", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Skipped on purpose:** feeling/aura quiz (aura-tarot owns it), social-proof numbers (tokens until real), gamified wheel (the ritual is the reveal), countdown and struck prices, psychic persona.
-- **Monetization:** one subscription layer measured at screen 18 (paywall CVR); screen 19 marks completion. Nebula's live psychic chat is the in-app second layer and is not sold in this funnel.
+- **Monetization:** one subscription layer measured at screen 18 (paywall CVR), plus the add-on report at screen 19 (its own take rate); screen 20 marks completion. Nebula's live psychic chat is the in-app second layer and is not sold in this funnel.
 - **A/B first:** hook A vs B; spread default 3 vs 1 (1 card = faster funnel, 3 = more value to unlock); question typed (4) vs topic-only.
 - **Shared art:** the 22 Major Arcana faces and the card back are the same files as `nebula/aura-tarot`; regenerate them once for both.

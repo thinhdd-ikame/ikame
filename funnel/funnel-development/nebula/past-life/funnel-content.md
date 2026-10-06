@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: era that feels like home, deja vu and recurring-dream signals, a familiar place, 3 agree/disagree statements, early talent, calling, first name, birth date (18+)
 output: a past-life story for reflection - an era and a role (free), a gift you carry (free), then where you lived, your life story, a lesson you carry and who you may have known
-screens: 19
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 20
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own Paddle one-time checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content - Starlyn: Past Life
 
-A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "who were you before?" niche. The user gives **the era that feels like home, a handful of deja-vu and dream signals, one talent, one calling and their birth date**. They get **a past-life story for reflection**: an era and a role first, then a gift they carry, then the full story. Archetype: **personalization-quiz**; every answer is used in the result, there is no photo or camera step. 19 screens, one flow with three "Other" escape hatches.
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "who were you before?" niche. The user gives **the era that feels like home, a handful of deja-vu and dream signals, one talent, one calling and their birth date**. They get **a past-life story for reflection**: an era and a role first, then a gift they carry, then the full story. Archetype: **personalization-quiz**; every answer is used in the result, there is no photo or camera step. 20 screens, one flow with three "Other" escape hatches.
 
 **Modeled on:**
 - Nebula past-life funnel (appnebula.co/past-life/prelanding, 3,918 ads in 7 months, 49 screens, crawled via live funnelConfig 2026-10-01) and Astroline past-life (quiz-pp?mode=pastlife, 876 ads, 26 screens, capture stops at palm; paywall not captured), via the AdSpyLab research in `nebula-chai.md` section 3.
@@ -235,7 +235,7 @@ A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "
 **Headline B:** Save your reading
 **Body A:** Get your story and log in to the app.
 **Body B:** One email, no spam.
-**Field:** Email (light field), optional marketing checkbox (unticked by default).
+**Field:** Email only (light field), optional marketing checkbox (unticked by default). No Google or Apple sign-in, no skip or guest path: the email is required, validated, and activates the subscription in the app. Emits `lead` (method `email`); the FunnelFox build passes S.email to the checkout as the customer email.
 **Error state:** "Enter a valid email address"
 **Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy."
 **CTA:** Continue
@@ -265,20 +265,32 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 **Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your story is ready". FAQ on reality: "Past lives are a belief with no scientific proof. Your story is written from your answers, for reflection and fun."
 **CTA:** Get my reading
 
+### 19. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your karmic lessons
+**Headline B:** The pattern you came to break
+**Body A:** Your North Node and the pattern you came to break.
+**Body B:** Read from your birth date, in plain words.
+**Plans:** One add-on, paid once: "Karmic Lessons Report" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens a real Paddle one-time checkout for the add-on, the same mechanism as the plan: a hidden one-time plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, so it never shows on the paywall) opened with `checkout('addon')`. In FunnelFox that is its own native screen `checkout_addon (one-time)`; paying runs `completePurchase('addon')` and lands on the get-the-app screen with the added line. Closing it without paying goes to the get-the-app screen without the add-on (`CONFIG.declineFlow = {addon:'get_app'}`, the checkout's × in FunnelFox). The demo shows a stand-in sheet (Pay / Close without paying) when no checkout URL is set.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/result-life.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Your North and South Node explained · The pattern you keep repeating · Saved with your past-life story in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". A closed or failed add-on checkout lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `upsell_decline`, `purchase_complete` with plan `addon`, `checkout_decline` with plan `addon` when the checkout is closed.
+**CTA:** Add for $19.99
+
 ## F. Payoff
 
-### 19. Get the app
+### 20. Get the app
 **Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
 **Headline A:** You're in, {{name}}
 **Headline B:** Your reading is ready
 **Body A:** Your full reading is waiting in the Starlyn app.
 **Body B:** Download Starlyn: Daily Astrology and log in to open it.
-**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Karmic Lessons Report added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
 **CTA:** Open the app
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 19 offers one add-on, "Karmic Lessons Report", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Drop-off risk:** #13 (name) and #14 (birth date, the first personal-data ask), plus quiz fatigue around #7-#9. Mitigations: #3 honest frame first, #10 as a break, name has a skip. Measure completion per screen and the skip rate for #13.
 - **Branches:** none by design. "Other" on #5, #6, #11, #12 changes only the wording of the story (a generic place, gift or role) and never blocks. All 19 screens are shown to every user.

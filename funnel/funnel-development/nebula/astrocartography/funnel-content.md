@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: feeling about current city, life goal, name, birth date, birth time (optional, strongly encouraged), birth place, current city, optional place that felt right, move intent, setting, regions
 output: personal astrocartography map - planetary lines worldwide, current-city read, top 3 power places for the chosen goal
-screens: 22
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own one-time Paddle checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -32,7 +32,7 @@ A web2app funnel (Meta ad → web quiz → web paywall → Starlyn app) for the 
 - Dropped the fake accuracy meter, colors, elements, relationship status and the palm photo, because the map uses none of them.
 - No promo code, countdown or ticker. Renewal price on every card.
 
-The visual system is the base `nebula/` house look, with the globe as the single 3D hero object. 22 screens.
+The visual system is the base `nebula/` house look, with the globe as the single 3D hero object. 23 screens.
 
 ---
 
@@ -282,7 +282,7 @@ The visual system is the base `nebula/` house look, with the globe as the single
 **Headline A:** Where should we send it?
 **Headline B:** Save your map, {{name}}
 **Body A:** Your map and app login go here.
-**Field:** Email input; "Continue with Google" / "Continue with Apple"; marketing opt-in checkbox, **unchecked by default**
+**Field:** Email input only: required and validated, no Google/Apple sign-in, no skip or guest path (the email activates the subscription and is the app login). Fires `lead` with the email. Marketing opt-in checkbox, **unchecked by default**
 **Visual:** Plain white input, small blurred map card above.
 **Error states:** "Enter a valid email address" / "This email already has a map — log in instead?"
 **Microcopy:** Legal line: "By continuing, you agree to our Terms & Privacy Policy." Reassurance: "Nothing is charged on this step."
@@ -300,31 +300,43 @@ The visual system is the base `nebula/` house look, with the globe as the single
 **Body B:** Your top places and what they bring.
 **Plans:** (prices are tokens for the ikame pricing team; do not invent numbers)
 - **1 week, then monthly**: the only plan, pre-selected. `$13.67` for the first week, then `$49.99` every month. Card line: "`$13.67` first week, then `$49.99`/month, renews monthly". No other tiers, no badge, no struck price.
-**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their blurred lines map and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer, and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
+**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their blurred lines map and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer (Terms · Privacy · Subscription terms · Support: support@starlyn.co), and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
 **Microcopy:** Benefit rows: "Top 3 power places for {{goal}}" / "Every line, explained for you" / "Travel timing and line alerts in the app". CTA line: "`$13.67` today for your first week, then `$49.99` every month until you cancel." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment only. Not relocation, financial or life advice."
 **CTA:** Unlock my map
 
 ---
 
+### 22. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your 2027 travel dates
+**Headline B:** When to visit your places
+**Body A:** The best months to visit your top 3 places.
+**Body B:** Your power places, timed month by month for 2027.
+**Plans:** One add-on, paid once: "Travel Dates 2027" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens its own Paddle checkout at a one-time price: a hidden plan `addon` in `CONFIG.plans` (never listed on the paywall), FunnelFox screen `checkout_addon (one-time)`.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/sky-stars.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Best months for each of your 3 places · Dates to avoid, and why · Saved with your map in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". Paying lands on the get-the-app screen with the report line; closing the add-on checkout without paying lands there without it (`CONFIG.declineFlow = {addon: 'get_app'}`). Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`.
+**CTA:** Add for $19.99
+
 ## G. Payoff
 
-### 22. Get the app (after purchase)
+### 23. Get the app (after purchase)
 **Purpose:** Purchase confirmation and the web2app handoff. The full map, every line, the top 3 power places and travel timing live in the Starlyn app; there is no free web result and no offer screen.
 **Headline A:** You're in, {{name}}
 **Body A:** Your full reading is waiting in the Starlyn app.
-**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges.
-**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase()`.
+**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges. If they bought the add-on, a green line "Travel Dates 2027 added. It opens in the app." sits above the steps.
+**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase(plan)`: plan `weekly` goes to the add-on (#22), plan `addon` marks the report added and goes here.
 **CTA:** Open the app
 
 ---
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 22 offers one add-on, "Travel Dates 2027", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** hard paywall (no close ✕, no "continue free"), exactly one plan (`$13.67` first week, then `$49.99` every month), no sale of any kind (no last-chance offer, struck price, badge or promo code), and a confirmed purchase lands on a get-the-app screen. Under 18 shows a blocking notice with a "Change my birth date" way back. The optional one-time city report was removed with the other tiers.
 - **Inputs kept vs. cut.** Kept: goal (ranks lines), birth date, time and place (the lines), current city (the "wrong city" answer), felt-right place (the aha moment), move intent (map mode), setting and region (filter top 3). Cut from Hint and Astroline: element, favorite color, introvert/extrovert, relationship status, career status, concept of "home", "what's keeping you from leaving", and the palm photo. None of them changes the map.
 - **Fear beat removed on purpose.** Hint's "challenging planetary lines crossing places you've lived" at 100% loading is a scare-to-buy tactic. #11 and #18 stay neutral ("mixed lines, no place is bad"). Astroline's rising "forecast accuracy %" meter isn't used either: it's a fake metric, and the real progress hint is enough.
 - **Birth time matters most in this niche.** #7 says the ~1,000-miles-per-hour fact plainly and offers a time-of-day fallback, so skippers still get a useful (wider-band) map. Track the #7 skip rate: if it's much higher than in the base nebula, test Body B.
 - **Trust beats:** #9 after the birth data (no numbers until real data exists) and #19 (a personal proof point, conditional).
-- **One monetization layer:** the hard paywall (#21) with one plan. No offer, no add-on, no sale. Purchase → #22 get the app.
+- **One monetization layer:** the hard paywall (#21) with one plan. No offer, no sale; one optional one-time add-on after purchase. Purchase → #22 add-on → #23 get the app.
 - **Drop-off risk:** #7 birth time, #10 current city (location permission; the manual search is the default), #20 email, #21 paywall.
 - **A/B first:** (1) #1 Headline A ("wrong city") vs. B (softer). (2) #19 on vs. off, to measure the aha screen's lift on #21 CVR. (3) #11 placement: before vs. after #12-#15. (4) #21 Headline A vs. B.

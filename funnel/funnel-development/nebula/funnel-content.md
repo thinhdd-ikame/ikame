@@ -5,7 +5,7 @@ archetype: personalization-quiz
 subject: person
 input: birth date, birth time, birth place and a short personalization quiz
 output: personalized birth-chart reading
-screens: 24
+screens: 25
 monetization: subscription paywall (3-tier, annual pre-selected) + post-purchase report upsell + pay-per-minute astrologer chat
 creative_screens:
   hook-a: 1
@@ -284,9 +284,18 @@ AI-personalized astrology app funnel. Different shape from the photo/video gener
 **Visual:** 3 stacked plan cards, Annual pre-highlighted with a savings badge, Apple Pay button prominent below.
 **Microcopy:** Trust row under plans: "🔒 Secure payment · Cancel anytime · 7-day money-back"; fine print under CTA: "Subscription auto-renews unless canceled 24h before the period ends"
 **CTA:** Continue with Apple Pay / Continue
-**Fallback offer:** If declined, show a secondary paywall — 3-day trial at the Annual price, single "Try Free for 3 Days" CTA
+**Fallback offer:** #22 last-chance offer, shown once per session: closing or declining the paywall goes there first. A second close goes straight to the normal close path.
 
-### 22. One-time offer (post-purchase upsell)
+### 22. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall. Shown once per session, then never again. Same terms as Nebula's secondary paywall: a 3-day trial into the Annual plan.
+**Headline A:** Wait, keep your reading for less
+**Body A:** Your chart is built. Try the full reading for 3 days at a lower first price.
+**Plans:** One offer card: {{offer_name}} (3-day trial). `{{offer_price}}` today, with the regular `{{annual_price}}` struck (the real price of the Annual plan it undercuts), then `{{annual_price}}`/year. Optional `{{offer_badge}}`.
+**Visual:** Web page in the paywall's style: sticky bar with a close X, a centered eyebrow "One-time offer · shown once", then a single gold-bordered offer card with a chart-wheel thumbnail, the price row, 3 checks, the CTA, payment badges and the renewal line.
+**Microcopy:** Renewal line: "`{{offer_price}}` today for 3 days, then `{{annual_price}}`/year until you cancel." Timer only if `CONFIG.offer.expiresMin` is set. It is a real deadline: when it ends the offer is withdrawn. Decline link: "No thanks" → the paywall's normal close path (the original hard paywall has no free web path).
+**CTA:** Claim my offer
+
+### 23. One-time offer (post-purchase upsell)
 **Purpose:** Immediate upsell while purchase intent is still hot — discounted add-on report, urgency via countdown.
 **Headline A:** One more thing, {{name}}
 **Headline B:** Don't miss this offer
@@ -296,7 +305,7 @@ AI-personalized astrology app funnel. Different shape from the photo/video gener
 **Microcopy:** Timer label: "This offer expires when the timer hits 0"; skip link below CTA: "No thanks, take me to my reading"
 **CTA:** Get my reading
 
-### 23. Your reading (payoff)
+### 24. Your reading (payoff)
 **Purpose:** The actual value delivery — interactive birth chart the user can explore, reinforcing that the purchase was worth it.
 **Headline A:** {{name}}'s birth chart
 **Headline B:** Here's what the stars say
@@ -306,7 +315,7 @@ AI-personalized astrology app funnel. Different shape from the photo/video gener
 **Microcopy:** Sample tooltip: "☉ Sun in Leo — your core identity shines through confidence and warmth."; share prompt at bottom: "Share your chart" (icon row: Instagram, Messages, Copy Link)
 **CTA:** Continue
 
-### 24. Astrologer chat upsell
+### 25. Astrologer chat upsell
 **Purpose:** Secondary revenue stream — introduces the paid live-chat marketplace right after the user has just seen (and trusted) their AI reading.
 **Headline A:** Get a real astrologer's take
 **Headline B:** Talk to someone who gets it
@@ -323,7 +332,7 @@ AI-personalized astrology app funnel. Different shape from the photo/video gener
 
 - **No "upload photo" step at all** (unless a future version adds palm-reading — if so, insert it as its own screen between #19 and #20, don't retrofit it into the quiz).
 - **Quiz is ~9 screens deep** (#4–#15), far longer than the 2-question pattern used in photo/video funnels — this is intentional: birth-chart accuracy genuinely depends on real data, and each answer is also what makes the eventual reading feel "impossible to fake."
-- **Two monetization layers, not one**: screen #21 is the primary subscription paywall (hard-gated), but #24 opens a completely separate pay-per-minute revenue stream — size these as two different success metrics, not one paywall-conversion number.
+- **Two monetization layers, not one**: screen #21 is the primary subscription paywall (hard-gated), but #25 opens a completely separate pay-per-minute revenue stream — size these as two different success metrics, not one paywall-conversion number.
 - **No lucky wheel / gamified spin** — astrology's own "reveal" mechanic (the generated reading itself) already serves the role a lucky wheel plays in photo/video funnels, so adding a wheel on top would be redundant rather than additive.
 - **Copy variants (A/B)**: every screen above has a Headline A/B and Body A/B pair — treat A as the default/control when first shipping, and queue B as the first test once baseline conversion data exists per screen (start testing at the highest-drop-off screens first: #7–9 birth-data inputs and #21 paywall are the likeliest candidates based on the competitive research).
 - **Not modeled here: the "Soulmate Sketch" top-of-funnel lead-magnet.** Real Nebula also runs a separate acquisition funnel at `appnebula.co/soulmate-sketch` (~30-question quiz about self + desired partner traits → $1 charge → async "check back in 24-48h" delivery instead of an instant reveal). It's documented as a competitive reference in `references/archetypes/personalization-quiz.md` (Known variants), not built here, because the version Nebula actually runs enrolls users in an undisclosed recurring subscription — the exact mechanic named in a 2026 FTC lawsuit against Nebula/Obrio. Decision made 2026-09-23: reference the hook/async-delivery mechanics only if this gets built later, never the hidden-billing part.

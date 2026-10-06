@@ -47,6 +47,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .brand svg{color:var(--acc)}
 .scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none;overscroll-behavior:contain}
 .scr::-webkit-scrollbar{display:none}
+.scr>*{flex-shrink:0}   /* QA 2026-10-06: the scroller scrolls; its children never shrink (the Other input squashed at 360x640) */
 .scr.center{justify-content:center}
 .foot{flex:none;padding:10px 20px max(20px,calc(var(--sab) + 12px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
 .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
@@ -78,6 +79,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .opt.on .well{background:#ffffff40}
 .box{height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:10px;color:var(--t3);min-width:0}
 .box:focus-within{border-color:var(--acc)}
+.box.bad,.box.white.bad{border-color:var(--neg);box-shadow:0 0 0 1px var(--neg)}
 .box.white{background:#F7F4EC;border-color:#F7F4EC;color:var(--gold-lm)}
 .box.white input{color:#161A28}
 .box.white input::placeholder{color:#9C8A5E}
@@ -191,8 +193,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .thumbrow .th img{width:100%;height:100%;object-fit:cover}
 .thumbrow .th svg{position:absolute;inset:0;width:100%;height:100%}
 .stores{display:flex;gap:8px;justify-content:center}
-.store{display:flex;align-items:center;gap:7px;height:46px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
-.store b{display:block;font-size:13px}
+.store{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px 0 10px;border-radius:8px;background:#000;border:1px solid #A6A6A6;text-align:left;color:#fff;line-height:1.05}
+.store svg{width:22px;height:22px;fill:#fff;flex:none}
+.store small{display:block;font:500 9.5px/1.1 var(--sans);letter-spacing:.02em}
+.store b{display:block;font:600 16px/1.1 var(--sans);letter-spacing:-.01em}
 /* ===== web paywall: long-scroll landing page, not an app sheet ===== */
 .wp{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-behavior:smooth;background:var(--bg)}
 .wp::-webkit-scrollbar{display:none}
@@ -272,7 +276,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .oprice s{color:var(--t3);font-size:14px}.oprice b{font:600 30px var(--serif);color:var(--acc)}.oprice>span{color:var(--t2);font-size:13px}
 .otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
 .otimer b{color:var(--acc);font-variant-numeric:tabular-nums}
-.sticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(var(--sab) + 10px));background:linear-gradient(180deg,transparent,#161A27 28%);transform:translateY(110%);transition:transform .3s ease}
+.sticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:20px 16px max(14px,calc(var(--sab) + 10px));background:linear-gradient(180deg,#161A2700 0,#161A27 16px);transform:translateY(110%);transition:transform .3s ease}
 .sticky.show{transform:none}
 .sticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}
 .sticky .sum b{color:var(--t1)}
@@ -311,6 +315,26 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .tc .vchip{align-self:center}
 .oprice{flex-wrap:wrap}.oprice .tok{font-size:13px;white-space:normal;word-break:break-all}.oprice b{font-size:24px}
 .who2{display:flex;gap:10px;align-items:center;justify-content:center;font-size:12.5px;color:var(--t2)}
+
+/* QA 2026-10-06 fixes */
+.note a.inl{color:inherit;text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:14px 0;margin:-14px 0}
+.lart{display:block;margin:0 auto;height:clamp(96px,19vh,170px);width:auto;max-width:100%;flex:none}
+.lart text{font:11px/1 "Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",system-ui,sans-serif}
+.scr.loader{justify-content:safe center;padding-top:62px;padding-bottom:24px}
+
+#demock{position:absolute;inset:0;z-index:100;background:#0B0E16CC;display:flex;flex-direction:column;justify-content:flex-end;animation:fi .2s ease}
+#demock .ckin{background:var(--bg-elev);border-top:1px solid var(--border);border-radius:22px 22px 0 0;padding:20px 18px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));display:flex;flex-direction:column;gap:6px}
+#demock .ckin b{font:600 20px/1.25 var(--serif)}#demock .ckin p{margin:0;color:var(--t2)}#demock .ckfine{font-size:13px}#demock .ckbtns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
 </style>
 </head>
 <body>
@@ -323,11 +347,14 @@ const CONFIG={
   /* TODO(pricing): replace every {{placeholder}} with the real price string. Do not invent numbers.
      Starlyn policy: ONE plan - first week at $13.67, then $49.99 every month. */
   plans:{
-    '1w':{name:'1 week, then monthly',price:'$13.67',renew:'$49.99',per:'month',badge:'',sub:'Renews monthly',save:''}
+    '1w':{name:'1 week, then monthly',price:'$13.67',renew:'$49.99',per:'month',badge:'',sub:'Renews monthly',save:''},
+    /* post-purchase add-on: hidden one-time plan, never listed on the paywall; bought from the add-on screen through its own checkout */
+    'addon':{name:'Love Timeline 2027',label:'Love Timeline 2027',price:'$19.99',oneTime:true,hidden:true}
   },
   defaultPlan:'1w',
   refundDays:'{{refund_days}}',
-  checkoutUrl:{'1w':''},   /* '' = only emit checkout_click */
+  checkoutUrl:{'1w':'',addon:''},   /* '' = demo checkout sheet (FunnelFox build: native checkout per plan key) */
+  declineFlow:{addon:'get_app'},   /* checkout closed without paying -> screen name */
   /* Last-chance offer shown ONCE when the paywall is closed without paying.
      Real terms only. compareAt = the regular plan it undercuts (its real price is struck).
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
@@ -404,14 +431,14 @@ const whyKey=()=>S.why||'other';
 const nextKey=()=>S.goal||'closure';
 
 /* two chart wheels: d = half-distance between centres */
-function wheels(d=14,{spin=false,anim=true}={}){
+function wheels(d=14,{spin=false,anim=true,faint=false}={}){
   const a=100-d,b=100+d,r=46;
   const pl=(cx,o)=>[0,1,2,3,4].map(i=>{const t=(hash(o+i)%360)*Math.PI/180;return `<circle class="pl" cx="${(cx+Math.cos(t)*(r-9)).toFixed(1)}" cy="${(60+Math.sin(t)*(r-9)).toFixed(1)}" r="1.8"/>`}).join('');
   return `<svg class="wh ${spin?'spin':''}" viewBox="0 0 200 120" aria-hidden="true">
   <defs><clipPath id="cl"><circle cx="${a}" cy="60" r="${r}"/></clipPath></defs>
   <g class="sp"><g class="${anim?'ga':''}"><circle class="ra" cx="${a}" cy="60" r="${r}"/><circle class="ra" cx="${a}" cy="60" r="${r-12}" opacity=".6"/><circle class="ti" cx="${a}" cy="60" r="${r-6}" stroke="#E9C26B"/>${pl(a,'a')}</g>
-  <g class="${anim?'gb':''}"><circle class="rb" cx="${b}" cy="60" r="${r}"/><circle class="rb" cx="${b}" cy="60" r="${r-12}" opacity=".6"/><circle class="ti" cx="${b}" cy="60" r="${r-6}" stroke="#8FB8FF"/>${pl(b,'b')}</g>
-  <g clip-path="url(#cl)"><circle class="lens" cx="${b}" cy="60" r="${r}"/></g>
+  <g class="${anim?'gb':''}"${faint?' opacity=".32"':''}><circle class="rb" cx="${b}" cy="60" r="${r}"/><circle class="rb" cx="${b}" cy="60" r="${r-12}" opacity=".6"/><circle class="ti" cx="${b}" cy="60" r="${r-6}" stroke="#8FB8FF"/>${pl(b,'b')}</g>
+  <g clip-path="url(#cl)"${faint?' opacity=".4"':''}><circle class="lens" cx="${b}" cy="60" r="${r}"/></g>
   <line class="thr" x1="${a}" y1="60" x2="${b}" y2="60"/></g></svg>`;
 }
 const art=(img,cls='',d=14)=>`<div class="art ${cls}">${wheels(d)}<img src="${im(img)}" alt="" onerror="this.remove()"></div>`;
@@ -419,9 +446,11 @@ const art=(img,cls='',d=14)=>`<div class="art ${cls}">${wheels(d)}<img src="${im
 const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',gender:'',goal:'',goalOther:'',dob:{m:'',d:'',y:''},bt:{h:'',mi:'',ap:'AM'},xg:'',xdob:{m:'',d:'',y:''},xskip:false,xbt:{h:'',mi:'',ap:'AM'},ended:'',why:'',whyOther:'',contact:'',dur:'',feel:'',fate1:'',fate2:'',inline:{},photo:null,photoErr:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false,offerSeen:false,pass:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'gender',3:'goal',4:'goal_reassurance',5:'birth_date',6:'birth_time',7:'ex_gender',8:'ex_birth_date',9:'ex_birth_time',10:'who_ended',11:'why_ended',12:'contact',13:'duration',14:'charts_meet',15:'feeling',16:'fate_1',17:'fate_2',18:'palm_photo',19:'loader',20:'result_teaser',21:'email',22:'paywall',23:'get_app'};
+const SCREENS={1:'hook',2:'gender',3:'goal',4:'goal_reassurance',5:'birth_date',6:'birth_time',7:'ex_gender',8:'ex_birth_date',9:'ex_birth_time',10:'who_ended',11:'why_ended',12:'contact',13:'duration',14:'charts_meet',15:'feeling',16:'fate_1',17:'fate_2',18:'palm_photo',19:'loader',20:'result_teaser',21:'email',22:'paywall',23:'report_upsell',24:'get_app'};
 const QN=[2,3,5,6,7,8,9,10,11,12,13,15,16,17];
-const SKIPBACK=[14,19,22,23];
+const SKIPBACK=[14,19,22,23,24];
+/* QA 2026-10-06: "I don't know their birthday" skips #9 (ex birth time): count only the questions on the user's path */
+const qn=()=>QN.filter(x=>!(S.xskip&&x===9));
 
 const app=document.getElementById('app');
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -442,11 +471,16 @@ function emit(name,detail){
 }
 const answer=(k,v)=>emit('answer',{key:k,value:v});
 function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
-function checkout(){
-  const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});
-  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('plan',S.plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
+function checkout(plan){
+  const k=plan||S.plan,url=CONFIG.checkoutUrl[k]||'';emit('checkout_click',{plan:k,url});
+  if(!url){demoCheckout(k);return}let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',k);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
 }
+/* demo only (no checkout URL): a stand-in checkout sheet, above everything */
+function demoCheckout(k){const p=CONFIG.plans[k];S.ckPlan=k;document.getElementById('demock')?.remove();
+  const el=document.createElement('div');el.id='demock';el.setAttribute('role','dialog');el.setAttribute('aria-label','Checkout');
+  el.innerHTML=`<div class="ckin"><b>Demo checkout</b><p>Starlyn · ${esc(p.label||p.name)} · ${tok(p.price)}</p><p class="ckfine">${p.oneTime?'Paid once. No subscription.':`Then ${tok(p.renew)} every ${esc(p.per)} until you cancel.`}</p><div class="ckbtns"><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  app.appendChild(el)}
 function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
 
@@ -459,10 +493,10 @@ function toast(m){const e=document.createElement('div');e.className='toast';e.te
 /* ---------- blocks ---------- */
 function nav(){
   if([1,14,19].includes(S.i)||S.i>=22)return '';
-  const k=QN.indexOf(S.i),done=QN.filter(x=>x<S.i).length;
-  const p=k<0?Math.round(done/QN.length*100):Math.round((k+1)/QN.length*100);
+  const Q=qn(),k=Q.indexOf(S.i),done=Q.filter(x=>x<S.i).length;
+  const p=k<0?Math.round(done/Q.length*100):Math.round((k+1)/Q.length*100);
   const n=k<0?done:k+1;
-  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('spark',16)} Starlyn</div><span class="stepn">${k<0?'':n+'/'+QN.length}</span></div><div class="prog" style="margin:0 8px"><span style="width:${k<0&&S.i>17?100:p}%"></span></div></div>`;
+  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px;padding-bottom:6px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('spark',16)} Starlyn</div><span class="stepn">${k<0?'':n+'/'+Q.length}</span></div><div class="prog" style="margin:0 8px;flex:none"><span style="width:${k<0&&S.i>17?100:p}%"></span></div></div>`;
 }
 const cta=(l,ok=true,a='next')=>`<button class="btn" data-a="${a}" ${ok?'':'disabled'}>${l}</button>`;
 const opts=(f,o)=>`<div class="opts">${Object.entries(o).map(([k,[e,l]])=>`<button class="opt ${S[f]===k?'on':''}" data-a="pick" data-f="${f}" data-v="${k}" aria-pressed="${S[f]===k}"><span class="well">${e}</span><span class="lbl">${l}</span></button>`).join('')}</div>`;
@@ -475,15 +509,25 @@ const DAYS=Array.from({length:31},(_,i)=>[i+1,i+1]);
 const dobRow=(g,adult)=>{const ys=[];for(let y=new Date().getFullYear()-10;y>=1930;y--)ys.push([y,y]);const d=S[g];
   return `<div class="row3">${sel(g,'m','Month',MONTHS,d.m)}${sel(g,'d','Day',DAYS,d.d)}${sel(g,'y','Year',ys,d.y)}</div>`};
 const timeRow=g=>{const d=S[g];return `<div class="bxrow">${sel(g,'h','Hour',Array.from({length:12},(_,i)=>[i+1,i+1]),d.h)}${sel(g,'mi','Min',[0,15,30,45].map(m=>[m,String(m).padStart(2,'0')]),d.mi)}${sel(g,'ap','AM/PM',[['AM','AM'],['PM','PM']],d.ap)}</div>`};
+const timeOk=g=>!!(S[g].h&&S[g].mi!==''&&S[g].ap);
 const skin=(a,l)=>`<button class="link" data-a="${a}">${l}</button>`;
+/* QA 2026-10-06: Terms / Privacy as real links in microcopy */
+const tl=(k,l)=>CONFIG[k]?`<a class="inl" href="${esc(CONFIG[k])}" target="_blank" rel="noopener">${l}</a>`:l;
+/* line art: clock face with zodiac glyphs on the rim (birth time), globe with a gold pin (birthplace) */
+const clockArt=(c='#E9C26B',glow=false)=>{const tk=[],gl=[];for(let i=0;i<12;i++){const a=(i*30-90)*Math.PI/180,x=Math.cos(a),y=Math.sin(a);
+    tk.push(`<line x1="${(80+x*43).toFixed(1)}" y1="${(80+y*43).toFixed(1)}" x2="${(80+x*49).toFixed(1)}" y2="${(80+y*49).toFixed(1)}"/>`);
+    const g=(i*30-75)*Math.PI/180;gl.push(`<text x="${(80+Math.cos(g)*58).toFixed(1)}" y="${(80+Math.sin(g)*58).toFixed(1)}" text-anchor="middle" dominant-baseline="central">${String.fromCodePoint(0x2648+i)}︎</text>`)}
+  return `<svg class="lart" viewBox="0 0 160 160" aria-hidden="true">${glow?`<circle cx="80" cy="80" r="76" fill="${c}" opacity=".10"/><circle cx="80" cy="80" r="68" fill="none" stroke="${c}" stroke-width="5" opacity=".18"/>`:''}<circle cx="80" cy="80" r="67" fill="none" stroke="${c}" stroke-width="1.2"/><circle cx="80" cy="80" r="50" fill="none" stroke="${c}" stroke-width=".8" opacity=".6"/><g stroke="${c}" stroke-width="1.2" stroke-linecap="round" opacity=".8">${tk.join('')}</g><g fill="${c}" opacity=".85">${gl.join('')}</g><path d="M80 80V52M80 80l19 11" stroke="#F6F3EA" stroke-width="2.2" stroke-linecap="round"/><circle cx="80" cy="80" r="3.2" fill="${c}"/></svg>`};
+const globeArt=()=>`<svg class="lart" viewBox="0 0 160 160" aria-hidden="true"><g fill="none" stroke="#F6F3EA" stroke-width="1" opacity=".55"><circle cx="80" cy="86" r="56"/><ellipse cx="80" cy="86" rx="24" ry="56"/><path d="M80 30v112M24 86h112M31 60h98M31 112h98"/></g><circle cx="80" cy="86" r="62" fill="none" stroke="#E9C26B" stroke-width=".8" opacity=".35"/><ellipse cx="101" cy="72" rx="7" ry="2.4" fill="#E9C26B" opacity=".35"/><path d="M101 72c-6-9-11-14-11-21a11 11 0 0 1 22 0c0 7-5 12-11 21z" fill="#E9C26B" stroke="#F4DA96" stroke-width="1"/><circle cx="101" cy="50" r="4" fill="#161A27"/></svg>`;
 
 /* ---------- web paywall blocks ---------- */
 const planOf=k=>CONFIG.plans[k];
 const todayLine=()=>`${tok(planOf(S.plan).price)} today`;
+const dueLine=()=>tok(planOf(S.plan).price);
 const renewLine=k=>{const p=planOf(k);return `${tok(p.price)} today for your first week, then ${tok(p.renew)} every month until you cancel.`};
-function planBlock(){const keys=Object.keys(CONFIG.plans);
+function planBlock(){if(!planOf(S.plan)||planOf(S.plan).hidden)S.plan=CONFIG.defaultPlan;const keys=Object.keys(CONFIG.plans).filter(k=>!planOf(k).hidden);
   return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Your plan</h2><div class="plans">${keys.map(k=>{const p=planOf(k);return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="rib">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renew)} / ${p.per==='week'?'week':p.per}</small></span></button>`}).join('')}</div>
-   <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
+   <div class="today"><span>Due today</span><b data-today>${dueLine()}</b></div>
    <div style="height:12px"></div>${cta('Get my reading',true,'pay')}
    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
    <div class="secure"><span>${ic('shield',14)} Secure checkout</span><span>${ic('check',14,2.4)} Cancel anytime</span></div>
@@ -504,7 +548,7 @@ function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}ca
 const reassure=()=>S.goal==='back'?[t('Hope is welcome here','Let\'s look at it honestly'),t('We\'ll also show what charts can\'t promise.','Charts show patterns, not promises.')]
   :S.goal==='move'?[t('Moving on is brave','Let\'s look at it honestly'),t('We\'ll look at what to keep and what to leave.','Charts show patterns, not promises.')]
   :[t('Clarity is a good start','Let\'s look at it honestly'),t('Understanding what happened can lighten the load.','Charts show patterns, not promises.')];
-const signChips=()=>`<div class="signs"><span class="badge">${ic('sun',14)} ${esc(sun()||'You')}</span><span class="badge" style="background:#8FB8FF22;color:var(--l-head)">${ic('moon',14)} ${esc(xsun()||'Them')}</span></div>`;
+const signChips=()=>`<div class="signs"><span class="badge">${ic('sun',14)} ${esc(sun()||'You')}</span><span class="badge" style="background:#8FB8FF22;color:var(--l-head)">${ic('sun',14)} ${esc(xsun()||'Them')}</span></div>`;
 const vchip=()=>{const k=verdictKey();return `<span class="vchip ${k==='open'?'':k}">${ic(k==='closure'?'moon':k==='new'?'spark':'heart',14)} ${VERDICT[k][1]}</span>`};
 const V={
 1:()=>`<div class="scr" style="padding-top:0;gap:14px">${art('img/hook-wheels.jpg','',34)}
@@ -512,7 +556,7 @@ const V={
   <h1 class="display" style="margin-top:4px">${t('Is it really over?','Read what your charts say')}</h1></div>
   <p class="lead tc">${t('Compare two birth charts. Get an honest verdict.','Two charts, one honest reading. Clarity, not false hope.')}</p>
   <div class="trio"><span>${ic('clock',15)} 2-min quiz</span><span>${ic('moon',15)} Two charts</span><span>${ic('spark',15)} Honest verdict</span></div></div>
-  <div class="foot">${cta('Start reading')}<p class="note">By continuing you confirm you're 18+ and agree to our Terms of Use and Privacy Policy. For entertainment purposes only. No outcome is guaranteed.</p></div>`,
+  <div class="foot">${cta('Start reading')}<p class="note">By continuing you confirm you're 18+ and agree to our ${tl('termsUrl','Terms of Use')} and ${tl('privacyUrl','Privacy Policy')}. For entertainment purposes only. No outcome is guaranteed.</p></div>`,
 2:()=>`<div class="scr">${q(t('I am…','Who\'s asking?'),t('Used to read your chart.','One tap, then we begin.'))}${opts('gender',GENDER)}</div>`,
 3:()=>withOther('goal','goalOther',GOAL,t('What do you need most?','What are you hoping for?'),t('We\'ll shape your reading around it.','There is no wrong answer here.')),
 4:()=>{const [h,b]=reassure();return `<div class="scr center tc"><div class="bigwell">${ic(S.goal==='move'?'spark':S.goal==='back'?'heart':'moon',38)}</div><h1 class="display">${h}</h1><p class="lead">${b}</p></div><div class="foot">${cta('Next')}</div>`},
@@ -520,21 +564,21 @@ const V={
   return `<div class="scr">${q(t('When were you born?','Your date of birth'),t('Your Sun sign anchors your chart.','Needed to draw your chart.'))}${dobRow('dob',true)}
   <p class="hint">You must be 18 or older.</p>${sun()?`<span class="badge fadein">${ic('sun',14)} ${sun()}</span>`:''}${S.dobErr?`<div class="err" role="alert">${S.dobErr}</div>`:''}</div>
   <div class="foot">${cta('Continue',true,'dob')}</div>`},
-6:()=>`<div class="scr">${q(t('What time were you born?','Know your birth time?'),t('It places your Moon and Rising signs.','Check your birth certificate if unsure.'))}${timeRow('bt')}
+6:()=>`<div class="scr">${q(t('What time were you born?','Know your birth time?'),t('It places your Moon and Rising signs.','Check your birth certificate if unsure.'))}${clockArt()}${timeRow('bt')}
   <p class="hint">No worries if you don't know it. We'll read your chart at midday.</p></div>
-  <div class="foot">${cta('Continue')}${skin('skip','I don\'t know my time')}</div>`,
+  <div class="foot">${cta('Continue',timeOk('bt'))}${skin('skip','I don\'t know my time')}</div>`,
 7:()=>`<div class="scr">${q(t('And your ex is…','Who was your ex?'),t('Used to draw their chart.','Think of the one on your mind.'))}${opts('xg',GENDER)}</div>`,
-8:()=>`<div class="scr">${q(t('Their date of birth?','When was your ex born?'),t('Even a rough date draws a chart.','Needed to compare the two charts.'))}${dobRow('xdob',true)}
-  <p class="hint">Not sure? We'll lean on your chart and your story.</p>${xsun()?`<span class="badge fadein" style="background:#8FB8FF22;color:var(--l-head)">${ic('moon',14)} ${xsun()}</span>`:''}${S.xdobErr?`<div class="err" role="alert">${S.xdobErr}</div>`:''}</div>
+8:()=>`<div class="scr">${q(t('Their date of birth?','When was your ex born?'),t('Even a rough date draws a chart.','Needed to compare the two charts.'))}${wheels(14,{anim:false,faint:true}).replace('class="wh ','class="wh lart ')}${dobRow('xdob',true)}
+  <p class="hint">Not sure? We'll lean on your chart and your story.</p>${xsun()?`<span class="badge fadein" style="background:#8FB8FF22;color:var(--l-head)">${ic('sun',14)} ${xsun()}</span>`:''}${S.xdobErr?`<div class="err" role="alert">${S.xdobErr}</div>`:''}</div>
   <div class="foot">${cta('Continue',true,'xdob')}${skin('xskip','I don\'t know their birthday')}</div>`,
-9:()=>`<div class="scr">${q(t('Their birth time?','Know their birth time?'),t('Optional. A guess is fine.','Skip it if you\'re not sure.'))}${timeRow('xbt')}
+9:()=>`<div class="scr">${q(t('Their birth time?','Know their birth time?'),t('Optional. A guess is fine.','Skip it if you\'re not sure.'))}${clockArt('#8FB8FF',true)}${timeRow('xbt')}
   <p class="hint">Not sure? We'll read their chart at midday.</p></div>
-  <div class="foot">${cta('Continue')}${skin('skip','Not sure')}</div>`,
+  <div class="foot">${cta('Continue',timeOk('xbt'))}${skin('skip','Not sure')}</div>`,
 10:()=>`<div class="scr">${q(t('Who ended it?','How did it end?'),t('No wrong answer. This shapes your reading.','Pick the closest fit.'))}${opts('ended',ENDED)}</div>`,
 11:()=>withOther('why','whyOther',WHY,t('Why did it end?','What broke it?'),t('Pick the biggest reason.','Choose what feels truest.')),
 12:()=>`<div class="scr">${q(t('Are you still in touch?','Any contact since?'),t('It changes which window matters.','Be honest, it sharpens your reading.'))}${opts('contact',CONTACT)}</div>`,
 13:()=>`<div class="scr">${q(t('How long were you together?','How long did it last?'),t('A rough guess works.','Pick the closest.'))}${opts('dur',DUR)}</div>`,
-14:()=>{const both=sun()&&xsun();return `<div class="scr center tc" style="gap:18px">${wheels(14,{spin:true})}
+14:()=>{const both=sun()&&xsun();return `<div class="scr center tc" style="gap:18px"><div>${wheels(14,{spin:true})}<div class="fadein" style="margin-top:6px">${signChips()}</div></div>
   <h1 class="display sm">${both?`${esc(sun())} meets ${esc(xsun())}`:t('Your chart meets theirs','Two charts, one story')}</h1>
   <p class="lead">${t('Your charts are being read side by side.','Placing both skies on one wheel.')}</p>
   <div class="ring" id="ring" style="--p:0;width:96px;height:96px"><b id="rp" style="font-size:22px">0%</b></div><p class="hint" id="rs">Placing your planets…</p></div>`},
@@ -550,7 +594,7 @@ const V={
   <div class="privacy">${ic('shield',16)}<span>Private. Used for your reading only, then deleted.</span></div></div>
   <div class="foot">${p?`${cta('Use this photo',true,'usephoto')}<button class="link" data-a="retake">Choose another</button>`
     :`<label class="btn" for="pf" role="button">${ic('upload',18)} Upload from gallery</label><label class="btn ghost" for="pc" role="button">${ic('camera',18)} Take a photo</label><button class="link" data-a="skip">Skip for now</button>`}</div>`},
-19:()=>`<div class="scr" style="gap:16px;padding-top:14px"><h1 class="display sm tc">${t('Comparing your two charts','Reading where they meet')}</h1>
+19:()=>`<div class="scr loader" style="gap:16px"><h1 class="display sm tc">${t('Comparing your two charts','Reading where they meet')}</h1>
   <div class="art sm" style="margin:0 -20px">${wheels(10,{spin:true,anim:false})}</div>
   <div class="ring" id="ring" style="--p:0;width:96px;height:96px;margin-top:-4px"><b id="rp" style="font-size:22px">0%</b></div>
   <div class="tasks">${['Aligning both birth charts…','Weighing Venus and Moon links…','Checking the timing windows…','Writing your honest verdict…'].map((x,i)=>`<div class="task" id="tk${i}"><i></i>${x}</div>`).join('')}</div></div>`,
@@ -565,7 +609,7 @@ const V={
   <div class="box white ${S.emailErr?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" placeholder="Your email" value="${esc(S.email)}" data-f="email"></div>
   ${S.emailErr?`<div class="err" role="alert">${S.emailErr}</div>`:''}
   <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button></div>
-  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our Terms of Use and Privacy Policy.</p></div>`,
+  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our ${tl('termsUrl','Terms of Use')} and ${tl('privacyUrl','Privacy Policy')}.</p></div>`,
 22:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text&&!/\{\{/.test(r.text)),vk=verdictKey();
   const FAQ=[['When will I get my reading?','Right after checkout, in the Starlyn app. Log in with '+esc(S.email||'your email')+'.'],
     ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
@@ -588,19 +632,19 @@ const V={
   ${/\{\{/.test(CONFIG.refundDays)?'':`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
-  <div class="wfoot">${legal()}<div>For entertainment purposes only. ${tok(CONFIG.company)}</div></div>
+  <div class="wfoot">${legal()}<div>For entertainment purposes only. ${/\{\{/.test(CONFIG.company)?'':esc(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
 };
 
 /* ---------- Starlyn policy: purchase -> get the app (old offer + free reading screens removed) ---------- */
-const IK_GET=23,IK_DOB=5;
+const IK_GET=24,IK_DOB=5;
 V[IK_GET]=()=>{const n=(typeof S.name==='string'?S.name:'').trim(),em=S.email||'your email';
   return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
   <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full reading is waiting in the Starlyn app.</p></div>
   <div class="how" style="margin-top:4px">${[['Download Starlyn: Daily Astrology','From the App Store or Google Play.'],['Log in with '+esc(em),'Use the email you gave us.'],['Open your reading','It is saved to your account.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div>
   <p class="note">For entertainment purposes only. Cancel anytime in your account.</p></div>
-  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="app">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div></div>`};
+  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app" data-store="ios"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span><small>Download on the</small><b>App Store</b></span></button><button class="store" data-a="app" data-store="android"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><span><small>GET IT ON</small><b>Google Play</b></span></button></div></div>`};
 /* under 18: exact age from month/day/year; notice with a way back to the birth-date screen */
 const ikAge=d=>{const n=new Date();let a=n.getFullYear()-(+d.y);if(n.getMonth()+1<+d.m||(n.getMonth()+1===+d.m&&n.getDate()<+d.d))a--;return a};
 function ikBlock(){S.u18=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render(true)}
@@ -680,19 +724,21 @@ app.addEventListener('click',e=>{
     case 'plan':{S.plan=v;emit('plan_select',{plan:v});
       if(S.i!==22){render();break}
       app.querySelectorAll('.wplan').forEach(x=>{const on=x.dataset.v===v;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);x.querySelector('.rd').innerHTML=on?ic('check',12,3):''});
-      app.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renewLine(v));app.querySelectorAll('[data-today]').forEach(x=>x.innerHTML=todayLine());
+      app.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renewLine(v));app.querySelectorAll('[data-today]').forEach(x=>x.innerHTML=dueLine());
       document.getElementById('sumline').innerHTML=todayLine();document.querySelector('#sticky .sum span').textContent=planOf(v).name;break}
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
     case 'pay':checkout();break;
+    case 'ckpay':document.getElementById('demock')?.remove();window.IkFunnel.completePurchase(S.ckPlan);break;
+    case 'ckclose':{document.getElementById('demock')?.remove();emit('checkout_close',{plan:S.ckPlan});const to=(CONFIG.declineFlow||{})[S.ckPlan];const n=to&&+Object.keys(SCREENS).find(x=>SCREENS[x]===to);if(n)go(n);break}
     case 'closepw':break;   /* hard paywall: no exit without purchase */
     case 'offerbuy':S.offerSeen=true;S.pass=!CONFIG.offer.checkoutUrl;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}else go(24)}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(24);break;
     case 'topw':go(22);break;
-    case 'app':{const u=appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
+    case 'app':{const st=b.dataset.store||'',u=(st==='ios'&&CONFIG.appStoreUrl)||(st==='android'&&CONFIG.playStoreUrl)||appLink();emit('app_handoff',{url:u,store:st||'auto'});if(u)navTop(u);else toast('App link coming soon');break}
   }
 });
 app.addEventListener('change',e=>{const d=e.target.dataset;
-  for(const g of ['dob','xdob','bt','xbt']){if(d[g]!==undefined){S[g][d[g]]=e.target.value;if(g==='dob'||g==='xdob'){S.dobErr='';S.xdobErr='';render()}return}}});
+  for(const g of ['dob','xdob','bt','xbt']){if(d[g]!==undefined){S[g][d[g]]=e.target.value;if(g==='dob'||g==='xdob'){S.dobErr='';S.xdobErr='';render()}else{const c=app.querySelector('.foot .btn[data-a="next"]');if(c)c.disabled=!timeOk(g)}return}}});
 app.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;
   if(f==='email'){S.email=e.target.value;if(S.emailErr){S.emailErr='';e.target.closest('.box').classList.remove('bad');e.target.closest('.scr').querySelector('.err')?.remove()}}
   else if(f==='goalOther'||f==='whyOther'){S[f]=e.target.value;const c=app.querySelector('.foot .btn[data-a="next"]');if(c)c.disabled=!e.target.value.trim()}});
@@ -707,8 +753,28 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_GET)}});
-if(QS.get('paid')==='offer'){S.pass=true}else if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_GET}
+  /* called after ANY checkout success (FunnelFox build: native checkout, S.plan = the plan key that was opened). Main plan -> add-on screen; add-on -> get_app with the added line */
+  completePurchase:plan=>{const k=plan||S.plan;if(!(CONFIG.plans[k]||{}).hidden){S.plan=S.mainPlan=k;S.paid=true;emit('purchase_complete',{plan:k});go(IK_UP);return}S.upsold=true;emit('purchase_complete',{plan:k,id:CONFIG.upsell.id,price:CONFIG.upsell.price});S.plan=S.mainPlan||CONFIG.defaultPlan;go(IK_GET)}});
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA opens checkout('addon'): CONFIG.plans.addon is a hidden one-time plan, so the FunnelFox build gives it its own native Paddle checkout
+   (success -> completePurchase('addon') -> get_app with the added line; closed -> CONFIG.declineFlow.addon = get_app). Demo: demo checkout sheet. */
+const IK_UP=23;
+CONFIG.upsell={"id": "love_timeline_2027", "name": "Love Timeline 2027", "art": "img/result-wheels.jpg", "h": ["Add your <em>love timeline</em>", "Know your <em>best months</em>"], "lead": ["Your strongest months for love in the year ahead.", "Month by month: when to open up, when to rest."], "checks": ["Your top 3 months for love in 2027", "The months to slow down and heal", "Saved with your reading in the app"], "eyebrow": "Add-on · paid once", "price": "$19.99", "cta": "Add for $19.99", "skip": "No thanks, take me to the app", "note": "One-time payment at checkout. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&IMG[u.art])||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const _ikGetV=V[IK_GET];V[IK_GET]=()=>{const h=_ikGetV();return S.upsold?h.replace('<div class="how"',`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div><div class="how"`):h};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  if(b.dataset.a==='upskip'){emit('upsell_decline',{id:u.id});go(IK_GET);return}
+  emit('upsell_accept',{id:u.id,price:u.price});checkout('addon')});
+if(QS.get('paid')==='offer'){S.pass=true}else if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_UP}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{gender:S.gender||'f',goal:S.goal||'closure',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},xg:S.xg||'m',xdob:S.xdob.m?S.xdob:{m:'10',d:'3',y:'1992'},ended:S.ended||'they',why:S.why||'comm',contact:S.contact||'none',dur:S.dur||'y13',feel:S.feel||'conf',fate1:S.fate1||'unsure',fate2:S.fate2||'bit',email:S.email||'demo@example.com'});go(n)};window.IkFunnel.takeFile=takeFile}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
 try{if(sessionStorage.getItem('ikf_age_block')){S.u18=true;S.i=IK_DOB}}catch(e){}

@@ -50,7 +50,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .scr.center{justify-content:center}
 .foot{flex:none;padding:10px 20px max(20px,calc(var(--sab) + 12px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
 .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
-.note a{color:var(--t2)}
+.note a{color:inherit;text-decoration:underline;text-underline-offset:2px;padding:15px 0;white-space:nowrap}
 .display{font:600 30px/1.12 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
 .display.sm{font-size:26px}
 .display em{font-style:normal;color:var(--acc)}
@@ -82,7 +82,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .box.white input{color:#161A28}
 .box.white input::placeholder{color:#9C8A5E}
 .box input,.box select{flex:1;min-width:0;width:100%;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
-.box select{appearance:none;-webkit-appearance:none;cursor:pointer}
+.box select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237C8298' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 0 center/14px no-repeat}
 .box select option{background:var(--surface);color:var(--t1)}
 .row3{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:8px}
 .err{font-size:13px;color:var(--neg)}
@@ -120,7 +120,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .palmsvg path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .palmsvg .out{stroke:#E9C26B;stroke-width:1.5;opacity:.85}
 .palmsvg .ln{stroke-width:2.6}
-.palmsvg .dr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.1s ease forwards}
+.palmsvg .dr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .55s ease forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
 .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:13px;color:var(--t2)}
 .legend div{display:flex;gap:8px;align-items:center}
@@ -163,10 +163,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .preview .tag{position:absolute;left:12px;top:12px;font-size:11.5px;padding:5px 9px;border-radius:999px;background:#0B0E16cc;color:var(--t1);z-index:2;display:flex;gap:6px;align-items:center}
 .preview .scan{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,#0000,#F4DA96,#0000);box-shadow:0 0 18px #E9C26B;animation:scanl 2.2s ease-in-out infinite}
 @keyframes scanl{0%{top:6%}50%{top:92%}100%{top:6%}}
-.ov .fd{fill:#E9C26B;stroke:#fff;stroke-width:.4}
+.ov .fd{fill:#E9C26B;stroke:#fff}
 .ov .fd.pop{animation:pop .45s cubic-bezier(.3,1.6,.5,1) both}
 @keyframes pop{from{r:0}}
-.ov .ln{fill:none;stroke-width:1.1;stroke-linecap:round;filter:drop-shadow(0 0 1.2px #000)}
+.ov .ln{fill:none;stroke-linecap:round;filter:drop-shadow(0 0 1.5px #000)}
 .ov .ln.dr{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s ease forwards}
 .anl{text-align:center}
 .anl .what{font:600 22px var(--serif);color:var(--acc);min-height:28px}
@@ -191,14 +191,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .thumbrow .th img{width:100%;height:100%;object-fit:cover}
 .thumbrow .th svg{position:absolute;inset:0;width:100%;height:100%}
 .stores{display:flex;gap:8px;justify-content:center}
-.store{display:flex;align-items:center;gap:7px;height:46px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
-.store b{display:block;font-size:13px}
+.store{display:flex;align-items:center;gap:7px;height:44px;padding:0 12px;border-radius:8px;background:#000;border:1px solid #A6A6A6;font-size:10px;line-height:1.1;text-align:left;color:#fff}
+.store svg{flex:none}
+.store small{display:block;font-size:10px;letter-spacing:.02em}
+.store b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
 /* ===== web paywall: long-scroll landing page, not an app sheet ===== */
 .wp{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-behavior:smooth;background:var(--bg)}
 .wp::-webkit-scrollbar{display:none}
 .wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(var(--sat) + 8px) 16px 10px;background:#161A27e6;backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
 .wbar .brand{flex:1;justify-content:flex-start}
-.wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wbar .mini{height:40px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
 .wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
 .wbar .x{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
 .wsec{padding:28px 18px 0}
@@ -277,6 +279,22 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .sticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}
 .sticky .sum b{color:var(--t1)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}}
+
+/* demo checkout sheet (only when no checkout URL and no FunnelFox): above every screen */
+#demock{position:absolute;inset:0;z-index:1000;background:#000000b3;display:flex;flex-direction:column;justify-content:flex-end}
+#demock .ckc{background:var(--surface);border-top:1px solid var(--border);border-radius:22px 22px 0 0;padding:20px 16px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));color:var(--t1)}
+#demock .ckc b{font:600 20px/1.25 var(--serif)}#demock .ckc p{margin:6px 0 14px;color:var(--t2);font-size:14px}
+#demock .ckb{display:flex;flex-direction:column;gap:8px}
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
 </style>
 </head>
 <body>
@@ -289,11 +307,15 @@ const CONFIG={
   /* TODO(pricing): replace every {{placeholder}} with the real price string. Do not invent numbers.
      Starlyn policy: ONE plan - first week at $13.67, then $49.99 every month. */
   plans:{
-    '1w':{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'}
+    '1w':{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'},
+    /* post-purchase add-on (screen 22): its own Paddle one-time checkout. hidden = never listed on the paywall */
+    addon:{name:'Birth Chart Report',label:'Birth Chart Report',price:'$19.99',oneTime:true,hidden:true}
   },
   defaultPlan:'1w',
   refundDays:'{{refund_days}}',
-  checkoutUrl:{'1w':''},   /* '' = only emit checkout_click */
+  checkoutUrl:{'1w':'',addon:''},   /* '' = emit checkout_click, then a demo checkout sheet (FunnelFox opens its native checkout per plan key) */
+  /* leaving a checkout without paying: plan key -> screen name. The main plan stays on the paywall. */
+  declineFlow:{addon:'get_app'},
   /* Last-chance offer shown ONCE when the paywall is closed without paying (fallback / "upsell on decline").
      Real terms only: price and renewal must be what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn for this user. */
@@ -337,6 +359,9 @@ const IC={
   apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>',
   play:'<path d="m5 3 14 9-14 9z"/>'
 };
+/* official store marks (filled, white) for the Download App badges */
+const STORE_SVG={apple:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>',
+  play:'<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg>'};
 const ic=(n,s=20,w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tok=s=>/\{\{/.test(s)?`<span class="tok">${esc(s)}</span>`:esc(s);
@@ -366,18 +391,17 @@ const READ={
 const LINEMETA={heart:['Heart line','var(--l-heart)','#F29A8A'],head:['Head line','var(--l-head)','#8FB8FF'],life:['Life line','var(--l-life)','#7FD1A8'],fate:['Fate & money line','var(--l-fate)','#E9C26B'],marriage:['Marriage line','var(--l-marriage)','#D9A8FF']};
 const readFor=k=>{const v=READ[k];return v[hash(k+S.dob.y+S.dob.m+S.dob.d+S.lines+S.fingers)%v.length]};
 
-/* palm template in a 100x130 box: outline, finger tips, and the five lines */
+/* palm template in a 100x130 box (education art): outline and the five lines */
 const HANDP='M31 125 C29 107 25 95 24 80 L22 52 C21.5 47 28 46 29 51 L32 73 L31 36 C30.5 30 38 30 38.5 36 L41 69 L42 28 C42 22 50 22 50 28 L51 68 L54 33 C54.5 27 62 28 61.5 34 L60 73 C64 66 69 59 75 56 C80 54 83 59 79 64 C72 73 68 84 66 95 C64 106 64 116 65 125';
-const TIPS=[[25,50,'Thumb'],[34.5,33,'Index finger'],[46,25,'Middle finger'],[57.8,31,'Ring finger'],[77,58,'Little finger']];
-const PATHS={heart:'M26 76 C35 73.5 46 70.5 59 64.5',head:'M63 80 C53 82 41 86 29 92',life:'M62 79 C54 90 52 105 55 122',fate:'M46 122 C46 107 47 95 48 84',marriage:'M58.5 67 C60.5 66.4 62 66.2 63.5 66.5'};
+const PATHS={heart:'M25 79 C35 76 46 72 59 65',head:'M63 80 C53 82 41 86 29 92',life:'M62 79 C54 90 52 105 55 122',fate:'M46 122 C46 107 47 95 48 84',marriage:'M24.4 74.6 C27 74.1 29.6 73.9 32.2 74.2'};
 function palmSVG(w=150,{draw=false,only=null}={}){
   const ks=only||Object.keys(PATHS);
-  return `<svg class="palmsvg" viewBox="0 0 100 130" width="${w}" height="${w*1.3}" aria-hidden="true"><path class="out" d="${HANDP}"/>${ks.map((k,i)=>`<path class="ln ${draw?'dr':''}" d="${PATHS[k]}" stroke="${LINEMETA[k][2]}" pathLength="1" style="animation-delay:${i*.35}s"/>`).join('')}</svg>`}
+  return `<svg class="palmsvg" viewBox="0 0 100 130" width="${w}" height="${w*1.3}" aria-hidden="true"><path class="out" d="${HANDP}"/>${ks.map((k,i)=>`<path class="ln ${draw?'dr':''}" d="${PATHS[k]}" stroke="${LINEMETA[k][2]}" pathLength="1" style="animation-delay:${(i*.08).toFixed(2)}s"/>`).join('')}</svg>`}
 
 const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',gender:'',hand:'',goal:'',dob:{m:'',d:'',y:''},lines:'',fingers:'',texture:'',exp:'',feel:'',main:'',inline:{},photo:null,photoErr:'',photoWarn:'',box:null,email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'gender',3:'hand',4:'goal',5:'goal_set',6:'dob',7:'line_depth',8:'palm_intro',9:'fingers',10:'texture',11:'experience',12:'feeling',13:'sign_bridge',14:'main_line',15:'scan_guide',16:'upload',17:'analysis',18:'line_trace',19:'report_teaser',20:'email',21:'paywall',22:'get_app'};
+const SCREENS={1:'hook',2:'gender',3:'hand',4:'goal',5:'goal_set',6:'dob',7:'line_depth',8:'palm_intro',9:'fingers',10:'texture',11:'experience',12:'feeling',13:'sign_bridge',14:'main_line',15:'scan_guide',16:'upload',17:'analysis',18:'line_trace',19:'report_teaser',20:'email',21:'paywall',22:'report_upsell',23:'get_app'};
 const QN=[2,3,4,6,7,9,10,11,12,14];
 
 const app=document.getElementById('app');
@@ -399,18 +423,24 @@ function emit(name,detail){
 }
 const answer=(k,v)=>emit('answer',{key:k,value:v});
 function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
-function checkout(){
-  const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});
-  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('plan',S.plan);if(S.email)u.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
+/* the paywall's plan (hidden plans such as the add-on are never shown or preselected there) */
+const visPlan=()=>{const p=CONFIG.plans[S.plan];return p&&!p.hidden?S.plan:CONFIG.defaultPlan};
+function checkout(plan){
+  plan=CONFIG.plans[plan]?plan:visPlan();const P=CONFIG.plans[plan],url=CONFIG.checkoutUrl[plan]||'';
+  emit('checkout_click',{plan,price:P.oneTime?P.price:P.intro,one_time:!!P.oneTime,url});
+  if(!url){demoCheckout(plan);return}
+  let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',plan);if(S.email)u.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
 }
-function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
-const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
+function appLink(which){const ua=navigator.userAgent||'';if(which==='ios')return CONFIG.appStoreUrl||CONFIG.appUrl;if(which==='android')return CONFIG.playStoreUrl||CONFIG.appUrl;return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
+const tlinks=()=>`<a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms of Use</a> and <a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy Policy</a>`;
+const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support: ${esc(CONFIG.supportEmail)}</a>`:''}</div>`;
 
 function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===21)emit('paywall_view');if(S.i===IK_GET&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
 function go(n,push=true){if(S.i===IK_DOB&&n>S.i&&!S.u18&&S.dob&&S.dob.m&&S.dob.d&&S.dob.y&&ikAge(S.dob)<18){ikBlock();return}clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
 const next=()=>go(S.i+1);
-function back(){clearT();const p=S.hist.pop();if(p){S.i=p;render(true);viewed()}}
+/* back skips #13 (it auto-advances, so stepping onto it bounced forward again) and falls back to the previous screen when there is no history */
+function back(){clearT();let p=S.hist.pop();while(p===13)p=S.hist.pop();if(!p&&S.i>1)p=S.i===14?12:S.i-1;if(p){S.i=p;render(true);viewed()}}
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;app.appendChild(e);setTimeout(()=>e.remove(),2700)}
 
 /* ---------- blocks ---------- */
@@ -424,15 +454,33 @@ const cta=(l,ok=true,a='next')=>`<button class="btn" data-a="${a}" ${ok?'':'disa
 const opts=(f,o)=>`<div class="opts">${Object.entries(o).map(([k,[e,l]])=>`<button class="opt ${S[f]===k?'on':''}" data-a="pick" data-f="${f}" data-v="${k}" aria-pressed="${S[f]===k}"><span class="well">${e}</span><span class="lbl">${l}</span></button>`).join('')}</div>`;
 const q=(h,b)=>`<div><h1 class="display sm">${h}</h1>${b?`<p class="lead" style="margin-top:8px">${b}</p>`:''}</div>`;
 const photoImg=(cls='')=>S.photo?`<img class="${cls}" src="${S.photo.url}" alt="Your palm photo">`:`<img class="${cls}" src="${im('img/scan-hand.jpg')}" alt="">`;
-/* overlay mapped onto the detected hand box (or the centre of the frame) of a 3:4 preview */
+/* overlay drawn in the photo's own pixel space (viewBox = natural size + slice = the same crop as object-fit:cover),
+   on the hand box (fingertips to wrist) found in the photo. u runs from the thumb side (0) to the little-finger side (1). */
+const FTIPS=[[.061,.423,'Thumb'],[.355,.075,'Index finger'],[.548,.023,'Middle finger'],[.724,.097,'Ring finger'],[.937,.261,'Little finger']];
+/* the five lines in palm-box space (u: thumb side 0 -> edge 1, v: finger base 0 -> wrist 1), cubic: start, c1, c2, end */
+const PALMB={u0:.265,u1:.885,v0:.449,v1:1};
+const LINEP={heart:[[.97,.29],[.78,.22],[.49,.11],[.27,.06]],head:[[.04,.28],[.27,.31],[.56,.39],[.85,.52]],
+  life:[[.05,.31],[.31,.47],[.36,.75],[.27,.98]],fate:[[.53,.98],[.51,.75],[.49,.5],[.49,.23]],marriage:[[.995,.19],[.95,.18],[.91,.175],[.87,.18]]};
+/* img/scan-hand.jpg (560x840, thumb on the left), measured by hand */
+const DEFHAND={W:560,H:840,box:{x:48/560,y:122/840,w:442/560,h:575/840},thumb:'l',tips:null};
+function handGeo(){
+  if(!S.photo)return DEFHAND;
+  const W=S.photo.w||300,H=S.photo.h||400;
+  if(S.box)return {W,H,box:S.box,thumb:S.thumb||'r',tips:S.tips||null};
+  /* no hand found: centre of the frame, thumb side from the hand they picked (palm facing the camera) */
+  return {W,H,box:{x:.14,y:.08,w:.72,h:.84},thumb:S.hand==='left'?'l':'r',tips:null};
+}
 function overlay({tips=0,lines=[],draw=true}={}){
-  const b=S.box||{x:.14,y:.08,w:.72,h:.86};
-  const sx=b.w*300/100,sy=b.h*400/130,tx=b.x*300,ty=b.y*400;
-  const mir=S.hand==='left';   /* a left palm facing the camera has the thumb on the right */
-  return `<svg class="ov" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice"><g transform="translate(${mir?tx+b.w*300:tx} ${ty}) scale(${mir?-sx:sx} ${sy})">
-   ${TIPS.slice(0,tips).map(([x,y],i)=>`<circle class="fd ${i===tips-1?'pop':''}" cx="${x}" cy="${y}" r="1.6"/>`).join('')}
-   ${lines.map((k,i)=>`<path class="ln ${draw&&i===lines.length-1?'dr':''}" d="${PATHS[k]}" stroke="${LINEMETA[k][2]}" pathLength="1"/>`).join('')}
-  </g></svg>`;
+  const g=handGeo(),b=g.box,W=g.W,H=g.H;
+  const X=u=>(b.x+(g.thumb==='l'?u:1-u)*b.w)*W,Y=v=>(b.y+v*b.h)*H;
+  const pp=([u,v])=>`${X(PALMB.u0+u*(PALMB.u1-PALMB.u0)).toFixed(1)} ${Y(PALMB.v0+v*(PALMB.v1-PALMB.v0)).toFixed(1)}`;
+  const d=k=>{const c=LINEP[k];return `M${pp(c[0])} C${pp(c[1])} ${pp(c[2])} ${pp(c[3])}`};
+  const hw=b.w*W,sw=(hw*.012).toFixed(2),r=(hw*.017).toFixed(2);
+  const tp=i=>g.tips&&g.tips[i]?[g.tips[i][0]*W,g.tips[i][1]*H]:[X(FTIPS[i][0]),Y(FTIPS[i][1])];
+  return `<svg class="ov" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice">
+   ${FTIPS.slice(0,tips).map((_,i)=>{const [x,y]=tp(i);return `<circle class="fd ${i===tips-1?'pop':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" stroke-width="${(hw*.004).toFixed(2)}"/>`}).join('')}
+   ${lines.map((k,i)=>`<path class="ln ${draw&&i===lines.length-1?'dr':''}" d="${d(k)}" stroke="${LINEMETA[k][2]}" stroke-width="${sw}" pathLength="1"/>`).join('')}
+  </svg>`;
 }
 
 /* ---------- web paywall blocks ---------- */
@@ -465,7 +513,7 @@ const V={
   <h1 class="display" style="margin-top:4px">${t('with a palm reading made for you','Your hand already knows')}</h1></div>
   <p class="lead tc" style="margin-top:-6px">${t('A 1-minute quiz, one palm photo, your personal reading.','Upload a palm photo. Get your lines read.')}</p>
   <div class="trio"><span>${ic('clock',15)} 1-min quiz</span><span>${ic('scan',15)} Palm scan</span><span>${ic('spark',15)} Your reading</span></div></div>
-  <div class="foot">${cta("Let's begin")}<p class="note">By continuing you confirm you're 18+ and agree to our Terms of Use and Privacy Policy. For entertainment purposes only.</p></div>`,
+  <div class="foot">${cta("Let's begin")}<p class="note">By continuing you confirm you're 18+ and agree to our ${tlinks()}. For entertainment purposes only.</p></div>`,
 2:()=>`<div class="scr">${q('I am…','Palmistry reads masculine and feminine energy differently.')}${opts('gender',GENDER)}</div>`,
 3:()=>`<div class="scr">${q('Which hand do you use most?','Your dominant hand shows the life you are building.')}${opts('hand',HAND)}</div>`,
 4:()=>`<div class="scr">${q('What do you most want to learn?','We will focus your reading here.')}${opts('goal',GOAL)}</div>`,
@@ -509,16 +557,16 @@ const V={
 18:()=>`<div class="scr" style="gap:12px;padding-top:14px"><div class="anl"><div class="hint">Analyzing</div><div class="what" id="what">Thumb</div><div class="bar"><span id="abar"></span></div></div>
   <div class="preview" id="trace">${photoImg()}${overlay()}</div><p class="note">Line guide drawn over your photo for your reading.</p></div>`,
 19:()=>{const m=S.main||'heart',[type,txt]=readFor(m),[lbl,,col]=LINEMETA[m];
-  return `<div class="scr" style="gap:14px"><div class="preview" style="max-height:32vh">${photoImg()}${overlay({tips:5,lines:Object.keys(PATHS),draw:false})}</div>
+  return `<div class="scr" style="gap:14px"><div class="preview" style="height:34vh;max-height:none;width:auto">${photoImg()}${overlay({tips:5,lines:Object.keys(PATHS),draw:false})}</div>
   <h1 class="display sm">Your palm reading is ready to unlock</h1>
   <div class="card"><h4><span class="dot" style="background:${col}"></span>${lbl}: ${esc(type)}</h4><p>${esc(txt)}</p></div>
   <div class="stack">${Object.keys(PATHS).filter(k=>k!==m).map(k=>`<div class="lockrow"><span class="dot" style="background:${LINEMETA[k][2]}"></span><span class="blurred">${esc(readFor(k)[0])} — ${esc(readFor(k)[1].slice(0,28))}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="foot">${cta('Get my full reading')}</div>`},
-20:()=>`<div class="scr">${q('Where should we send your reading?','Get your full palm reading and log in to the app with it.')}
+20:()=>`<div class="scr" style="padding-top:62px">${q('Where should we send your reading?','Get your full palm reading and log in to the app with it.')}
   <div class="box white ${S.emailErr?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" placeholder="Your email" value="${esc(S.email)}" data-f="email"></div>
   ${S.emailErr?`<div class="err">${S.emailErr}</div>`:''}
   <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span class="plan" style="all:unset;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button></div>
-  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our Terms of Use and Privacy Policy.</p></div>`,
+  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our ${tlinks()}.</p></div>`,
 21:()=>{const m=S.main||'heart',ks=Object.keys(PATHS);
   const heroPv=`<div class="pv">${photoImg()}${overlay({tips:5,lines:ks,draw:false})}</div>`;
   const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text);
@@ -543,19 +591,19 @@ const V={
   ${CONFIG.refundDays&&!/^\{\{/.test(String(CONFIG.refundDays))?`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock('b')}</div>
-  <div class="wfoot">${legal()}<div>For entertainment purposes only. ${tok(CONFIG.company)}</div></div>
+  <div class="wfoot">${legal()}<div>For entertainment purposes only. ${/\{\{/.test(CONFIG.company)?'':esc(CONFIG.company)}</div></div>
   </div>
-  <div class="sticky" id="sticky"><div class="sum"><span>${esc(CONFIG.plans[S.plan].name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
+  <div class="sticky" id="sticky"><div class="sum"><span>${esc(CONFIG.plans[visPlan()].name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
 };
 
 /* ---------- Starlyn policy: purchase -> get the app (old offer + free reading screens removed) ---------- */
-const IK_GET=22,IK_DOB=6;
+const IK_GET=23,IK_DOB=6;
 V[IK_GET]=()=>{const n=(typeof S.name==='string'?S.name:'').trim(),em=S.email||'your email';
   return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
   <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full reading is waiting in the Starlyn app.</p></div>
   <div class="how" style="margin-top:4px">${[['Download Starlyn: Daily Astrology','From the App Store or Google Play.'],['Log in with '+esc(em),'Use the email you gave us.'],['Open your reading','It is saved to your account.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div>
   <p class="note">For entertainment purposes only. Cancel anytime in your account.</p></div>
-  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="app">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div></div>`};
+  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app" data-v="ios">${STORE_SVG.apple}<span><small>Download on the</small><b>App Store</b></span></button><button class="store" data-a="app" data-v="android">${STORE_SVG.play}<span><small>GET IT ON</small><b>Google Play</b></span></button></div></div>`};
 /* under 18: exact age from month/day/year; notice with a way back to the birth-date screen */
 const ikAge=d=>{const n=new Date();let a=n.getFullYear()-(+d.y);if(n.getMonth()+1<+d.m||(n.getMonth()+1===+d.m&&n.getDate()<+d.d))a--;return a};
 function ikBlock(){S.u18=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render(true)}
@@ -573,31 +621,49 @@ async function takeFile(f){
   img.onerror=()=>{URL.revokeObjectURL(url);S.photoErr="We couldn't open that photo. Try a JPG or PNG (HEIC may not open in every browser).";emit('upload_error',{reason:'decode'});render()};
   img.onload=()=>{
     dropPhoto();S.photo={url,file:f,w:img.naturalWidth,h:img.naturalHeight};
-    const r=analyse(img);S.box=r.box;
+    const r=analyse(img);S.box=r.box;S.thumb=r.thumb||null;S.tips=r.tips||null;
     if(r.lum<45)S.photoWarn="It looks dark. Lines read best in bright, even light.";
     else if(!r.box)S.photoWarn="We can't clearly see a palm. Make sure your whole open hand is in the photo.";
     emit('upload',{ok:!S.photoWarn,handFound:!!r.box,dark:r.lum<45});render();
   };
   img.src=url;
 }
-/* rough skin-tone mask on a small canvas → bounding box of the hand in the 3:4 cover-cropped preview */
+/* rough skin-tone mask on a small canvas (whole photo, aspect kept) -> hand box from the fingertips to the wrist,
+   thumb side and fingertip positions, all as fractions of the photo */
 function analyse(img){
-  const W=90,H=120,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});
-  const s=Math.max(W/img.naturalWidth,H/img.naturalHeight),dw=img.naturalWidth*s,dh=img.naturalHeight*s;
-  x.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh);
+  const nw=img.naturalWidth,nh=img.naturalHeight,k0=Math.min(1,120/Math.max(nw,nh)),W=Math.max(8,Math.round(nw*k0)),H=Math.max(8,Math.round(nh*k0));
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});
+  x.drawImage(img,0,0,W,H);
   let d;try{d=x.getImageData(0,0,W,H).data}catch(e){return {lum:128,box:null}}
-  let lum=0,n=0,x0=W,y0=H,x1=0,y1=0;
+  let lum=0,n=0;const M=new Uint8Array(W*H);
   for(let j=0;j<H;j++)for(let i=0;i<W;i++){const k=(j*W+i)*4,r=d[k],g=d[k+1],b=d[k+2];lum+=.299*r+.587*g+.114*b;
     const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
-    if(r>60&&g>30&&b>15&&r>g&&r>b&&mx-mn>12&&Math.abs(r-g)>8){n++;if(i<x0)x0=i;if(i>x1)x1=i;if(j<y0)y0=j;if(j>y1)y1=j}}
+    if(r>60&&g>30&&b>15&&r>g&&r>b&&mx-mn>12&&Math.abs(r-g)>8){M[j*W+i]=1;n++}}
   lum/=W*H;
-  const frac=n/(W*H);
-  if(frac<.08||x1-x0<W*.3||y1-y0<H*.35)return {lum,box:null};
-  /* the mask runs down the wrist/arm: keep a hand-shaped box (template is 100x130 in a 300x400 frame) from the fingertips down */
-  const bw=(x1-x0)/W,bh=Math.min((y1-y0)/H,bw*.975);
-  return {lum,box:{x:x0/W,y:y0/H,w:bw,h:bh}};
+  if(n/(W*H)<.06)return {lum,box:null};
+  const on=(i,j)=>M[j*W+i]&&((i>0&&M[j*W+i-1])||(i<W-1&&M[j*W+i+1]));   /* ignore single specks */
+  const L=new Int16Array(H).fill(-1),R=new Int16Array(H).fill(-1);
+  for(let j=0;j<H;j++)for(let i=0;i<W;i++)if(on(i,j)){if(L[j]<0)L[j]=i;R[j]=i}
+  let y0=-1;for(let j=0;j<H;j++)if(L[j]>=0&&R[j]-L[j]>=2){y0=j;break}
+  if(y0<0)return {lum,box:null};
+  /* wrist: below the widest row, the first row narrower than 60% of it */
+  let wmax=0,jm=y0;for(let j=y0;j<H;j++){const w=L[j]<0?0:R[j]-L[j];if(w>wmax){wmax=w;jm=j}}
+  let y1=H-1;for(let j=jm;j<H;j++){const w=L[j]<0?0:R[j]-L[j];if(w<wmax*.6){y1=j;break}}
+  let x0=W,x1=0;for(let j=y0;j<=y1;j++)if(L[j]>=0){x0=Math.min(x0,L[j]);x1=Math.max(x1,R[j])}
+  const bw=x1-x0+1,bh=y1-y0;
+  if(bw<W*.25||bh<H*.25)return {lum,box:null};
+  /* thumb side: the little finger reaches higher than the thumb on its edge of the box */
+  const firstIn=(a,b)=>{for(let j=y0;j<=y1;j++)for(let i=a;i<=b;i++)if(on(i,j))return j;return y1};
+  const band=Math.max(2,Math.round(bw*.2)),thumb=firstIn(x0,x0+band)>firstIn(x1-band,x1)?'l':'r';
+  /* fingertips: top of the skin under each template tip, searched a little to each side */
+  const top=i=>{for(let j=y0;j<=y1;j++)if(on(i,j))return j;return -1};
+  const tips=FTIPS.map(([u,v])=>{const cx=x0+(thumb==='l'?u:1-u)*bw,cy=y0+v*bh,rr=Math.max(2,Math.round(bw*.07));let bi=-1,bj=1e9;
+    for(let i=Math.max(0,Math.round(cx-rr));i<=Math.min(W-1,Math.round(cx+rr));i++){const t=top(i);if(t>=0&&t<bj){bj=t;bi=i}}
+    const ok=bi>=0&&bj<=y0+bh*.6&&Math.abs(bj-cy)<bh*.18;
+    return ok?[(bi+.5)/W,(bj+bh*.035)/H]:[cx/W,cy/H]});
+  return {lum,box:{x:x0/W,y:y0/H,w:bw/W,h:bh/H},thumb,tips};
 }
-function dropPhoto(){if(S.photo&&S.photo.url)try{URL.revokeObjectURL(S.photo.url)}catch(e){}S.photo=null;S.box=null}
+function dropPhoto(){if(S.photo&&S.photo.url)try{URL.revokeObjectURL(S.photo.url)}catch(e){}S.photo=null;S.box=null;S.thumb=null;S.tips=null}
 
 /* ---------- animated screens ---------- */
 function run13(){let p=0;const msgs=['Matching your answers…','Reading your '+(sun()||'Sun')+' traits…','Preparing your palm scan…'];
@@ -608,7 +674,7 @@ function run17(){let p=0,ask=0;const stops=[22,48,74];
     if(ask<3&&p>=stops[ask]){clearInterval(window.__iv);const k=ask;app.querySelector('.view').insertAdjacentHTML('beforeend',`<div class="iq" id="iq"><div class="in"><div class="bigwell" style="width:64px;height:64px">${ic('spark',28)}</div><b>${INLINE[k]}</b><div class="row"><button class="btn ghost" data-a="iq" data-k="${k}" data-v="no">No</button><button class="btn" data-a="iq" data-k="${k}" data-v="yes">Yes</button></div></div></div>`);ask++;return}
     if(p>=100){clearInterval(window.__iv);later(next,600)}};
   window.__resume=()=>{clearInterval(window.__iv);window.__iv=setInterval(tick,RM?5:70)};window.__resume()}
-function run18(){const steps=[...TIPS.map((t,i)=>['tip',i,t[2]]),...['life','head','heart','marriage','fate'].map(k=>['line',k,LINEMETA[k][0]])];let k=0,tips=0,lines=[];
+function run18(){const steps=[...FTIPS.map((t,i)=>['tip',i,t[2]]),...['life','head','heart','marriage','fate'].map(k=>['line',k,LINEMETA[k][0]])];let k=0,tips=0,lines=[];
   const el=document.getElementById('trace');
   const step=()=>{if(!document.getElementById('trace'))return;if(k>=steps.length){later(next,900);return}
     const [ty,v,l]=steps[k++];if(ty==='tip')tips=v+1;else lines.push(v);
@@ -661,13 +727,13 @@ app.addEventListener('click',e=>{
       const P=CONFIG.plans,renew=`${tok(P['1w'].intro)} today for your first week, then ${tok(P['1w'].price)} every month until you cancel.`;
       app.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renew);app.querySelectorAll('[data-today]').forEach(x=>x.innerHTML=todayLine());
       document.getElementById('sumline').innerHTML=todayLine();document.querySelector('#sticky .sum span').textContent=P[v].name;break}
-    case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
-    case 'pay':checkout();break;
+    case 'toplans':{const wp=document.getElementById('wp'),t=document.getElementById('plans1'),bar=wp&&wp.querySelector('.wbar');if(wp&&t)wp.scrollTo({top:t.offsetTop-(bar?bar.offsetHeight:0)-8,behavior:'smooth'});break}
+    case 'pay':checkout(visPlan());break;
     case 'closepw':break;   /* hard paywall: no exit without purchase */
     case 'offerbuy':S.offerSeen=true;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u)try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(23);break;
     case 'topw':go(21);break;
-    case 'app':{const u=appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
+    case 'app':{const u=appLink(v);emit('app_handoff',{target:v||'app',url:u});if(u)navTop(u);else toast('App link coming soon');break}
   }
 });
 app.addEventListener('change',e=>{const k=e.target.dataset.dob;if(!k)return;S.dob[k]=e.target.value;if(S.dob.m&&S.dob.d&&S.dob.y)answer('dob_sign',sun());render()});
@@ -683,8 +749,41 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_GET)}});
-if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_GET}
+  /* called after ANY successful checkout (FunnelFox: native checkout success, S.plan = the plan key that was opened).
+     main plan -> the add-on screen; 'addon' -> mark the add-on bought -> get the app */
+  completePurchase:plan=>{plan=plan||S.plan;if(plan!=='addon'){S.plan=plan;S.mainPlan=plan;S.paid=true;emit('purchase_complete',{plan});go(IK_UP);return}
+    S.plan=S.mainPlan||CONFIG.defaultPlan;S.paid=true;if(!S.upsold){S.upsold=true;emit('purchase_complete',{plan:'addon',id:CONFIG.upsell.id,price:CONFIG.plans.addon.price})}go(IK_GET)}});
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA opens its own Paddle one-time checkout: checkout('addon') (CONFIG.plans.addon, hidden from the paywall).
+   Paid -> IkFunnel.completePurchase('addon') -> get_app with the "added" line. Closed without paying -> get_app (CONFIG.declineFlow). */
+const IK_UP=22;
+CONFIG.upsell={"id": "birth_chart", "name": "Birth Chart Report", "art": "img/hook-palm.jpg", "h": ["Add your <em>birth chart</em>", "Your palm, <em>plus your chart</em>"], "lead": ["Your Sun, Moon and planets, in plain words.", "What your palm hints at, your chart spells out."], "checks": ["Sun, Moon and all planets explained", "Your Rising sign once you add a birth time", "Saved with your palm reading in the app"], "eyebrow": "Add-on · paid once", "price": "$19.99", "cta": "Add for $19.99", "skip": "No thanks, take me to the app", "note": "One-time charge in a secure checkout. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&IMG[u.art])||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const _ikGetV=V[IK_GET];V[IK_GET]=()=>{const h=_ikGetV();return S.upsold?h.replace('<div class="how"',`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div><div class="how"`):h};
+/* leaving a checkout without paying: go where CONFIG.declineFlow says (FunnelFox's native checkout close does the same) */
+function checkoutDeclined(plan){emit('checkout_decline',{plan});const to=(CONFIG.declineFlow||{})[plan],n=to?+Object.keys(SCREENS).find(k=>SCREENS[k]===to):0;if(n)go(n)}
+/* demo-only checkout sheet when no checkout URL is configured (FunnelFox replaces checkout() with its native screen) */
+function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;document.getElementById('demock')?.remove();
+  const el=document.createElement('div');el.id='demock';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Checkout');
+  el.innerHTML=`<div class="ckc"><b>Demo checkout</b><p>${esc(CONFIG.brand)} · ${esc(p.label||p.name)} · ${p.oneTime?tok(p.price)+' paid once':tok(p.intro)+' today'}</p><div class="ckb"><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  app.appendChild(el);el.querySelector('[data-a="ckpay"]').focus({preventScroll:true})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"],[data-a="ckpay"],[data-a="ckclose"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  switch(b.dataset.a){
+    case 'ckpay':document.getElementById('demock')?.remove();window.IkFunnel.completePurchase(S.ckPlan);break;
+    case 'ckclose':document.getElementById('demock')?.remove();checkoutDeclined(S.ckPlan);break;
+    case 'upskip':emit('upsell_decline',{id:u.id});go(IK_GET);break;
+    case 'upbuy':emit('upsell_accept',{id:u.id,price:u.price});checkout('addon');break;   /* FunnelFox build: opens the native checkout_addon screen */
+  }});
+{const pq=QS.get('paid');if(pq){S.paid=true;S.mainPlan=S.plan=CONFIG.defaultPlan;if(pq==='addon'){S.upsold=true;S.i=IK_GET}else S.i=IK_UP}}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{gender:S.gender||'f',hand:S.hand||'right',goal:S.goal||'love',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},lines:S.lines||'deep',fingers:S.fingers||'long',texture:S.texture||'soft',exp:S.exp||'never',feel:S.feel||'opt',main:S.main||'heart',email:S.email||'demo@example.com'});go(n)};window.IkFunnel.takeFile=takeFile}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
 try{if(sessionStorage.getItem('ikf_age_block')){S.u18=true;S.i=IK_DOB}}catch(e){}

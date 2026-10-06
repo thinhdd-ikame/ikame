@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: gender, dominant hand, reading goal, birth date (18+), line depth, finger length, palm texture, past experience, goal feeling, most important line, palm photo upload (gallery first, camera second), 3 inline yes/no
 output: a palm reading of the 5 major lines (heart, head, life, fate/money, marriage) traced over the user's own photo, opening with the line they chose, plus Sun-sign context
-screens: 22
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once in its own Paddle one-time checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — Starlyn: Palm Reading
 
-A Starlyn web2app funnel (Meta ad → web quiz → palm photo upload → web paywall → Starlyn app) for the palm-reading niche. AdSpyLab showed this niche at 5.6K ads and +105% at the time of the soulmate-sketch brief. The user answers a 10-tap quiz and **uploads a photo of their palm**. They get a reading of the five major lines, drawn over their own photo. Archetype: **personalization-quiz** with a single asset upload as the centrepiece. 22 screens.
+A Starlyn web2app funnel (Meta ad → web quiz → palm photo upload → web paywall → Starlyn app) for the palm-reading niche. AdSpyLab showed this niche at 5.6K ads and +105% at the time of the soulmate-sketch brief. The user answers a 10-tap quiz and **uploads a photo of their palm**. They get a reading of the five major lines, drawn over their own photo. Archetype: **personalization-quiz** with a single asset upload as the centrepiece. 23 screens.
 
 **Modeled on: Nebula's own `appnebula.co/palmistry/prelanding`**, crawled live on 2026-09-30 up to the email gate. The flow: hook with rotating promises and "1-min quiz · palm scan · personalized guide" → gender → dominant hand → goal → "you set your first goal" → birth date → line depth → education bridge → fingers → texture → experience → goal feeling → Sun-sign social-proof loader → most important line → scan intro with do/don't frames + privacy line → scan screen ("Upload from gallery" / "Take a picture now") → analysis loader with 3 inline yes/no → per-finger / per-line "Analyzing" over the user's photo → "we are preparing your reading" teaser → email → paywall.
 
@@ -216,8 +216,8 @@ A Starlyn web2app funnel (Meta ad → web quiz → palm photo upload → web pay
 **Purpose:** Nebula's lead capture, also the app login.
 **Headline A:** Where should we send your reading?
 **Body A:** Get your full palm reading and log in to the app with it.
-**Field:** Email (light field, gold `#8A6410` icon), optional marketing checkbox (unticked by default).
-**Error state:** "Enter a valid email address"
+**Field:** Email only (light field, gold `#8A6410` icon), required: no skip, no guest path, no Google/Apple sign-in buttons. The email activates the subscription and is the app login. Optional marketing checkbox (unticked by default). Emits `lead` (method `email`).
+**Error state:** "Enter a valid email address" (Continue stays on this screen until the email is valid)
 **Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy."
 **CTA:** Continue
 
@@ -247,23 +247,35 @@ The sticky bottom CTA shows the selected plan and today's charge while no plan b
 
 ---
 
+### 22. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your birth chart
+**Headline B:** Your palm, plus your chart
+**Body A:** Your Sun, Moon and planets, in plain words.
+**Body B:** What your palm hints at, your chart spells out.
+**Plans:** One add-on, paid once: "Birth Chart Report" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens the add-on's own Paddle one-time checkout: a hidden plan `addon` in `CONFIG.plans` (label "Birth Chart Report", `$19.99`, `oneTime`, `hidden`, never listed on the paywall) opened with the normal `checkout('addon')`. In FunnelFox that is the native screen `checkout_addon (one-time)`; its × goes to get_app (`CONFIG.declineFlow = {addon:'get_app'}`). Paid: `IkFunnel.completePurchase('addon')` marks the report added and lands on get_app.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/hook-palm.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Sun, Moon and all planets explained · Your Rising sign once you add a birth time · Saved with your palm reading in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time charge in a secure checkout. No subscription." Skip link: "No thanks, take me to the app". Closing the add-on checkout without paying lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`, `checkout_decline` with plan `addon` on close.
+**CTA:** Add for $19.99
+
 ## G. Payoff
 
-### 22. Get the app
+### 23. Get the app
 **Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
 **Headline A:** You're in, {{name}}
 **Headline B:** Your reading is ready
 **Body A:** Your full reading is waiting in the Starlyn app.
 **Body B:** Download Starlyn: Daily Astrology and log in to open it.
-**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Birth Chart Report added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
 **CTA:** Open the app
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 22 offers one add-on, "Birth Chart Report", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Drop-off risk:** #16 upload. Mitigations: guide first (#15), gallery as the default, warnings that never block, "Choose another". Measure pick → confirm rate, and warning rate by type (`upload` event: `ok`, `handFound`, `dark`).
 - **What must be real before launch:** the reading copy should come from the host's palm model via `CONFIG.onPalmPhoto`. The prototype's `READ` table is placeholder copy keyed off the answers. Prices, refund days, legal URLs, app links.
 - **Photo handling:** in the prototype the photo never leaves the device (object URL, revoked on retake). In production, upload once, generate, delete. The promise is on #15, #16 and the store privacy label.
-- **Monetization:** one subscription layer. Paywall view → checkout is measured separately for users whose photo was flagged vs. clean.
+- **Monetization:** one subscription layer plus the screen-22 add-on report (its own take rate). Paywall view → checkout is measured separately for users whose photo was flagged vs. clean.
 - **A/B first:** (1) #16 gallery-first vs. camera-first. (2) #19 one open line vs. two. (3) Hook A vs. B.

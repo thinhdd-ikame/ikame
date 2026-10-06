@@ -482,6 +482,42 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .minispread .tcard .rvt{display:none}
 .minispread .tcard.rev{box-shadow:0 0 0 1px #F29A8A88}
 
+
+/* demo checkout sheet (no checkout URL configured) */
+#demock{position:absolute;inset:0;z-index:100;background:#000000b3;display:flex;flex-direction:column;justify-content:flex-end;animation:fi .2s ease}
+#demock .dck{background:var(--bg-elev);border-top:1px solid var(--border);border-radius:22px 22px 0 0;padding:20px 20px max(20px,calc(var(--sab) + 12px))}
+#demock .dck b{font:600 20px/1.25 var(--serif)}#demock .dck p{margin:6px 0 16px;color:var(--t2);font-size:14px}
+#demock .dckb{display:flex;flex-direction:column;gap:10px}
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
+/* ===== UI QA 2026-10-06: content never squashes on short screens; anchors clear the sticky bar; sticky summary on solid ground ===== */
+.scr>*{flex-shrink:0}
+#plans1,#plans2{scroll-margin-top:calc(var(--sat) + 44px)}
+.sticky{background:linear-gradient(180deg,#161A2700 0,#161A27 12px)}
+.wbar .mini{height:40px}
+/* ===== UI QA round 2 (2026-10-06) ===== */
+/* hook hero is full-bleed to the top edge, and grows on tall screens so the CTA gap stays balanced */
+.view:has(.hookart){padding-top:0}
+.art.hookart{height:clamp(320px,calc(100vh - 400px),560px)}
+/* centred screens never clip their top on short viewports (safe centring) */
+.scr.center{justify-content:flex-start}
+.scr.center::before,.scr.center::after,.scr.vc::before,.scr.vc::after{content:"";flex:1 1 0;margin:-9px 0}
+/* 22-card fan fits narrow screens with side margins */
+@media (max-width:410px){.fan22{transform:scale(.8);transform-origin:50% 100%;margin-top:-30px}}
+/* official-style store badges */
+.store{height:44px;padding:0 12px 0 10px;border-radius:8px;background:#000;border:1px solid #A6A6A6;color:#fff;gap:8px}
+.store small{display:block;font:500 9.5px/1.1 var(--sans);letter-spacing:.01em}.store b{display:block;font:600 15px/1.1 var(--sans)}
+.store svg{flex:none}
+/* inline legal links in microcopy: underlined like the paywall footer, 44px tap target without moving the line */
+.note a.il{color:var(--t2);text-decoration:underline;text-underline-offset:2px;display:inline;padding:15px 0}
 </style>
 </head>
 <body>
@@ -494,15 +530,18 @@ const CONFIG={
   /* TODO(pricing): replace every {{placeholder}} with the real price string. Do not invent numbers.
      Starlyn policy: ONE plan - first week at $13.67, then $49.99 every month. */
   plans:{
-    '1w':{name:'1 week, then monthly',price:'$13.67',renew:'$49.99',per:'month',badge:'',sub:'Renews monthly',save:''}
+    '1w':{name:'1 week, then monthly',price:'$13.67',renew:'$49.99',per:'month',badge:'',sub:'Renews monthly',save:''},
+    /* post-purchase add-on: hidden one-time plan, never listed on the paywall; bought through its own checkout */
+    addon:{name:'Your 2027 Tarot Year',label:'Your 2027 Tarot Year',price:'$19.99',oneTime:true,hidden:true}
   },
   defaultPlan:'1w',
+  declineFlow:{addon:'get_app'},   /* plan key -> screen name to land on when its checkout is closed without paying */
   refundDays:'{{refund_days}}',   /* guarantee + money-back lines are hidden while this is still a {{token}} */
-  checkoutUrl:{'1w':''},   /* '' = only emit checkout_click */
+  checkoutUrl:{'1w':'',addon:''},   /* '' = only emit checkout_click */
   /* Last-chance offer shown ONCE when the paywall is closed without paying: this one reading only, paid once.
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
   offer:{enabled:false},   /* Starlyn policy: no sale, no last-chance offer */
-  termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',
+  termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',supportEmail:'support@starlyn.co',
   appUrl:'',appStoreUrl:'',playStoreUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer}}',meta:'{{country}} · verified',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}} · verified',text:'{{real review text}}'}],
@@ -531,6 +570,8 @@ const IC={
   moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
   hand:'<path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8a8 8 0 0 0 16 0v-3a2 2 0 0 0-4 0"/>'
 };
+const logo=(d,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">${d}</svg>`;
+const LOGO_APPLE='<path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>',LOGO_GP='<path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/>';
 const ic=(n,s=20,w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tok=s=>/\{\{/.test(s)?`<span class="tok">${esc(s)}</span>`:esc(s);
@@ -596,9 +637,9 @@ const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',topic:'',topicOther:'',
 let S=INIT();
 try{if(sessionStorage.getItem('ikf_age_block'))S.blocked=true}catch(e){}
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'topic',3:'situation',4:'question',5:'feeling',6:'bridge',7:'birth_date',8:'birth_card',9:'name',10:'spread',11:'trust',12:'shuffle_cut',13:'pull',14:'cards_reveal',15:'daily_card',16:'email',17:'teaser',18:'paywall',19:'get_app'};
+const SCREENS={1:'hook',2:'topic',3:'situation',4:'question',5:'feeling',6:'bridge',7:'birth_date',8:'birth_card',9:'name',10:'spread',11:'trust',12:'shuffle_cut',13:'pull',14:'cards_reveal',15:'daily_card',16:'email',17:'teaser',18:'paywall',19:'report_upsell',20:'get_app'};
 const QN=[2,3,4,5,7,9,10];
-const SKIPBACK=[12,18,19];
+const SKIPBACK=[12,18,19,20];
 const nm=()=>(S.name||'').trim();
 const N=()=>+S.spread||3;
 const POS=()=>SPREADS[S.spread||'3'].pos;
@@ -628,23 +669,24 @@ function emit(name,detail){
 }
 const answer=(k,v)=>emit('answer',{key:k,value:v});
 function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
-function checkout(){
-  const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});
-  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('plan',S.plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
+function checkout(plan){plan=plan||S.plan;
+  const url=CONFIG.checkoutUrl[plan]||'';emit('checkout_click',{plan,url});
+  if(!url){demoCheckout(plan);return}let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
 }
 function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
-const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
+const tlinks=()=>`<a class="il" ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a> and <a class="il" ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>`;
+const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support: ${esc(CONFIG.supportEmail)}</a>`:''}</div>`;
 
 function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===18)emit('paywall_view');if(S.i===IK_GET&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
 function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
 function next(){go(S.i+1)}
-function back(){clearT();let p=S.hist.pop();while(p&&SKIPBACK.includes(p))p=S.hist.pop();if(p){S.i=p;render(true);viewed()}}
+function back(){clearT();let p=S.hist.pop();while(p&&SKIPBACK.includes(p))p=S.hist.pop();if(!p&&S.i>1){p=S.i-1;while(p>1&&SKIPBACK.includes(p))p--}if(p){S.i=p;render(true);viewed()}}
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;app.appendChild(e);setTimeout(()=>e.remove(),2700)}
 
 /* ---------- blocks ---------- */
 function nav(){
-  if(S.blocked||S.i===1||S.i===12||S.i===13||S.i>=18)return '';
+  if(S.blocked||S.i===1||S.i>=18)return '';
   const k=QN.indexOf(S.i);
   const p=k<0?Math.round(QN.filter(x=>x<S.i).length/QN.length*100):Math.round((k+1)/QN.length*100);
   return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('spark',16)} Starlyn</div><span class="stepn">${k<0?'':(k+1)+'/'+QN.length}</span></div><div class="prog" style="margin:0 8px"><span style="width:${p}%"></span></div></div>`;
@@ -672,7 +714,7 @@ const miniSpread=()=>`<div class="minispread">${cardsNow().map(face).join('')}</
 const planOf=k=>CONFIG.plans[k];
 const todayLine=()=>`${tok(planOf(S.plan).price)} today`;
 const renewLine=k=>{const p=planOf(k);return `${tok(p.price)} today for your first week, then ${tok(p.renew)} every month until you cancel.`};
-function planBlock(){const keys=Object.keys(CONFIG.plans);
+function planBlock(){const keys=Object.keys(CONFIG.plans).filter(k=>!CONFIG.plans[k].hidden);
   return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Your plan</h2><div class="plans">${keys.map(k=>{const p=planOf(k);return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="rib">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renew)} / ${p.per==='week'?'week':p.per}</small></span></button>`}).join('')}</div>
    <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
    <div style="height:12px"></div>${cta('Get my reading',true,'pay')}
@@ -705,12 +747,12 @@ function reading(){const cs=cardsNow(),P=POS(),fr=TFRAME[S.topic]||'Here';
 
 /* ---------- screens ---------- */
 const V={
-1:()=>`<div class="scr" style="padding-top:0;gap:14px"><div class="art" style="height:320px">${backsFan()}<img src="${im('img/hook-tarot.jpg')}" alt="" onerror="this.remove()"></div>
+1:()=>`<div class="scr" style="padding-top:0;gap:14px"><div class="art hookart">${backsFan()}<img src="${im('img/hook-tarot.jpg')}" alt="" onerror="this.remove()"></div>
   <div class="tc" style="margin-top:-36px;position:relative"><div class="brand">${ic('spark',16)} Starlyn</div>
   <h1 class="display" style="margin-top:8px">${t('Ask the cards one question','What do the cards say?')}</h1></div>
   <p class="lead tc">${t('Pull your own cards. Get a clear reading.','Your question, your cards, one honest reading.')}</p>
-  <div class="trio"><span>${ic('clock',15)} 2-min</span><span>${ic('spark',15)} Your question</span><span>${ic('hand',15)} You pull</span></div></div>
-  <div class="foot">${cta('Start my reading')}<p class="note">By continuing you confirm you're 18+ and agree to our Terms of Use and Privacy Policy. For entertainment and reflection.</p></div>`,
+  <div class="trio"><span>${ic('clock',15)} 2-min</span><span>${ic('spark',15)} Your question</span><span>${ic('hand',15)} You pull the cards</span></div></div>
+  <div class="foot">${cta('Start my reading')}<p class="note">By continuing you confirm you're 18+ and agree to our ${tlinks()}. For entertainment and reflection.</p></div>`,
 2:()=>`<div class="scr">${q(t('What is on your mind?','Pick your topic'),t('The cards answer one topic at a time.','Choose what you want clarity on.'))}
   <div class="tgrid">${Object.entries(TOPICS).map(([k,[e,l]])=>`<button class="tpick ${S.topic===k?'on':''}" data-a="pick" data-f="topic" data-v="${k}" aria-pressed="${S.topic===k}"><span class="em">${e}</span><img src="${im('img/topic-'+k+'.jpg')}" alt="" onerror="this.remove()"><span class="lb">${l}</span></button>`).join('')}
   <button class="tpick wide ${S.topic==='other'?'on':''}" data-a="pick" data-f="topic" data-v="other"><span class="em">✏️</span><span class="lb">Other</span></button></div>
@@ -745,13 +787,13 @@ const V={
   <div class="checks" style="text-align:left;max-width:300px;margin:0 auto">${['Fresh shuffle every time','Upright or reversed, drawn live','Read for “'+esc(qShort())+'”'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
   ${ratingReal()?`<div class="rate" style="justify-content:center"><div class="stars">★★★★★</div><div class="hint">${tok(CONFIG.rating.score)} · ${tok(CONFIG.rating.count)} ratings</div></div>`:''}</div>
   <div class="foot">${cta('Shuffle the deck')}</div>`,
-12:()=>`<div class="scr tc" style="gap:14px;padding-top:24px"><div class="quote" style="font-size:14px">${esc(qText())}</div>
+12:()=>`<div class="scr tc" style="gap:14px;padding-top:8px"><div class="quote" style="font-size:14px">${esc(qText())}</div>
   <h1 class="display sm">${S.piles?t('Now cut the deck','Pick one pile'):t('Shuffle, then cut','Hold to shuffle')}</h1>
   <p class="lead">${S.piles?t('Tap the pile that calls to you.','It goes on top of the deck.'):t('Think of your question while you hold.','Then pick one of three piles.')}</p>
   ${S.piles?`<div class="piles">${[0,1,2].map(k=>`<button class="pile ${S.cut===k?'on':''}" data-a="cut" data-v="${k}" aria-label="Pile ${k+1}">${bk()}${bk()}${bk()}</button>`).join('')}</div>`
   :`<div class="deckwrap"><div class="deck" id="deck">${bk()}${bk()}${bk()}</div></div><button class="hold" id="hold" aria-label="Hold to shuffle"><span>${ic('hand',22)}<br>Hold to<br>shuffle</span></button><div id="tapf" hidden>${skin('tapshuffle','Tap to shuffle instead')}</div>`}</div>`,
 13:()=>{const n=N(),P=POS(),k=S.picks.length;
-  return `<div class="scr" style="gap:12px;padding-top:18px"><div class="tc">${q(t('Pull '+n+' card'+(n>1?'s':''),'Trust your hand'),t('Tap the ones that call to you.','Don\'t think too hard.'))}</div>
+  return `<div class="scr" style="gap:12px;padding-top:4px"><div class="tc">${q(t('Pull '+n+' card'+(n>1?'s':''),'Trust your hand'),t('Tap the ones that call to you.','Don\'t think too hard.'))}</div>
   <div class="slotsN c${n}" style="--cols:${Math.min(n,3)}">${P.map((p,j)=>`<div class="slotw"><div class="slot" id="sl${j}">${S.picks[j]?face(Object.assign({},CARDS[S.deck[S.picks[j].i]],{rev:S.picks[j].rev})):j+1}</div><span>${p[0]}</span></div>`).join('')}</div>
   <p class="hint tc" id="cnt">${k} of ${n}</p>
   <div class="fan22" id="fan">${S.deck.map((ci,i)=>`<button class="fc ${S.picks.some(p=>p.i===i)?'used':''}" data-a="draw" data-v="${i}" style="--r:${(i-10.5)*5.2}deg" aria-label="Card ${i+1} of 22">${bk()}</button>`).join('')}</div></div>
@@ -763,7 +805,7 @@ const V={
   <p class="note">Tarot is a prompt for reflection, not a prediction.</p></div>
   <div class="foot">${cta('See what they mean')}</div>`},
 15:()=>{const c=CARDS[17];return `<div class="scr">${q(t('Want a card each morning?','Your daily card'),t('One card, one line, every day.','A small check-in, at a time you pick.'))}
-  <div class="lockscr"><div class="clock">${S.ntime}:00</div><div class="dt">Tomorrow</div><div class="push"><img src="${cardImg(17)}" alt="" onerror="this.outerHTML='<span class=\\'pi\\' style=\\'display:grid;place-items:center;font-size:20px\\'>⭐</span>'"><div><small>STARLYN · now</small>Today's card: ${c.name}. ${c.line}</div></div></div>
+  <div class="lockscr"><div class="clock">${S.ntime}:00</div><div class="dt">Tomorrow</div><div class="push"><img src="${cardImg(17)}" alt="" onerror="this.outerHTML='<span class=\\'pi\\' style=\\'display:grid;place-items:center;font-size:20px\\'>⭐</span>'"><div><small>STARLYN · now</small>Today's card: ${c.name}. Rest and trust.</div></div></div>
   <div class="box">${ic('clock',18)}<select data-a2="ntime" aria-label="Time">${[6,7,8,9,10,12,18,20,21,22].map(h=>`<option value="${h}" ${S.ntime==h?'selected':''}>${h}:00</option>`).join('')}</select></div>
   <p class="note">Reminders start once you open the app.</p></div>
   <div class="foot">${cta('Save my time',true,'ntime')}${skin('nnot','Not now')}</div>`},
@@ -772,8 +814,8 @@ const V={
   ${S.emailErr?`<div class="err" role="alert">${S.emailErr}</div>`:''}
   <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button>
   <p class="note">${ic('lock',12)} Nothing is charged on this step.</p></div>
-  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our Terms of Use and Privacy Policy.</p></div>`,
-17:()=>`<div class="scr" style="gap:14px">${miniSpread()}<div class="tc"><h1 class="display sm">${t('Your reading is ready',N()+' cards, one answer')}</h1><p class="lead" style="margin-top:8px">${t('Built from your question and your cards.','Here is what is inside.')}</p></div>
+  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our ${tlinks()}.</p></div>`,
+17:()=>`<div class="scr vc" style="gap:14px">${miniSpread()}<div class="tc"><h1 class="display sm">${t('Your reading is ready',N()+' cards, one answer')}</h1><p class="lead" style="margin-top:8px">${t('Built from your question and your cards.','Here is what is inside.')}</p></div>
   <div class="signs"><span class="badge">${esc(topicL())}</span><span class="badge">${FEEL[S.feel]?FEEL[S.feel].join(' '):'Your feeling'}</span><span class="badge">${ic('spark',13)} ${esc(BC().name)}</span></div>
   <div class="stack">${TOC().map(([x,o])=>`<div class="lockrow"><span class="${o?'':'blurred'}">${esc(x)}</span><span class="l" style="${o?'color:var(--pos)':''}">${ic(o?'check':'lock',16,o?2.4:1.9)}</span></div>`).join('')}</div>
   <p class="note">A reflective reading for entertainment. No outcome is promised.</p></div>
@@ -787,7 +829,7 @@ const V={
     ['Is my question private?','Yes. Your question is never shared or used in ads.']];
   return `<div class="wp" id="wp">
   <div class="wbar"><div class="brand">${ic('spark',16)} Starlyn</div><button class="mini" data-a="toplans">Get my reading</button></div>
-  <div class="wsec tight"><span class="eyebrow">Your reading is ready</span><h1 class="display" style="font-size:29px">${t('Your reading is <em>ready</em>','Read what your <em>cards mean</em>')}</h1>
+  <div class="wsec tight"><span class="eyebrow">Your ${esc(topicL().toLowerCase())} reading</span><h1 class="display" style="font-size:29px">${t('Your reading is <em>ready</em>','Read what your <em>cards mean</em>')}</h1>
    <p class="lead" style="margin:8px 0 12px">${t('Your question, answered card by card.','Plus a new card every day.')}</p>
    <div class="quote" style="margin-bottom:12px">${esc(qText())}</div>
    <div class="cardsN c${cs.length}" style="--cols:${Math.min(cs.length,3)}">${cs.map(c=>`<div class="cw">${face(c)}</div>`).join('')}</div>
@@ -802,19 +844,19 @@ const V={
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${esc(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([x,y])=>`<details><summary>${x}</summary><p>${y}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
-  <div class="wfoot">${legal()}<div>For entertainment and reflection. ${tok(CONFIG.company)}</div></div>
+  <div class="wfoot">${legal()}<div>For entertainment and reflection. ${/\{\{/.test(CONFIG.company)?'':esc(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
 };
 
 /* ---------- Starlyn policy: purchase -> get the app (old offer + free reading screens removed) ---------- */
-const IK_GET=19,IK_DOB=7;
+const IK_GET=20,IK_DOB=7;
 V[IK_GET]=()=>{const n=(typeof S.name==='string'?S.name:'').trim(),em=S.email||'your email';
-  return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
+  return `<div class="scr vc" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
   <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full reading is waiting in the Starlyn app.</p></div>
   <div class="how" style="margin-top:4px">${[['Download Starlyn: Daily Astrology','From the App Store or Google Play.'],['Log in with '+esc(em),'Use the email you gave us.'],['Open your reading','It is saved to your account.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div>
   <p class="note">For entertainment purposes only. Cancel anytime in your account.</p></div>
-  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="app">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div></div>`};
+  <div class="foot">${cta('Open the app',true,'app')}<div class="stores"><button class="store" data-a="app" data-v="ios">${logo(LOGO_APPLE,22)}<span><small>Download on the</small><b>App Store</b></span></button><button class="store" data-a="app" data-v="android">${logo(LOGO_GP,20)}<span><small>GET IT ON</small><b>Google Play</b></span></button></div></div>`};
 /* under 18: exact age from month/day/year; notice with a way back to the birth-date screen */
 const ikAge=d=>{const n=new Date();let a=n.getFullYear()-(+d.y);if(n.getMonth()+1<+d.m||(n.getMonth()+1===+d.m&&n.getDate()<+d.d))a--;return a};
 function ikBlock(){S.u18=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render(true)}
@@ -894,7 +936,7 @@ app.addEventListener('click',e=>{
     case 'offerbuy':S.offerSeen=true;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u)try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(20);break;
     case 'topw':go(18);break;
-    case 'app':{const u=appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
+    case 'app':{const u=v==='ios'?(CONFIG.appStoreUrl||CONFIG.appUrl):v==='android'?(CONFIG.playStoreUrl||CONFIG.appUrl):appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
   }
 });
 app.addEventListener('change',e=>{const d=e.target.dataset;
@@ -916,8 +958,37 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completeOffer:()=>{S.pack=true;emit('offer_complete');go(IK_GET)},completePurchase:plan=>{if(plan&&CONFIG.plans[plan])S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_GET)}});
-if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_GET}
+  completeOffer:()=>{S.pack=true;emit('offer_complete');go(IK_GET)},completePurchase:plan=>{if(plan!=='addon'){if(plan&&CONFIG.plans[plan])S.plan=plan;S.mainPlan=S.plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_UP);return}S.upsold=true;S.plan=S.mainPlan||CONFIG.defaultPlan;emit('purchase_complete',{plan:'addon',id:CONFIG.upsell.id,price:CONFIG.plans.addon.price});go(IK_GET)}});
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA opens its own Paddle one-time checkout (hidden plan CONFIG.plans.addon); FunnelFox shows its native checkout_addon screen. */
+const IK_UP=19;
+CONFIG.upsell={"id": "tarot_year_2027", "name": "Your 2027 Tarot Year", "art": "img/card-back.jpg", "h": ["Add your <em>2027 tarot year</em>", "See your <em>year ahead</em>"], "lead": ["Twelve cards, one for each month of 2027.", "One card for every month, read for you."], "checks": ["A card for each month of 2027", "What each month asks of you", "Saved with your reading in the app"], "eyebrow": "Add-on · paid once", "price": "$19.99", "cta": "Add for $19.99", "skip": "No thanks, take me to the app", "note": "Paid once through secure checkout. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&IMG[u.art])||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr vc" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const _ikGetV=V[IK_GET];V[IK_GET]=()=>{if(S.plan==='addon')S.plan=S.mainPlan||CONFIG.defaultPlan;const h=_ikGetV();return S.upsold?h.replace('<div class="how"',`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div><div class="how"`):h};
+/* add-on CTA opens its own checkout: CONFIG.plans.addon (hidden, one-time). FunnelFox hooks checkout(planKey) to its native Paddle screen. */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  if(b.dataset.a==='upskip'){emit('upsell_decline',{id:u.id});go(IK_GET);return}
+  emit('upsell_accept',{id:u.id,price:CONFIG.plans.addon.price});checkout('addon')});
+/* demo-only checkout sheet when no checkout URL is configured */
+function demoCheckout(plan){const p=CONFIG.plans[plan];if(!p)return;S.ckPlan=plan;document.getElementById('demock')?.remove();
+  const el=document.createElement('div');el.id='demock';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Checkout');
+  const line=p.oneTime?`${esc(p.label||p.name)} · ${tok(p.price)} · paid once`:`${esc(p.name)} · ${tok(p.price)} today, then ${tok(p.renew)} / ${p.per}`;
+  el.innerHTML=`<div class="dck"><b>Demo checkout</b><p>Starlyn · ${line}</p><div class="dckb"><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  app.appendChild(el)}
+const screenNo=nm=>+Object.keys(SCREENS).find(k=>SCREENS[k]===nm)||0;
+document.addEventListener('click',e=>{const b=e.target.closest('#demock [data-a="ckpay"],#demock [data-a="ckclose"]');if(!b)return;const plan=S.ckPlan;document.getElementById('demock')?.remove();
+  if(b.dataset.a==='ckpay'){window.IkFunnel.completePurchase(plan);return}
+  emit('checkout_decline',{plan});const n=screenNo((CONFIG.declineFlow||{})[plan]);if(n)go(n)});
+if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_UP}
 function fillTo(n){Object.assign(S,{topic:S.topic||'love',sit:S.sit||'seeing',q:S.q||'What should I know about us?',feel:S.feel||'hope',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},name:S.name||'Maya',email:S.email||'demo@example.com'});
   if(n>12&&!S.deck.length){S.deck=shuffle();S.piles=true;S.cut=0}if(n>13&&S.picks.length<N()){S.picks=Array.from({length:N()},(_,k)=>({i:k*2,rev:k===1}))}}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();fillTo(n);go(n)};const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}}

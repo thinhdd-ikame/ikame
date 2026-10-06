@@ -67,7 +67,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .btn:not([disabled]):not(.ghost):not(.light):not(.black){position:relative;overflow:hidden;box-shadow:0 8px 28px -10px #DFA620aa}
 .btn:not([disabled]):not(.ghost):not(.light):not(.black)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
 @keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
-.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border)}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px 10px;min-height:44px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border)}
 .link:hover{color:var(--t1)}
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);text-align:left;width:100%;transition:border-color .15s,background .15s}
@@ -75,9 +75,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .opt .well{width:36px;height:36px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:18px;line-height:1}
 .opt .lbl{flex:1;font-weight:500;font-size:16px}
 .opt .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;color:#fff}
-.opt.on{border-color:transparent;background:var(--grad)}
+.opt.on{border-color:transparent;background:var(--grad);background-origin:border-box;color:var(--btn-text)}
 .opt.on .well{background:#ffffff2e}
 .opt.on .chk{background:#fff;border-color:#fff;color:var(--gold-lm)}
+.opt .chk.sq{border-radius:6px}   /* QA #93: multi-select shows a checkbox, not a radio */
 .opts.cards .opt{border-radius:18px;padding:14px}
 .opts.cards .opt .well{box-shadow:0 0 16px #E3B03A55;background:radial-gradient(circle,#E3B03A40,var(--surface-2))}
 .opts.cards .opt.on{background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);border:1.5px solid #E5B649}
@@ -94,6 +95,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .box select{appearance:none;cursor:pointer}
 .box select option{background:var(--surface);color:var(--t1)}
 .row3{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:8px}
+.row3 .box select{padding-right:18px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237C8298' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0 center}   /* QA #89 */
+.box input[type=time]{position:relative}
+.box input[type=time]::-webkit-calendar-picker-indicator{opacity:0;position:absolute;inset:0;width:auto;height:auto;cursor:pointer}   /* QA #90 */
 .err{font-size:13px;color:var(--neg)}
 .err button{color:var(--t1)}
 .hint{font-size:13px;color:var(--t3)}
@@ -104,7 +108,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .results small{color:var(--t3)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-weight:500;font-size:14px}
-.chip.on{background:var(--grad);border-color:transparent;color:var(--btn-text)}
+.chip.on{background:var(--grad);background-origin:border-box;border-color:transparent;color:var(--btn-text)}
+.chip.on .em{filter:drop-shadow(0 0 .8px #161A27) drop-shadow(0 0 .8px #161A27)}   /* QA #92: emoji readable on the gold chip */
 .chip.sm{font-size:12px;padding:5px 10px;color:var(--t2)}
 .card{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
 .card h4{margin:0 0 3px;font-size:15px;font-weight:600}
@@ -113,6 +118,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .card.dash{border-style:dashed}
 .stack{display:flex;flex-direction:column;gap:10px}
 .row{display:flex;gap:12px;align-items:center}
+.row>.btn{flex:1 1 0;width:auto;min-width:0}
 .lockrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t2);font-size:14px}
 .lockrow .l{margin-left:auto;color:var(--acc)}
 .promise{display:flex;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--border)}
@@ -168,8 +174,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .mock .mrow{padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:11px;color:var(--t2)}
 .mock .mrow b{display:block;color:var(--t1);font-size:12px;margin-bottom:2px}
 .stores{display:flex;gap:8px;justify-content:center}
-.store{display:flex;align-items:center;gap:7px;height:40px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
-.store b{display:block;font-size:13px}
+.store{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px 0 10px;border-radius:8px;background:#000;border:1px solid #A6A6A6;line-height:1.05;text-align:left;color:#fff}
+.store svg{flex:none}
+.store small{display:block;font-size:9.5px;letter-spacing:.02em}
+.store b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
 .qr{display:flex;gap:10px;align-items:center;justify-content:center;font-size:11px;color:var(--t3)}
 .qr svg{background:#fff;border-radius:6px;padding:3px}
 .tips{position:absolute;z-index:6;left:12px;right:12px;padding:12px 14px;border-radius:14px;background:var(--t1);color:#161A28;font-size:13px;box-shadow:0 10px 30px #000a;animation:fi .25s ease}
@@ -216,7 +224,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 /* last-chance offer (fallback / "upsell on decline"): shown once when the paywall is left without paying */
 .wp{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .wp::-webkit-scrollbar{display:none}
-.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#161A27e6;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#161A27f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
 .wbar .brand{flex:1;display:flex;align-items:center;gap:7px;font:600 15px var(--serif);letter-spacing:.02em;color:var(--t1)}
 .wbar .brand svg{color:var(--acc)}
 .wbar .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
@@ -313,6 +321,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .skw{position:relative;display:block}
 .skw .skimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .skw.half .skimg{-webkit-mask-image:linear-gradient(105deg,#000 32%,#0000 74%);mask-image:linear-gradient(105deg,#000 32%,#0000 74%)}
+.skw.half .skimg.glow{-webkit-mask-image:linear-gradient(105deg,#0000 30%,#000 70%);mask-image:linear-gradient(105deg,#0000 30%,#000 70%);filter:grayscale(1) brightness(1.3) contrast(1.9) sepia(1) saturate(2.6) hue-rotate(-4deg);mix-blend-mode:multiply;opacity:.9}
+.skw.half:not(.noimg)>svg{opacity:0}   /* QA #86: SVG outline did not match the photo sketch */
 .skw .skimg.frost{filter:blur(6px)}
 .skw .sigo{position:absolute;right:5%;bottom:2.5%;font-family:"Caveat",cursive;font-weight:600;line-height:1;color:#8A5F1F;text-shadow:0 0 6px #F1E6CF}
 .skw.noimg .sigo{display:none}
@@ -340,6 +350,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .wp .today b{color:var(--t1)}
 .wp .pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F6F3EA;color:#161A27;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
 .wp .secure{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--t2)}
+.wp .secure span{display:inline-flex;gap:5px;align-items:center}.wp .secure svg{color:var(--acc)}
+.wp .fact:last-child:nth-child(odd){grid-column:1/-1}   /* QA #100 */
 .wp .wchecks{display:flex;flex-direction:column;gap:8px;font-size:14px;margin:4px 0 12px}
 .wp .wchecks div{display:flex;gap:10px;align-items:flex-start}.wp .wchecks svg{color:var(--acc);flex:none;margin-top:2px}
 .wp .toc{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:1px solid var(--border)}
@@ -361,13 +373,30 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .wp .rate{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
 .wp .rev{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--t2);margin-top:10px}
 .wp .wfoot{padding:28px 18px 120px;font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
-.wp .wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text,#161A27);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wp .wbar .mini{height:40px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text,#161A27);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
 .wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
-.wsticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:linear-gradient(180deg,transparent,#161A27 28%);transform:translateY(110%);transition:transform .3s ease}
+.wsticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:#161A27f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #ffffff10;transform:translateY(110%);transition:transform .3s ease}
 .wsticky.show{transform:none}
 .wp .wfoot .legal{display:flex;justify-content:center;gap:4px 14px;flex-wrap:wrap;margin-top:8px}
+.wp .wfoot .legal a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:var(--t2);font-size:12px;text-underline-offset:2px}
 .wp .wfoot .legal button{background:none;border:none;color:var(--t2);font-size:12px;text-decoration:underline;text-underline-offset:2px;min-height:44px;padding:0 4px;filter:none;opacity:1}
 .wsticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}.wsticky .sum b{color:var(--t1)}
+
+/* demo checkout sheet: above every screen */
+#demock{position:absolute;inset:0;z-index:1000;background:#000000b3;display:flex;flex-direction:column;justify-content:flex-end}
+#demock .ckc{background:var(--surface);border-top:1px solid var(--border);border-radius:22px 22px 0 0;padding:20px 16px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));color:var(--t1)}
+#demock .ckc b{font:600 20px/1.25 var(--serif)}#demock .ckc p{margin:6px 0 14px;color:var(--t2);font-size:14px}
+#demock .ckb{display:flex;flex-direction:column;gap:8px}
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:left;max-width:320px}
 </style>
 <body>
 <script>
@@ -398,7 +427,6 @@ const IC={
   pencil:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
   chart:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/>',
   apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
-  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
   play:'<path d="m6 3 14 9-14 9V3z"/>',
   cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
   users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>'
@@ -468,7 +496,7 @@ function nav(){const n=S.i;if(!APP.nav(n))return '';const idx=APP.inv.indexOf(n)
 const cta=(label,ok=true,act='next')=>`<button class="btn main" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
 const chk=()=>`<span class="chk">${ic('check',14,'currentColor',3)}</span>`;
 const pick=(k,val,label,emo)=>{const on=S[k]===val;return `<button class="opt ${on?'on':''}" data-a="pick" data-k="${k}" data-v="${val}" aria-pressed="${on}"><span class="well">${emo}</span><span class="lbl">${label}</span>${on?chk():''}</button>`};
-const multi=(k,val,label,emo,max)=>{const on=S[k].includes(val);return `<button class="opt ${on?'on':''}" data-a="multi" data-k="${k}" data-v="${val}" ${max?`data-max="${max}"`:''} aria-pressed="${on}"><span class="well">${emo}</span><span class="lbl">${label}</span><span class="chk">${on?ic('check',14,'currentColor',3):''}</span></button>`};
+const multi=(k,val,label,emo,max)=>{const on=S[k].includes(val);return `<button class="opt ${on?'on':''}" data-a="multi" data-k="${k}" data-v="${val}" ${max?`data-max="${max}"`:''} aria-pressed="${on}"><span class="well">${emo}</span><span class="lbl">${label}</span><span class="chk sq">${on?ic('check',14,'currentColor',3):''}</span></button>`};
 const otherIn=k=>`<div class="box otherin fadein"><input id="oth" data-f="${k}Other" maxlength="40" placeholder="Type it here" value="${esc(S[k+'Other']||'')}"></div>`;
 const pickFoot=(k,extra='')=>`<div class="foot">${S[k]==='other'?cta('Continue',!!(S[k+'Other']||'').trim()):'<div class="note">Tap one to continue</div>'}${extra}</div>`;
 const errHTML=()=>S.err?`<div class="err fadein">${S.err}</div>`:'';
@@ -492,19 +520,19 @@ function emailGate({h,b,card='',taken,optin}){const er=S.err==='taken'?esc(taken
   <div class="field"><label for="em">Email</label><div class="box white ${S.err?'bad':''}">${ic('mail',18,'#BE8D1B')}<input id="em" type="email" data-f="email" autocomplete="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err fadein">${er}</div>`:''}</div>
   <button class="checkbox ${S.optin?'on':''}" data-a="optin" aria-pressed="${S.optin}"><span class="cb">${S.optin?ic('check',13,'currentColor',3):''}</span><span>${optin}</span></button>
   <div class="note" style="color:var(--t2)">${ic('lock',12)} Nothing is charged on this step.</div></div>
-  <div class="foot">${cta('Continue',true,'email')}<div class="row"><button class="btn light" style="height:48px;font-size:14px" data-a="gauth" data-v="Google">${ic('google',17)} Google</button><button class="btn black" style="height:48px;font-size:14px" data-a="gauth" data-v="Apple">${ic('apple',17)} Apple</button></div><div class="note">By continuing, you agree to our Terms & Privacy Policy.</div></div>`}
+  <div class="foot">${cta('Continue',true,'email')}<div class="note">By continuing, you agree to our Terms & Privacy Policy.</div></div>`}
 /* paywall: plans [{k,name,badge,price,line,small}] ; lines {k:html} */
 function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){const p=plans.find(x=>x.k===S.plan)||plans[0];S.plan=p.k;
   const ok=v=>v!=null&&v!==''&&!/^\{\{/.test(String(v));
   const R=(typeof CONFIG!=='undefined'&&CONFIG.rating)||{},RV=((typeof CONFIG!=='undefined'&&CONFIG.reviews)||[]).filter(r=>r&&ok(r.text)&&ok(r.name));
   const proof=ok(R.score)&&ok(R.count)&&RV.length;
   const block=n=>`<div class="pick" id="wplans${n}"><h2 class="wh2">Your plan</h2><div class="stack">${plans.map(x=>`<button class="plan ${S.plan===x.k?'on':''}" data-a="plan" data-v="${x.k}" aria-pressed="${S.plan===x.k}"><span class="radio">${S.plan===x.k?ic('check',13,'currentColor',3):''}</span><span style="flex:1"><span class="pn">${x.name}</span><span class="pp">${x.pl}</span></span></button>`).join('')}</div>
-    <div class="today"><span>Due today</span><b>${tok('price_1w')} today</b></div><div style="height:12px"></div>${cta(ctaLabel,true,'pay')}
+    <div class="today"><span>Due today</span><b>${tok('price_1w')}</b></div><div style="height:12px"></div>${cta(ctaLabel,true,'pay')}
     <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-    <div class="secure"><span>🔒 Secure checkout</span><span>✓ Cancel anytime</span></div>
+    <div class="secure"><span>${ic('lock',14)} Secure checkout</span><span>${ic('check',14,'currentColor',2.2)} Cancel anytime</span></div>
     <p class="fine">${lines[p.k]}<br>We email you 3 days before any renewal.</p></div>`;
   const FAQ=[['When do I get my reading?','Right after checkout. Download the Starlyn app and log in with '+esc(S.email||'your email')+'. Your full reading is waiting there.'],
-    ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
+    ['How do I cancel?','In your account settings, any time before the next renewal'+(CONFIG.supportEmail?', or email '+esc(CONFIG.supportEmail):'')+'. No calls, no forms.'],
     ['Will I be charged again?','Yes, unless you cancel: after your first week the plan renews every month at the monthly price shown above.'],
     ['What happens to my data?','Your answers are used only to build your reading. We never sell them.'],
     ['Is this a prediction?','No. Readings are for entertainment and reflection. They do not predict or change events.']].concat(faqX||[]);
@@ -516,35 +544,37 @@ function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){c
   <div class="wsec">${block(1)}</div>
   <div class="wsec"><span class="eyebrow">Inside your reading</span><h2 class="wh2">Everything in your reading</h2>
    ${benefits?`<div class="wchecks">${benefits.map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>`:''}
-   <div class="toc">${(toc||[]).map((x,i)=>`<div class="${i===0?'open':''}"><span class="n">${i+1}</span><span>${x}</span><span class="l">${i===0?'✓ Ready':'🔒'}</span></div>`).join('')}</div></div>
+   ${toc&&toc.length?`<div class="toc">${toc.map((x,i)=>`<div class="${i===0?'open':''}"><span class="n">${i+1}</span><span>${x}</span><span class="l">${i===0?'✓ Ready':ic('lock',16)}</span></div>`).join('')}</div>`:''}</div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From checkout to your reading</h2><div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Get the app','Download Starlyn: Daily Astrology from the App Store or Google Play.'],['Open your reading','Log in with '+esc(S.email||'your email')+'. Your reading is waiting.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></div>
   ${proof?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><b style="font:600 34px var(--serif);color:var(--acc)">${esc(R.score)}</b><div>★★★★★<div class="hint">${esc(R.count)} ratings</div></div></div>${RV.map(r=>`<div class="rev"><b style="color:var(--t1)">${esc(r.name)}</b><br>${esc(r.text)}</div>`).join('')}</div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([x,y])=>`<details><summary>${x}</summary><p>${y}</p></details>`).join('')}</div></div>
   <div class="wsec">${block(2)}</div>
-  <div class="wfoot"><div class="note">${legal}</div><div class="legal"><a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy</a><a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a></div></div></div>
+  <div class="wfoot"><div class="note">${legal}</div><div class="legal"><a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy</a><a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support: ${esc(CONFIG.supportEmail)}</a>`:''}</div></div></div>
   <div class="wsticky" id="wsticky"><div class="sum"><span>${p.name}</span><b>${tok('price_1w')} today</b></div>${cta(ctaLabel,true,'pay')}</div>`}
 function bindWP(){const v=(typeof cur==='function'&&cur())||document;const wp=v.querySelector('.wp'),st=v.querySelector('.wsticky'),mini=v.querySelector('#wmini');if(!wp||wp.dataset.b)return;wp.dataset.b=1;
-  const blocks=[...wp.querySelectorAll('.pick')];if(mini)mini.onclick=()=>{const t=wp.querySelector('#wplans1');if(t)wp.scrollTo({top:t.offsetTop-60,behavior:'smooth'})};
-  const vis=new Set(blocks);const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);if(st)st.classList.toggle('show',!vis.size&&wp.scrollTop>40)};
-  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));upd()},{root:wp,threshold:.2});blocks.forEach(b=>io.observe(b))}
+  const blocks=[...wp.querySelectorAll('.pick .btn')];if(mini)mini.onclick=()=>{const t=wp.querySelector('#wplans1');if(t)wp.scrollTo({top:t.offsetTop-60,behavior:'smooth'})};
+  const vis=new Set(blocks);const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);if(st)st.classList.toggle('show',!vis.size)};   /* QA #96: sticky CTA while no plan CTA is visible */
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));upd()},{root:wp,threshold:.9,rootMargin:'-60px 0px 0px 0px'});blocks.forEach(b=>io.observe(b))}
   wp.addEventListener('scroll',upd,{passive:true});upd()}
 function qrSVG(seed,s=64){const n=21,c=s/n;let r='';const fin=(x,y)=>`<rect x="${x*c}" y="${y*c}" width="${7*c}" height="${7*c}" fill="#000"/><rect x="${(x+1)*c}" y="${(y+1)*c}" width="${5*c}" height="${5*c}" fill="#fff"/><rect x="${(x+2)*c}" y="${(y+2)*c}" width="${3*c}" height="${3*c}" fill="#000"/>`;
   for(let y=0;y<n;y++)for(let x=0;x<n;x++){if((x<8&&y<8)||(x>12&&y<8)||(x<8&&y>12))continue;if(hash(seed+x*31+y)%2)r+=`<rect x="${x*c}" y="${y*c}" width="${c}" height="${c}" fill="#000"/>`}
   return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true">${r}${fin(0,0)}${fin(14,0)}${fin(0,14)}</svg>`}
 function emit(){return true} /* demo: no tracking; the production funnel.html emits offer_view / offer_accept / offer_decline / offer_expired */
+const BADGE={ios:['M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701','Download on the','App Store'],android:['M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z','GET IT ON','Google Play']};
+const storeBadges=()=>`<div class="stores">${['ios','android'].map(k=>`<button class="store" data-a="store" data-v="${k}"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="${BADGE[k][0]}"/></svg><span><small>${BADGE[k][1]}</small><b>${BADGE[k][2]}</b></span></button>`).join('')}</div>`;
 function appScreen({h,b,mock,rows,note='',ctaLabel='Open the app'}){
   return `<div class="scr"><h1 class="display sm tc">${h}</h1><p class="lead tc" style="margin-top:-8px">${b}</p>
   <div class="mock">${mock}</div>
   <div class="card" style="padding:4px 14px">${rows.map(([e,l])=>`<div class="promise"><span class="well">${e}</span><span>${l}</span></div>`).join('')}</div>
   ${note?`<p class="hint tc" style="margin:0">${note}</p>`:''}
-  <div class="stores"><button class="store" data-a="store">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div>
+  ${storeBadges()}
   <div class="qr">${qrSVG(S.email||'nebula',56)}<span>On desktop, this page shows a QR code<br>to open Starlyn on your phone.</span></div></div>
   <div class="foot">${cta(ctaLabel,true,'store')}</div>`}
 /* ----- after purchase: get the app. The full reading lives in the app; there is no free path and no offer. ----- */
 function getApp(extra=''){return `<div class="scr center tc" style="align-items:center;gap:16px"><div class="bigwell">${ic('check',34,'currentColor',2.4)}</div>
   <h1 class="display sm">You're in${S.name?', '+esc(S.name):''}</h1><p class="lead" style="margin-top:-8px">Your full reading is waiting in the Starlyn app.</p>${extra}
   <div class="card" style="padding:4px 14px;width:100%;text-align:left">${['Download Starlyn: Daily Astrology',`Log in with ${esc(S.email||'your email')}`,'Open your reading'].map((l,i)=>`<div class="promise"><span class="well">${i+1}</span><span>${l}</span></div>`).join('')}</div>
-  <div class="stores"><button class="store" data-a="store" data-v="ios">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div>
+  ${storeBadges()}
   <p class="hint" style="margin:0">For entertainment purposes only.</p></div>
   <div class="foot">${cta('Open the app',true,'store')}</div>`}
 function stepsHTML(rows){return `<div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>`}
@@ -563,7 +593,7 @@ function heroFrame(){const now=performance.now();const dt=Math.min(50,now-(HEROE
   if(HEROES.size)requestAnimationFrame(heroFrame);else HEROES.loop=false}
 /* starfield */
 const SKY={base:0.00004,boost:0,mx:0,my:0,tx:0,ty:0};
-function starfield(){const cv=document.getElementById('stars'),cx=cv.getContext('2d');let w=0,h=0;const stars=[],shoot=[];let nextShoot=performance.now()+2500;
+function starfield(){const cv=document.getElementById('stars'),cx=cv.getContext('2d');let w=0,h=0;const stars=[],shoot=[];let nextShoot=performance.now()+2500,clipY=0,clipT=0;
   const tint=()=>{const r=Math.random();return r<.72?'245,242,251':r<.86?'210,170,255':'255,170,210'};
   const spawn=(s,far)=>{s.x=(Math.random()*2-1)*1.1;s.y=(Math.random()*2-1)*1.1;s.z=far?1:0.08+Math.random()*.92;s.c=tint();s.p=Math.random()*6.28;s.f=.6+Math.random()*1.8;return s};
   for(let i=0;i<240;i++)stars.push(spawn({},false));
@@ -577,9 +607,11 @@ function starfield(){const cv=document.getElementById('stars'),cx=cv.getContext(
       const depth=1-s.z,tw=.55+.45*Math.sin(tt*s.f+s.p),a=Math.min(1,depth*1.25)*tw,r=.35+depth*1.9;
       if(sp>0.004&&!RM){const[px,py]=proj(s,Math.min(1,pz+sp*5));cx.strokeStyle=`rgba(${s.c},${a*.8})`;cx.lineWidth=r;cx.beginPath();cx.moveTo(px,py);cx.lineTo(x,y);cx.stroke()}
       cx.fillStyle=`rgba(${s.c},${a})`;cx.beginPath();cx.arc(x,y,r,0,6.283);cx.fill()}
+    let clip=false;if(shoot.length){if(now-clipT>300){clipT=now;const v=cur(),hd=v&&v.querySelector('h1,.display,.wh1'),pr=phone.getBoundingClientRect();clipY=hd?Math.max(0,hd.getBoundingClientRect().top-pr.top-12):h}clip=true;cx.save();cx.beginPath();cx.rect(0,0,w,clipY);cx.clip()}   /* QA #87 */
     if(now>nextShoot){const an=Math.PI*(.72+Math.random()*.12);shoot.push({x:w*(.3+Math.random()*.7),y:h*Math.random()*.35,vx:Math.cos(an)*.55,vy:Math.sin(an)*.55,l:0});nextShoot=now+4000+Math.random()*5000}
     for(let i=shoot.length-1;i>=0;i--){const m=shoot[i];m.l+=dt;m.x+=m.vx*dt;m.y+=m.vy*dt;const k=1-m.l/1100;if(k<=0){shoot.splice(i,1);continue}
       const g=cx.createLinearGradient(m.x,m.y,m.x-m.vx*160,m.y-m.vy*160);g.addColorStop(0,`rgba(255,240,250,${k})`);g.addColorStop(1,'rgba(253,250,242,0)');cx.strokeStyle=g;cx.lineWidth=1.6;cx.beginPath();cx.moveTo(m.x,m.y);cx.lineTo(m.x-m.vx*160,m.y-m.vy*160);cx.stroke()}
+    if(clip)cx.restore();
     if(!RM)requestAnimationFrame(frame)}
   requestAnimationFrame(frame);
   phone.addEventListener('pointermove',e=>{const r=phone.getBoundingClientRect();SKY.tx=((e.clientX-r.left)/r.width-.5)*2;SKY.ty=((e.clientY-r.top)/r.height-.5)*2});
@@ -620,10 +652,9 @@ function boot(){
       case 'clearcity':S[b.dataset.k]='';S[b.dataset.q]='';render();break;
       case 'optin':S.optin=!S.optin;render();break;
       case 'email':{const em=S.email.trim();if(!EMRX.test(em)){S.err='Enter a valid email address';render()}else if(/^taken@/i.test(em)){S.err='taken';render()}else{S.email=em;next()}break}
-      case 'gauth':S.email=v==='Google'?'maya.r@gmail.com':'maya@privaterelay.appleid.com';S.auth=v;toast(`Signed in with ${v} (demo)`);next();break;
       case 'login':toast('Demo only — login would open');break;
       case 'plan':S.plan=v;render();break;
-      case 'pay':S.paid=S.plan;toast('Demo only — no charge made');APP.onPaid();break;
+      case 'pay':demoCheckout(S.plan);break;
       case 'agefix':ageFix();break;
       case 'legal':toast('Demo only — legal page would open');break;
       case 'store':toast('Demo only — app store link would open');break;
@@ -649,10 +680,12 @@ function boot(){
 /* ===== Starlyn · Soulmate Sketch ===== */
 /* prices stay tokens in the demo; the plan mirrors funnel.html CONFIG.plans */
 /* one plan only (Starlyn app policy 2026-10-05): 1-week intro, then monthly. No sale, no offer. */
-const CONFIG={funnel:'soulmate-sketch',brand:'Starlyn',plans:{weekly:{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'}},defaultPlan:'weekly'};
+const CONFIG={funnel:'soulmate-sketch',brand:'Starlyn',termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',supportEmail:'support@starlyn.co',plans:{weekly:{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'},
+  addon:{name:'Soulmate Meeting Guide',label:'Soulmate Meeting Guide',price:'$19.99',oneTime:true,hidden:true}},   /* add-on: own Paddle one-time checkout, never on the paywall */
+  defaultPlan:'weekly',declineFlow:{addon:'get_app'}};
 const APP={title:'Starlyn · Soulmate Sketch',
-  intro:'A clickable prototype of the 23-screen web2app funnel in <code>funnel-content.md</code>. Starlyn house look (dark, purple-pink CTAs), with the cream-paper, gold-graphite sketch as the one 3D hero. Tap through it in the phone, or jump to any screen below.',
-  foot:'Placeholder outputs, seeded from your answers: Venus sign, partner sign, heart-line type and the sketch itself (4 pre-generated AI sketches picked by gender and hair, drawn in over a hand-built SVG). The camera, sign-in, stores and checkout are simulated. Prices, the refund window, {{sketch_count}} and reviews stay as tokens until real ikame data exists. Type an email starting with taken@ to see the "already has a sketch" error.',
+  intro:'A clickable prototype of the 24-screen web2app funnel in <code>funnel-content.md</code>. Starlyn house look (dark, purple-pink CTAs), with the cream-paper, gold-graphite sketch as the one 3D hero. Tap through it in the phone, or jump to any screen below.',
+  foot:'Placeholder outputs, seeded from your answers: Venus sign, partner sign, heart-line type and the sketch itself (4 pre-generated AI sketches picked by gender and hair, drawn in over a hand-built SVG). The camera, stores and checkout are simulated (email only, no social sign-in). Prices, the refund window, {{sketch_count}} and reviews stay as tokens until real ikame data exists. Type an email starting with taken@ to see the "already has a sketch" error.',
   load:19,inv:[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],nav:n=>(n>=2&&n<=18)||n===21,dob:6,onPaid:()=>go(23),
   skipped:n=>n===17&&S.palm==='skip',loadH:()=>t(`Drawing your soulmate, ${nm()}…`,`Sketching ${nm()}'s soulmate…`)};
 const FLOW=[
@@ -663,8 +696,8 @@ const FLOW=[
  ['B2 · Side test: palm',[[16,'Palm offer','optional'],[17,'Palm scan','if palm'],[18,'Palm read','trust']]],
  ['D · Anticipation',[[19,'Drawing your soulmate','loading'],[20,'Sketch ready','tease']]],
  ['E · Gate',[[21,'Where to send it']]],
- ['F · Monetization',[[22,'Paywall','hard']]],
- ['G · Payoff',[[23,'Get app','after purchase']]]
+ ['F · Monetization',[[22,'Paywall','hard'],[23,'Report upsell','add-on']]],
+ ['G · Payoff',[[24,'Get app','after purchase']]]
 ];
 const INIT=()=>({v:'A',i:1,hist:[],who:'',love:'',age:'',name:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,place:'',placeQ:'',hair:'chart',eyes:'chart',must:[],mustOther:'',pattern:'',patternOther:'',lang:'',palm:'',cam:'ask',camErr:'',aligned:false,email:'',optin:false,auth:'',plan:'weekly',paid:'',offerSeen:false,sheet:null,err:''});
 const WHO={m:['A man','👨','he'],w:['A woman','👩','she'],a:['Anyone','💞','they']};
@@ -717,7 +750,7 @@ function portrait({who=S.who||'w',age=S.age||'30-40',hair=S.hair,eyes=S.eyes,mus
   const svg=`<svg class="sk ${mode==='draw'?'draw':''}" viewBox="0 0 200 240" width="${w}" height="${h}" style="--hc:${hc};--ec:${ec}" aria-hidden="true">${out}</svg>`;
   if(!img||!['full','half','draw'].includes(mode))return svg;
   const dT=Math.min(T+.2,6.2),st2=mode==='draw'?`opacity:0;animation-delay:${dT}s`:'';
-  return `<span class="skw ${mode}" style="width:${w}px;height:${h}px">${svg}<img class="skimg ${mode==='draw'?'dri':''} ${frost?'frost':''}" src="${SKI(who,hair)}" alt="" style="${st2}" onerror="this.parentNode.classList.add('noimg');this.remove()">${sig?`<span class="sigo ${mode==='draw'?'dri':''}" style="font-size:${(19*w/200).toFixed(1)}px;${st2}">for ${sig}</span>`:''}</span>`}
+  return `<span class="skw ${mode}" style="width:${w}px;height:${h}px">${svg}${mode==='half'?`<img class="skimg glow" src="${SKI(who,hair)}" alt="" onerror="this.remove()">`:''}<img class="skimg ${mode==='draw'?'dri':''} ${frost?'frost':''}" src="${SKI(who,hair)}" alt="" style="${st2}" onerror="this.parentNode.classList.add('noimg');this.remove()">${sig?`<span class="sigo ${mode==='draw'?'dri':''}" style="font-size:${(19*w/200).toFixed(1)}px;${st2}">for ${sig}</span>`:''}</span>`}
 const paper=(inner,mode='float',extra='')=>`<div class="paper3d" data-hero="paper" data-mode="${mode}"><div class="pcard"><div class="pshadow"></div><div class="pframe"><div class="paper">${inner}${extra}</div></div><div class="pgloss"></div></div></div>`;
 const HERO={paper:el=>{const card=el.querySelector('.pcard'),mode=el.dataset.mode,tip=el.querySelector('.tip');
   const drs=mode==='draw'?[...el.querySelectorAll('.dr')].map(p=>({p,d0:+p.dataset.d0,du:+p.dataset.du,L:p.getTotalLength()})):[];const fades=mode==='draw'?[...el.querySelectorAll('.ir,.sig,.dri')].map(f=>(f._d=parseFloat(f.style.animationDelay)||0,f)):[];
@@ -732,7 +765,7 @@ const HERO={paper:el=>{const card=el.querySelector('.pcard'),mode=el.dataset.mod
     if(tip){const a=drs.find(x=>tt>=x.d0&&tt<x.d0+x.du);if(a&&!RM){const k=(tt-a.d0)/a.du,e=k*k*(3-2*k),pt=a.p.getPointAtLength(a.L*e);tip.setAttribute('cx',pt.x.toFixed(1));tip.setAttribute('cy',pt.y.toFixed(1));tip.style.opacity=1}else tip.style.opacity=0}}})}};
 
 /* ----- palm ----- */
-const HAND='M62 250 C58 214 50 190 48 160 L44 104 C43 94 56 92 58 102 L64 146 L62 72 C61 60 76 60 77 72 L82 138 L84 56 C84 44 100 44 100 56 L102 136 L108 66 C109 54 124 56 123 68 L120 146 C128 132 138 118 150 112 C160 108 166 118 158 128 C144 146 136 168 132 190 C128 212 128 232 130 250';
+const HAND='M62 250 C58 214 50 190 48 160 L45 110 C45 97 59 97 59 110 L60 137 Q62 142 64 137 L63 76 C63 62 78 62 78 76 L80 133 Q82 138 84 133 L84 60 C84 46 100 46 100 60 L101 133 Q103 138 105 133 L106 70 C106 56 122 56 122 70 L121 146 C128 132 138 118 150 112 C160 108 166 118 158 128 C144 146 136 168 132 190 C128 212 128 232 130 250';   /* QA #94: closed finger outlines */
 const HEARTLN='M50 152 C70 147 92 141 118 129',HEADLN='M126 160 C106 164 82 172 58 184',LIFELN='M124 158 C108 180 104 210 110 244',FATELN='M92 244 C92 214 94 190 96 168';
 const skinDef='<defs><radialGradient id="skin" cx="50%" cy="55%" r="60%"><stop offset="0" stop-color="#E8B996"/><stop offset="1" stop-color="#B98463"/></radialGradient></defs>';
 function palmSVG({w=170,mode='offer'}={}){
@@ -772,7 +805,7 @@ const V={
   <div class="field"><label for="nm">Your name</label><div class="box white ${S.err?'bad':''}"><input id="nm" data-f="name" data-focus maxlength="30" autocomplete="given-name" placeholder="Your first name" value="${esc(S.name)}"></div>${errHTML()}</div></div>
   <div class="foot">${cta('Continue',true,'name')}</div>`,
 6:()=>`<div class="scr"><h1 class="display">${t('When were you born?',`Your birthday, ${nm()}?`)}</h1><p class="lead">${t('Your date finds your Venus, your love sign.','Your birthday shapes how you love.')}</p>
-  <div class="field"><label>Date of birth</label>${dateSel('dob',S.dob)}${errHTML()}</div><p class="hint">You must be 18 or older.</p></div><div class="foot">${cta('Continue',true,'dob')}</div>`,
+  <div class="field"><label>Date of birth</label>${dateSel('dob',S.dob)}${errHTML()}</div><p class="hint">You must be 18 or older.</p></div><div class="foot">${cta('Continue',!!(S.dob.m&&S.dob.d&&S.dob.y),'dob')}</div>`,
 7:()=>`<div class="sky"></div><div class="scr z center tc" style="align-items:center"><div class="fadein">${wheel2d()}</div>
   <h1 class="display">${t(`Your Venus is in ${venus()}`,`${nm()}, you love like ${venus()}`)}</h1>
   <p class="lead" style="color:var(--rose)">Venus in ${venus()} — ${VTRAIT[venus()]}</p>
@@ -791,8 +824,8 @@ const V={
   <div class="card" style="padding:4px 14px">${[['shield','Never shared or sold'],['eye','Price shown before you pay'],['trash','Delete your data anytime']].map(([i,l])=>`<div class="promise"><span class="well">${ic(i,18)}</span><span>${l}</span></div>`).join('')}</div></div><div class="foot">${cta('Continue')}</div>`,
 11:()=>`<div class="scr"><div style="align-self:center" id="lookpt">${paper(portrait({w:110,mode:'full'}),'still')}</div>
   <h1 class="display sm">${t("Any look you're drawn to?",'What catches your eye?')}</h1><p class="lead" style="margin-top:-8px">Optional. Or let your chart decide.</p>
-  <div class="lookrow"><h5>Hair</h5><div class="chips">${HAIR.map(([k,e,l])=>`<button class="chip ${S.hair===k?'on':''}" data-a="hair" data-v="${k}" aria-pressed="${S.hair===k}">${e} ${l}</button>`).join('')}</div></div>
-  <div class="lookrow"><h5>Eyes</h5><div class="chips">${EYES.map(([k,e,l])=>`<button class="chip ${S.eyes===k?'on':''}" data-a="eyes" data-v="${k}" aria-pressed="${S.eyes===k}">${e} ${l}</button>`).join('')}</div></div>
+  <div class="lookrow"><h5>Hair</h5><div class="chips">${HAIR.map(([k,e,l])=>`<button class="chip ${S.hair===k?'on':''}" data-a="hair" data-v="${k}" aria-pressed="${S.hair===k}"><span class="em">${e}</span> ${l}</button>`).join('')}</div></div>
+  <div class="lookrow"><h5>Eyes</h5><div class="chips">${EYES.map(([k,e,l])=>`<button class="chip ${S.eyes===k?'on':''}" data-a="eyes" data-v="${k}" aria-pressed="${S.eyes===k}"><span class="em">${e}</span> ${l}</button>`).join('')}</div></div>
   <p class="hint">Your sketch is an illustration, not a real person.</p></div><div class="foot">${cta('Continue')}</div>`,
 12:()=>`<div class="scr"><h1 class="display">${t('What must they have?','Your non-negotiables?')}</h1><p class="lead">Pick up to three. They shape the expression.</p>
   <div class="opts">${Object.entries(MUST).map(([k,[l,e]])=>multi('must',k,l,e,3)).join('')}${S.must.includes('other')?otherIn('must'):''}</div></div>
@@ -828,19 +861,49 @@ const V={
 19:()=>`<div class="sky"></div><div class="scr z" style="gap:14px"><div style="margin-top:2px">${paper(portrait({w:150,mode:'draw',sig:nm()}),'draw')}</div>
   <h1 class="display sm tc" id="lh">${APP.loadH()}</h1>${stepsHTML(['Reading your Venus and Descendant…','Shaping the face you described…','Adding the look in their eyes…','Almost done — signing it for you…'])}</div>
   <div class="foot"><div class="note">AI illustration · For entertainment</div></div>`,
-20:()=>`<div class="scr"><h1 class="display sm">${t(`${nm()}, your sketch is ready`,'Meet them, almost')}</h1><p class="lead" style="margin-top:-8px">Your partner sign is free. Their face is next.</p>
+20:()=>`<div class="scr" style="padding-top:52px"><h1 class="display sm">${t(`${nm()}, your sketch is ready`,'Meet them, almost')}</h1><p class="lead" style="margin-top:-8px">Your partner sign is free. Their face is next.</p>
   ${frostCard(130)}
   <div class="ptcard"><span class="gl">${gly(partner())}</span><div><b>Partner sign: ${partner()}</b><div class="hint" style="color:var(--t2)">${partner()} — ${PTRAIT[partner()]}</div></div></div>
   ${S.palm==='captured'?`<span class="badge">${ic('heart',13)} ${heartType().split(' — ')[0]}</span>`:''}
   ${lockrows(['Full HD sketch','Their nature','Where and when you may meet','Your pattern, and how to break it'])}
   <p class="hint tc" style="margin:0">Sketch is an AI illustration for entertainment.</p></div><div class="foot">${cta('Unlock my sketch')}</div>`,
 21:()=>emailGate({h:t('Where should we send it?',`Save your sketch, ${nm()}`),b:t('Your sketch and app login go here.','One email. Your sketch waits inside.'),card:`<div style="display:flex;justify-content:center">${frostCard(70)}</div>`,taken:'This email already has a sketch — log in instead?',optin:'Email me love forecasts and news (optional)'}),
-22:()=>paywall({facts:[['Sun',(()=>{try{return sun()}catch(e){return ''}})()],['Name',nm()],['Sketch','Ready to reveal']],toc:['Your partner sign','Your soulmate sketch','Their traits and what draws you','Where and how you may meet','Your love guidance in the app'],faqX:[['Is the sketch a real person?','No. It is an AI illustration built from your answers, for entertainment.']],top:`<div style="display:flex;justify-content:center;margin-top:6px">${frostCard(80)}</div>`,h:t('Unlock your soulmate sketch',`${nm()}, see their face`),b:t('One plan. You see the price first.','Your sketch and full reading, in the app.'),
+22:()=>paywall({facts:[['Sun',(()=>{try{return sun()}catch(e){return ''}})()],['Name',nm()],['Sketch','Ready to reveal']],benefits:['Your soulmate sketch in full HD','Their nature, and where you may meet','Daily love forecast in the app'],faqX:[['Is the sketch a real person?','No. It is an AI illustration built from your answers, for entertainment.']],top:`<div style="display:flex;justify-content:center;margin-top:6px">${frostCard(80)}</div>`,h:t('Unlock your soulmate sketch',`${nm()}, see their face`),b:t('One plan. You see the price first.','Your sketch and full reading, in the app.'),
   plans:[{k:'weekly',name:'1 week, then monthly',pl:`${tok('price_1w')} first week, then ${tok('price_month')}/month, renews monthly`}],
   lines:{weekly:`${tok('price_1w')} today for your first week, then ${tok('price_month')} every month until you cancel.`},
   legal:'For entertainment. Your sketch is an AI illustration, not a real person.',ctaLabel:'Unlock my sketch'}),
-23:()=>getApp()
+24:()=>getApp(S.upsold?upAddLine():'')
 };
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA opens its own Paddle one-time checkout (CONFIG.plans.addon, hidden from the paywall). Simulated here by the demo checkout sheet.
+   Paid -> completePurchase('addon') -> get_app with the "added" line. Closed without paying -> get_app (CONFIG.declineFlow). */
+const IK_UP=23,IK_GET=24;
+CONFIG.upsell={"id": "soulmate_meeting", "name": "Soulmate Meeting Guide", "art": "img/sky-dusk.jpg", "h": ["Add your <em>meeting guide</em>", "When and where <em>you'll meet</em>"], "lead": ["The months and places where love is likeliest to find you.", "Your best months and settings to meet them."], "checks": ["Your 3 strongest months for meeting", "The places and settings that suit you", "Saved with your sketch in the app"], "eyebrow": "Add-on · paid once", "price": "$19.99", "cta": "Add for $19.99", "skip": "No thanks, take me to the app", "note": "One-time charge in a secure checkout. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&(IMG[u.art]||IMG[u.art.replace(/^img\/|\.\w+$/g,'')]))||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const upAddLine=()=>`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div>`;
+/* any successful checkout: main plan -> add-on screen; 'addon' -> mark added -> get the app (mirrors funnel.html IkFunnel.completePurchase) */
+function completePurchase(plan){if(plan==='addon'){S.upsold=true;go(IK_GET);return}S.paid=plan;S.plan=plan;APP.onPaid()}
+window.IkFunnel=window.IkFunnel||{};window.IkFunnel.completePurchase=completePurchase;
+function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;document.getElementById('demock')?.remove();
+  const el=document.createElement('div');el.id='demock';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Checkout');
+  el.innerHTML=`<div class="ckc"><b>Demo checkout</b><p>${esc(CONFIG.brand)} · ${esc(p.label||p.name)} · ${p.oneTime?esc(p.price)+' paid once':esc(p.intro)+' today'}</p><div class="ckb"><button class="btn main" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  phone.appendChild(el)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"],[data-a="ckpay"],[data-a="ckclose"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  switch(b.dataset.a){
+    case 'ckpay':document.getElementById('demock')?.remove();completePurchase(S.ckPlan);break;
+    case 'ckclose':{document.getElementById('demock')?.remove();const to=(CONFIG.declineFlow||{})[S.ckPlan];if(to==='get_app')go(IK_GET);break}
+    case 'upskip':emit('upsell_decline',{id:u.id});go(IK_GET);break;
+    case 'upbuy':emit('upsell_accept',{id:u.id,price:u.price});demoCheckout('addon');break;
+  }});
 function NEXT(n){return n+1}
 function PREV(n){if(n===18&&S.palm==='skip')return 16;return n-1}
 function fillTo(n){
@@ -849,7 +912,7 @@ function fillTo(n){
   if(n>12&&!S.must.length)S.must=['kind','humor'];if(n>13&&!S.pattern)S.pattern='timing';if(n>14&&!S.lang)S.lang='time';
   if(n===17){S.palm='';S.cam='ask';S.aligned=false;S.camErr=''}if(n>17&&!S.palm)S.palm='captured';
   if(n>21&&!S.email)S.email='maya.r@gmail.com';if(n>22&&!S.paid)S.paid='weekly'}
-const OK={8:()=>!!(S.time||S.timeUnknown),9:()=>!!S.place,12:()=>S.must.length>0,13:()=>!!S.patternOther.trim()};
+const OK={6:()=>!!(S.dob.m&&S.dob.d&&S.dob.y),8:()=>!!(S.time||S.timeUnknown),9:()=>!!S.place,12:()=>S.must.length>0,13:()=>!!S.patternOther.trim()};
 function capture(){if(S.i!==17)return;const c=document.getElementById('cam');if(c)c.insertAdjacentHTML('beforeend','<div class="flash"></div>');S.palm='captured';later(()=>go(18),450)}
 function ACT(a,v,b){switch(a){
   case 'hair':case 'eyes':S[a]=v;render();return true;

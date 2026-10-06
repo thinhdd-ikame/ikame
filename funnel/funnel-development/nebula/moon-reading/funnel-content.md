@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: full-moon feeling, intention, name, birth date, birth time (optional), birth place, what throws you off, ritual time and style, optional second person's birthday, phase reminder preference
 output: natal Moon sign + birth moon phase + 30-day moon phase calendar with personalized rituals (+ optional Moon-to-Moon match)
-screens: 22
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 23
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own one-time Paddle checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -31,7 +31,7 @@ A web2app funnel (Meta ad → web quiz → web paywall → Starlyn app) for the 
 - A phase-reminder preference is collected on web and applied on first app open.
 - No fake accuracy meter, color or element filler, palm photo, countdown or ticker. No invented "moon guide" personas. Renewal price on every card.
 
-The visual system is the base `nebula/` house look, with the moon as the single 3D hero object. 22 screens.
+The visual system is the base `nebula/` house look, with the moon as the single 3D hero object. 23 screens.
 
 ---
 
@@ -268,7 +268,7 @@ The visual system is the base `nebula/` house look, with the moon as the single 
 **Headline A:** {{name}}, your Moon is {{moon_sign}}
 **Headline B:** Meet your Moon sign
 **Body A:** How you feel, what soothes you, what drains you.
-**Visual:** Moon-sign card with a large glyph and three short lines (feel / soothe / drain). On the "both signs" path, two cards side by side with "Add your birth time to choose".
+**Visual:** Moon-sign card with a large glyph and three short lines (feel / soothe / drain). On the "both signs" path, two cards side by side with "Add your birth time to choose" (opens #7; Continue there returns straight to this screen).
 **Microcopy:** Sample: "Moon in Cancer — you feel everything first, then protect it."
 **CTA:** See my moon month
 
@@ -290,7 +290,7 @@ The visual system is the base `nebula/` house look, with the moon as the single 
 **Headline A:** Where should we send it?
 **Headline B:** Save your moon month
 **Body A:** Your calendar and app login go here.
-**Field:** Email input; "Continue with Google" / "Continue with Apple"; marketing opt-in checkbox, **unchecked by default**
+**Field:** Email input only: required and validated, no Google/Apple sign-in, no skip or guest path (the email activates the subscription and is the app login). Fires `lead` with the email. Marketing opt-in checkbox, **unchecked by default**
 **Visual:** Plain white input, a small blurred calendar card above.
 **Error states:** "Enter a valid email address" / "This email already has an account — log in instead?"
 **Microcopy:** Legal line: "By continuing, you agree to our Terms & Privacy Policy." Reassurance: "Nothing is charged on this step."
@@ -308,25 +308,37 @@ The visual system is the base `nebula/` house look, with the moon as the single 
 **Body B:** Your calendar, rituals and daily moon line.
 **Plans:** (prices are tokens for the ikame pricing team; do not invent numbers)
 - **1 week, then monthly**: the only plan, pre-selected. `$13.67` for the first week, then `$49.99` every month. Card line: "`$13.67` first week, then `$49.99`/month, renews monthly". No other tiers, no badge, no struck price.
-**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their blurred moon calendar and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer, and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
+**Visual:** Web long-scroll landing page in its own scroll container: sticky brand bar with a mini CTA (no close ✕), personal hero with their blurred moon calendar and fact chips, plan block (one pre-selected plan, Due today, CTA, payment badges, secure/cancel row, renewal line), what's inside, how it works (checkout · get the app · open your reading), FAQ, the plan block again, footer (Terms · Privacy · Subscription terms · Support: support@starlyn.co), and a sticky bottom CTA while no plan block is visible. Proof and guarantee stay hidden until real. No "continue free" link: this is a hard paywall.
 **Microcopy:** Benefit rows: "Rituals for every new and full moon" / "Daily moon line for your {{moon_sign}} Moon" / "Moon match for anyone you add". CTA line: "`$13.67` today for your first week, then `$49.99` every month until you cancel." Trust row: "🔒 Secure checkout · Cancel anytime in your account · `{{refund_days}}`-day money-back". "We email you 3 days before any renewal." Legal: "For entertainment only. Not medical or mental-health advice."
 **CTA:** Unlock my rituals
 ---
 
+### 22. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your 2027 moon calendar
+**Headline B:** Every moon of 2027
+**Body A:** Every new and full moon of 2027, with a ritual.
+**Body B:** A ritual for each new and full moon, for your sign.
+**Plans:** One add-on, paid once: "Moon Calendar 2027" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens its own Paddle checkout at a one-time price: a hidden plan `addon` in `CONFIG.plans` (never listed on the paywall), FunnelFox screen `checkout_addon (one-time)`.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/moon-full.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Every new and full moon of 2027 · A ritual matched to your Moon sign · Saved to your calendar in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". Paying lands on the get-the-app screen with the report line; closing the add-on checkout without paying lands there without it (`CONFIG.declineFlow = {addon: 'get_app'}`). Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`.
+**CTA:** Add for $19.99
+
 ## G. Payoff
 
-### 22. Get the app (after purchase)
+### 23. Get the app (after purchase)
 **Purpose:** Purchase confirmation and the web2app handoff. The moon calendar, rituals, reminders from #16 and the Moon match live in the Starlyn app; there is no free web result and no offer screen.
 **Headline A:** You're in, {{name}}
 **Body A:** Your full reading is waiting in the Starlyn app.
-**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges.
-**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase()`.
+**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges. If they bought the add-on, a green line "Moon Calendar 2027 added. It opens in the app." sits above the steps.
+**Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase(plan)`: plan `weekly` goes to the add-on (#22), plan `addon` marks the report added and goes here.
 **CTA:** Open the app
 
 ---
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 22 offers one add-on, "Moon Calendar 2027", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** hard paywall (no close ✕, no "continue free"), exactly one plan (`$13.67` first week, then `$49.99` every month), no sale of any kind (no last-chance offer, struck price, badge or promo code), and a confirmed purchase lands on a get-the-app screen. Under 18 shows a blocking notice with a "Change my birth date" way back.
 - **Two free micro-reveals + one free result** (#6 birth phase, #13 tonight's Moon, #18 Moon sign) are deliberate. Moon content is widely available for free, so the paywall has to sell the *personal rhythm* (calendar + rituals + reminders), not the sign. The free reveals stay before the gate; the paywall itself is hard, with no free path past it.
 - **Cut from Astroline's moon quiz:** the "forecast accuracy %" meter (fake metric), favorite color, element, modality/polarity cards and the palm photo. None of them feeds the output. Relationship status is replaced by the optional #14 branch, which only appears when it powers a real Moon match.

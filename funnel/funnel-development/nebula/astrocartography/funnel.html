@@ -48,9 +48,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .scr::-webkit-scrollbar{display:none}
 .scr.center{justify-content:center}
+.scr>*{flex-shrink:0}
+.navpad{height:48px;flex:none}
 .foot{flex:none;padding:10px 20px max(20px,calc(var(--sab) + 12px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
 .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
-.note a{color:var(--t2);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:2px}
+.note a{color:var(--t2);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:2px;display:inline-block;padding:14px 2px;margin:-14px 0}
 .sky{position:absolute;inset:0 0 auto 0;height:340px;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 0%,#97701655 0%,#2A334F33 45%,transparent 100%)}
 .z{position:relative;z-index:1}
 .display{font:600 30px/1.12 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
@@ -94,6 +96,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .box.bad{border-color:var(--neg)}
 .box input,.box select{flex:1;min-width:0;width:100%;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
 .box select{appearance:none;-webkit-appearance:none;cursor:pointer}
+.box input[type=time]{position:relative}
+.box input[type=time]::-webkit-calendar-picker-indicator{opacity:0;position:absolute;inset:0;width:auto;height:auto;cursor:pointer}
 .box select option{background:var(--surface);color:var(--t1)}
 .row3{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:8px}
 .row3 .box{padding:0 10px}
@@ -116,6 +120,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .card.dash{border-style:dashed}
 .stack{display:flex;flex-direction:column;gap:10px}
 .row{display:flex;gap:12px;align-items:center}
+.row .btn{flex:1 1 0;width:auto;min-width:0}
 .lockrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t2);font-size:14px}
 .lockrow .l{margin-left:auto;color:var(--acc)}
 .promise{display:flex;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--border)}
@@ -168,8 +173,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .mock .mrow{padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:11px;color:var(--t2)}
 .mock .mrow b{display:block;color:var(--t1);font-size:12px;margin-bottom:2px}
 .stores{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.store{display:flex;align-items:center;gap:7px;height:46px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
-.store b{display:block;font-size:13px}
+.store{display:flex;align-items:center;gap:8px;height:44px;min-width:136px;padding:0 12px;border-radius:8px;background:#000;border:1px solid #A6A6A6;font:500 9.5px/1.1 var(--sans);letter-spacing:.02em;text-align:left;color:#fff}
+.store svg{flex:none}
+.store b{display:block;font:600 15px/1.1 var(--sans);letter-spacing:0}
 .qr{display:flex;gap:10px;align-items:center;justify-content:center;font-size:11px;color:var(--t3)}
 .qr img{width:72px;height:72px;background:#fff;border-radius:6px;padding:3px}
 .tips{position:absolute;z-index:6;left:12px;right:12px;padding:12px 14px;border-radius:14px;background:var(--t1);color:#161A28;font-size:13px;box-shadow:0 10px 30px #000a;animation:fi .25s ease}
@@ -185,7 +191,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 /* last-chance offer (fallback / "upsell on decline"): shown once when the paywall is left without paying */
 .wp{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .wp::-webkit-scrollbar{display:none}
-.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#161A27e6;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#161A27f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
 .wbar .brand{flex:1;display:flex;align-items:center;gap:7px;font:600 15px var(--serif);letter-spacing:.02em;color:var(--t1)}
 .wbar .brand svg{color:var(--acc)}
 .wbar .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
@@ -213,11 +219,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 /* astrocartography: canvas globe hero + flat maps */
 .globe{position:relative;display:grid;place-items:center;margin:0 auto;flex:none;touch-action:none}
 .globe canvas{display:block}
+@media (max-height:700px){.scr.z .globe,.scr.z .moonh{zoom:.74}}
 .legend{display:flex;flex-wrap:wrap;gap:6px}
 .legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:5px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--border);color:var(--t2)}
 .legend i{width:14px;height:3px;border-radius:2px;display:block}
 .mapwrap{position:relative;flex:none}
-.maplabel{position:absolute;left:10px;top:8px;font:600 13px var(--serif);color:var(--t1);background:#0E111Baa;padding:3px 9px;border-radius:999px}
+.maplabel{position:absolute;left:10px;top:10px;z-index:2;font:600 13px var(--serif);color:var(--t1);background:#0E111BF0;border:1px solid var(--border);box-shadow:0 2px 10px #0009;padding:4px 10px;border-radius:999px}
 .map .ln.dim{opacity:.18}
 .map .ln.grey{stroke:#E0A827!important;opacity:.7}
 .map .band{fill:none;stroke-linecap:butt;opacity:.16}
@@ -230,7 +237,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .degs b{font-weight:500}
 .degs span{color:var(--t2)}
 .degs i{width:18px;height:3px;border-radius:2px;display:block}
-.scene{position:relative;height:108px;border-radius:18px;overflow:hidden;display:flex;align-items:flex-end;padding:10px 12px;text-align:left;border:1.5px solid transparent;width:100%;color:#fff}
+.scene{position:relative;height:108px;border-radius:18px;overflow:hidden;display:flex;align-items:flex-end;padding:10px 12px;text-align:left;border:1.5px solid var(--border);width:100%;color:#fff}
 .scene::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0000 30%,#0E111Bdd)}
 .scene span{position:relative;font-weight:600;font-size:15px;display:flex;gap:6px;align-items:center}
 .scene .em{position:absolute;right:10px;top:8px;font-size:26px}
@@ -276,7 +283,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .wp .wh2{font:600 24px/1.18 var(--serif);margin:0 0 6px;text-wrap:balance}
 .wp .wlead{color:var(--t2);margin:0;font-size:15px}
 .wp .wart{display:flex;justify-content:center;padding:6px 0}
-.wp .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wp .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
 .wp .fact{padding:9px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--t3)}
 .wp .fact b{display:block;color:var(--t1);font-size:13.5px;font-weight:600;margin-top:2px}
 .wp .pick{border-radius:24px;padding:18px 14px 16px;background:linear-gradient(180deg,#232A40,#1A1F2F);border:1px solid #E9C26B40;box-shadow:0 30px 60px -30px #000}
@@ -306,13 +313,30 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 .wp .rate{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
 .wp .rev{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--t2);margin-top:10px}
 .wp .wfoot{padding:28px 18px 120px;font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
-.wp .wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text,#161A27);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wp .wbar .mini{height:40px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text,#161A27);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
 .wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
-.wsticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:linear-gradient(180deg,transparent,#161A27 28%);transform:translateY(110%);transition:transform .3s ease}
+.wsticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:#161A27f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #ffffff10;transform:translateY(110%);transition:transform .3s ease}
 .wsticky.show{transform:none}
 .wp .wfoot .legal{display:flex;justify-content:center;gap:4px 14px;flex-wrap:wrap;margin-top:8px}
 .wp .wfoot .legal button{background:none;border:none;color:var(--t2);font-size:12px;text-decoration:underline;text-underline-offset:2px;min-height:44px;padding:0 4px;filter:none;opacity:1}
 .wsticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}.wsticky .sum b{color:var(--t1)}
+
+/* demo checkout sheet (no checkout URL configured); FunnelFox replaces checkout() with its native Paddle screen */
+#demock{position:absolute;inset:0;z-index:50;background:#000000b3;display:flex;flex-direction:column;justify-content:flex-end;animation:fade0 .2s ease}
+#demock .dck{background:var(--bg-elev);border-top:1px solid var(--border);border-radius:24px 24px 0 0;padding:20px 20px max(24px,calc(env(safe-area-inset-bottom,0px) + 14px));display:flex;flex-direction:column;gap:8px}
+#demock .dck b{font:600 20px/1.25 var(--serif)}#demock .dck p{margin:0 0 10px;color:var(--t2);font-size:14px}
+@keyframes fade0{from{opacity:0}}
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
+@media (max-height:700px){.scr{gap:14px}.opt{min-height:50px;padding-top:7px;padding-bottom:7px}.opt .well{width:32px;height:32px}.upcov{height:92px}.upcard{gap:10px;padding:12px}}
 </style>
 </head>
 <body>
@@ -322,9 +346,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[t
 const CONFIG={
   brand:'Starlyn',
   funnel:'astrocartography',
-  /* TODO(pricing): replace every {{placeholder}} with the real price string shown to users (e.g. "$9.99"). Do not invent numbers. */
+  /* TODO(pricing): replace every {{placeholder}} with the real price string shown to users (e.g. "$19.99"). Do not invent numbers. */
   plans:{
-    weekly:{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'}   /* the only plan: intro first week, then auto-renews monthly. No other tiers, no one-time products */
+    weekly:{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'},   /* the only subscription plan: intro first week, then auto-renews monthly. No other tiers */
+    addon:{name:'Travel Dates 2027',label:'Travel Dates 2027',price:'$19.99',oneTime:true,hidden:true}   /* post-purchase add-on (#22): hidden one-time plan with its own checkout; never listed on the paywall */
   },
   defaultPlan:'weekly',
   refundDays:'{{refund_days}}',            /* TODO(billing): base nebula uses 7 days — confirm */
@@ -332,7 +357,9 @@ const CONFIG={
   /* Checkout for the one plan. '' = only emit checkout_click (host listens and opens its own checkout).
      When set, the CTA navigates there with ?plan=&email=&utm_*… The checkout should send buyers back to
      this page with ?paid=weekly so the get-the-app screen (#22) shows. */
-  checkoutUrl:{weekly:''},
+  checkoutUrl:{weekly:'',addon:''},
+  /* leaving a plan's checkout without paying -> screen name. addon: the add-on was skipped, go to the get-the-app screen */
+  declineFlow:{addon:'get_app'},
   returnParam:'paid',
   termsUrl:'https://squad-xteam.com/termofuse.html',                              /* TODO */
   privacyUrl:'https://squad-xteam.com/policy.html',                            /* TODO */
@@ -344,8 +371,7 @@ const CONFIG={
   qrImage:'',                               /* optional data: or https: QR image, shown on desktop only */
   shareUrl:'',                              /* link used by Share (defaults to this page without query) */
   socialProof:{count:'',quote:'',author:''},/* TODO {{map_count}}: real ikame data only. Variant B of #9 falls back to A until count is set */
-  emailExists:null,                         /* optional async (email)=>true if the email already has a map */
-  socialAuth:null                           /* optional async (provider:'Google'|'Apple')=>email; shows the Google/Apple buttons */
+  emailExists:null                          /* optional async (email)=>true if the email already has a map */
 };
 /* Events: window 'ikfunnel:<name>' CustomEvent (cancel checkout_click to stop navigation), parent.postMessage({source:'ikame-funnel',…}),
    fbq trackCustom, ttq.track. Names: funnel_start, screen_view, answer, lead, paywall_view, plan_select, checkout_click, paywall_close, age_block, age_change, complete
@@ -383,6 +409,7 @@ const IC={
   cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
   users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>'
 };
+const STORE_SVG={apple:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>',play:'<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg>'};
 const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 const ZOD=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 const GLY=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g=>g+'︎');
@@ -480,7 +507,7 @@ function saveState(plan){try{const c=Object.assign({},S,{pending:plan});delete c
 function checkout(plan,extra){const p=CONFIG.plans[plan]||{},base=(CONFIG.checkoutUrl||{})[plan]||'';let clean='',full='';
   if(base){try{const u=new URL(base,location.href);u.searchParams.set('plan',plan);for(const k in UTM)u.searchParams.set(k,UTM[k]);clean=u.toString();if(S.email)u.searchParams.set('email',S.email);full=u.toString()}catch(e){}}
   const ok=emit('checkout_click',Object.assign({plan,price:p.price||'',intro_price:p.intro||null,renews:p.renews||null,one_time:!p.renews,url:clean,email_in_url:!!(full&&S.email)},extra||{}));
-  if(ok&&full){saveState(plan);nav2(full)}}
+  if(ok&&full){saveState(plan);nav2(full)}else if(ok&&DEBUG)demoCheckout(plan)}
 function openApp(which){const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),and=/Android/i.test(ua);
   const url=which==='ios'?CONFIG.appStoreUrl:which==='android'?CONFIG.playStoreUrl:(CONFIG.appUrl||(ios?CONFIG.appStoreUrl:and?CONFIG.playStoreUrl:''));
   if(emit('app_handoff',{target:which,url:url||''})&&url)nav2(url)}
@@ -512,19 +539,18 @@ function cityRes(q){const c=CSX[q];const s=(S[q]||'').trim().toLowerCase();if(S[
     :s?`<div class="err">${c.err}</div>`:`<div class="hint">Try “Austin”, “London” or “Tokyo”.${c.hint?' '+c.hint:''}</div>`}
 const EMRX=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 function emailGate({h,b,card='',taken,optin}){const er=S.err==='taken'?esc(taken).replace('log in instead?','<button class="link" style="padding:0 4px;font-size:13px;color:var(--t1);min-height:32px" data-a="login">log in instead?</button>'):S.err;
-  const social=typeof CONFIG.socialAuth==='function';
   return `<div class="scr">${card}<h1 class="display sm">${h}</h1><p class="lead" style="margin-top:-8px">${b}</p>
   <div class="field"><label for="em">Email</label><div class="box white ${S.err?'bad':''}">${ic('mail',18,'#BE8D1B')}<input id="em" type="email" inputmode="email" data-f="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err fadein" role="alert">${er}</div>`:''}</div>
   <button class="checkbox ${S.optin?'on':''}" data-a="optin" role="checkbox" aria-checked="${S.optin}"><span class="cb">${S.optin?ic('check',13,'currentColor',3):''}</span><span>${optin}</span></button>
   <div class="note" style="color:var(--t2)">${ic('lock',12)} Nothing is charged on this step.</div></div>
-  <div class="foot">${cta('Continue',true,'email')}${social?`<div class="row"><button class="btn light" style="height:48px;font-size:14px" data-a="gauth" data-v="Google">${ic('google',17)} Google</button><button class="btn black" style="height:48px;font-size:14px" data-a="gauth" data-v="Apple">${ic('apple',17)} Apple</button></div>`:''}<div class="note">${agree()}.</div></div>`}
+  <div class="foot">${cta('Continue',true,'email')}<div class="note">${agree()}.</div></div>`}
 /* paywall: plans [{k,name,badge,pl,small}] ; lines {k:html}. Checkout happens on CONFIG.checkoutUrl[plan]. */
-function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){const p=plans.find(x=>x.k===S.plan)||plans[0];S.plan=p.k;
+function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){plans=plans.filter(x=>!(CONFIG.plans[x.k]||{}).hidden);const p=plans.find(x=>x.k===S.plan)||plans[0];S.plan=p.k;
   const ok=v=>v!=null&&v!==''&&!/^\{\{/.test(String(v));
   const R=(typeof CONFIG!=='undefined'&&CONFIG.rating)||{},RV=((typeof CONFIG!=='undefined'&&CONFIG.reviews)||[]).filter(r=>r&&ok(r.text)&&ok(r.name));
   const proof=ok(R.score)&&ok(R.count)&&RV.length;
   const block=n=>`<div class="pick" id="wplans${n}"><h2 class="wh2">Your plan</h2><div class="stack">${plans.map(x=>`<button class="plan ${S.plan===x.k?'on':''}" data-a="plan" data-v="${x.k}" aria-pressed="${S.plan===x.k}"><span class="radio">${S.plan===x.k?ic('check',13,'currentColor',3):''}</span><span style="flex:1"><span class="pn">${x.name}</span><span class="pp">${x.pl}</span></span></button>`).join('')}</div>
-    <div class="today"><span>Due today</span><b>${tok('price_1w')} today</b></div><div style="height:12px"></div>${cta(ctaLabel,true,'pay')}
+    <div class="today"><span>Due today</span><b>${tok('price_1w')}</b></div><div style="height:12px"></div>${cta(ctaLabel,true,'pay')}
     <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
     <div class="secure"><span>🔒 Secure checkout</span><span>✓ Cancel anytime</span></div>
     <p class="fine">${lines[p.k]}<br>We email you 3 days before any renewal.</p></div>`;
@@ -546,26 +572,36 @@ function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){c
   ${proof?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><b style="font:600 34px var(--serif);color:var(--acc)">${esc(R.score)}</b><div>★★★★★<div class="hint">${esc(R.count)} ratings</div></div></div>${RV.map(r=>`<div class="rev"><b style="color:var(--t1)">${esc(r.name)}</b><br>${esc(r.text)}</div>`).join('')}</div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([x,y])=>`<details><summary>${x}</summary><p>${y}</p></details>`).join('')}</div></div>
   <div class="wsec">${block(2)}</div>
-  <div class="wfoot"><div class="note">${legal}</div><div class="legal"><a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy</a><a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a></div></div></div>
+  <div class="wfoot"><div class="note">${legal}</div><div class="legal"><a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy</a><a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support</a>`:''}</div></div></div>
   <div class="wsticky" id="wsticky"><div class="sum"><span>${p.name}</span><b>${tok('price_1w')} today</b></div>${cta(ctaLabel,true,'pay')}</div>`}
 function bindWP(){const v=(typeof cur==='function'&&cur())||document;const wp=v.querySelector('.wp'),st=v.querySelector('.wsticky'),mini=v.querySelector('#wmini');if(!wp||wp.dataset.b)return;wp.dataset.b=1;
-  const blocks=[...wp.querySelectorAll('.pick')];if(mini)mini.onclick=()=>{const t=wp.querySelector('#wplans1');if(t)wp.scrollTo({top:t.offsetTop-60,behavior:'smooth'})};
-  const vis=new Set(blocks);const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);if(st)st.classList.toggle('show',!vis.size&&wp.scrollTop>40)};
-  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));upd()},{root:wp,threshold:.2});blocks.forEach(b=>io.observe(b))}
+  const blocks=[...wp.querySelectorAll('.pick .btn.main')];if(mini)mini.onclick=()=>{const t=wp.querySelector('#wplans1');if(t)wp.scrollTo({top:t.offsetTop-60,behavior:'smooth'})};
+  const vis=new Set(blocks);const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);if(st)st.classList.toggle('show',!vis.size)};
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(e=>e.intersectionRatio>=.98?vis.add(e.target):vis.delete(e.target));upd()},{root:wp,threshold:[0,.5,1]});blocks.forEach(b=>io.observe(b))}
   wp.addEventListener('scroll',upd,{passive:true});upd()}
 function appScreen({h,b,mock,rows,note='',ctaLabel='Open the app'}){const qr=CONFIG.qrImage&&!TOUCH;
   return `<div class="scr"><h1 class="display sm tc">${h}</h1><p class="lead tc" style="margin-top:-8px">${b}</p>
   <div class="mock" aria-hidden="true">${mock}</div>
   <div class="card" style="padding:4px 14px">${rows.map(([e,l])=>`<div class="promise"><span class="well">${e}</span><span>${l}</span></div>`).join('')}</div>
   ${note?`<p class="hint tc" style="margin:0">${note}</p>`:''}
-  <div class="stores"><button class="store" data-a="store" data-v="ios">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div>
+  <div class="stores"><button class="store" data-a="store" data-v="ios">${STORE_SVG.apple}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${STORE_SVG.play}<span>GET IT ON<b>Google Play</b></span></button></div>
   ${qr?`<div class="qr"><img src="${esc(CONFIG.qrImage)}" alt="QR code to open ${esc(CONFIG.brand)} on your phone"><span>Scan to open ${esc(CONFIG.brand)}<br>on your phone.</span></div>`:''}</div>
   <div class="foot">${cta(ctaLabel,true,'store')}</div>`}
+/* demo checkout sheet: shown when no checkout URL is set (FunnelFox hooks checkout(plan) and opens its native checkout per CONFIG.plans key) */
+function demoCheckout(plan){const p=CONFIG.plans[plan]||{};phone.querySelector('#demock')?.remove();const el=document.createElement('div');el.id='demock';el.dataset.plan=plan;el.setAttribute('role','dialog');el.setAttribute('aria-label','Checkout');
+  const price=p.oneTime?`${esc(p.price)}, paid once`:`${esc(p.intro||p.price)} today, then ${esc(p.price)}/${esc(p.renews||'month')}`;
+  el.innerHTML=`<div class="dck"><b>Demo checkout</b><p>${esc(CONFIG.brand)} · ${esc(p.label||p.name||plan)} · ${price}</p><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div>`;
+  phone.appendChild(el)}
+document.addEventListener('click',e=>{const b=e.target.closest('#demock [data-a]');if(!b)return;const el=b.closest('#demock'),plan=el.dataset.plan;el.remove();
+  if(b.dataset.a==='ckpay'){window.IkFunnel.completePurchase(plan);return}
+  emit('checkout_decline',{plan});const to=(CONFIG.declineFlow||{})[plan];if(to){const n=scrByName(to);if(n)go(n)}});
+/* screen NAME (as in the FunnelFox build: the FLOW label in snake_case) -> screen index */
+function scrByName(nm){for(const[,it]of FLOW)for(const[n,l]of it)if(l.toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')===nm)return n;return 0}
 /* ----- after purchase: get the app. The full reading lives in the app; there is no free path and no offer. ----- */
 function getApp(extra=''){return `<div class="scr center tc" style="align-items:center;gap:16px"><div class="bigwell">${ic('check',34,'currentColor',2.4)}</div>
   <h1 class="display sm">You're in${S.name?', '+esc(S.name):''}</h1><p class="lead" style="margin-top:-8px">Your full reading is waiting in the Starlyn app.</p>${extra}
   <div class="card" style="padding:4px 14px;width:100%;text-align:left">${['Download Starlyn: Daily Astrology',`Log in with ${esc(S.email||'your email')}`,'Open your reading'].map((l,i)=>`<div class="promise"><span class="well">${i+1}</span><span>${l}</span></div>`).join('')}</div>
-  <div class="stores"><button class="store" data-a="store" data-v="ios">${ic('apple',18)}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${ic('play',16)}<span>Get it on<b>Google Play</b></span></button></div>
+  <div class="stores"><button class="store" data-a="store" data-v="ios">${STORE_SVG.apple}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${STORE_SVG.play}<span>GET IT ON<b>Google Play</b></span></button></div>
   <p class="hint" style="margin:0">For entertainment purposes only.</p></div>
   <div class="foot">${cta('Open the app',true,'store')}</div>`}
 function stepsHTML(rows){return `<div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>`}
@@ -643,7 +679,6 @@ function boot(){
       case 'email':{const em=S.email.trim();if(!EMRX.test(em)){S.err='Enter a valid email address';render();break}
         const ok=()=>{if(S.i!==APP.gate)return;S.email=em;if(S.leadSent!==em){S.leadSent=em;emit('lead',{method:'email',optin:!!S.optin})};next()};
         if(typeof CONFIG.emailExists==='function'){b.disabled=true;Promise.resolve().then(()=>CONFIG.emailExists(em)).then(x=>{if(x&&S.i===APP.gate){S.err='taken';render()}else ok()},ok)}else ok();break}
-      case 'gauth':Promise.resolve().then(()=>CONFIG.socialAuth(v)).then(em=>{if(em&&EMRX.test(em)&&S.i===APP.gate){S.email=em;S.auth=v;if(S.leadSent!==em){S.leadSent=em;emit('lead',{method:v.toLowerCase(),optin:!!S.optin})};next()}}).catch(()=>toast('Sign-in didn’t work. Use your email instead.'));break;
       case 'login':emit('login_click',{});if(CONFIG.loginUrl)nav2(CONFIG.loginUrl);break;
       case 'plan':S.plan=v;emit('plan_select',{plan:v});render();break;
       case 'pay':checkout(S.plan,{source:'paywall'});break;
@@ -660,7 +695,10 @@ function boot(){
   phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=cur().querySelector('.foot .btn.main');b&&!b.disabled&&b.click()}});
   if(DEBUG){window.addEventListener('error',ev=>{root.dataset.err=(root.dataset.err||'')+' | '+ev.message})}
   window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,state:()=>S,go:n=>{if(V[n])go(+n)},
-    completePurchase:plan=>{plan=plan||S.plan;S.plan=plan;emit('purchase',{plan});go(APP.paid(plan))}});
+    /* called after ANY checkout success. Main plan -> add-on screen (#22). Hidden one-time add-on -> marked added -> get_app (#23) */
+    completePurchase:plan=>{plan=plan||S.plan;const P=CONFIG.plans[plan]||{};
+      if(P.hidden){S.plan=(S.paid&&CONFIG.plans[S.paid])?S.paid:CONFIG.defaultPlan;emit('purchase_complete',{plan,price:P.price||'',one_time:!!P.oneTime});go(APP.paid(plan));return}
+      S.plan=plan;emit('purchase',{plan});go(APP.paid(plan))}});
   const restored=restore();
   if(!restored&&DEBUG){const m=decodeURIComponent(location.hash).match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1],true);S.i=+m[1]}}
   emit('funnel_start',{variant:S.v,utm:UTM,restored:!!restored,debug:DEBUG,referrer:document.referrer||''});if(restored)emit('purchase',{plan:restored,returned:true});
@@ -670,9 +708,9 @@ document.addEventListener('DOMContentLoaded',boot);
 /* ===================== astrocartography ===================== */
 const ORB=+CONFIG.orbMiles||600;
 const TOK=()=>{const P=CONFIG.plans;return {price_1w:P.weekly.intro,price_month:P.weekly.price,refund_days:CONFIG.refundDays}};
-const APP={load:17,gate:20,pay:21,last:22,dob:6,inv:[3,4,5,6,7,8,9,10,11,12,13,14,15],nav:n=>(n>=2&&n<=16)||n===20,
+const APP={load:17,gate:20,pay:21,last:23,dob:6,inv:[3,4,5,6,7,8,9,10,11,12,13,14,15],nav:n=>(n>=2&&n<=16)||n===20,
   /* after a confirmed purchase: the get-the-app screen (hard paywall, no free path) */
-  paid:plan=>{S.paid=plan;if(CONFIG.plans[plan])S.plan=plan;return 22},
+  paid:plan=>{if((CONFIG.plans[plan]||{}).hidden){S.upsold=true;return 23}S.paid=plan;if(CONFIG.plans[plan])S.plan=plan;return 22},
   loadH:()=>t(`Mapping your lines, ${nm()}…`,`Drawing ${nm()}'s map…`)};
 const FLOW=[
  ['A · Hook',[[1,'Wrong city?'],[2,'Your chart has a map']]],
@@ -681,8 +719,8 @@ const FLOW=[
  ['B · Where you are',[[10,'Current city'],[11,'Lines near your city','bridge'],[12,'A place that felt right','optional'],[13,'Moving or curious?'],[14,'Your setting'],[15,'Region']]],
  ['D · Anticipation',[[16,'What your map shows'],[17,'Mapping your lines','loading'],[18,'Your map is ready','tease'],[19,'Why it felt right','if match']]],
  ['E · Gate',[[20,'Where to send your map']]],
- ['F · Monetization',[[21,'Paywall','hard']]],
- ['G · Payoff',[[22,'Get app','after purchase']]]
+ ['F · Monetization',[[21,'Paywall','hard'],[22,'Report upsell','add-on']]],
+ ['G · Payoff',[[23,'Get app','after purchase']]]
 ];
 const INIT=()=>({v:'A',completed:false,i:1,hist:[],feel:'',goal:'',goalOther:'',name:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,tod:'',place:'',placeQ:'',cur:'',curQ:'',felt:'',feltQ:'',feltSkip:false,move:'',setting:'',settingOther:'',regions:[],email:'',optin:false,auth:'',plan:CONFIG.defaultPlan||'annual',paid:'',report:false,offerSeen:false,sheet:null,err:''});
 const FEEL={home:['Feels like home','🏡'],missing:["Something's missing",'😐'],stuck:['I feel stuck','😔'],notmine:['Not my place','🧳']};
@@ -691,7 +729,7 @@ const MOVE={move:['Planning a move','📦'],remote:['Could work remotely','💻'
 const SET={city:['Big city','🌆'],coast:['Coast','🏖️'],mount:['Mountains','⛰️'],town:['Small town','🌳']};
 const REG={am:['Americas','🌎',-170,-30],eu:['Europe & Africa','🌍',-25,60],as:['Asia & Pacific','🌏',60,180],any:['Anywhere','🗺️']};
 const TOD={morning:['🌅 Morning','09:00'],afternoon:['☀️ Afternoon','15:00'],evening:['🌆 Evening','19:30'],night:['🌙 Night','02:00'],none:['🤷 No idea','12:00']};
-const PL={venus:['Venus','♀︎','#E8BF5F','love and beauty come easier here'],jup:['Jupiter','♃︎','#E9C26B','growth and luck find you here'],sun:['Sun','☉︎','#FF8A3D','recognition — people notice you here'],moon:['Moon','☽︎','#CFD6E6','home, roots, feeling settled']};
+const PL={venus:['Venus','♀︎','#F29BB8','love and beauty come easier here'],jup:['Jupiter','♃︎','#E9C26B','growth and luck find you here'],sun:['Sun','☉︎','#FF8A3D','recognition — people notice you here'],moon:['Moon','☽︎','#CFD6E6','home, roots, feeling settled']};
 const ANG={MC:'career and public life',IC:'home and private life',AS:'how you come across',DS:'partners and close ties'};
 const movers=()=>S.move==='move'||S.move==='remote';
 const goalL=()=>S.goal==='other'?esc(S.goalOther||'Your goal'):(GOAL[S.goal]||GOAL.love)[0];
@@ -739,7 +777,7 @@ const legend=pls=>`<div class="legend">${pls.map(k=>`<span><i style="background:
 const HERO={globe:el=>{GTEX.load();const size=+el.dataset.size||240,mode=el.dataset.mode||'float',cv=el.querySelector('canvas'),dp=Math.min(2,devicePixelRatio||1);
   cv.width=cv.height=size*dp;cv.style.width=cv.style.height=size+'px';const g=cv.getContext('2d');g.scale(dp,dp);const R=size*.43,C=size/2;
   const dots=landCells(3,[-180,180,-60,84]);const ch=chart();
-  const L=mode==='float'?[ch.lines.find(l=>l.p==='venus'&&l.a==='MC'),ch.lines.find(l=>l.p==='jup'&&l.a==='AS'),ch.lines.find(l=>l.p==='moon'&&l.a==='DS')]:ch.lines;
+  const L=mode==='float'?['venus','sun','moon'].map(p=>(nearest(USERC,[p])||{}).l):ch.lines;
   const home=mode==='float'?USERC:curC();const pins=mode==='spin'?[curC(),...top3().map(x=>x.c)]:[];
   let rot=home.lon-(mode==='spin'?160:30),tilt=mode==='spin'?34:18;const o={el,rmT:12000,settle:null};
   o.draw=function(now,dt){const tt=(now-this.t0)/1000;
@@ -755,12 +793,12 @@ const HERO={globe:el=>{GTEX.load();const size=+el.dataset.size||240,mode=el.data
     g.strokeStyle='rgba(234,195,106,.08)';g.lineWidth=.7;for(let m=-180;m<180;m+=30){g.beginPath();let pen=false;for(let la=-84;la<=84;la+=6){const[x,y,z]=pr(m,la);if(z>0){pen?g.lineTo(x,y):g.moveTo(x,y);pen=true}else pen=false}g.stroke()}
     for(const[lo,la]of dots){const[x,y,z]=pr(lo,la);if(z<=0)continue;const s=.9+z*1.3;g.fillStyle=`rgba(${150+z*60|0},${130+z*50|0},255,${.18+.7*z})`;g.fillRect(x-s/2,y-s/2,s,s)}
     const B=band();
-    L.forEach((l,i)=>{if(!l)return;const col=PL[l.p][2];let f=1;if(mode==='spin')f=Math.max(0,Math.min(1,(tt-.3-(i%8)*.45)/1.4));else if(mode==='float')f=Math.max(0,Math.min(1,(tt-.2-i*.5)/1.6));if(!f)return;
+    L.forEach((l,i)=>{if(!l)return;const col=PL[l.p][2];let f=1;if(mode==='spin')f=Math.max(0,Math.min(1,(tt-.1-(i%8)*.12)/.8));else if(mode==='float')f=Math.max(0,Math.min(1,(tt-.1-i*.25)/.9));if(!f)return;
       const n=Math.max(2,Math.round(l.pts.length*f)),pts=l.pts.slice(0,n);
       const stroke=(w,a,blur)=>{g.strokeStyle=col;g.globalAlpha=a;g.lineWidth=w;g.shadowColor=col;g.shadowBlur=blur;g.beginPath();let pen=false,pv=null;for(const[lo,la]of pts){const[x,y,z]=pr(lo,la);if(z>0&&(pv===null||Math.abs(lo-pv)<180)){pen?g.lineTo(x,y):g.moveTo(x,y);pen=true}else pen=false;pv=lo}g.stroke()};
-      if(B)stroke(Math.max(4,R*B*RAD*1.6),.14,0);stroke(1.8,.95,8)});
+      if(B)stroke(Math.max(4,R*B*RAD*1.6),.14,0);stroke(2.2,.95,8)});
     g.globalAlpha=1;g.shadowBlur=0;
-    pins.forEach((c,i)=>{const t0=2.2+i*1.2;if(tt<t0)return;const[x,y,z]=pr(c.lon,c.lat);if(z<=0)return;const k=((tt-t0)%1.6)/1.6;g.strokeStyle=`rgba(255,255,255,${(1-k)*.9})`;g.lineWidth=1.2;g.beginPath();g.arc(x,y,3+k*12,0,6.2832);g.stroke();g.fillStyle=i?'#fff':'#E8BF5F';g.beginPath();g.arc(x,y,3,0,6.2832);g.fill()});
+    pins.forEach((c,i)=>{const t0=.9+i*.45;if(tt<t0)return;const[x,y,z]=pr(c.lon,c.lat);if(z<=0)return;const k=((tt-t0)%1.6)/1.6;g.strokeStyle=`rgba(255,255,255,${(1-k)*.9})`;g.lineWidth=1.2;g.beginPath();g.arc(x,y,3+k*12,0,6.2832);g.stroke();g.fillStyle=i?'#fff':'#E8BF5F';g.beginPath();g.arc(x,y,3,0,6.2832);g.fill()});
     if(mode==='float'){const[x,y,z]=pr(home.lon,home.lat);if(z>0){const k=(tt%2)/2;g.strokeStyle=`rgba(242,155,184,${1-k})`;g.lineWidth=1.4;g.beginPath();g.arc(x,y,3+k*10,0,6.2832);g.stroke();g.fillStyle='#E8BF5F';g.beginPath();g.arc(x,y,3.2,0,6.2832);g.fill()}}
     gr=g.createRadialGradient(C-R*.45,C-R*.5,0,C-R*.3,C-R*.3,R*1.1);gr.addColorStop(0,'rgba(255,255,255,.10)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.beginPath();g.arc(C,C,R,0,6.2832);g.fill()};
   el._g=o;addHero(o)}};
@@ -774,7 +812,7 @@ const V={
   <h1 class="display tc">${t('Living in the wrong city?','Does your city feel right?')}</h1>
   <p class="lead tc" style="margin-top:-8px">${t('Your birth chart draws lines across the world.','Some places fit your chart better than others.')}</p>
   <div class="opts">${Object.entries(FEEL).map(([k,[l,e]])=>pick('feel',k,l,e)).join('')}</div><div class="note">3-minute quiz · For entertainment</div></div>
-  <div class="foot" style="padding-top:0"><div class="note">By continuing, you agree to our Terms & Privacy Policy</div></div>`,
+  <div class="foot" style="padding-top:0"><div class="note">${agree()}</div></div>`,
 2:()=>{const ch=chart(),pick4=[ch.lines.find(l=>l.p==='venus'&&l.a==='AS'),ch.lines.find(l=>l.p==='jup'&&l.a==='MC'),ch.lines.find(l=>l.p==='sun'&&l.a==='DS'),ch.lines.find(l=>l.p==='moon'&&l.a==='IC')].filter(Boolean);
   return `<div class="scr"><h1 class="display">${t('Your chart has a map','Every planet touches Earth somewhere')}</h1><p class="lead" style="margin-top:-8px">${t("Where a planet's line falls, its energy is strongest.",'Find where love, work and calm come easier.')}</p>
   ${mapSVG({step:4,lines:pick4.map((l,i)=>`<path class="ln draw" d="${pathFor(l.pts)}" stroke="${PL[l.p][2]}" stroke-width="2.2" pathLength="1" style="animation-delay:${.3+i*.6}s;filter:drop-shadow(0 0 3px ${PL[l.p][2]})"/>`).join('')})}
@@ -789,7 +827,7 @@ const V={
   <h1 class="display">${t("What's your name?",'Whose map is this?')}</h1><p class="lead">We'll put it on your map.</p>
   <div class="field"><label for="nm">Your name</label><div class="box white ${S.err?'bad':''}"><input id="nm" data-f="name" data-focus maxlength="30" autocomplete="given-name" placeholder="Your first name" value="${esc(S.name)}"></div>${errHTML()}</div></div><div class="foot">${cta('Continue',true,'name')}</div>`,
 6:()=>`<div class="scr"><h1 class="display">${t('When were you born?',`Your birthday, ${nm()}?`)}</h1><p class="lead">Your date places each planet on the map.</p>
-  <div class="field"><label>Date of birth</label>${dateSel('dob',S.dob)}${errHTML()}</div><p class="hint">You must be 18 or older.</p></div><div class="foot">${cta('Continue',true,'dob')}</div>`,
+  <div class="field"><label>Date of birth</label>${dateSel('dob',S.dob)}${errHTML()}</div><p class="hint">You must be 18 or older.</p></div><div class="foot">${cta('Continue',!!(S.dob.m&&S.dob.d&&S.dob.y),'dob')}</div>`,
 7:()=>{const sl=chart().lines.find(l=>l.p==='sun'&&l.a==='MC');return `<div class="scr"><div class="mapwrap" id="tmap">${mapSVG({step:5,lines:linesSVG([sl])})}</div>
   <h1 class="display">${t('What time were you born?','Know your birth time?')}</h1><p class="lead" style="margin-top:-8px">${t('One hour off moves your lines ~1,000 miles.','Exact time draws exact lines.')}</p>
   <div class="field"><label for="tm">Time of birth</label><div class="box">${ic('clock',18)}<input id="tm" type="time" data-f="time" value="${esc(S.time)}" ${S.timeUnknown?'disabled':''}></div></div>
@@ -828,23 +866,41 @@ const V={
   <div class="card fseq" style="padding:4px 14px">${[['🗺️','All your planetary lines, worldwide'],['📍',`Top 3 power places for ${goalL()}`],['🏙️',`What ${esc(curC().s)} brings you`],['✈️','Best times to visit, in the app']].map(([e,l])=>`<div class="promise"><span class="well">${e}</span><span>${l}</span></div>`).join('')}</div></div><div class="foot">${cta('Build my map')}</div>`,
 17:()=>`<div class="sky"></div><div class="scr z" style="gap:14px">${globe('spin',236)}<h1 class="display sm tc" id="lh">${APP.loadH()}</h1>
   ${stepsHTML(['Placing your planets at birth…','Drawing your lines around the globe…',`Checking what runs near ${esc(curC().s)}…`,`Ranking places for ${goalL()}… almost there`])}</div><div class="foot"><div class="note">For entertainment</div></div>`,
-18:()=>{const c=curC(),nb=nearest(c),T=top3();return `<div class="scr"><h1 class="display sm">${t(`${nm()}, your map is ready`,'Your lines are drawn')}</h1><p class="lead" style="margin-top:-8px">One line near home is open. Three places wait.</p>
+18:()=>{const c=curC(),nb=nearest(c),T=top3();return `<div class="navpad"></div><div class="scr"><h1 class="display sm">${t(`${nm()}, your map is ready`,'Your lines are drawn')}</h1><p class="lead" style="margin-top:-8px">One line near home is open. Three places wait.</p>
   <div class="mapwrap">${allMap({m:{pins:T.map(x=>pinSVG(x.c.lon,x.c.lat,'#fff',.8,false)).join('')+pinSVG(c.lon,c.lat,'#E8BF5F',1)}})}</div>
   <div class="card"><h4>Near ${esc(c.s)}: your ${PL[nb.l.p][0]} line</h4><p>${PL[nb.l.p][0]} ${nb.l.a==='AS'?'ASC':nb.l.a==='DS'?'DSC':nb.l.a} · ${PL[nb.l.p][3]}, in ${ANG[nb.l.a]}.</p></div>
   <div class="pp3">${T.map(x=>`<div class="card"><span class="blurred" style="display:block">${esc(x.c.s)}</span><i style="background:${PL[x.nb.l.p][2]}"></i><span class="hint">${REG[x.c.reg][0]}</span></div>`).join('')}</div>
   ${lockrows(['Top 3 power places','What every line means for you',`Your full ${esc(c.s)} read`])}<p class="hint tc" style="margin:0">For entertainment.</p></div><div class="foot">${cta('See my places')}</div>`},
-19:()=>{const c=city(S.felt)||city('Lisbon, Portugal'),m=feltMatch()||nearest(c);return `<div class="scr"><div class="mapwrap">${mapSVG({step:2,vb:zoomVB(c,120),lines:linesSVG([m.l],{w:2.4}),pins:pinSVG(c.lon,c.lat,'#fff',.9)})}<span class="maplabel">${esc(c.s)}</span></div>
+19:()=>{const c=city(S.felt)||city('Lisbon, Portugal'),m=feltMatch()||nearest(c);return `<div class="navpad"></div><div class="scr"><div class="mapwrap">${mapSVG({step:2,vb:zoomVB(c,120),lines:linesSVG([m.l],{w:2.4}),pins:pinSVG(c.lon,c.lat,'#fff',.9)})}<span class="maplabel">${esc(c.s)}</span></div>
   <h1 class="display sm">${t(`Why ${esc(c.s)} felt right`,`${esc(c.s)} was no accident`)}</h1><p class="lead" style="margin-top:-8px">Your ${PL[m.l.p][0]} line runs close by.</p>
-  <div class="card"><h4 style="color:${PL[m.l.p][2]}">${PL[m.l.p][1]} ${lname(m.l)} · ${mi(m.d)} ${esc(c.s)}</h4><p>${PL[m.l.p][3][0].toUpperCase()+PL[m.l.p][3].slice(1)} — especially in ${ANG[m.l.a]}.</p></div>
-  <p class="hint">Shown only because a line truly falls within ${ORB} miles. We never invent a match.</p></div><div class="foot">${cta('Continue')}</div>`},
+  <div class="card"><h4 style="color:${PL[m.l.p][2]}">${PL[m.l.p][1]} ${lname(m.l)} · ${mi(m.d)} ${esc(c.s)}</h4><p>${PL[m.l.p][3][0].toUpperCase()+PL[m.l.p][3].slice(1)} — especially in ${ANG[m.l.a]}.</p></div></div><div class="foot">${cta('Continue')}</div>`},
 20:()=>emailGate({h:t('Where should we send it?',`Save your map, ${nm()}`),b:'Your map and app login go here.',card:`<div style="width:160px;align-self:center" class="blurred">${allMap({w:1.4})}</div>`,taken:'This email already has a map — log in instead?',optin:'Email me travel timing and news (optional)'}),
 21:()=>paywall({facts:[['Your goal',(()=>{try{return goalL()}catch(e){return ''}})()],['Sun',S.dob&&S.dob.m?sunSign(+S.dob.m,+S.dob.d):''],['Name',nm()]],toc:['Your planetary lines map','Top 3 power places for '+(()=>{try{return goalL()}catch(e){return 'you'}})(),'Every line, explained for you','Travel timing for your best places','Line alerts in the app'],faqX:[['Do I need to move?','No. Your map shows where your energy reads strongest. Many people use it for trips and short stays.']],top:`<div style="width:170px;align-self:center;margin-top:8px" class="blurred">${allMap({w:1.4})}</div>`,h:t('Unlock your full map',`${nm()}, see your power places`),b:t("Every line, every place, plus what's ahead.",'Your top places and what they bring.'),
   benefits:[`Top 3 power places for ${goalL()}`,'Every line, explained for you','Travel timing and line alerts in the app'],
   plans:[{k:'weekly',name:'1 week, then monthly',pl:`${tok('price_1w')} first week, then ${tok('price_month')}/month, renews monthly`}],
   lines:{weekly:`${tok('price_1w')} today for your first week, then ${tok('price_month')} every month until you cancel.`},
   legal:'For entertainment only. Not relocation, financial or life advice.',ctaLabel:'Unlock my map'}),
-22:()=>getApp()
+23:()=>getApp(S.upsold?upAddLine():'')
 };
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA runs checkout('addon'): CONFIG.plans.addon is a hidden one-time plan with its own checkout (FunnelFox: native Paddle screen checkout_addon).
+   Paid -> IkFunnel.completePurchase('addon') -> get_app with the add-on line. Checkout closed -> get_app without it (CONFIG.declineFlow). */
+const IK_UP=22,IK_GET=23;
+CONFIG.upsell={"id": "travel_dates_2027", "name": "Travel Dates 2027", "art": "img/sky-stars.jpg", "h": ["Add your <em>2027 travel dates</em>", "When to visit <em>your places</em>"], "lead": ["The best months to visit your top 3 places.", "Your power places, timed month by month for 2027."], "checks": ["Best months for each of your 3 places", "Dates to avoid, and why", "Saved with your map in the app"], "eyebrow": "Add-on · paid once", "price": "$19.99", "cta": "Add for $19.99", "skip": "No thanks, take me to the app", "note": "One-time payment at a secure checkout. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&(IMG[u.art]||IMG[u.art.replace(/^img\/|\.\w+$/g,'')]))||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="${a&&!/^img\//.test(a)?`background-image:url('${a}')`:''}"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const upAddLine=()=>`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div>`;
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  if(b.dataset.a==='upskip'){emit('upsell_decline',{id:u.id});go(IK_GET);return}
+  emit('upsell_accept',{id:u.id,price:u.price});checkout('addon',{source:'upsell',id:u.id})});
 function NEXT(n){if(n===18)return feltMatch()?19:20;return n+1}
 function PREV(n){if(n===20)return feltMatch()?19:18;return n-1}
 function bestFelt(){const cc=curC();let b=null;for(const x of CITIES){if(x[0]===cc.n)continue;const nb=nearest(city(x[0]));if(!b||nb.d<b.d)b={n:x[0],d:nb.d}}return b.n}
@@ -854,7 +910,7 @@ function fillTo(n){if(n>1&&!S.feel)S.feel='missing';if(n>3&&!S.goal)S.goal='love
   if(n>12&&!S.felt&&!S.feltSkip)S.felt=bestFelt();if(n===19&&!feltMatch()){S.feltSkip=false;S.felt=bestFelt()}
   if(n>13&&!S.move)S.move='remote';if(n>14&&!S.setting)S.setting='coast';if(n>15&&!S.regions.length)S.regions=['eu'];
   if(n>20&&!S.email)S.email='maya@example.com';if(n>21&&!S.paid)S.paid='weekly'}
-const OK={3:()=>!!S.goalOther.trim(),7:()=>!!(S.time||S.timeUnknown),8:()=>!!S.place,10:()=>!!S.cur,12:()=>!!S.felt,14:()=>!!S.settingOther.trim(),15:()=>S.regions.length>0};
+const OK={3:()=>!!S.goalOther.trim(),6:()=>!!(S.dob.m&&S.dob.d&&S.dob.y),7:()=>!!(S.time||S.timeUnknown),8:()=>!!S.place,10:()=>!!S.cur,12:()=>!!S.felt,14:()=>!!S.settingOther.trim(),15:()=>S.regions.length>0};
 function tipAt(html,y){const w=document.getElementById('rmap');w.querySelector('.tips')?.remove();w.insertAdjacentHTML('beforeend',`<div class="tips" style="top:${y}px" role="status">${html}</div>`)}
 /* "Use my location": browser geolocation, matched to the nearest listed city (city level only, nothing stored) */
 function kmTo(a,b,c,d){const r=RAD,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 12742*Math.asin(Math.sqrt(x))}

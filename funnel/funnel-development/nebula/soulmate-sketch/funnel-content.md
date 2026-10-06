@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: person
 input: partner gender and age, love-life status, name, birth date, birth time (optional), birth place, partner look and traits, optional left-palm photo
 output: AI soulmate sketch + partner sign + optional heart-line palm reading
-screens: 23
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 24
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once in its own Paddle one-time checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -33,7 +33,7 @@ A web2app funnel (Meta ad → web quiz → web paywall → Starlyn app) for the 
 - Renewal price appears on every plan card and in the CTA line.
 - No promo codes, countdowns or fake tickers.
 
-The visual system is the base `nebula/` house look (dark, purple-pink gradient CTAs), plus a cream-paper and gold-graphite sketch motif for the hero object. 23 screens.
+The visual system is the base `nebula/` house look (dark, purple-pink gradient CTAs), plus a cream-paper and gold-graphite sketch motif for the hero object. 24 screens.
 
 ---
 
@@ -311,9 +311,9 @@ The visual system is the base `nebula/` house look (dark, purple-pink gradient C
 **Headline B:** Save your sketch, {{name}}
 **Body A:** Your sketch and app login go here.
 **Body B:** One email. Your sketch waits inside.
-**Field:** Email input; "Continue with Google" / "Continue with Apple"; marketing opt-in checkbox, **unchecked by default**
+**Field:** Email input only, required: no skip, no guest path, no Google/Apple sign-in buttons (the email activates the subscription and is the app login). Marketing opt-in checkbox, **unchecked by default**. Emits `lead` (method `email`).
 **Visual:** Plain white input on dark background, mini blurred sketch card above the field.
-**Error states:** "Enter a valid email address" / "This email already has a sketch — log in instead?"
+**Error states:** "Enter a valid email address" (Continue stays on this screen until the email is valid) / "This email already has a sketch — log in instead?"
 **Microcopy:** Legal line: "By continuing, you agree to our Terms & Privacy Policy." Reassurance: "Nothing is charged on this step."
 **CTA:** Continue
 
@@ -334,13 +334,24 @@ The visual system is the base `nebula/` house look (dark, purple-pink gradient C
 **CTA:** Unlock my sketch
 ---
 
+### 23. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your meeting guide
+**Headline B:** When and where you'll meet
+**Body A:** The months and places where love is likeliest to find you.
+**Body B:** Your best months and settings to meet them.
+**Plans:** One add-on, paid once: "Soulmate Meeting Guide" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens the add-on's own Paddle one-time checkout: a hidden plan `addon` in `CONFIG.plans` (label "Soulmate Meeting Guide", `$19.99`, `oneTime`, `hidden`, never listed on the paywall) opened with the normal `checkout('addon')`. In FunnelFox that is the native screen `checkout_addon (one-time)`; its × goes to get_app (`CONFIG.declineFlow = {addon:'get_app'}`). Paid: `IkFunnel.completePurchase('addon')` marks the guide added and lands on get_app.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/sky-dusk.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Your 3 strongest months for meeting · The places and settings that suit you · Saved with your sketch in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time charge in a secure checkout. No subscription." Skip link: "No thanks, take me to the app". Closing the add-on checkout without paying lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`, `checkout_decline` with plan `addon` on close.
+**CTA:** Add for $19.99
+
 ## G. Payoff
 
-### 23. Get the app (after purchase)
+### 24. Get the app (after purchase)
 **Purpose:** Purchase confirmation and the web2app handoff. The HD sketch, the partner sign, the heart-line reading and the daily love forecast live in the Starlyn app; there is no free web result and no offer screen.
 **Headline A:** You're in, {{name}}
 **Body A:** Your full reading is waiting in the Starlyn app.
-**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges.
+**Visual:** Gold check badge on the star field, a three-step card (1 Download Starlyn: Daily Astrology · 2 Log in with {{email}} · 3 Open your reading), App Store and Google Play badges. If they bought the add-on, a green line "Soulmate Meeting Guide added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only." The store badges and the CTA fire `app_handoff`. Reached only from a confirmed purchase: checkout returns with `?paid=weekly`, or the host calls `IkFunnel.completePurchase()`.
 **CTA:** Open the app
 
@@ -348,6 +359,7 @@ The visual system is the base `nebula/` house look (dark, purple-pink gradient C
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 23 offers one add-on, "Soulmate Meeting Guide", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** hard paywall (no close ✕, no "continue free"), exactly one plan (`$13.67` first week, then `$49.99` every month), no sale of any kind (no last-chance offer, struck price, badge or promo code), and a confirmed purchase lands on a get-the-app screen. Under 18 shows a blocking notice with a "Change my birth date" way back. The one-time "sketch only" plan was removed with the other tiers.
 - **Deliberately not built: the $1 → hidden recurring subscription mechanic.** This is the version flagged in the 2026 FTC case. Here, nothing is charged before #22, and the one plan states its renewal on the card and in the CTA line. Hint's "exclusive 93% promo code" screen and struck-through anchors are skipped too, because they're a fake-discount pattern.
 - **Instant, not async.** The sketch is generated live (#19); after payment the HD sketch and full reading open in the app (#23 hands over). If engineering can't render instantly, the only allowed fallback is an honest "ready in N minutes, we'll email you" message *after* a disclosed purchase, never a charge with no visible result.

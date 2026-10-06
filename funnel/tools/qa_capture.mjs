@@ -96,12 +96,12 @@ try {
       const files = [];
       const steps = Math.min(8, Math.max(1, Math.ceil((sc.h - sc.ch) / 780) + 1));
       for (let k = 0; k < steps; k++) {
-        if (k) { await page.evaluate(({ sel, y }) => { const el = sel ? document.querySelector(sel) : document.scrollingElement; el.scrollTop = y; }, { sel: sc.sel, y: k * 780 }); await page.waitForTimeout(1200); }
+        if (k) { await page.evaluate(({ sel, y }) => { const el = sel ? document.querySelector(sel) : document.scrollingElement; if (el) el.scrollTop = y; }, { sel: sc.sel, y: k * 780 }); await page.waitForTimeout(1200); }
         const f = steps > 1 ? `${base}-p${k + 1}.png` : `${base}.png`;
         await page.screenshot({ path: path.join(shots, f) });
         files.push(f);
       }
-      if (sc.sel) await page.evaluate(sel => { const el = document.querySelector(sel); el.scrollTop = 0; el.removeAttribute('data-qa-scroller'); }, sc.sel);
+      if (sc.sel) await page.evaluate(sel => { const el = document.querySelector(sel); if (!el) return; el.scrollTop = 0; el.removeAttribute('data-qa-scroller'); }, sc.sel);
       result.screens.push({ n, id, viewport: vp.tag, landedOn: cur, files, issues: [...issues, ...errs] });
     }
     await ctx.close();

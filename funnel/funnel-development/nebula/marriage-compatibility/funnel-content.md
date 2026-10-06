@@ -5,8 +5,8 @@ archetype: personalization-quiz
 subject: couple
 input: your status (single / dating / engaged), gender, birth date (18+), time and place, partner's birth date (if you have one) or your must-have in a partner (if single), first name, 3 marriage-value answers, love language, feeling and hoped timeline, optional palm photo
 output: a marriage window (a range of years, never a date) with a match or timing score, one blurred peak season, and a full reading with values, bond and timing axes plus a partner profile (single) or what each chart needs (couple)
-screens: 23
-monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen
+screens: 24
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own Paddle checkout, skippable) before the get-the-app screen
 offer: none
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content - Starlyn: Marriage Compatibility
 
-A Starlyn web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Starlyn app) for the "when will I marry?" niche. The user gives **their birth data, a partner's birth date if they have one, and three real marriage-value answers** (children, home, money). They get a **marriage window** (a range of years) plus three axes of fit. Archetype: **personalization-quiz**; the chart inputs are real, the value answers steer the reading, and the one optional upload is a side test, not a gate. 23 screens, two branches.
+A Starlyn web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, Starlyn app) for the "when will I marry?" niche. The user gives **their birth data, a partner's birth date if they have one, and three real marriage-value answers** (children, home, money). They get a **marriage window** (a range of years) plus three axes of fit. Archetype: **personalization-quiz**; the chart inputs are real, the value answers steer the reading, and the one optional upload is a side test, not a gate. 24 screens, two branches.
 
 **Modeled on:**
 - Nebula marriage funnel (605 ads, 42 screens) and Hint marriage reading (1,342 ads, 62 screens, paywall captured 2026-09-02), via the AdSpyLab research in `nebula-chai.md` section 1.
@@ -292,7 +292,7 @@ A Starlyn web2app funnel (Meta ad, web quiz, optional palm photo, web paywall, S
 **Headline B:** Save your reading
 **Body A:** Get your reading and log in to the app.
 **Body B:** One email, no spam.
-**Field:** Email (light field), optional marketing checkbox (unticked by default).
+**Field:** Email only (light field), required and validated; the email activates the subscription and is the app login. No Google or Apple sign-in, no "or" divider, no skip or guest path. Optional marketing checkbox (unticked by default).
 **Error state:** "Enter a valid email address"
 **Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy."
 **CTA:** Continue
@@ -322,20 +322,32 @@ Sticky bottom CTA shows the selected plan and today's charge while no plan block
 **Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your window is ready". FAQ answer on dates: "No. A chart shows a window of tendencies for reflection. It cannot name a day or promise an outcome."
 **CTA:** Get my reading
 
+### 23. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your love language
+**Headline B:** How you give and need love
+**Body A:** How you give and need love, from Venus and Moon.
+**Body B:** Read from your Venus and Moon, in plain words.
+**Plans:** One add-on, paid once: "Love Language Report" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens its own Paddle checkout for a one-time price: `CONFIG.plans.addon` is a hidden one-time plan (never shown on the paywall; the main plan stays the default), bought with `checkout('addon')`. FunnelFox: native checkout screen `checkout_addon (one-time)`; paid -> `completePurchase('addon')` -> get-the-app with the report line; closed (×) -> get-the-app without it (`CONFIG.declineFlow = {addon:'get_app'}`). Demo: a demo checkout sheet with Pay / Close without paying.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/hook-rings.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Your love language, from your chart · What you need to feel chosen · Saved with your reading in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at checkout. No subscription." Skip link: "No thanks, take me to the app". A failed or closed charge lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `purchase_complete` with plan `addon`, `upsell_decline`; a closed demo checkout emits `checkout_close`.
+**CTA:** Add for $19.99
+
 ## H. Payoff
 
-### 23. Get the app
+### 24. Get the app
 **Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
 **Headline A:** You're in, {{name}}
 **Headline B:** Your reading is ready
 **Body A:** Your full reading is waiting in the Starlyn app.
 **Body B:** Download Starlyn: Daily Astrology and log in to open it.
-**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Love Language Report added. It opens in the app." sits above the steps.
 **Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
 **CTA:** Open the app
 
 ## Notes
 
+- **Add-on report (2026-10-06):** after the plan purchase, screen 23 offers one add-on, "Love Language Report", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` {plan: addon} / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
 - **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
 - **Branches:** status (#2) drives #4 copy, skipping #8 (couple) or #9 (single), the result label (match vs timing), the reading card (what each chart needs vs partner profile) and the next-step card. Single and couple readings get the same depth.
 - **Honesty:** the window is a range of years and a peak season, never a date. Score, window and axis percentages in the demo are deterministic placeholders; production needs the host's chart engine. The hoped timeline (#17) is collected for tone only; the demo window does not depend on it, and production must not echo it back into the window.
