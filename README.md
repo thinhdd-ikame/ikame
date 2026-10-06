@@ -15,6 +15,7 @@ funnel/
 │   ├── fitness/              #   - Fitness
 │   ├── mental-health/        #   - Mental Health
 │   └── ai-photo-video/       #   - AI Photo/Video
+├── funnel-testing/          # QA UI funnel (skill qa-ui-test): screenshot, bug report, Excel — mirror path funnel-development/
 ├── funnel-optimization/     # Phân tích và tối ưu funnel hiện có (drop-off, conversion rate, A/B trên funnel)
 ├── product-prioritization/  # Khung ưu tiên hoá roadmap, backlog theo tác động growth
 ├── research/                # Nghiên cứu thị trường, đối thủ cạnh tranh và người dùng
@@ -30,7 +31,7 @@ Repo dùng mô hình **một nhánh dài hạn cho mỗi category**, song song v
 
 - **`main`** — nhánh ổn định, chỉ chứa khung sườn thư mục và tài liệu dùng chung (README, quy ước chung). Không commit trực tiếp công việc của từng category vào `main`.
 - **Nhánh category** — mỗi category có một nhánh dài hạn cùng tên:
-  - `funnel` — chứa toàn bộ nội dung/tài liệu/công cụ của các mảng con bên trong `funnel/` (ab-testing, creative-development, data-analytics, funnel-development, funnel-optimization, product-prioritization, research, scale-clone, winner-iteration).
+  - `funnel` — chứa toàn bộ nội dung/tài liệu/công cụ của các mảng con bên trong `funnel/` (ab-testing, creative-development, data-analytics, funnel-development, funnel-testing, funnel-optimization, product-prioritization, research, scale-clone, winner-iteration).
   - *(sẽ bổ sung thêm khi tạo category mới, ví dụ `category2`, ...)*
 
 ### Quy ước làm việc trên một nhánh category
