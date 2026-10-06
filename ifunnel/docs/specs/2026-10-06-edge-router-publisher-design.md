@@ -71,7 +71,8 @@ Route sắp theo độ dài prefix giảm dần.
 ### Auth
 
 - CLI dùng token cá nhân do core cấp, gửi qua `Authorization: Bearer`. Token lưu ở `~/.config/ikf/credentials`.
-- Hai quyền: `publisher` (tạo version) và `router` (đổi route, rollback). Quyền đổi route tách riêng vì nó ảnh hưởng trực tiếp tới traffic thật.
+- Ba quyền: `publisher` (tạo version), `router` (đổi route, rollback) và `admin` (mọi quyền, cấp token qua `POST /v1/tokens`, đồng bộ domain qua `PUT /v1/domains/:host`). Quyền đổi route tách riêng vì nó ảnh hưởng trực tiếp tới traffic thật.
+- DB chỉ lưu sha256 của token (bảng `api_tokens`). Token admin đầu tiên lấy từ secret `ikf/<env>/bootstrap-admin-token`.
 
 ## 3. Luồng publish
 
@@ -80,7 +81,7 @@ ikf publish <folder> --slug <slug>
 ```
 
 **CLI (local):**
-1. Đọc `<folder>/demo.html`. Nếu HTML còn tham chiếu `img/...` tương đối thì dừng, liệt kê các dòng vi phạm. Người làm funnel tự đổi sang URL thư viện media trước.
+1. Đọc `<folder>/demo.html`. Funnel gọi ảnh qua map `IMG` (`im('img/x.jpg')`), nên key `img/...` vẫn nằm trong HTML kể cả khi đã đổi sang URL thật. Vì vậy CLI không dừng chỉ vì thấy `img/`: bước smoke ở dưới chạy trên **một bản `demo.html` đặt riêng trong thư mục tạm không có `img/`**. Ảnh nào chưa được map sang URL thư viện media sẽ không tải được và smoke fail.
 2. Chạy `lint_funnel.py` và `smoke_demo.mjs`. Một trong hai fail thì dừng.
 3. `POST /v1/funnels/<slug>/versions` với body HTML, sha256, báo cáo lint/smoke. Header `Idempotency-Key: <sha256>`.
 
@@ -89,7 +90,7 @@ ikf publish <folder> --slug <slug>
 | Kiểm tra | Lỗi |
 |---|---|
 | Kích thước ≤ 1MB | `413 bundle_too_large` |
-| Mọi `src`, `href`, `url()`, `poster`, `srcset` trỏ tới media là `data:`, thuộc `MEDIA_ORIGINS`, hoặc thuộc allowlist (`fonts.googleapis.com`, `fonts.gstatic.com`) | `422 media_origin_not_allowed` + danh sách URL |
+| Mọi `src`, `href` của `<link>`, `url()`, `poster`, `srcset`, mọi giá trị trong map `IMG`, và mọi chuỗi tĩnh `'img/<file>'` không có trong map, trỏ tới media là `data:`, thuộc `MEDIA_ORIGINS`, hoặc thuộc allowlist (`fonts.googleapis.com`, `fonts.gstatic.com`) | `422 media_origin_not_allowed` + danh sách URL |
 | Không có `<script src>` ngoài allowlist script (MVP: rỗng) | `422 script_origin_not_allowed` |
 | `CONFIG.funnel` trong HTML bằng `slug` | `422 slug_mismatch` |
 | sha256 trùng version mới nhất của slug | `200`, trả lại version đó, không tạo mới |
@@ -113,7 +114,7 @@ ikf route sync <host>
 - `set`, `rollback`, `rm` chạy trong một transaction: thay đổi `routes`, ghi `route_events`, tăng `host_revs.rev`.
 - Commit xong thì dựng lại **toàn bộ** JSON của host từ DB và ghi KV, rồi cập nhật `kv_synced_rev`. Không vá từng phần.
 - `rollback` lấy `from_version` của `route_events` gần nhất cho route đó.
-- Trỏ route sang slug khác slug hiện tại là hợp lệ (đổi funnel trên một link ads), nhưng CLI yêu cầu `--yes`.
+- Trỏ route sang slug khác slug hiện tại là hợp lệ (đổi funnel trên một link ads), nhưng phải xác nhận: CLI cần `--yes`, và core trả `409 funnel_change_requires_confirmation` nếu request không có `confirm_funnel_change: true`.
 - Output của `set` và `rollback` ghi rõ: thay đổi có hiệu lực toàn cầu trong tối đa ~90 giây.
 
 ## 5. Luồng request ở edge
@@ -125,7 +126,7 @@ GET https://try.aivideo.app/tiktok-ugc?fbclid=...&utm_source=fb
 1. Đọc `KV route:<host>` với `cacheTtl: 30`.
 2. `route-match`: prefix dài nhất, khớp theo ranh giới segment (`/v1` khớp `/v1` và `/v1/x`, không khớp `/v10`). Path được chuẩn hóa như §2 trước khi so khớp. Prefix `/` khớp mọi path.
 3. Lấy bundle từ Cache API theo khóa `r2_key`. Trượt cache thì đọc R2 rồi ghi vào cache. Query string không nằm trong khóa nhưng vẫn ở trên URL, để funnel tự đọc UTM/click id như hiện tại.
-4. `HTMLRewriter` chèn vào đầu `<head>`:
+4. Chèn bằng thao tác chuỗi (bundle ≤ 1MB) ngay sau `<head>`. Nếu không có `<head>` (21/67 demo hiện tại) thì chèn sau `<!doctype>`, không có nữa thì chèn đầu file:
    ```html
    <script>window.__IKF={funnel:"aivideo",v:3,rev:17}</script>
    ```
@@ -154,7 +155,6 @@ Chỉ phục vụ `GET` và `HEAD`. Method khác trả `405`.
 | Không prefix nào khớp | `404` như trên |
 | KV lỗi hoặc timeout | Dùng bản route đọc gần nhất, giữ trong bộ nhớ isolate tối đa 10 phút. Không có bản nào thì `503` + `Retry-After: 5` |
 | R2 thiếu object | `502`, log `bundle_missing` kèm key |
-| `HTMLRewriter` lỗi | Trả HTML gốc không chèn `__IKF` |
 
 Log có cấu trúc qua Workers Logs: `host`, `path`, `funnel`, `v`, `rev`, `status`, `error`. Alarm khi 5xx > 1% trong 5 phút, dùng chung kênh SNS với plan infra.
 
