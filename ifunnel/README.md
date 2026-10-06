@@ -19,6 +19,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 |---|---|
 | [docs/plans/2026-10-05-ikame-funnel-platform.md](docs/plans/2026-10-05-ikame-funnel-platform.md) | **Master plan:** phạm vi, kiến trúc, nguồn lực, roadmap P0–P3, rủi ro, hạ tầng theo tier |
 | [docs/plans/2026-10-05-ikf-infra-aws.md](docs/plans/2026-10-05-ikf-infra-aws.md) | **Plan TDD hạ tầng** (Terraform, 15 task): Cloudflare, ECS, RDS Proxy, Valkey, SQS, SES, alarm, CI/CD |
+| [docs/specs/2026-10-06-edge-router-publisher-design.md](docs/specs/2026-10-06-edge-router-publisher-design.md) | **Spec Edge Router + Publisher:** CLI `ikf` → Publisher API, version bất biến + preview, route host+prefix qua Postgres → KV, Worker phục vụ từ R2 |
 | [docs/checklist-chuan-bi.md](docs/checklist-chuan-bi.md) | Việc cần chuẩn bị: tài khoản, Paddle, pháp lý, Meta, Adjust, nhân sự |
 
 ## Trạng thái
@@ -27,7 +28,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 - [x] Plan hạ tầng AWS Tier A
 - [ ] Checklist chuẩn bị (nhóm 1 xong thì bắt đầu code Task 1–13)
 - [ ] Các plan TDD tiếp theo:
-  - edge-router-publisher
+  - edge-router-publisher (spec xong 2026-10-06, chờ plan TDD)
   - runtime-sdk-collector
   - billing-paddle
   - entitlement-identity
