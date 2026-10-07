@@ -1,0 +1,138 @@
+[
+  {
+    "screen": "Intro 1 (hook_age_check)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2 (mood)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 3 (day_topics)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4 (friend_not_therapist)",
+    "title": "[UI][Responsive][Intro 4] Nội dung bị đẩy xuống giữa màn, để trống lớn phía trên trên màn lớn (lặp ở Intro 8)",
+    "severity": "Low",
+    "actual": "- Ở 430×932, màn Intro 4 (friend_not_therapist) và Intro 8 (memory_control) căn giữa theo chiều dọc: headline bắt đầu khoảng giữa màn, phía trên chỉ có back/progress và khoảng trống lớn; các màn Intro 2, 3, 5, 6, 7 cùng kích thước đều đặt headline ngay dưới progress bar nên vị trí headline nhảy giữa các màn.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm vị trí headline thống nhất giữa các màn Intro (Cần đối chiếu Figma).",
+    "attachment": "Screenshot/Video: screens/04-friend_not_therapist-large.png, screens/08-memory_control-large.png, screens/03-day_topics-large.png"
+  },
+  {
+    "screen": "Intro 5 (name)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6 (support_style)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7 (personality)",
+    "title": "[UI][Responsive][Intro 7] Hàng chip bị cắt ngang bởi vùng CTA ở first view màn nhỏ (lặp ở Intro 10)",
+    "severity": "Medium",
+    "actual": "- Ở 375×667, first view Intro 7 (personality) hiển thị hàng chip \"He · She · They · Surprise me\" bị cắt mất nửa dưới bởi vùng button Continue (mép cắt thẳng, không có fade); Intro 10 (meet_companion) bị tương tự với hàng \"Or talk with Noor · Ben\" sát button Say hi. Phải cuộn mới thấy đủ chip.",
+    "expected": "- Component không bị cắt nửa ở first view; nếu nội dung tràn thì cần cue cuộn (fade/shadow) rõ ràng. Spec chưa định nghĩa cách xử lý – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/07-personality-small-p1.png, screens/07-personality-small-p2.png, screens/10-meet_companion-small-p1.png"
+  },
+  {
+    "screen": "Intro 8 (memory_control)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9 (getting_ready)",
+    "title": "[UI][Intro 9] Số % và độ dài progress bar của bước 1 không khớp nhau",
+    "severity": "Low",
+    "actual": "- Trong ảnh chụp loader Intro 9 (getting_ready), dòng \"Listening to how today went...\" hiển thị \"66%\" nhưng thanh progress chỉ được fill khoảng 1/3 chiều dài, giống nhau ở cả 375 và 430. Ảnh tĩnh nên có thể do bar animate chậm hơn số (độ tin cậy thấp, cần verify bằng video).",
+    "expected": "- Số % và độ dài fill của progress bar cần khớp nhau tại cùng thời điểm (spec: mỗi step 0→100%).",
+    "attachment": "Screenshot/Video: screens/09-getting_ready-small.png, screens/09-getting_ready-large.png"
+  },
+  {
+    "screen": "Intro 10 (meet_companion)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11 (first_checkin)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12 (it_remembers)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13 (day_remembered)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14 (checkin_time)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15 (save_memories)",
+    "title": "[UI/UX][Intro 15] \"Terms\" và \"Privacy Policy\" trong legal line không hiển thị dạng link",
+    "severity": "High",
+    "actual": "- Ở Intro 15 (save_memories), dòng \"By continuing you agree to the Terms and Privacy Policy.\" hiển thị cùng một màu xám, không underline/không đổi màu ở \"Terms\" và \"Privacy Policy\", trong khi các màn khác (Intro 1, Paywall, Sale) hiển thị Terms/Privacy có underline.",
+    "expected": "- Theo product rule, Terms/Privacy là link; cần style link nhất quán với các màn khác và bấm được – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/15-save_memories-small.png, screens/15-save_memories-large.png"
+  },
+  {
+    "screen": "Paywall 1 (paywall)",
+    "title": "[UI/UX][Responsive][Paywall 1] First view màn lớn không có CTA và giá nào",
+    "severity": "High",
+    "actual": "- Ở 430×932, first view Paywall 1 (paywall) chỉ có hero, chip và memory card; plan block 1 mới ló viền ở đáy màn nên cả sticky bottom bar (\"ChatChi Plus · 12 months / Due today $119.99 / Continue\") lẫn mini \"Continue\" trên header đều ẩn, user không thấy giá hay CTA nào nếu chưa cuộn. Ở 375×667 cả hai CTA đều hiển thị.",
+    "expected": "- Spec: sticky bar chỉ ẩn khi plan block đang trên màn; spec chưa định nghĩa ngưỡng \"đang trên màn\" khi block chỉ ló viền – cần PM/Designer confirm để first view luôn có CTA.",
+    "attachment": "Screenshot/Video: screens/16-paywall-large-p1.png, screens/16-paywall-small-p1.png"
+  },
+  {
+    "screen": "Paywall 2 (sale) (sale_m1)",
+    "title": "[UI][Responsive][Paywall 2] Wellbeing line bị footer cố định che ở first view màn nhỏ (lặp ở Paywall 3, 4)",
+    "severity": "Low",
+    "actual": "- Ở 375×667, first view Paywall 2 (sale_m1), Paywall 3 (sale_m3), Paywall 4 (sale_y12) không thấy dòng \"ChatChi is AI, not therapy. Crisis resources are always free.\" dưới card vì bị vùng \"No thanks\" + Terms/Privacy cố định che; phải cuộn mới thấy. Ở 430×932 và Paywall 5 (sale_lifetime) dòng này hiển thị ngay.",
+    "expected": "- Nội dung không bị footer cố định che; wellbeing line (spec #17 Visual) cần nhìn thấy được – cần Designer confirm cách bố trí trên màn nhỏ.",
+    "attachment": "Screenshot/Video: screens/21-sale_m1-small-p1.png, screens/21-sale_m1-small-p2.png, screens/22-sale_m3-small-p1.png, screens/23-sale_y12-small-p1.png"
+  },
+  {
+    "screen": "Paywall 3 (sale) (sale_m3)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 4 (sale) (sale_y12)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 5 (sale) (sale_lifetime)",
+    "no_bug": true
+  },
+  {
+    "screen": "Upsale 1 (upsell_lifetime)",
+    "title": "[UI][Upsale 1] Card \"Bonus companion\" dùng avatar của companion hiện tại (Sam)",
+    "severity": "Low",
+    "actual": "- Ở Upsale 1 (upsell_lifetime), card \"Bonus companion · Alongside Sam · private to you\" hiển thị avatar Sam, giống hệt avatar trên các màn Sale, trong khi sản phẩm bán là một companion thứ hai tạo mới.",
+    "expected": "- Spec chưa định nghĩa avatar cho Bonus companion – cần PM/Designer confirm (ví dụ avatar placeholder/khác Sam để tránh hiểu nhầm).",
+    "attachment": "Screenshot/Video: screens/25-upsell_lifetime-small.png, screens/21-sale_m1-small-p1.png"
+  },
+  {
+    "screen": "Download App (get_app)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1 – redirect (back_in_chat)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1 – redirect (day2_remembered)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1 – redirect (daily_limit)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 6 (legacy offer, ngoài flow) (cần confirm loại màn) (last_chance_offer)",
+    "title": "[UI][Paywall 6] Màn offer legacy vẫn render khi mở trực tiếp, hiển thị raw token giá",
+    "severity": "Low",
+    "actual": "- Mở trực tiếp màn last_chance_offer (screen 20, deep-jump không bị redirect) hiển thị badge \"{{offer_badge}}\", giá \"{{offer_price}}\" và \"{{offer_price}} today, then {{offer_renews}}\" ở cả 375 và 430. Walk thật không đi qua màn này (spec: offer cũ đã tắt, CONFIG.offer.enabled:false) nên đặt Medium; nếu màn này được điều hướng tới trong bản FunnelFox thì là sai giá (Critical).",
+    "expected": "- Theo spec, offer weekly cũ đã tắt: màn không được hiển thị cho user (redirect về Paywall 1 như back_in_chat/daily_limit, hoặc bỏ khỏi build); product rule: không để placeholder giá trong funnel.",
+    "attachment": "Screenshot/Video: screens/20-last_chance_offer-small-p1.png, screens/20-last_chance_offer-large.png"
+  }
+]

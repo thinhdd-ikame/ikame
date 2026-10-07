@@ -115,7 +115,7 @@ try {
   await page.goto(url);
   await page.waitForTimeout(800);
   const ids = Object.fromEntries((await page.evaluate(SCREEN_LIST)).map(([n, id]) => [n, id]));
-  const path_ = []; let stuck = 0, last = null; const uploaded = new Set();
+  const path_ = []; let stuck = 0, last = null; const uploaded = new Set(); const log = [];
   for (let step = 0; step < 80; step++) {
     const i = await page.evaluate(() => { try { return S.i; } catch (e) { return null; } });
     const id = ids[i] || String(i);
@@ -140,6 +140,7 @@ try {
         if (/email/.test(hint)) setVal(el, TEST.email);
         else if (/city|place|born|town/.test(hint)) setVal(el, 'London');
         else if (el.type === 'checkbox') { if (!el.checked) el.click(); }
+        else if (el.id === 'msg') setVal(el, 'hi');
         else if (el.type === 'text' || el.type === '' ) setVal(el, TEST.name);
       }
       // one select at a time: some engines re-render the row after each change, detaching the old nodes
@@ -160,19 +161,43 @@ try {
       let at = null; try { at = S.i; } catch (e) {}
       const sug = first('[data-a="city"]'); if (sug && window.__qaCityAt !== at) { window.__qaCityAt = at; sug.click(); return 'city'; }
       let picked = 0; try { picked = (S.picks || []).length; } catch (e) {}
-      const draw = first('[data-a="draw"]:not(.used)'); if (draw && picked < 3) { draw.click(); return 'draw'; }
+      window.__qaDrawn = window.__qaDrawn || new Set();
+      const draw = [...document.querySelectorAll('[data-a="draw"]:not(.used)')].find(d => vis(d) && !window.__qaDrawn.has(d.dataset.v));
+      let need = 3; try { if (typeof N === 'function') need = +N() || 3; } catch (e) {}
+      if (draw && picked < need) { window.__qaDrawn.add(draw.dataset.v); draw.click(); return 'draw'; }
       const multi = first('[data-a="multi"]:not(.on):not(.sel)'); if (multi && !document.querySelector('[data-a="multi"].on, [data-a="multi"].sel')) { multi.click(); return 'multi'; }
-      const pick = first('[data-a="pick"]'); if (pick) { pick.click(); return 'pick'; }
-      const cta = [...document.querySelectorAll('button.btn, .btn, [data-a="next"], [data-a="go"], [data-a="email"]')].filter(b => vis(b) && !b.disabled && !b.classList.contains('ghost')).pop();
+      // chat screens: send what was typed into the message box
+      const msg = document.getElementById('msg'), send = first('[data-a="send"]');
+      if (msg && vis(msg) && msg.value.trim() && send && !send.disabled) { send.click(); return 'send'; }
+      // options: pick once per screen, then move on with the CTA
+      const pick = first('[data-a="pick"]'); if (pick && window.__qaPickAt !== at) { window.__qaPickAt = at; pick.click(); return 'pick'; }
+      // primary CTA: the widest enabled button, lowest on screen
+      const hit = b => { const r = b.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2; if (y < 0 || y > innerHeight) return false; const e = document.elementFromPoint(x, y); return e && (e === b || b.contains(e)); };
+      // option groups (several buttons sharing one data-a): choose the first option once per screen
+      const groups = {};
+      for (const el of document.querySelectorAll('[data-a]')) if (vis(el) && el.dataset.a !== 'back') (groups[el.dataset.a] = groups[el.dataset.a] || []).push(el);
+      const optKey = Object.keys(groups).find(k => groups[k].length >= 2 && !['year', 'send', 'city', 'draw', 'help', 'legal'].includes(k) && groups[k].some(hit));
+      if (optKey && window.__qaOptAt !== at) { window.__qaOptAt = at; const o = groups[optKey].find(hit); o.click(); return 'opt:' + optKey; }
+      const grouped = new Set(Object.keys(groups).filter(k => groups[k].length >= 2));
+      const cands = [...document.querySelectorAll('button, [data-a]')].filter(b => vis(b) && hit(b) && !grouped.has(b.dataset.a) && !b.disabled && !b.classList.contains('ghost') && b.dataset.a !== 'back' && b.getBoundingClientRect().width >= innerWidth * 0.6 && (b.innerText || '').trim());
+      // prefer "move on" buttons, avoid ones that open a file picker / camera; then the lowest on screen
+      const score = b => { const t = (b.innerText || '').toLowerCase(); return /upload|gallery|take a photo|camera|retake/.test(t) ? -1 : /continue|next|start|see|get|unlock|use|done|turn|reveal|let|say|send|save|open|go\b/.test(t) ? 1 : 0; };
+      cands.sort((x, y) => score(y) - score(x) || y.getBoundingClientRect().bottom - x.getBoundingClientRect().bottom);
+      if (!cands.length) { // CTA pushed below the fold (e.g. after an "Other" text field opens): scroll to it like a user would
+        const below = [...document.querySelectorAll('button, [data-a]')].filter(b => vis(b) && !grouped.has(b.dataset.a) && !b.disabled && !b.classList.contains('ghost') && b.dataset.a !== 'back' && b.getBoundingClientRect().width >= innerWidth * 0.6 && b.getBoundingClientRect().top >= innerHeight - 80 && (b.innerText || '').trim());
+        for (const b of below) { b.scrollIntoView({ block: 'center' }); if (hit(b)) { cands.push(b); break; } }
+      }
+      const cta = cands[0] || [...document.querySelectorAll('button.btn, .btn, [data-a="next"], [data-a="go"], [data-a="email"]')].filter(b => vis(b) && !b.disabled && !b.classList.contains('ghost')).pop();
       if (cta) { cta.click(); return 'cta:' + (cta.innerText || '').trim().slice(0, 30); }
       const any = first('[data-a]:not([data-a="back"])'); if (any) { any.click(); return 'any:' + any.dataset.a; }
       const btn = [...document.querySelectorAll('button')].find(b => vis(b) && !b.disabled && b.dataset.a !== 'back' && (b.innerText || '').trim()); if (btn) { btn.click(); return 'btn:' + btn.innerText.trim().slice(0, 20); }
       return null;
     });
+    log.push(`${id}: ${clicked}`);
     await page.waitForTimeout(clicked ? 900 : 2500);
   }
   await page.screenshot({ path: path.join(shots, `walk-end-${path_[path_.length - 1]}.png`) });
-  result.walk = { path: path_, reachedPaywall: path_.some(x => /paywall/.test(x)), stuckAt: stuck > 14 ? path_[path_.length - 1] : null, errors: walkErr };
+  result.walk = { path: path_, reachedPaywall: path_.some(x => /paywall/.test(x)), stuckAt: stuck > 14 ? path_[path_.length - 1] : null, errors: walkErr, log: log.slice(-25) };
   await ctx.close();
 } finally {
   await browser.close();

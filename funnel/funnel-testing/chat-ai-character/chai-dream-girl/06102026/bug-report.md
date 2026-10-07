@@ -1,0 +1,103 @@
+# ChatChi – chai-dream-girl – UI Bug Report (06/10/2026)
+
+Giả định: review file local `funnel-development/chat-ai-character/chai-dream-girl/funnel.html` qua screenshot deep-jump + walk tự động (`capture.json`, walk không lỗi) ở 375×667 và 430×932; spec = `funnel-content.md` + product rules ChatChi (không có Figma). Thứ tự màn theo walk thật (chat taste → email → paywall); she_texts_first/daily_limit deep-jump bị redirect về paywall là đúng hard paywall; animation loader/count-up và data test ("test", "test@gmail.com", nhân vật "Chloe") không tính là lỗi.
+
+### Intro 1 (hook_ethnicity)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 1 | [UI/UX][Responsive][Intro 1] Dòng xác nhận 18+ và link Terms/Privacy nằm dưới fold ở màn nhỏ | High | - Ở Intro 1 (hook_ethnicity) trên 375×667, first view chỉ có 4 card ethnicity + "Choose randomly"; dòng "By continuing you confirm you're 18+ and agree to our Terms of Use \| Privacy Policy" chỉ hiện sau khi cuộn (p2). Tap một card là auto-advance nên user có thể đi tiếp mà không thấy dòng xác nhận 18+. Trên 430×932 dòng này nằm trong first view. | - Theo product rule (18+ age gate) và spec #1 (legal line dưới card), dòng xác nhận 18+ cần được user nhìn thấy trước khi tap card; vị trí cụ thể ở màn nhỏ: Spec chưa định nghĩa – cần PM/Designer confirm. | Screenshot/Video: screens/01-hook_ethnicity-small-p1.png, screens/01-hook_ethnicity-small-p2.png, screens/01-hook_ethnicity-large.png |
+| 2 | [UI/UX][Intro 1] Link "Terms of Use" / "Privacy Policy" có tap target quá nhỏ | High | - Link "Terms of Use" và "Privacy Policy" chỉ là text inline, vùng bấm đo tự động 73×14 / 76×14 ở Intro 1 (hook_ethnicity), Paywall 2–5 (sale_m1, sale_m3, sale_y12, sale_lifetime), Upsale 1 (upsell_lifetime), Paywall 6 (last_chance_offer) và 76×19 / 79×19 ở footer Paywall 1 (paywall), trên cả small và large. | - Tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm. | Screenshot/Video: screens/01-hook_ethnicity-small-p2.png, screens/12-paywall-small-p6.png, screens/15-sale_m1-small-p2.png, screens/19-upsell_lifetime-small-p2.png |
+
+### Intro 2 (her_age)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 3 | [UI][Intro 2] Progress bar có 9 segment, spec ghi 10 segment | Low | - Top bar Intro 2 (her_age) hiển thị progress bar 9 segment (Intro 2 sáng 1/9, Intro 10 scenarios sáng 9/9), trên cả small và large. | - Spec #2: "Top bar: back chevron, 'Create my AI Girl', 10-segment progress bar". Cần PM/Designer confirm số segment đúng (quiz thực tế có 9 bước). | Screenshot/Video: screens/02-her_age-small.png, screens/10-scenarios-small-p1.png |
+
+### Intro 3 (figure)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 4 | [UI][Intro 3] Ảnh card "Athletic" có một người thứ hai bị cắt ở mép phải | Low | - Ở Intro 3 (figure), ảnh card "Athletic" có thêm một phần cánh tay/thân người khác bị cắt ở mép phải khung ảnh, cạnh nhân vật chính, thấy rõ trên cả small và large. | - Spec #3: card full-body một nhân vật, "relaxed standing poses". Cần đối chiếu Designer để thay/crop ảnh. | Screenshot/Video: screens/03-figure-small.png, screens/03-figure-large.png |
+
+### Intro 4 (hair_colour)
+
+Không phát hiện lỗi.
+
+### Intro 5 (looks)
+
+Không phát hiện lỗi.
+
+### Intro 6 (bridge)
+
+Không phát hiện lỗi.
+
+### Intro 7 (looking_for)
+
+Không phát hiện lỗi.
+
+### Intro 8 (traits)
+
+Không phát hiện lỗi.
+
+### Intro 9 (together)
+
+Không phát hiện lỗi.
+
+### Intro 10 (scenarios)
+
+Không phát hiện lỗi.
+
+### Intro 11 (loader)
+
+Không phát hiện lỗi.
+
+### Intro 12 (she_texts_first)
+
+Không phát hiện lỗi. (Không có screenshot: deep-jump bị redirect về paywall theo hard paywall. Walk thật đi qua chat taste rồi tới email; code khoá composer sau 2 tin user, `teaserMessages:2`.)
+
+### Intro 13 (email)
+
+Không phát hiện lỗi. (Email-only, không có Google/Apple/skip, CTA "Save my chat" – đúng product rule.)
+
+### Paywall 1 (paywall)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 5 | [UI/UX][Responsive][Paywall 1] Màn nhỏ: first view không có giá/CTA và sticky CTA không hiển thị | High | - Mở Paywall 1 (paywall) trên 375×667: hero portrait + 4 fact tile + vibe chips chiếm hết first view, không thấy plan, giá hay CTA; thanh sticky bottom "12 months plan · $119.99 today" + "Get my AI girl" không hiện dù plan block chưa xuất hiện trên màn (giống ở walk-end-paywall). Sticky chỉ xuất hiện sau khi cuộn qua plan block 1 (p3). Trên 430×932 plan block 1 lấp ló ở first view. | - Spec #13 mục 11: sticky bottom CTA "slides up only while neither plan block is on screen" → cần hiển thị ngay ở first view màn nhỏ khi plan block chưa nằm trên màn. | Screenshot/Video: screens/12-paywall-small-p1.png, screens/walk-end-paywall (paywall).png, screens/12-paywall-small-p3.png, screens/12-paywall-large-p1.png |
+| 6 | [UI/UX][Paywall 1] Portrait của nhân vật không khớp hair colour đã chọn | Medium | - Với data deep-jump chọn hair colour "Brunette", fact tile Paywall 1 (paywall) ghi "Caucasian · Brunette hair" nhưng portrait hero lại là cô gái tóc bạch kim (ảnh card Caucasian ở Intro 1). Cùng portrait này lặp ở Intro 13 (email), Paywall 2–5, Upsale 1 và Paywall 6, nên nhân vật user thấy mâu thuẫn với lựa chọn tóc. Walk chọn Blonde thì khớp. | - Spec #13 chỉ định portrait theo "his ethnicity pick"; việc portrait mâu thuẫn với hair colour/fact tile: Spec chưa định nghĩa – cần PM/Designer confirm (vd. portrait theo cả ethnicity + hair, hoặc ảnh trung tính). | Screenshot/Video: screens/12-paywall-small-p1.png, screens/21-email-small.png, screens/15-sale_m1-small-p1.png, screens/walk-end-paywall (paywall).png |
+
+### Paywall 2 (sale) (sale_m1)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 7 | [UI][Paywall 2] Top bar màn sale không có nền đặc, nội dung cuộn lộ dưới logo | Low | - Khi cuộn Paywall 2 (sale_m1) trên màn nhỏ, title "Keep Chloe for less"/eyebrow trôi vào vùng top bar và vẫn lộ một phần dưới hàng logo ChatChi + nút X; Paywall 1 (paywall) có top bar nền đặc + divider. Lặp ở Paywall 3–5 (sale_m3, sale_y12, sale_lifetime), Upsale 1 (upsell_lifetime), Paywall 6 (last_chance_offer). | - Spec #14: "Same web look as the paywall: top bar with the ChatChi logo and close X" → top bar đồng nhất với Paywall 1. Cần đối chiếu Figma. | Screenshot/Video: screens/15-sale_m1-small-p2.png, screens/17-sale_y12-small-p2.png, screens/18-sale_lifetime-small-p2.png, screens/19-upsell_lifetime-small-p2.png |
+
+### Paywall 3 (sale) (sale_m3)
+
+Không phát hiện lỗi.
+
+### Paywall 4 (sale) (sale_y12)
+
+Không phát hiện lỗi.
+
+### Paywall 5 (sale) (sale_lifetime)
+
+Không phát hiện lỗi.
+
+### Upsale 1 (upsell_lifetime)
+
+Không phát hiện lỗi.
+
+### Download App (get_app)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 8 | [UI][Download App] Badge App Store / Google Play không dùng artwork chính thức | Low | - Ở Download App (get_app), badge "Download on the App Store" dùng icon outline không phải logo Apple, badge "Get it on Google Play" dùng icon tam giác outline, trên cả small và large. | - Spec #21: "App Store and Google Play badges". Badge nên dùng artwork chính thức theo guideline Apple/Google – cần Designer confirm. | Screenshot/Video: screens/20-get_app-small.png, screens/20-get_app-large.png |
+
+### Paywall 6 (sale, ngoài flow – cần confirm loại màn) (last_chance_offer)
+
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| 9 | [UI][Paywall 6] Placeholder {{offer_badge}} / {{offer_price}} / {{offer_renews}} hiển thị thô | Low | - Màn Paywall 6 (last_chance_offer, id 99) chỉ mở được bằng deep-jump; walk thật từ màn 1 không đi qua màn này. Màn hiển thị nguyên token {{offer_badge}} trên ribbon, {{offer_price}} ở hàng giá (cạnh $24.99 gạch) và {{offer_price}} / {{offer_renews}} trong renewal line, trên cả small và large. | - Theo product rules, giá/legal placeholder là bug; chuỗi sale chỉ gồm sale_m1 $22.99 / sale_m3 $44.99 / sale_y12 $105.99 rồi sale_lifetime $99.99. Màn này không có trong spec – cần PM confirm gỡ khỏi build hoặc điền giá thật. | Screenshot/Video: screens/99-last_chance_offer-small-p1.png, screens/99-last_chance_offer-large.png |
