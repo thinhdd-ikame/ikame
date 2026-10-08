@@ -311,6 +311,33 @@ img{max-width:100%;display:block}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
 }
+
+/* last-chance offer (shown once, after a paywall decline) */
+.ofr .pwtop .logo{font-size:16px}
+.oeye{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font:600 12px/1 var(--sans);letter-spacing:.02em}
+.ocard{position:relative;margin-top:6px;padding:22px 16px 16px;border-radius:24px;border:1.5px solid var(--pink);background:radial-gradient(ellipse at 50% 0%,var(--pink-dim),transparent 65%),var(--surface);box-shadow:0 0 0 4px var(--pink-dim),0 30px 60px -30px #000;display:flex;flex-direction:column;gap:14px;flex:none}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad,var(--pink));color:#fff;font:700 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.obadge .otk{color:#fff;border-color:#ffffffaa;background:transparent}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{font:700 17px/1.2 var(--head)}
+.osub{font-size:12.5px;color:var(--t3);margin-top:3px}
+.oth{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:none;position:relative;display:block;box-shadow:0 0 0 2px var(--pink),0 0 24px var(--pink-dim)}
+.oth>img,.oth .pimg{width:100%;height:100%;object-fit:cover;display:block}
+.oth>.av,.oth>.cav{width:100%!important;height:100%!important}
+.ocov{flex:none;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}
+.oprice s .otk{text-decoration:line-through;opacity:.75}
+.oprice b{font:800 28px/1 var(--head);color:var(--t1)}
+.oprice span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:center;font-size:14.5px;font-weight:500}
+.ochecks svg{color:var(--pink-hi);flex:none}
+.ofine{font-size:12px;color:var(--t3);text-align:center;line-height:1.45;margin:0}
+.odis{font-size:11.5px;color:var(--t3);text-align:center;margin:0;line-height:1.4}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pink-hi);font-variant-numeric:tabular-nums}
+.otk{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
 </style>
 
 <div class="wrap">
@@ -339,6 +366,16 @@ img{max-width:100%;display:block}
 </div>
 
 <script>
+/* Prototype stand-ins for production's CONFIG + emit (see funnel.html). Only what the last-chance offer needs. */
+const CONFIG={slug:'chatchi',
+  plans:{yearly:{price:'$99.99'},weekly:{price:'$6.99'}},
+  /* Last-chance offer, shown ONCE per session when a paywall is declined (close X, "Continue free",
+     closing the paywall opened from the daily-limit card). The team calls it "Upsell"; it is a downsell.
+     Real terms only: price and renewal must be what checkout charges. compareAt = the plan it undercuts
+     (that plan's configured price is shown struck). expiresMin: null = no timer. A number = a real deadline:
+     when it ends the offer is withdrawn for this session. Never shown on the crisis path. TODO: replace every {{...}}. */
+  offer:{enabled:true,name:'ChatChi Plus · weekly',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'weekly',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+const emit=(name,detail)=>{try{console.log('[ikfunnel] '+name+' '+JSON.stringify(detail||{}))}catch(e){}};
 const IC={
   back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
   heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
@@ -673,6 +710,39 @@ function runLoading(){
   },42);
 }
 
+/* ---------- last-chance offer (fallback / "upsell on decline"), shown ONCE per session ----------
+   Every paywall decline (close X, "Continue free", closing the limit-card paywall) comes here first.
+   Declining it, or any later paywall close, goes straight to the free path. Never on the crisis path. */
+const OFFER_ID=21,OFFER_FREE=19;
+const OKEY='ikf_offer_'+CONFIG.slug;
+const otok=s=>esc(s).replace(/\{\{[^}]+\}\}/g,m=>`<span class="otk">${m}</span>`);
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen||S.crisis)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}return true};
+function openOffer(ret,placement){const o=CONFIG.offer;S.offerSeen=true;S.offerRet=ret;S.offerEnd=o.expiresMin?Date.now()+o.expiresMin*60000:0;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  go(OFFER_ID);emit('offer_view',{placement,price:o.price,compareAt:o.compareAt})}
+function offerOr(ret,placement){if(offerOpen())openOffer(ret,placement);else go(ret)}
+function offerLeave(){go(S.offerRet||OFFER_FREE)}
+function offerTimer(){const o=CONFIG.offer;clearInterval(window.__oiv);if(!o.expiresMin||S.i!==OFFER_ID)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(S.i!==OFFER_ID||!el){clearInterval(window.__oiv);return}const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);emit('offer_expired');offerLeave();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,was=(CONFIG.plans[o.compareAt]||{}).price||'';
+  return `<div class="pw ofr" role="dialog" aria-label="One-time offer"><div class="pwtop"><div class="logo">${logo(22)} ChatChi</div><button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="scr" style="gap:14px;padding-top:6px">
+   <div style="text-align:center"><span class="oeye">One-time offer · shown once</span>
+    <h1 class="h1" style="font-size:26px;margin-top:12px">Keep ${esc(mn())}’s story going, for less</h1>
+    <p class="lead" style="margin-top:8px;font-size:14.5px">Your story with ${esc(mn())} is saved. Here’s ChatChi Plus at a lower first price, one time only.</p>
+    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+   <div class="ocard">${o.badge?`<span class="obadge">${otok(o.badge)}</span>`:''}
+    <div class="orow"><span class="oth">${img(mk())}</span><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><div class="osub">With ${esc(mn())} · private to you</div></div></div>
+    <div class="oprice">${was?`<s>${otok(was)}</s>`:''}<b>${otok(o.price)}</b><span>today</span></div>
+    <div class="ochecks">${[`Unlimited chat with ${esc(mn())}`,'Better replies that stay on story','Teach them to remember'].map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+    ${cta('Claim my offer',true,'offerbuy')}
+    <p class="ofine">${otok(o.price)} today, then ${otok(o.renews)} until you cancel. Cancel anytime in account or store settings.</p></div>
+   <p class="odis">All replies are AI-generated. All characters are fictional and depicted as adults 18 or older.</p></div>
+  <div class="foot" style="padding-top:6px;gap:4px"><button class="link" data-a="offerno">No thanks, continue free · ${FREE} messages a day</button><div class="legal"><span>Terms of Service</span><span>Privacy Policy</span></div></div></div>`};
+FLOW.find(g=>/^F/.test(g[0]))[1].push([OFFER_ID,'Last-chance offer','once']);
+
 function render(anim){
   const n=S.i;const html=nav()+V[n]();
   const old=cur();
@@ -829,9 +899,11 @@ phone.addEventListener('click',e=>{
     case 'plan':S.plan=v;render();break;
     case 'restore':toast('Nothing to restore (demo)');break;
     case 'buy':S.premium=true;toast('Demo only — no charge made');S.sheet=null;go(19);break;
-    case 'closepw':case 'freeplan':go(19);break;
+    case 'offerbuy':{const o=CONFIG.offer;emit('offer_accept',{price:o.price,url:o.checkoutUrl});emit('checkout_click',{plan:'offer',price:o.price,url:o.checkoutUrl});S.premium=true;toast('Demo only — no charge made');offerLeave();break}
+    case 'offerno':emit('offer_decline');offerLeave();break;
+    case 'closepw':case 'freeplan':offerOr(19,'onboarding');break;
     case 'upgrade':S.sheet='pw';render();break;
-    case 'closeq':S.sheet=null;render();break;
+    case 'closeq':S.sheet=null;if(offerOpen())openOffer(S.i,'limit');else render();break;
     case 'midnight':toast('Your 10 messages come back at midnight');break;
   }
 });
@@ -849,7 +921,7 @@ document.getElementById('flow').addEventListener('click',e=>{const b=e.target.cl
 const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');if(S.i!==11&&!S.typing)render()};
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
-document.getElementById('restart').onclick=()=>{clearT();const v=S.v;S=INIT();S.v=v;render(true)};
+document.getElementById('restart').onclick=()=>{clearT();try{sessionStorage.removeItem(OKEY)}catch(e){}const v=S.v;S=INIT();S.v=v;render(true)};
 {const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}}
 render();
 </script>

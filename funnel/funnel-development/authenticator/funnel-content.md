@@ -5,7 +5,7 @@ archetype: diagnostic-utility
 subject: person
 input: 4 security-habit answers (how codes arrive, what is exposed, password reuse, past lockouts) + email
 output: personal Security Risk Score with the 1-3 risks that apply and the fix for each
-screens: 13
+screens: 14
 monetization: hard web subscription paywall (weekly / yearly pre-selected / monthly), app unlocked by the same email
 creative_screens:
   hook-a: 1
@@ -19,7 +19,7 @@ motion: >
 
 # Funnel Content — Authenticator (2FA)
 
-Authenticator is an iOS 2FA app. It generates 6-digit TOTP codes on the device (they work offline), keeps them in an encrypted vault with iCloud backup, and has an Apple Watch app and an app lock. This is a **web funnel** that runs before install. The user answers 4 questions about their security habits and gets a **Security Risk Score**. The score names the risks that actually apply to them and pairs each one with an app feature that fixes it. They then buy on the web and log into the app with the same email. The shape is new to this repo, so it's registered as **diagnostic-utility**. The quiz isn't the product (like astrology) and isn't a transformation input (like a photo). It's a *diagnosis* that turns a utility nobody is excited to buy into a problem the user now owns. There are 13 screens. Screens 1-9 and 11-12 come straight from the Figma file `Funnel / Web Funnel` (section `96:34945`) and are referenced by node id in `Visual:`. Screens 10 (email gate) and 13 (download handoff) are **new**, because a web checkout can't work without them. The look follows the Figma file, not the repo's default dark theme: white background, iOS system type, blue primary `#3B82F6`, rounded 58px CTA with a trailing arrow, real service logos (Google, Microsoft, Facebook) on the code cards. All copy is cut to the repo's mobile limits. The Figma headlines are 10-15 words, and the originals are listed in Notes so design can compare.
+Authenticator is an iOS 2FA app. It generates 6-digit TOTP codes on the device (they work offline), keeps them in an encrypted vault with iCloud backup, and has an Apple Watch app and an app lock. This is a **web funnel** that runs before install. The user answers 4 questions about their security habits and gets a **Security Risk Score**. The score names the risks that actually apply to them and pairs each one with an app feature that fixes it. They then buy on the web and log into the app with the same email. The shape is new to this repo, so it's registered as **diagnostic-utility**. The quiz isn't the product (like astrology) and isn't a transformation input (like a photo). It's a *diagnosis* that turns a utility nobody is excited to buy into a problem the user now owns. There are 14 screens. Screens 1-9 and 11-12 come straight from the Figma file `Funnel / Web Funnel` (section `96:34945`) and are referenced by node id in `Visual:`. Screens 10 (email gate), 13 (last-chance offer) and 14 (download handoff) are **new**: a web checkout can't work without 10 and 14, and 13 is the required offer shown on paywall decline. The look follows the Figma file, not the repo's default dark theme: white background, iOS system type, blue primary `#3B82F6`, rounded 58px CTA with a trailing arrow, real service logos (Google, Microsoft, Facebook) on the code cards. All copy is cut to the repo's mobile limits. The Figma headlines are 10-15 words, and the originals are listed in Notes so design can compare.
 
 ---
 
@@ -196,14 +196,29 @@ Authenticator is an iOS 2FA app. It generates 6-digit TOTP codes on the device (
 - Review card: ★★★★★ "Super easy to set up" — "Moved all my accounts in 2 minutes." — App Store user
 - FAQ: How does it work? · What's included? · How does billing work? · Can I cancel anytime?
 - Proof number must match screen 1 ("1M+"); Figma says "100,000+" here.
-**Fallback offer:** On back/exit intent: one bottom sheet showing Yearly with a clearly stated trial (e.g. 3-day free, then $59.99/year), only if billing supports a trial. Otherwise no fallback.
+**Fallback offer:** Screen 13 (Last-chance offer). The paywall close X goes there first, once per session; a second close goes straight to screen 14. It replaces the earlier exit-intent bottom sheet, so there is still only one offer.
 **CTA:** Unlock full protection
+
+### 13. Last-chance offer (on paywall close) — NEW
+**Purpose:** Second chance for users who closed the paywall without paying. Shown once per session (sessionStorage `ikf_offer_authenticator`), then never again. Security buyers distrust pressure, so it is a trial on Yearly at real terms, not a fake markdown.
+**Headline A:** Fix your {{score}}/100 risk for less
+**Headline B (Low band):** Keep your score low, pay less today
+**Body A:** {{risk_count}} risks found. Start protected at a lower first price.
+**Body B (Low band):** Protect every account before you change phones.
+**Plans:** One offer card: {{offer_name}} (Yearly with a {{trial_days}}-day trial, only if billing supports a trial). {{offer_price}} today, with the regular Yearly $59.99 struck (the real price of the plan it undercuts), then {{offer_renews}}. Optional {{offer_badge}}.
+**Visual:** Web page in the paywall's style (white, blue `#3B82F6`): sticky top bar with the shield icon + "Authenticator" and a close X, a centered eyebrow pill "One-time offer · shown once", then one blue-bordered offer card with a mini score thumbnail (their number, band-colored bar and "High/Medium/Low risk"), the price row, 3 checks (the FIX lines from their triggered risk cards, topped up with core features), the CTA, payment-logo row and the renewal line.
+**Microcopy:**
+- Renewal line (required): "{{offer_price}} today, then {{offer_renews}} until you cancel. Cancel anytime in settings."
+- Timer only if `CONFIG.offer.expiresMin` is set. It is a real deadline: when it ends the offer is withdrawn (`offer_expired`) and the user goes to screen 14. Default is no timer.
+- Decline link: "No thanks, just keep my free score" → screen 14 in its unpaid state ("Get the app", no receipt line).
+- Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
 
 ---
 
 ## G. Payoff
 
-### 13. Download handoff — NEW
+### 14. Download handoff — NEW
 **Purpose:** Web buyers who don't install never activate, then refund or charge back. The first action after paying is getting the app open on their phone with the same email.
 **Headline A:** You're protected, {{first_name}}
 **Headline B:** Last step: get the app
@@ -232,6 +247,7 @@ Q1: SMS 30 · Email 25 · No 2FA 35 · Authenticator 5. Q2: +4 per pick, max 20.
 | 11 | "100% offline & un-hackable", "Zero-knowledge encryption" on the Face ID fix | Drop "un-hackable" (absolute claim) and the mislabeled zero-knowledge line |
 | 12 | "Limited Time Offer / Expires in 09:59" + struck-through $17.99 / $119.99 / $39.99 | **Remove** unless the offer genuinely ends and those were real prior prices. A timer that resets and invented "was" prices are deceptive-pricing exposure (FTC), and for a *security* brand they're the fastest way to look like a scam |
 | 12 | "BEST VALUE — SAVE 50%" (vs. the fake strike price) | "BEST VALUE", or an honest comparison: yearly saves 75% vs. 12× monthly |
+| 12 | Exit-intent trial bottom sheet | Replaced by screen 13, a full last-chance offer page shown once per session on paywall close (user direction, 2026-09-30) |
 | 12 | "1.28$" price format | "$1.28/day" |
 | 12 | "Loved by Over 100,000+ Users" vs. "1M+" on screen 1 | Use one real number in both places |
 
@@ -241,4 +257,4 @@ Q1: SMS 30 · Email 25 · No 2FA 35 · Authenticator 5. Q2: +4 per pick, max 20.
 
 **Drop-off risk:** screen 10 (email before score) is the cliff. **First A/B test:** email gate before the score (this brief) vs. after the score, just before the paywall. Second test: Q1-segmented paywall headline ("Stop relying on SMS codes" for SMS users) vs. the generic one.
 
-**Monetization:** one layer, the web subscription. Track paywall conversion, and separately the **install + sign-in rate from screen 13**. A web sale without activation turns into a refund.
+**Monetization:** one layer, the web subscription. Track paywall conversion, and separately the **install + sign-in rate from screen 14**. A web sale without activation turns into a refund.

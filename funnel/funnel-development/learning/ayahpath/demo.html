@@ -399,6 +399,29 @@ figcaption{font:500 11.5px var(--sans);color:var(--ink-2);margin-top:8px;letter-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
 }
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:6px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.oclose{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;background:#0A2C21cc;border:1px solid var(--em-line);color:var(--t1)}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;font-size:13px;background:#0A2C21;color:var(--t2);border:1px solid var(--em-line)}
+.otimer b{font-variant-numeric:tabular-nums;color:var(--em)}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:24px;border:2px solid var(--gold);box-shadow:0 0 0 5px #E4CB8E33,0 24px 44px -20px #000a}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;white-space:nowrap;background:var(--gold);color:var(--em-deep)}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font-size:18px;line-height:1.2}.oname span{font-size:13px;opacity:.8}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:16px;background:#FFFDF5;border:1px solid #D8C697}
+.oprice s,.oprice s .tok{font-size:14px;opacity:.75;text-decoration:line-through;text-decoration-thickness:1.5px}
+.oprice b{font-size:26px;line-height:1;color:var(--em)}.oprice>span{font-size:13px;opacity:.8}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.35}
+.ochecks i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;margin-top:1px;background:var(--em);color:var(--gold-2)}
+.opays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.opays span{font-size:10.5px;font-weight:700;padding:5px 7px;border-radius:6px;}
+.ofine{font-size:12px;line-height:1.45;text-align:center;margin:0;opacity:.85}
+.obrand{display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--serif);color:var(--t1)}
+.ocard.parch{color:var(--ink)}.ocard .oname b{font-family:var(--serif);font-weight:600;font-size:19px}.ocard .oprice b{font-family:var(--serif);font-weight:600}
+.ocard .mpath{margin-top:2px}.ocard .ofine{color:var(--ink-2)}
 </style>
 
 <div class="wrap">
@@ -406,7 +429,7 @@ figcaption{font:500 11.5px var(--sans);color:var(--ink-2);margin-top:8px;letter-
   <aside class="panel">
     <div>
       <h1>Quran-learning onboarding</h1>
-      <p class="intro">An ikame prototype modeled on AyahPath's funnel: a clickable version of the 23-screen brief in <code>learning/ayahpath/funnel-content.md</code>. The app name, rating and reviews inside the phone are placeholders, not the competitor's. It uses the brief's look: deep emerald, parchment cards, muted gold, a faint 8-point geometric pattern, and Uthmani Arabic set in Amiri Quran. Tap through the phone, or jump to any screen below.</p>
+      <p class="intro">An ikame prototype modeled on AyahPath's funnel: a clickable version of the 24-screen brief in <code>learning/ayahpath/funnel-content.md</code>. The app name, rating and reviews inside the phone are placeholders, not the competitor's. It uses the brief's look: deep emerald, parchment cards, muted gold, a faint 8-point geometric pattern, and Uthmani Arabic set in Amiri Quran. Tap through the phone, or jump to any screen below.</p>
     </div>
     <div class="ctrls">
       <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
@@ -482,9 +505,23 @@ const star16=(r1,r2)=>Array.from({length:16},(_,i)=>{const a=(i*22.5-90)*Math.PI
 const octagram=s=>`<svg viewBox="-20 -20 40 40" width="${s}" height="${s}" aria-hidden="true"><polygon points="${poly(4,18,45)}" fill="#E4CB8E"/><polygon points="${poly(4,18,0)}" fill="#E4CB8E"/><circle r="5" fill="#0F3D2E"/></svg>`;
 
 /* ---------- state ---------- */
+/* Last-chance offer: shown once per session when the paywall is closed without paying.
+   Real terms only: price / renews stay placeholders until the growth team sets them, and checkout must charge exactly these.
+   compareAt = the plan it undercuts (its real current price is struck); null = nothing struck.
+   expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session. */
+/* AyahPath brand promise (brief #22): store prices only, no invented prices, no struck "was" prices, no urgency.
+   So compareAt stays null (nothing struck), badge stays '' and expiresMin must stay null. The offer is not a markdown:
+   it is the store's own Yearly free trial at the listed yearly renewal (offer_price = "free for {{trial_days}} days"),
+   or, when the store product has no trial, the lighter Monthly tier at its listed price (offer.lighter).
+   Store billing: checkoutUrl stays '' and the app starts the store purchase for productId. */
+const CONFIG={funnel:'ayahpath',offer:{enabled:true,name:'Yearly, free trial first',price:'{{offer_price}}',renews:'{{yearly_price}}',period:'year',compareAt:null,badge:'',checkoutUrl:'',productId:'{{yearly_product_id}}',expiresMin:null,
+  lighter:{name:'Monthly',price:'{{monthly_price}}',renews:'{{monthly_price}}',period:'month',productId:'{{monthly_product_id}}'}}};
+/* the offer actually shown: the trial when the store product has one (panel toggle "trial"), else the lighter tier */
+const OFFER=()=>S.trialOn?CONFIG.offer:Object.assign({},CONFIG.offer,CONFIG.offer.lighter);
+
 const INIT=()=>({v:'A',i:1,hist:[],platform:'android',freeTier:true,trialOn:false,
   goal:'',goalOther:'',name:'',nameSkipped:false,journey:'',arabic:'',salah:'',quiz:null,barrier:'',formats:[],minutes:'',anchor:'',otherTime:'07:00',remTime:'06:00',
-  word:null,chk:null,reflect:'',lesson:false,notif:null,intent:null,intentEdit:false,intentText:'',account:'',emailOpen:false,email:'',pw:'',plan:'yearly',purchase:'',sheet:null,err:'',lastW:0,lastL:50});
+  word:null,chk:null,reflect:'',lesson:false,notif:null,intent:null,intentEdit:false,intentText:'',account:'',emailOpen:false,email:'',pw:'',plan:'yearly',purchase:'',sheet:null,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,err:'',lastW:0,lastL:50});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const hasName=()=>!!S.name.trim();
@@ -506,8 +543,8 @@ const FLOW=[
  ['B · Investment (continued)',[[11,'What gets in the way'],[12,'Small and steady','bridge'],[13,'How you like to learn','multi'],[14,'Daily minutes'],[15,'Anchor to a prayer']]],
  ['D · Anticipation',[[16,'Preparing your path','loading'],[17,'Your path is ready','by track'],[18,'Lesson 1: Bismillah','reveal'],[19,'Daily reminder','permission'],[20,'Set your intention','optional']]],
  ['E · Gate',[[21,'Save your path','soft']]],
- ['F · Monetization',[[22,'Paywall','+ fallback']]],
- ['G · Payoff',[[23,'Day 1 complete']]]
+ ['F · Monetization',[[22,'Paywall'],[23,'Last-chance offer','once']]],
+ ['G · Payoff',[[24,'Day 1 complete']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -542,7 +579,7 @@ const PROG=[4,5,6,7,8,9,10,11,12,13,14,15];
 function nav(){
   const n=S.i;
   if(n===1)return `<div class="nav" style="justify-content:flex-end"><span class="rbadge">★ ${tok('app_rating')} on ${tok('store_name')}</span></div>`;
-  if(n===16||n===22||n===23)return '';
+  if(n===16||n===22||n===23||n===24)return '';
   const idx=PROG.indexOf(n);let bar='<div style="flex:1"></div>';
   if(idx>=0){const p=Math.round((idx+.5)/PROG.length*100);bar=`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${S.lastW}%" data-w="${p}"></span></div>`;S.lastW=p}
   return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>${bar}<div class="navspacer"></div></div>`;
@@ -573,6 +610,30 @@ const photo=(name,alt,w,h,eager)=>`<img src="img/${name}.jpg" alt="${alt}" width
 const bg=(name,alt,cls='',eager=false)=>`<div class="bg ${cls}">${photo(name,alt,720,1080,eager)}</div>`;
 const arc=f=>`<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="13" fill="none" stroke="#D8C697" stroke-width="3"/><circle cx="17" cy="17" r="13" fill="none" stroke="#0F3D2E" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(81.68*f).toFixed(1)} 81.68" transform="rotate(-90 17 17)"/></svg>`;
 const pickScreen=(key,list,sel,h,b,extra='')=>`<div class="scr">${h}<p class="lead">${b}</p><div class="opts">${list.map(([k,e,l])=>opt(key,k,e,l,sel===k)).join('')}</div>${extra}</div><div class="foot"></div>`;
+
+/* prototype event log: the names a production build emits (window.dataLayer + ikfunnel:* DOM events) */
+function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* '{{token}}' config values render as the funnel's placeholder token, real values as text */
+const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?tok(m[1]):esc(s)};
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const PW_N=22,OFFER_N=23;
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view',{price:OFFER().price})}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+function offerExit(){clearInterval(window.__oiv);S.purchase=S.freeTier?"Free · today's free ayah":'Free';go(24)}
+function offerCheckout(){const o=OFFER(),url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
 
 const V={
 1:()=>`${bg('hook-dawn-window','Dawn light through a carved arched window in a quiet mosque','hook',true)}<div class="scr center">
@@ -697,11 +758,6 @@ const V={
   <div class="foot">${S.emailOpen?cta('Continue',true,'emailgo'):''}<div class="note">By continuing, you agree to our Terms & Privacy Policy.</div><div class="note" style="margin-top:-6px">We never sell your data.</div></div>`},
 22:()=>{const tr=S.trialOn,y=S.plan==='yearly';const pp=y?tok('yearly_price'):tok('monthly_price'),per=y?'year':'month';
   const line=tr&&y?`Free for ${tok('trial_days')} days, then ${pp}/${per}. We'll remind you ${tok('n')} days before you're charged.`:`${pp} per ${per}. Renews automatically until you cancel.`;
-  let sheet='';
-  if(S.sheet==='fb'){
-    sheet=S.freeTier?`<div class="dim" data-a="fbclose"></div><div class="sheet" role="dialog" aria-label="Free option"><span class="grab"></span>${miniPath('done1')}<button class="btn" data-a="free">Continue with today's free ayah</button><button class="link" data-a="fbclose">Close</button></div>`
-    :`<div class="dim" data-a="fbclose"></div><div class="sheet" role="dialog" aria-label="Yearly trial"><span class="grab"></span><div class="plan on"><span class="radio"><i></i></span><span class="pbody"><span class="pn">Yearly <span class="save">BEST VALUE</span></span><span class="ptrial">Free for ${tok('trial_days')} days, then ${tok('yearly_price')}/year.</span></span></div><div class="rennote">Free for ${tok('trial_days')} days, then ${tok('yearly_price')}/year. We'll remind you ${tok('n')} days before you're charged.</div><button class="btn" data-a="fbtrial">Start free trial</button><button class="link" data-a="fbclose">Not now</button></div>`;
-  }
   return `<button class="closex" data-a="close" aria-label="Close">${ic('x',18)}</button>
   <div class="scr tight" style="padding-top:48px">${miniPath('done1')}
   <h1 class="display c">${t('Unlock your full path',hasName()?`Keep going, ${nm()}`:'Keep going')}</h1>
@@ -713,8 +769,24 @@ const V={
    <button class="plan ${y?'':'on'}" data-a="plan" data-v="monthly" aria-pressed="${!y}"><span class="radio">${y?'':'<i></i>'}</span><span class="pbody"><span class="pn">Monthly</span><span class="pp">${tok('monthly_price')} / month</span>${y?'':`<span class="pren">Renews at ${tok('monthly_price')} / month</span>`}</span></button>
   </div></div>
   <div class="foot" style="padding-top:8px"><div class="rennote">${line}</div>${cta(tr&&y?'Start free trial':'Start my path',true,'buy')}
-  <div class="trust">Billed by ${tok('store_name')} · Cancel anytime in your subscriptions · <button class="linkin" data-a="restore">Restore purchase</button></div></div>${sheet}`},
-23:()=>`${bg('payoff-sunrise','Sunrise over desert dunes through a stone arch','pay')}<div class="scr center c">${med(160,'float','one')}
+  <div class="trust">Billed by ${tok('store_name')} · Cancel anytime in your subscriptions · <button class="linkin" data-a="restore">Restore purchase</button></div></div>`},
+23:()=>{const o=OFFER(),tr=S.trialOn;
+  return `<div class="scr owrap">
+  <div class="obar"><span class="obrand">${octagram(22)} ${tok('app_name')}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display" style="font-size:27px">${t(hasName()?`${nm()}, keep your path going`:'Keep your path going',tr?'Try the full path first':'A lighter way to begin')}</h1>
+   <p class="lead">${tr?`Day 1 is done. Try every lesson ${afterP()} before you pay.`:'Start month by month, with no yearly commitment.'}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard parch">${o.badge?`<span class="obadge">${tv(o.badge)}</span>`:''}
+   ${miniPath('done1')}
+   <div class="oname"><b>${esc(o.name)}</b><span>Your ${minHy()} ${TRACKNAME[track()].toLowerCase()} path, nothing locked</span></div>
+   <div class="oprice"><b>${tv(o.price)}</b><span>${tr?'today':'per month'}</span></div>
+   <div class="ochecks">${BENEFITS.slice(0,3).map(b=>b[1]).map(x=>`<div><i>${ic('check',12,'currentColor',3)}</i><span>${x}</span></div>`).join('')}</div>
+   <button class="btn" data-a="offerbuy">Claim my offer</button>
+   <p class="ofine">${tr?`${tv(o.price)} today: free for ${tok('trial_days')} days, then ${tv(o.renews)}/year. We'll remind you ${tok('n')} days before you're charged.`:`${tv(o.price)} per month. Renews automatically until you cancel.`}</p>
+   <p class="ofine" style="margin-top:-6px">Billed by ${tok('store_name')} · Cancel anytime in your subscriptions</p></div>
+  <button class="link" data-a="offerno">${S.freeTier?"No thanks, continue with today's free ayah":'No thanks, keep my free first lesson'}</button></div>`},
+24:()=>`${bg('payoff-sunrise','Sunrise over desert dunes through a stone arch','pay')}<div class="scr center c">${med(160,'float','one')}
   <h1 class="display">${t('Your path begins today',hasName()?`Day 1 complete, ${nm()}`:'Day 1 complete')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Next up: "Al-ḥamdu lillāh", with audio and a quick quiz.',`Your streak starts now; see you ${afterP()}.`)}</p>
   ${miniPath('next')}
@@ -762,6 +834,7 @@ function render(dir){
   requestAnimationFrame(()=>{v.querySelectorAll('[data-w]').forEach(e=>{void e.offsetWidth;e.style.width=e.dataset.w+'%'});v.querySelectorAll('[data-l]').forEach(e=>{void e.offsetWidth;e.style.left=e.dataset.l+'%'})});
   PAT.boost=n===16?1:0;
   if(n===16)runLoading();
+  if(n===OFFER_N)runOffer();
   if(n===5){const f=document.getElementById('nm');setTimeout(()=>{if(cur()===v&&f){f.focus({preventScroll:true})}},dir?300:0)}
   renderPanel();
 }
@@ -858,6 +931,7 @@ function renderPanel(){
     ['Reminder',S.notif===null?'—':S.notif?`On, ${fmtT(S.remTime)}`:'Not now'],
     ['Intention',S.intent===null?'—':S.intent?'Set':'Skipped'],
     ['Account',S.account||'—'],
+    ['Offer',S.offer?'Accepted':S.offerSeen?'Declined':S.offerViewed?'Shown':'—'],
     ['Plan',S.purchase||'—']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
@@ -900,11 +974,10 @@ phone.addEventListener('click',e=>{
       else{S.account='Email';toast('Demo only — account created');next();break}
       render();break}
     case 'plan':S.plan=v;render();break;
-    case 'buy':S.purchase=S.plan==='yearly'?(S.trialOn?'Yearly (free trial)':'Yearly'):'Monthly';go(23);toast('Demo only — no charge made');break;
-    case 'close':if(S.freeTier||S.trialOn){S.sheet='fb';render()}else{S.purchase='Free (no fallback offer)';go(23)}break;
-    case 'free':S.purchase="Free · today's free ayah";go(23);break;
-    case 'fbtrial':S.purchase='Yearly (free trial)';go(23);toast('Demo only — no charge made');break;
-    case 'fbclose':S.purchase='Free';go(23);break;
+    case 'buy':S.purchase=S.plan==='yearly'?(S.trialOn?'Yearly (free trial)':'Yearly'):'Monthly';go(24);toast('Demo only — no charge made');break;
+    case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else{S.purchase=S.freeTier?"Free · today's free ayah":'Free';go(24)}}break;
+    case 'offerbuy':{S.offerSeen=true;S.offer=true;offerCheckout();S.purchase=(S.trialOn?'Yearly (free trial)':'Monthly')+' · last-chance offer';go(24);toast('Demo only — no charge made');break}
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:OFFER().price});offerExit();break;
     case 'restore':toast('Demo only — restore purchase');break;
     case 'invite':toast('Demo only — share sheet opens here');break;
     case 'open':toast('End of funnel — this opens the app home');break;
@@ -932,9 +1005,9 @@ document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
 document.getElementById('pA').onclick=()=>{S.platform='android';setSeg('pA','pI',true);if(S.i===21)render()};
 document.getElementById('pI').onclick=()=>{S.platform='ios';setSeg('pA','pI',false);if(S.i===21)render()};
-document.getElementById('ft').onchange=e=>{S.freeTier=e.target.checked;if(S.i===22)render()};
-document.getElementById('tr').onchange=e=>{S.trialOn=e.target.checked;if(S.i===22)render()};
-document.getElementById('restart').onclick=()=>{stopTimers();const keep={v:S.v,platform:S.platform,freeTier:S.freeTier,trialOn:S.trialOn};S=Object.assign(INIT(),keep);render('b')};
+document.getElementById('ft').onchange=e=>{S.freeTier=e.target.checked;if(S.i===22||S.i===23)render()};
+document.getElementById('tr').onchange=e=>{S.trialOn=e.target.checked;if(S.i===22||S.i===23)render()};
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}stopTimers();const keep={v:S.v,platform:S.platform,freeTier:S.freeTier,trialOn:S.trialOn};S=Object.assign(INIT(),keep);render('b')};
 
 /* phone scales down on narrow screens (16px gutters, no horizontal scroll) */
 function fit(){const w=document.documentElement.clientWidth-32;const k=Math.min(1,w/390);document.documentElement.style.setProperty('--k',k.toFixed(4))}

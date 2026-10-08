@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: what they want to build, coding experience, AI builder tools tried, past blockers, reason to build, one-line app idea, device, learning style, daily minutes, name, 2-item builder check, email
 output: personalized 4-week build plan that ends in one working app plus a dated certificate of completion, and a first "describe it, watch it build" micro-lesson
-screens: 24
+screens: 25
 monetization: web subscription paywall (1-week / 4-week pre-selected / 12-week, intro price with renewal price shown on every card and in the CTA line), app unlocked by the same email
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — Coursiv Build Apps with AI
 
-Niche "Coding với AI / Claude Code / vibe coding": an entry into the Coursiv app for non-developers who have an idea for an app, site or work tool and have heard they can now build it by describing it to AI. The user says what they'd build, their coding background, which AI builders they've tried and what stopped them before. They type their app idea in one line and take a 2-item "builder instincts" check. Then they watch their own idea get built in a preview, and get a 4-week build plan that ends in **one working app they made** plus a dated **certificate of completion**. Market signal (AdSpyLab Meta ads 03-08/2026 + Google Trends US): Kodree's claude-code funnel runs 19K ads, L3M +131%, and Codefinity is active too. Searches for "vibe coding" are up 42% and "learn python" up 89%. Archetype: **learning-plan**, 24 screens. **Modeled on:** Kodree `kodree.com/en/claude-code/get-started` (14 screens, captured 2026-09-06: "tried Claude Code?", tools incl. Lovable / Cursor / Terminal / Git, theory-vs-practice, "AI mentor?", "official certification?", paywall at 14, €1 / 7-day trial) and Jobescape `chat-v3`'s builder branch ("Had an idea for an app but couldn't build it?" → "What stopped you?" → "Possible without coding?"). **What was deliberately changed:** (1) The first tap is "What would you build?", matching a build-something ad and more motivating than Kodree's yes/no. (2) The user's own one-line idea is captured and reused in the lesson, the plan title and Day 1, so the plan is visibly theirs. (3) A real micro-lesson (describe → watch it build → tweak with one tap) replaces Kodree's yes/no add-on questions. (4) A device question routes browser builders (phone-friendly) vs. a laptop track (Claude Code, Cursor), because the honest answer is that some tools need a computer. (5) The promise is honest about the craft: "AI writes the code; you learn to guide, test and fix it". There's no "build a startup / earn from apps" angle, no "official certification", and non-affiliation with Anthropic and the other tool makers is stated. Look: the base Coursiv **light "career" theme** with a **builder accent**: a dark code pane and a live phone preview on the lesson and plan screens, monospace for code only, and green "build passed" states. Tool names appear as plain text chips, not brand logos. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on most screens.
+Niche "Coding với AI / Claude Code / vibe coding": an entry into the Coursiv app for non-developers who have an idea for an app, site or work tool and have heard they can now build it by describing it to AI. The user says what they'd build, their coding background, which AI builders they've tried and what stopped them before. They type their app idea in one line and take a 2-item "builder instincts" check. Then they watch their own idea get built in a preview, and get a 4-week build plan that ends in **one working app they made** plus a dated **certificate of completion**. Market signal (AdSpyLab Meta ads 03-08/2026 + Google Trends US): Kodree's claude-code funnel runs 19K ads, L3M +131%, and Codefinity is active too. Searches for "vibe coding" are up 42% and "learn python" up 89%. Archetype: **learning-plan**, 25 screens. **Modeled on:** Kodree `kodree.com/en/claude-code/get-started` (14 screens, captured 2026-09-06: "tried Claude Code?", tools incl. Lovable / Cursor / Terminal / Git, theory-vs-practice, "AI mentor?", "official certification?", paywall at 14, €1 / 7-day trial) and Jobescape `chat-v3`'s builder branch ("Had an idea for an app but couldn't build it?" → "What stopped you?" → "Possible without coding?"). **What was deliberately changed:** (1) The first tap is "What would you build?", matching a build-something ad and more motivating than Kodree's yes/no. (2) The user's own one-line idea is captured and reused in the lesson, the plan title and Day 1, so the plan is visibly theirs. (3) A real micro-lesson (describe → watch it build → tweak with one tap) replaces Kodree's yes/no add-on questions. (4) A device question routes browser builders (phone-friendly) vs. a laptop track (Claude Code, Cursor), because the honest answer is that some tools need a computer. (5) The promise is honest about the craft: "AI writes the code; you learn to guide, test and fix it". There's no "build a startup / earn from apps" angle, no "official certification", and non-affiliation with Anthropic and the other tool makers is stated. Look: the base Coursiv **light "career" theme** with a **builder accent**: a dark code pane and a live phone preview on the lesson and plan screens, monospace for code only, and green "build passed" states. Tool names appear as plain text chips, not brand logos. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on most screens.
 
 ---
 
@@ -344,10 +344,19 @@ Niche "Coding với AI / Claude Code / vibe coding": an entry into the Coursiv a
 - Any struck-through price must be the real regular renewal price. Same structure as the base `learning/coursiv` funnel; use ikame's real prices at launch.
 **Visual:** Top: a mini card with the phone preview of their app and the ship date. Three stacked plan cards, the 4-week one with an indigo border. The renewal line uses the same size and colour as the price. Payment row: Apple Pay / Google Pay / card logos.
 **Microcopy:** Trust row: "🔒 Secure payment · Cancel anytime in 2 taps · [N]-day refund window". Agreement checkbox **unchecked**: "I agree to the Terms, Subscription and Refund Policy". Line above CTA, from the selected card: "You'll pay [today's price] today. It renews at [renewal price] every [period] until you cancel. We'll email you before each renewal." No "AI mentor" or "official certification" add-on toggles on this screen.
-**Fallback offer:** On dismiss or back, one sheet with one genuine offer (e.g. the 4-week intro price extended once), with the renewal price on the same line. No countdown.
+**Fallback offer:** On dismiss (✕ or back), the last-chance offer (#23) once per session: the 4-week plan at a lower first payment, renewal stated on the card. No countdown.
 **CTA:** Get my plan
 
-### 23. Checkout summary
+### 23. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall (✕ or back) without paying: the same 4-week plan at a lower first payment. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: keep your ship date
+**Body A:** Your {{app_type}} still ships by {{ship_date}}. Start building for a lower first payment.
+**Plans:** One offer card: **4-week plan**, "The same full plan, a lower first payment". {{offer_price}} today, with the 4-week plan's real intro price ([4-week intro price], `compareAt: '4w'`) struck, then {{offer_renew_price}} every 4 weeks until cancelled. Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #22: sticky bar with the Coursiv logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one indigo-bordered offer card holding a mini build card (phone preview of their app · "{{idea}}" · "Ships by {{ship_date}}"), the plan name, the price row (struck intro price → {{offer_price}} "today"), 3 checks ("Guided daily builds, 10-30 minutes", "Step-by-step bug fixing", "Certificate of completion + project to show"), the CTA, Apple Pay / G Pay / VISA / Mastercard badges and the renewal line. Plain decline link below the card.
+**Microcopy:** Renewal line: "{{offer_price}} today, then {{offer_renew_price}} every 4 weeks until you cancel. Cancel anytime in your account." Shown once per session (sessionStorage `ikf_offer_coursiv-vibe-coding`): a second paywall close goes straight to the previous screen (#21 What's inside). No timer: `CONFIG.offer.expiresMin` is `null`. If the growth team sets a real deadline, a countdown shows and the offer is withdrawn when it ends (`offer_expired`), never reset on reload. Decline (link and ✕): "No thanks, back to my build plan", which returns to #21 What's inside. Accept opens the offer checkout (`CONFIG.offer.checkoutUrl` with plan `offer`, email and UTMs); that checkout must show the same receipt rows as #24. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
+
+### 24. Checkout summary
 **Purpose:** Confirms exactly what is charged today and later, before the card form. That cuts first-renewal refunds and chargebacks.
 **Headline A:** Review your order
 **Headline B:** Here's what you'll pay
@@ -361,7 +370,7 @@ Niche "Coding với AI / Claude Code / vibe coding": an entry into the Coursiv a
 
 ## G. Payoff
 
-### 24. Welcome + app handoff
+### 25. Welcome + app handoff
 **Purpose:** Activation. Day 1 is "build v0.1 of {{app_idea}}", and the device answer decides whether Day 1 happens in the app or with a laptop link. A web sale that never builds anything turns into a refund.
 **Headline A:** Welcome, builder {{name}}!
 **Headline B:** Day 1: build v0.1
@@ -390,5 +399,7 @@ Niche "Coding với AI / Claude Code / vibe coding": an entry into the Coursiv a
 **First A/B tests:** (1) Lesson with the user's own idea (15) vs. a fixed demo app. (2) First tap "What would you build?" vs. Kodree-style "Tried Claude Code?". (3) Email gate before the plan (18) vs. right after the lesson, framed as "save your build".
 
 **Monetization:** one layer, the web subscription. Track paywall conversion, install + login + first build completed within 48h, and refund/chargeback rate by plan. Watch "Phone only" cohorts separately.
+
+**Last-chance offer:** measure offer CVR (#23 `offer_view` → `offer_accept`) separately from paywall CVR (#22).
 
 **Unverified / assumed:** which builder tools the app actually teaches and whether they need paid accounts; the template bank behind the lesson preview; live prices. All ikame stats are `[N]` placeholders until real.

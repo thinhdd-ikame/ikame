@@ -15,16 +15,19 @@ Bản nguồn của mỗi file là `funnel.html` nằm cạnh `demo.html` trong 
 | nebula-soulmate-sketch.html | Nebula | Soulmate sketch + xem chỉ tay |
 | nebula-astrocartography.html | Nebula | Astrocartography |
 | nebula-moon-reading.html | Nebula | Moon reading |
+| nebula-palm-reading.html | Nebula | Palm reading (upload ảnh lòng bàn tay) |
 | chai-romance-stories.html | Chai | Truyện romance audio |
 | chai-companion.html | Chai | AI companion "luôn bên bạn" |
 | chai-ai-boyfriend.html | Chai | AI boyfriend cho nữ |
 | chai-ai-girlfriend.html | Chai | AI girlfriend (cấu trúc Honey 4202-2, SFW) |
+| chai-dream-girl.html | Chai | Dream AI Girl (clone sát Honey 4202-2, SFW, 14 màn) |
 
 ## Trước khi upload: sửa CONFIG
 
 Mở file, tìm `const CONFIG` ở đầu phần script và điền các mục sau:
 
 - **Giá từng gói.** Các giá trị đang là `{{...}}` hoặc có ghi `TODO`. Phải là giá thật.
+- **`CONFIG.offer`:** giá offer thật, nội dung gia hạn và `checkoutUrl`. `expiresMin` để `null` nếu không có hạn thật.
 - **`checkoutUrl` của từng gói.** Đây là link checkout của FunnelFox, hoặc Stripe/Paddle. Để trống thì nút CTA chỉ bắn event, không chuyển trang.
 - **Link Terms, Privacy và email support.**
 - **Chai:** link app store / deep link để chuyển sang app sau khi mua, số tin nhắn miễn phí mỗi ngày, và mức fair-use.
@@ -73,6 +76,8 @@ Mỗi event được gửi qua ba đường cùng lúc:
 - `fbq('trackCustom', …)` và `ttq.track(…)`, nếu pixel đã được cài.
 
 Danh sách event: `funnel_start`, `screen_view`, `answer`, `lead`, `paywall_view`, `plan_select`, `checkout_click`, `paywall_close`, `complete`.
+
+**Offer cơ hội cuối (khi user đóng paywall mà không mua):** `offer_view`, `offer_accept` (kèm `checkout_click` với `plan:'offer'`), `offer_decline`, `offer_expired`. Offer nằm trong `CONFIG.offer`, gồm giá, nội dung gia hạn, `compareAt`, `checkoutUrl` riêng và `expiresMin`. Mỗi phiên offer chỉ hiện một lần (cờ `ikf_offer_<funnel>` trong sessionStorage). Hãy đo tỉ lệ chuyển đổi của offer tách riêng với paywall. Nếu offer có `checkoutUrl`, checkout đó cũng phải gọi lại `completePurchase('offer')` hoặc trả về `?paid=offer`.
 
 Riêng Chai có thêm `age_gate_pass/fail` và `chat_message`. Event `chat_message` chỉ gửi số lượng tin, không gửi nội dung. Chai companion còn có `crisis_resources_shown`.
 

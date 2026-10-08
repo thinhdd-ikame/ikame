@@ -5,14 +5,14 @@ archetype: assessment-unlock
 subject: person
 input: age band, reason for testing, 38 graded reasoning questions, email, first name
 output: estimated IQ score with age-group comparison, section breakdown and a named certificate
-screens: 15
+screens: 16
 monetization: web checkout - one-time single report OR full-library access (disclosed paid trial then 4-weekly renewal); library cross-sell after the reveal
 creative_screens:
   hook-a: 1
   hook-b: 2
   hook-c: 4
   reveal: 7
-  result: 13
+  result: 14
 motion: >
   a pattern-matrix puzzle assembling tile by tile, then a bell curve drawing
   left to right and a glowing marker sliding to the user's score
@@ -20,7 +20,7 @@ motion: >
 
 # Funnel Content — TestLibrary (IQ test)
 
-TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests: IQ, EQ, Big Five/OCEAN, 16 Personalities, Enneagram, DISC, Attachment Style, Love Style, Career, Mental Age, ADHD/autism trait quizzes and more. Paid traffic lands on a single-test page (`/iq-test`, `/eq-test`, `/adhd-test`…). The user takes the whole test for free, then pays to unlock the report. This brief covers the **IQ test**, the flagship. The user gives an age band, a reason, and 38 graded answers. They get an estimated IQ score, an age-group comparison, a breakdown by section and a named certificate. The shape is new to this repo, so it's registered as **assessment-unlock**. The quiz here is not *about* the user, as in personalization-quiz: it's a real test with right answers, and the effort of taking it is the sunk cost. The score doesn't sell a separate utility either, as in diagnostic-utility: the result *is* the product. 15 screens. Screens 4 and 5 are templates that repeat (38 questions, 3 checkpoints). **Modeled on:** TestLibrary's own landers, fetched 2026-09-28 (`/iq-test`, `/personality-test`, `/eq-test`, `/career-test` and others all use "Discover your X · Complete this 5-minute X test… · Select your gender to begin"), its `/library`, `/pricing`, `/faq` and `/legal/subscription-policy` pages, and two IQ-funnel teardowns from the adspylab Funnels Library: **Testora** (`funnel.testora.space`: 44-step timed test, mid-test "faster than 93%" flattery, loader with micro-questions, email gate, "name for your certificate", Einstein comparison paywall, 09:59 timer) and **Impulse** (`iq.mental-impulse.com`: a brain-training plan quiz rather than a real test, 4/12/24-week auto-renew plans). **Not verified:** the live test screens past the lander (they're rendered in JS and couldn't be fetched), whether a certificate ships today, the brand colors, and the scoring/norm method. These are marked "verify" where they matter. **Deliberately different from the competitors:** the test is labeled free-to-take-but-paid-report on screen 1, no percentile is shown during the test, the score is computed and never flattering by default, and the renewal price sits next to every trial price (see Notes on the hidden-billing mechanic common in this niche). Visuals move away from the repo's dark default to a light, calm "exam paper" look (white, ink navy, one accent). The brand palette still needs confirming.
+TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests: IQ, EQ, Big Five/OCEAN, 16 Personalities, Enneagram, DISC, Attachment Style, Love Style, Career, Mental Age, ADHD/autism trait quizzes and more. Paid traffic lands on a single-test page (`/iq-test`, `/eq-test`, `/adhd-test`…). The user takes the whole test for free, then pays to unlock the report. This brief covers the **IQ test**, the flagship. The user gives an age band, a reason, and 38 graded answers. They get an estimated IQ score, an age-group comparison, a breakdown by section and a named certificate. The shape is new to this repo, so it's registered as **assessment-unlock**. The quiz here is not *about* the user, as in personalization-quiz: it's a real test with right answers, and the effort of taking it is the sunk cost. The score doesn't sell a separate utility either, as in diagnostic-utility: the result *is* the product. 16 screens. Screens 4 and 5 are templates that repeat (38 questions, 3 checkpoints). **Modeled on:** TestLibrary's own landers, fetched 2026-09-28 (`/iq-test`, `/personality-test`, `/eq-test`, `/career-test` and others all use "Discover your X · Complete this 5-minute X test… · Select your gender to begin"), its `/library`, `/pricing`, `/faq` and `/legal/subscription-policy` pages, and two IQ-funnel teardowns from the adspylab Funnels Library: **Testora** (`funnel.testora.space`: 44-step timed test, mid-test "faster than 93%" flattery, loader with micro-questions, email gate, "name for your certificate", Einstein comparison paywall, 09:59 timer) and **Impulse** (`iq.mental-impulse.com`: a brain-training plan quiz rather than a real test, 4/12/24-week auto-renew plans). **Not verified:** the live test screens past the lander (they're rendered in JS and couldn't be fetched), whether a certificate ships today, the brand colors, and the scoring/norm method. These are marked "verify" where they matter. **Deliberately different from the competitors:** the test is labeled free-to-take-but-paid-report on screen 1, no percentile is shown during the test, the score is computed and never flattering by default, and the renewal price sits next to every trial price (see Notes on the hidden-billing mechanic common in this niche). Visuals move away from the repo's dark default to a light, calm "exam paper" look (white, ink navy, one accent). The brand palette still needs confirming.
 
 ---
 
@@ -189,10 +189,19 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 - Reminder promise, only if actually sent: "We'll email you 2 days before your trial ends."
 - Disclaimer: "For self-discovery only. Not a clinical or diagnostic assessment."
 - Headline B variant by goal: School/job prep → "Your prep report is ready"; Compare with friends → "Get your shareable certificate".
-**Fallback offer:** On back/exit, one bottom sheet: "Just want this report?" with the One-time card pre-selected and its "Nothing renews" line. No discount, no timer, and not shown again this session.
+**Fallback offer:** Screen 12. The close X (and any back/exit) goes to the last-chance offer first, once per session. After it is declined, closing the paywall returns to the report preview (10).
 **CTA:** Continue to checkout
 
-### 12. Order summary + consent
+### 12. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall, most often because they don't want a subscription. It replaces the earlier "Just want this report?" bottom sheet: same idea (this one report, nothing renews), now its own screen. Shown once per session (sessionStorage `ikf_offer_testlibrary`), then never again.
+**Headline A:** {{name}}, just want your IQ report?
+**Body A:** All 38 answers are scored and {{strongest_section}} is your strongest section. Get this one report, with no subscription.
+**Plans:** One offer card: {{offer_name}} (default "This IQ report only": this test's full report, one payment, nothing renews). {{offer_price}} today. The One-time report's real price ($57.00) is struck **only** if {{offer_price}} is a real, lower single-report price that checkout charges. If the offer is the One-time report at its listed $57.00, nothing is struck (no fake markdown). Alternative the app may configure instead: a library trial at its listed price with its renewal line (the consent box on 13 then applies). Optional {{offer_badge}}.
+**Visual:** Light "exam paper" page in the paywall's style: wordmark + close X, centered eyebrow "One-time offer · shown once", then one navy-bordered offer card with the named mini-certificate thumbnail (score blurred), the price row, 3 checks (IQ score + age comparison · strengths in 4 sections · named certificate PDF), the CTA, payment badges and the renewal line "One payment of {{offer_price}}. Nothing renews, so there's nothing to cancel."
+**Microcopy:** No timer by default, as the brief promises no timers. A timer appears only if `CONFIG.offer.expiresMin` is set to a real deadline; when it ends the offer is withdrawn (event `offer_expired`) and the user returns to the preview. Decline link: "No thanks, back to my free preview". Disclaimer: "For self-discovery only. Not a clinical or diagnostic assessment." Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Offer CVR is measured separately from paywall CVR.
+**CTA:** Claim my offer
+
+### 13. Order summary + consent
 **Purpose:** The anti-trap screen. It restates exactly what is charged today and later, with an unticked consent box, so nobody can say "I didn't know it renews" (the #1 complaint about this niche).
 **Headline A:** Review your order
 **Headline B:** Confirm your plan
@@ -208,7 +217,7 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 
 ## G. Payoff
 
-### 13. Your IQ result
+### 14. Your IQ result
 **Purpose:** Deliver the score honestly and clearly, including for below-average results, so the purchase feels justified and the refund/chargeback risk stays low.
 **Headline A:** Your estimated IQ: {{score}}
 **Headline B:** {{name}}, you scored {{score}}
@@ -221,7 +230,7 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 - Goal tip card: 2 tips for `{{goal}}`.
 **CTA:** Get my certificate
 
-### 14. Certificate + share
+### 15. Certificate + share
 **Purpose:** Hand over the artifact and turn the peak moment into shares (organic reach for a web funnel).
 **Headline A:** Your certificate is ready
 **Headline B:** Share your score, {{name}}
@@ -231,7 +240,7 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 **Microcopy:** Share card text: "I scored {{score}} on the TestLibrary IQ test. Your turn?" Certificate footer: "For personal use. Not an official or clinical certification." Show this screen only if the certificate ships (verify).
 **CTA:** Download PDF
 
-### 15. Your next test
+### 16. Your next test
 **Purpose:** Second layer. Trial users see what else their plan includes, so they actually use what they pay for. One-time buyers get a clearly priced path to the library.
 **Headline A:** What's next, {{name}}?
 **Headline B:** Your mind, from new angles
@@ -240,7 +249,7 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 **Visual:** Horizontal cards from the real library, ordered by `{{goal}}`: School/job prep → Career Test, Strengths Finder, DISC. Curiosity → Big Five, 16 Personalities, Enneagram. Keep sharp → EQ Test, Mental Age. Compare with friends → Love Style, Attachment Style, Spirit Animal. Each card shows question count + minutes.
 **Microcopy:**
 - Trial users: "Included until {{renewal_date}} · Manage plan" (link to account/cancel).
-- One-time buyers: "Unlock all tests — $1.95 for 7 days, then $39.95 every 4 weeks." Same consent screen (12) applies.
+- One-time buyers: "Unlock all tests — $1.95 for 7 days, then $39.95 every 4 weeks." Same consent screen (13) applies.
 - Account line: "Log in anytime with {{email}}. Your report stays in your dashboard."
 **CTA:** Start next test
 
@@ -248,9 +257,9 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 
 ## Notes
 
-**Competitor mechanic, recorded for reference only (do NOT implement).** The dominant monetization in web IQ/personality funnels is a lead-magnet: a long free test, then "pay $1-2 to see your result", and that click silently enrolls the user in a 4-weekly subscription (~$30-55) that shows up weeks later. TestLibrary's own pricing is $1.95 for 7 days, then $39.95 every 4 weeks. Its public Trustpilot page (4.1 / 30,074 reviews) and 2026 review sites (thinkitsascam.com, sensorstechforum.com) are full of "Didn't know it cost $ until it was over" and "hidden monthly subscription". The worst versions pair it with fake mid-test rankings (Testora shows "faster than 93%" after 5 questions), a resetting 09:59 timer, fake "Oliver just scored 93" tickers and Einstein comparisons. That's deceptive-pricing exposure under the FTC's negative-option rules, the same mechanic named in the 2026 Nebula/Obrio action (see personalization-quiz.md Traps). This brief keeps the trial *plan* because it is the real product structure. It removes the *trap*: disclosure on screens 1-2, the renewal price on the plan card, an unticked consent box (12), the reminder email, an honest one-time alternative, and no timers.
+**Competitor mechanic, recorded for reference only (do NOT implement).** The dominant monetization in web IQ/personality funnels is a lead-magnet: a long free test, then "pay $1-2 to see your result", and that click silently enrolls the user in a 4-weekly subscription (~$30-55) that shows up weeks later. TestLibrary's own pricing is $1.95 for 7 days, then $39.95 every 4 weeks. Its public Trustpilot page (4.1 / 30,074 reviews) and 2026 review sites (thinkitsascam.com, sensorstechforum.com) are full of "Didn't know it cost $ until it was over" and "hidden monthly subscription". The worst versions pair it with fake mid-test rankings (Testora shows "faster than 93%" after 5 questions), a resetting 09:59 timer, fake "Oliver just scored 93" tickers and Einstein comparisons. That's deceptive-pricing exposure under the FTC's negative-option rules, the same mechanic named in the 2026 Nebula/Obrio action (see personalization-quiz.md Traps). This brief keeps the trial *plan* because it is the real product structure. It removes the *trap*: disclosure on screens 1-2, the renewal price on the plan card, an unticked consent box (13), the reminder email, an honest one-time alternative, and no timers.
 
-**Honesty rules for the result.** The score is computed from the correct answers against a stated norm table (`{{norm_group}}`). If there's no real norming data, call it "estimated score" and say what it's compared against. No percentile or flattery during the test. Every band exists and gets shown, including below average. No Einstein/celebrity scale. No "certified"/"official" claims. The live site already says its tests are "for personal discovery and educational purposes only… not… clinical diagnosis". Keep that line on screens 11, 13 and 14.
+**Honesty rules for the result.** The score is computed from the correct answers against a stated norm table (`{{norm_group}}`). If there's no real norming data, call it "estimated score" and say what it's compared against. No percentile or flattery during the test. Every band exists and gets shown, including below average. No Einstein/celebrity scale. No "certified"/"official" claims. The live site already says its tests are "for personal discovery and educational purposes only… not… clinical diagnosis". Keep that line on screens 11, 12, 14 and 15.
 
 **Changes vs. the live TestLibrary lander:**
 | Screen | Live today | Change |
@@ -258,14 +267,14 @@ TestLibrary (testlibrary.com) is a web library of about 27 self-discovery tests:
 | 1 | "Select your gender to begin" | Age band. Age is what the comparison actually uses; gender implies a gender-scored IQ, which the report shouldn't do. Personality tests with gendered norms can keep gender |
 | 1-2 | "5-minute test" vs. 38 Qs / 20 mins in `/library` | One real duration everywhere |
 | 1 | No price hint until the end | "Free to take · Full report is a paid unlock" |
-| 11-12 | Renewal terms on checkout / policy page | On the plan card + unticked consent box |
+| 11, 13 | Renewal terms on checkout / policy page | On the plan card + unticked consent box |
 
-**Blocks skipped:** no notification opt-in (web, no daily loop), no gamified wheel (cheapens a "measure my mind" promise), no post-purchase countdown upsell (the library cross-sell on 15 does that job without urgency), no before/after (this is not an outcome app). Education level (Testora asks it) is skipped because nothing in the report uses it.
+**Blocks skipped:** no notification opt-in (web, no daily loop), no gamified wheel (cheapens a "measure my mind" promise), no post-purchase countdown upsell (the library cross-sell on 16 does that job without urgency), no before/after (this is not an outcome app). Education level (Testora asks it) is skipped because nothing in the report uses it.
 
-**Reusing this for other tests in the library:** screens 1-3 and 6-15 carry over. Screen 4 becomes a Likert statement ("I enjoy meeting new people" → 5-point agree scale) for personality tests, and "correct answer" copy is dropped. Screen 13 becomes a profile (type + trait bars) instead of a score. For ADHD/autism/mood trait quizzes, add a visible "not a diagnosis, talk to a professional" line on screens 1, 13, and a support link. Those tests need extra review before any paid ads run.
+**Reusing this for other tests in the library:** screens 1-3 and 6-16 carry over. Screen 4 becomes a Likert statement ("I enjoy meeting new people" → 5-point agree scale) for personality tests, and "correct answer" copy is dropped. Screen 14 becomes a profile (type + trait bars) instead of a score. For ADHD/autism/mood trait quizzes, add a visible "not a diagnosis, talk to a professional" line on screens 1, 14, and a support link. Those tests need extra review before any paid ads run.
 
-**Drop-off risk:** (1) screen 4, the 38-question body, where mid-test abandonment happens (measure completion per section); (2) screen 8, the email ask; (3) screen 12, where the consent box *will* cost some conversion versus the trap version. That is the point, and it should be offset by lower refunds and chargebacks.
+**Drop-off risk:** (1) screen 4, the 38-question body, where mid-test abandonment happens (measure completion per section); (2) screen 8, the email ask; (3) screen 13, where the consent box *will* cost some conversion versus the trap version. That is the point, and it should be offset by lower refunds and chargebacks.
 
-**Monetization, two layers, measured separately:** (1) screen 11-12 conversion, split by plan (one-time vs trial); (2) trial → first renewal rate and **refund/chargeback rate**, the true health metric here; (3) library engagement from screen 15 (tests started per trial user), the leading indicator of renewal.
+**Monetization, two layers, measured separately:** (1) screen 11-13 conversion, split by plan (one-time vs trial), with the last-chance offer (12) CVR tracked on its own; (2) trial → first renewal rate and **refund/chargeback rate**, the true health metric here; (3) library engagement from screen 15 (tests started per trial user), the leading indicator of renewal.
 
 **First A/B tests:** email gate before the preview (this brief) vs. after; paywall default One-time vs. Trial pre-selected (both fully disclosed); screen 1 disclosure wording A vs. B, never with vs. without.

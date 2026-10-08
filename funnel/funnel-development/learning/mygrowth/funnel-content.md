@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: subject pick, goals, level, 2 knowledge-check answers, learning style, schedule, daily minutes, email
 output: personalized 4-week micro-learning plan (matched course + daily lesson target + reminder slot)
-screens: 25
+screens: 26
 monetization: web subscription (3 intro-priced plans, renewal price shown on every card) + optional recurring add-on after purchase; activation (install + sign-in) measured separately
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — MyGrowth (Daily Micro-Learning)
 
-MyGrowth (EXTRAMILE LIMITED, Cyprus) sells short daily lessons you can read or listen to, 5-15 minutes each, in general-knowledge subjects. The subjects are History, Biology, Math, Art and Communication, and Psychology according to one third-party review. Lessons come with quizzes, animations, mini-games (Match It, True or False, Spot the Fake), streaks and achievements, in 12 languages. **Correction to the brief:** the verified catalogue is *general knowledge*, not "psychology / productivity / habits". Psychology & habits is written here as one subject among six, and its course should be confirmed before launch. The user gives a subject, goals, level, schedule and daily minutes, and gets a 4-week plan with a matched course. The flow is modeled on **MyGrowth's own live web funnel** (`quiz.mygrowth.one`, Web2Wave, Meta/Pinterest pixels). Its full 37-screen config and paywall were read directly on 2026-09-28. That funnel is: history-led hook → 20+ questions (including trivia) → plan loader → course match → email → plan graph → Stripe paywall → recurring add-on upsell → app deep link. This brief keeps that shape and cuts it from 37 to 25 screens. It fixes the dishonest parts: praise that ignores your answers, the fake "Top app in {country}" line, the masked-email ticker, a 10-minute timer that resets, email-only cancellation, and plan names that don't match the billing period. It adds what the real funnel lacks, which is **instant, honest feedback on the knowledge-check questions**, so the quiz doubles as a 30-second sample lesson. The shape doesn't fit an existing archetype cleanly, so it's filed as a proposed new one, **learning-plan** (see the report). Headway, Imprint and Coursiv were not torn down for this file. **Look:** follows the real funnel, not the repo's dark default. White background, lavender panels `#EBE9F7`, violet gradient `#8488F4 → #7D73E3` on CTAs and selected pills, blue `#007BFF` chart line, orange `#FF9F00` highlight dot, friendly flat illustrations. The copy rules apply throughout: headline ≤6 words, body ≤12 words, A/B on every screen.
+MyGrowth (EXTRAMILE LIMITED, Cyprus) sells short daily lessons you can read or listen to, 5-15 minutes each, in general-knowledge subjects. The subjects are History, Biology, Math, Art and Communication, and Psychology according to one third-party review. Lessons come with quizzes, animations, mini-games (Match It, True or False, Spot the Fake), streaks and achievements, in 12 languages. **Correction to the brief:** the verified catalogue is *general knowledge*, not "psychology / productivity / habits". Psychology & habits is written here as one subject among six, and its course should be confirmed before launch. The user gives a subject, goals, level, schedule and daily minutes, and gets a 4-week plan with a matched course. The flow is modeled on **MyGrowth's own live web funnel** (`quiz.mygrowth.one`, Web2Wave, Meta/Pinterest pixels). Its full 37-screen config and paywall were read directly on 2026-09-28. That funnel is: history-led hook → 20+ questions (including trivia) → plan loader → course match → email → plan graph → Stripe paywall → recurring add-on upsell → app deep link. This brief keeps that shape and cuts it from 37 to 26 screens. It fixes the dishonest parts: praise that ignores your answers, the fake "Top app in {country}" line, the masked-email ticker, a 10-minute timer that resets, email-only cancellation, and plan names that don't match the billing period. It adds what the real funnel lacks, which is **instant, honest feedback on the knowledge-check questions**, so the quiz doubles as a 30-second sample lesson. The shape doesn't fit an existing archetype cleanly, so it's filed as a proposed new one, **learning-plan** (see the report). Headway, Imprint and Coursiv were not torn down for this file. **Look:** follows the real funnel, not the repo's dark default. White background, lavender panels `#EBE9F7`, violet gradient `#8488F4 → #7D73E3` on CTAs and selected pills, blue `#007BFF` chart line, orange `#FF9F00` highlight dot, friendly flat illustrations. The copy rules apply throughout: headline ≤6 words, body ≤12 words, A/B on every screen.
 
 Tokens: `{{name}}`, `{{ad_subject}}` (from the ad set's URL param, default `history`), `{{subject}}`, `{{course_title}}`, `{{score}}`, `{{daily_minutes}}`, `{{lessons_4wk}}`, `{{reminder_time}}`, `{{email}}`, `{{intro_price}}`, `{{renewal_price}}`, `{{period}}`, `{{addon_price}}`, `{{portal_link}}`.
 
@@ -382,10 +382,21 @@ Tokens: `{{name}}`, `{{ad_subject}}` (from the ad set's URL param, default `hist
 - What you get (shipped features only): "15-minute lessons in 6 subjects" · "Read or listen to every lesson" · "Quizzes and games: True or False, Spot the Fake" · "Streaks and achievements" · "Learn in 12 languages"
 - FAQ "How do I cancel?": "Profile → Settings → Manage subscription, or the link in your receipt." (live answer: email support only)
 - Renewal reminder: "We'll email you before every renewal."
-**Fallback offer:** On back/exit: one bottom sheet, "Prefer to try the app first?", which deep-links to the store app's 7-day free trial with its terms shown ("then $24.99/month" per the App Store listing). No extra discount, no timer.
+**Fallback offer:** On back/exit, the last-chance offer (#24) once per session: the store app's 7-day free trial with its terms shown. No extra discount, no timer.
 **CTA:** Start my plan
 
-### 24. Optional add-on (post-purchase)
+### 24. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall without paying: the store app's own 7-day free trial, with its terms shown. No extra discount. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: try it free first
+**Headline B:** Try your {{subject}} plan free
+**Body A:** Your {{subject}} plan is ready. Start with 7 days free in the app.
+**Body B:** Seven days of lessons before you pay anything.
+**Plans:** One offer card: **7-day free trial in the app**, "Every lesson, audio and game, billed by the store". {{offer_price}} for 7 days, with the 1-month plan's real intro price ($9.99, `compareAt: 'm1'`) struck, then {{offer_renew_price}} / month until cancelled (the App Store listing read "then $24.99/month" on 2026-09-28). Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #23: sticky bar with the logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one violet-bordered offer card holding the course cover thumbnail ("Your course" · {{course_title}}), the plan name, the price row (struck $9.99 → {{offer_price}} "today"), 3 checks ("15-minute lessons in 6 subjects", "Read or listen to every lesson", "Quizzes and games: True or False, Spot the Fake"), the CTA, App Store / Google Play badges and the renewal line. Plain decline link below the card.
+**Microcopy:** Renewal line: "{{offer_price}} for 7 days, then {{offer_renew_price}} / month until you cancel. Cancel anytime in your store subscriptions." Shown once per session (sessionStorage `ikf_offer_mygrowth`): a second paywall close goes straight to leaving the funnel. No timer: `CONFIG.offer.expiresMin` is `null`. If the growth team sets a real deadline, a countdown shows and the offer is withdrawn when it ends (`offer_expired`), never reset on reload. Decline (link and ✕): "No thanks, back to my plan", which returns to #22 Your 4-week plan. Accept deep-links to the store listing / trial (`CONFIG.offer.checkoutUrl`); the add-on (#25) is not shown on this path. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
+
+### 25. Optional add-on (post-purchase)
 **Purpose:** A second revenue layer while intent is warm, copied in shape from the live `/paywall/main-upsell`. That page is headed "Conquer laziness with smart visual habits", has an "Add infographics" button for a separate $9.49/month subscription, and a pulsing close ×. Here it's opt-in, with the recurring price next to the button and an equal-weight decline. Build it only if the add-on really ships.
 **Headline A:** Add visual lesson summaries?
 **Headline B:** Remember more with infographics
@@ -400,7 +411,7 @@ Tokens: `{{name}}`, `{{ad_subject}}` (from the ad set's URL param, default `hist
 
 ## G. Payoff
 
-### 25. Get the app
+### 26. Get the app
 **Purpose:** Web buyers who never sign in refund and charge back, and Trustpilot shows exactly that ("paid… never able to log in"). The first job after paying is getting them into lesson 1 with the same email.
 **Headline A:** You're in, {{name}}!
 **Headline B:** Last step: open the app
@@ -439,7 +450,7 @@ Tokens: `{{name}}`, `{{ad_subject}}` (from the ad set's URL param, default `hist
 - The before/after + masked-email ticker screen.
 - The "practical skills" filler.
 
-**Added:** name capture (#7), an interest screen per subject (#8, replacing the History-only periods/themes), honest answer feedback (#10-12), a single reminder slot (#17), and the app handoff (#25).
+**Added:** name capture (#7), an interest screen per subject (#8, replacing the History-only periods/themes), honest answer feedback (#10-12), a single reminder slot (#17), and the app handoff (#26).
 
 **Competitor mechanics documented as reference only, never built into an ikame funnel:**
 - A **10-minute "51% discount reserved for you" timer**, shown twice on the paywall. It restarts on reload.
@@ -452,12 +463,13 @@ Tokens: `{{name}}`, `{{ad_subject}}` (from the ad set's URL param, default `hist
 - A masked-email "42 people started today" ticker.
 - Praise screens shown whatever the user answered.
 
-Trustpilot (4.4★, ~2,000 reviews) shows the cost: "Offer $9.99 for 4 weeks then want $45", unexpected renewals, "no way to see your subscription", and buyers who paid but couldn't log in. The ikame paywall (#23) states renewal on every card and above the CTA, allows self-serve cancel, and uses no timer. The add-on (#24) states its recurring price and is opt-in. This follows the no-hidden-billing rule in `personalization-quiz.md`.
+Trustpilot (4.4★, ~2,000 reviews) shows the cost: "Offer $9.99 for 4 weeks then want $45", unexpected renewals, "no way to see your subscription", and buyers who paid but couldn't log in. The ikame paywall (#23) states renewal on every card and above the CTA, allows self-serve cancel, and uses no timer. The add-on (#25) states its recurring price and is opt-in. This follows the no-hidden-billing rule in `personalization-quiz.md`.
 
 **Monetization, three metrics:**
 1. Paywall conversion (#23).
-2. Add-on attach rate (#24), reported separately and never folded into paywall CVR.
-3. **Activation rate**: install + sign-in within 48h of #25, the web-funnel metric that predicts refunds.
+2. Add-on attach rate (#25), reported separately and never folded into paywall CVR.
+3. **Activation rate**: install + sign-in within 48h of #26, the web-funnel metric that predicts refunds.
+4. Last-chance offer CVR (#24, `offer_view` → `offer_accept`), measured separately from paywall CVR (#23).
 
 Also track refund and chargeback rate per plan. If the 1-month intro plan refunds heavily at first renewal, the gap between intro and renewal price is the cause, not the copy.
 
@@ -475,7 +487,7 @@ Also track refund and chargeback rate per plan. If the 1-month intro plan refund
 
 **Verify before launch:**
 - Psychology course exists (else drop it from #4, #8, #10-11).
-- Add-on contents (#24).
+- Add-on contents (#25).
 - Current store rating and count (#1, #16).
 - Rights to reuse the mygrowth.one testimonials.
 - That in-app "Manage subscription" really cancels web (Stripe) purchases. If it doesn't, ship a Stripe customer-portal link (the live config leaves `customer_portal_link` empty).

@@ -200,6 +200,30 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible,label:focus-wi
 .coins{display:flex}
 .coins .coin{margin-left:-8px}
 .coins .coin:first-child{margin-left:0}
+/* last-chance offer (screen 15) */
+.obar{display:flex;align-items:center;justify-content:space-between;padding:4px 16px 6px;flex:none}
+.obar .brand{font:900 14px var(--display);letter-spacing:.02em;display:flex;gap:6px;align-items:center}
+.obar .brand i{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.obar .ox{width:34px;height:34px;border-radius:50%;background:#000a;border:1px solid var(--border);display:grid;place-items:center;color:var(--t2)}
+.eyebrow{align-self:center;font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--pink);padding:7px 12px;border-radius:999px;border:1px solid #F3A6FF55;background:#F3A6FF12}
+.ocard{position:relative;padding:20px 16px 16px;border-radius:24px;border:1.5px solid var(--p2);background:radial-gradient(ellipse at 50% 0%,#B43BFF33,transparent 60%),linear-gradient(180deg,var(--surface-2),var(--bg-elev));box-shadow:0 0 0 4px #B43BFF1f,0 0 40px -6px #B43BFF77,0 30px 60px -30px #000;display:flex;flex-direction:column;gap:14px}
+.obadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--gold);color:#221800;font:800 10.5px/1 var(--sans);letter-spacing:.08em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:62px;height:88px;border-radius:12px;overflow:hidden;position:relative;flex:none;border:1px solid var(--border)}
+.orow .th img{width:100%;height:100%;object-fit:cover}
+.orow .th span{position:absolute;left:4px;bottom:4px;font:700 10px var(--sans);background:#000b;padding:2px 5px;border-radius:5px}
+.orow .pn{font:900 17px/1.15 var(--display)}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:16px;background:var(--bg);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px;white-space:nowrap}.oprice b{font:900 28px var(--display);color:var(--t1)}.oprice span{color:var(--t2);font-size:13px}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pink);font-variant-numeric:tabular-nums}
+.ocard .checks{gap:8px}.ocard .checks .ic{width:22px;height:22px;border-radius:7px;font-size:12px}
+.paybadges{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.paybadges span{font:700 10.5px var(--sans);color:var(--t2);border:1px solid var(--border);border-radius:6px;padding:4px 7px;background:var(--surface)}
+.ofine{font-size:12px;color:var(--t3);text-align:center;margin:0;text-wrap:balance}
+.tok{font-family:ui-monospace,Menlo,monospace;font-size:.85em;color:var(--pink);border:1px dashed #F3A6FF77;border-radius:5px;padding:0 4px;white-space:nowrap}
+.oprice b .tok{font-size:17px}
+.obadge .tok{color:#221800;border-color:#22180066}
 
 /* result */
 .share{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -248,7 +272,7 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible,label:focus-wi
   <aside class="panel">
     <div>
       <h1>AI Video Generator funnel</h1>
-      <p class="intro">A clickable prototype of the 16-screen brief in <code>funnel-content.md</code>. The imagery is cropped from the app's own App Store screenshots. Upload a real photo on screen 8 to see it placed into every result.</p>
+      <p class="intro">A clickable prototype of the 17-screen brief in <code>funnel-content.md</code>. The imagery is cropped from the app's own App Store screenshots. Upload a real photo on screen 8 to see it placed into every result.</p>
     </div>
     <div class="ctrls">
       <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
@@ -285,9 +309,26 @@ const BR={
 };
 const WHEEL=[100,200,150,500,250,300];
 const WCOL=['#7B2CF5','#E040FB','#5B21B6','#FF4FA3','#9333EA','#C026D3'];
+const CONFIG={
+  funnel:'ai-video-generator',
+  plans:{weekly:{name:'Weekly',price:'$14.99',period:'week'}},   /* real App Store price (US, 2026-09-25) */
+  checkoutUrl:{weekly:''},   /* '' = only emit checkout_click */
+  /* Last-chance offer shown ONCE when the paywall is closed without paying (fallback / "upsell on decline").
+     It is for the subscription only; coin packs (screen 16) stay a separate second layer and never show it.
+     Real terms only: price and renewal must be what checkout charges (the $10.00 "Unlimited Access" IAP is a
+     candidate once product confirms it is an intro week). compareAt = the regular plan it undercuts (its real price is struck).
+     expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn for this user. */
+  offer:{enabled:true,name:'First week of Pro',price:'{{offer_price}}',renews:'{{offer_renew_price}}/week',compareAt:'weekly',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+const QS=new URLSearchParams(location.search);
+const PASS=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','ttclid','gclid'];
+/* demo analytics: logs to the console (and window.ikfEvents) until the host wires a real tracker */
+const emit=(ev,d={})=>{const e={event:ev,funnel:CONFIG.funnel,screen:S.i,...d};(window.ikfEvents=window.ikfEvents||[]).push(e);console.info('[ikf]',ev,e)};
+const tok=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/\{\{([^}]+)\}\}/g,'<span class="tok">{{$1}}</span>');
+function checkoutNav(u,plan){if(!u)return;try{const x=new URL(u,location.href);x.searchParams.set('plan',plan);if(S.email)x.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});(window.top||window).location.href=x.toString()}catch(e){}}
 
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const INIT=()=>({v:'A',i:1,hist:[],star:'',starOther:'',name:'',tpl:'',prompt:'',dest:'',destOther:'',photo:null,sample:false,bonus:0,spun:false,email:'',account:null,premium:false,coins:0,sheet:null,err:''});
+const INIT=()=>({v:'A',i:1,hist:[],star:'',starOther:'',name:'',tpl:'',prompt:'',dest:'',destOther:'',photo:null,sample:false,bonus:0,spun:false,email:'',account:null,premium:false,plan:'',coins:0,sheet:null,err:'',offerSeen:false,offerEnd:0});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const br=()=>BR[S.star||'me'];
@@ -301,8 +342,8 @@ const FLOW=[
  ['Trust',[[9,'Made with the app']]],
  ['Anticipation',[[10,'Generating'],[11,'First look','tease'],[12,'Bonus spin']]],
  ['Gate',[[13,'Save your video']]],
- ['Monetization',[[14,'Paywall'],[15,'Coin packs','2nd layer']]],
- ['Payoff',[[16,'Your video']]]
+ ['Monetization',[[14,'Paywall'],[15,'Last-chance offer','once'],[16,'Coin packs','2nd layer']]],
+ ['Payoff',[[17,'Your video']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -313,7 +354,7 @@ const cur=()=>stage.querySelector('.view.cur');
 let timer=null;
 
 function go(n,push=true){clearInterval(timer);clearTimeout(timer);timer=null;if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.sheet=null;render(true)}
-function next(){let n=S.i+1;if(S.i===10&&S.premium)n=16;go(n)}
+function next(){let n=S.i+1;if(S.i===10&&S.premium)n=17;go(n)}
 function back(){clearInterval(timer);const p=S.hist.pop();if(p){S.i=p;S.err='';render(true)}}
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;phone.appendChild(e);setTimeout(()=>e.remove(),2700)}
 function fillTo(n){
@@ -324,10 +365,22 @@ function fillTo(n){
   if(n>8&&!S.photo&&!S.sample)S.sample=true;
   if(n>12&&!S.spun){S.spun=true;S.bonus=300}
   if(n>13&&!S.account){S.account='Email';S.email='mia@example.com'}
-  if(n>14&&!S.premium)S.premium=true;
+  if(n>15&&!S.premium){S.premium=true;S.plan='weekly'}
 }
 
 const nav=()=>{if(S.i<2||S.i>8)return '';const p=Math.round((S.i-3)/5*100);return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="prog"><span style="width:${Math.max(4,p)}%"></span></div><div style="width:36px"></div></div>`};
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function toFree(){toast('Video stays locked — unlock anytime');go(11)}
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==15)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');toFree();return}
+    const m=Math.floor(ms/60000),sec=Math.floor(ms/1000)%60;el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
 const cta=(l,ok=true,a='next',cls='')=>`<button class="btn ${cls}" data-a="${a}" ${ok?'':'disabled'}>${l}</button>`;
 const opt=(k,v,em,l,on)=>`<button class="opt ${on?'on':''}" data-a="${k}" data-v="${v}" aria-pressed="${!!on}"><span class="em">${em}</span>${l}</button>`;
 const arrow=`<svg class="h-arrow" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8 10c20 2 34 14 38 36"/><path d="m38 40 8 8 6-10"/></svg>`;
@@ -443,13 +496,27 @@ const V={
   <button class="plan" aria-pressed="true"><span class="radio"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"><path d="M20 6 9 17l-5-5"/></svg></span><span style="flex:1"><span class="pn">Weekly</span><br><span class="pp">$14.99 / week</span></span><span class="tag">MOST POPULAR</span></button>
   <p class="hint" style="margin-top:-4px">"Unlimited Access $10.00" is on the store but unconfirmed, so it isn't shown as a plan.</p></div>
   <div class="foot" style="padding-top:6px">${cta('Continue',true,'buy')}<div class="note">🔒 Secure payment · Cancel anytime<br>Renews weekly at $14.99 unless canceled at least 24h before renewal.</div><div class="legal"><span>Restore</span><span>Terms</span><span>Privacy</span></div></div>`},
-15:()=>`<div class="scr"><h1 class="h">${t('Want more <span class="g">trends?</span>','Keep the videos <span class="g">coming</span>')}</h1>
+15:()=>{const T=tp(),o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price+'/'+base.period:'';
+  return `<div class="obar"><span class="brand"><i>✦</i> AI Video Generator</span><button class="ox" data-a="offerno" aria-label="No thanks"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="scr" style="gap:12px;padding-top:2px"><span class="eyebrow">One-time offer · shown once</span>
+  <h1 class="h" style="text-align:center;font-size:27px">${t(`Wait, <span class="g">${nm()}</span>’s video is still here`,`Keep <span class="g">${nm()}</span>’s video for less`)}</h1>
+  <p class="lead" style="text-align:center;margin-top:-6px">${t(`Your ${esc(T.l)} video is rendered. Unlock it in HD at a lower first price.`,`The ${esc(T.l)} render is done. Start Pro for less this first week.`)}</p>
+  ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}
+  <div class="ocard" style="margin-top:${o.badge?'8px':'0'}">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow"><div class="th"><img src="${IMG[T.r]}" alt="${nm()}’s video"><span>▶ ${T.d}</span></div><div style="flex:1;min-width:0"><div class="pn">${esc(o.name)}</div><div class="hint" style="margin-top:3px">${nm()}’s video in HD + unlimited trends</div></div></div>
+   <div class="oprice">${was?`<s>${tok(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
+   <div class="checks">${[['HD',`${nm()}’s full video, HD, no watermark`],['▦','Every trend template, unlimited'],['◎',`Keep your +${S.bonus||'{{bonus}}'} spin coins`]].map(([i,l])=>`<div><span class="ic">${i}</span>${l}</div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="paybadges"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
+   <p class="ofine">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime, at least 24h before renewal.</p></div>
+  <button class="link" data-a="offerno" style="margin-bottom:18px">No thanks, keep my free preview</button></div>`},
+16:()=>`<div class="scr"><h1 class="h">${t('Want more <span class="g">trends?</span>','Keep the videos <span class="g">coming</span>')}</h1>
   <p class="lead">${t('Coins unlock extra videos anytime.','Top up once, use whenever you like.')}</p>
   <div class="bal"><span class="hint" style="color:var(--t2)">Your balance</span><b><i class="coin"></i>${S.coins}</b></div>
   ${[[1000,'$11.99',''],[1500,'$14.99','MOST POPULAR'],[2000,'$19.99','BEST VALUE']].map(([c,p,tag],i)=>`<button class="plan ${S.pack===i?'':'off'}" data-a="pack" data-v="${i}" aria-pressed="${S.pack===i}"><span class="coins">${'<i class="coin"></i>'.repeat(i+2)}</span><span style="flex:1;margin-left:6px"><span class="pn">${c.toLocaleString('en-US')} coins</span><br><span class="pp">${p}${i===2?' · lowest price per coin':''}</span></span>${tag?`<span class="tag">${tag}</span>`:''}</button>`).join('')}
   <p class="hint">{{coins_per_video}} coins per video · expiry rule to confirm with product</p></div>
   <div class="foot">${cta('Get coins',S.pack!==undefined,'buypack')}<button class="link" data-a="next">Not now — show my video</button></div>`,
-16:()=>{const T=tp();const others=Object.keys(TPL).filter(k=>k!=='prompt'&&k!==S.tpl&&TPL[k].r!==T.r).filter((k,i,a)=>a.findIndex(x=>TPL[x].r===TPL[k].r)===i).slice(0,5);
+17:()=>{const T=tp();const others=Object.keys(TPL).filter(k=>k!=='prompt'&&k!==S.tpl&&TPL[k].r!==T.r).filter((k,i,a)=>a.findIndex(x=>TPL[x].r===TPL[k].r)===i).slice(0,5);
   return `<div class="scr" style="gap:12px">${hero(T,'play',214)}
   <h1 class="h" style="text-align:center">${t(`<span class="g">${nm()}</span> is a star`,'Your video is ready')}</h1>
   <p class="lead" style="text-align:center;margin-top:-6px">${t('Save it, post it, make another.','Full HD, no watermark, all yours.')}</p>
@@ -465,7 +532,8 @@ function render(anim){
   else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
   else old.innerHTML=html;
   if(S.i===10)runGen();
-  if([1,11,16].includes(S.i))runPlayhead();
+  if([1,11,17].includes(S.i))runPlayhead();
+  if(S.i===15)runOffer();
   const f=cur().querySelector('#nm');if(f&&!f.value)setTimeout(()=>f.focus({preventScroll:true}),anim?300:0);
   renderPanel();
 }
@@ -489,7 +557,7 @@ function runGen(){
 function renderPanel(){
   document.getElementById('flow').innerHTML=FLOW.map(([g,it])=>`<div class="grp"><div class="gname">${g}</div>${it.map(([n,l,tag])=>`<button class="${S.i===n?'on':''}" data-j="${n}"><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`).join('')}</div>`).join('');
   const T=S.tpl?tp():null;
-  const d=[['Star',S.star?BR[S.star].l+(S.star==='other'&&S.starOther?` (${S.starOther})`:''):'—'],['Name',S.name?`${S.name}  {{${br().tok}}}`:'—'],['Template',T?(S.tpl==='prompt'?`Prompt: ${S.prompt||'—'}`:T.l):'—'],['For',{social:'TikTok / Reels',gift:'Gift',fun:'Just for fun',party:'Party',other:S.destOther||'Other'}[S.dest]||'—'],['Photo',S.photo?'Uploaded':S.sample?'Sample':'—'],['Bonus',S.spun?`+${S.bonus} coins`:'—'],['Account',S.account?(S.account==='Email'?S.email:S.account):'—'],['Plan',S.premium?'Weekly $14.99':S.i>14?'Free':'—'],['Coins',String(S.coins)]];
+  const d=[['Star',S.star?BR[S.star].l+(S.star==='other'&&S.starOther?` (${S.starOther})`:''):'—'],['Name',S.name?`${S.name}  {{${br().tok}}}`:'—'],['Template',T?(S.tpl==='prompt'?`Prompt: ${S.prompt||'—'}`:T.l):'—'],['For',{social:'TikTok / Reels',gift:'Gift',fun:'Just for fun',party:'Party',other:S.destOther||'Other'}[S.dest]||'—'],['Photo',S.photo?'Uploaded':S.sample?'Sample':'—'],['Bonus',S.spun?`+${S.bonus} coins`:'—'],['Account',S.account?(S.account==='Email'?S.email:S.account):'—'],['Plan',S.premium?(S.plan==='offer'?'Offer '+CONFIG.offer.price:'Weekly $14.99'):S.i>14?'Free':'—'],['Coins',String(S.coins)]];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 }
 
@@ -508,8 +576,10 @@ phone.addEventListener('click',e=>{
       if(RM){fin();break}w.style.transform=`rotate(${rot}deg)`;w.addEventListener('transitionend',fin,{once:true});break}
     case 'acct':S.account=v;toast(`Signed in with ${v} (demo)`);next();break;
     case 'email':if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(S.email)){S.err='Enter a valid email address';render()}else{S.account='Email';next()}break;
-    case 'close':toast('Video stays locked — unlock anytime');go(11);break;
-    case 'buy':S.premium=true;toast('Demo only — no charge made');next();break;
+    case 'close':emit('paywall_close');if(offerOpen())go(15);else toFree();break;
+    case 'buy':{const u=CONFIG.checkoutUrl.weekly||'';emit('checkout_click',{plan:'weekly',url:u});S.premium=true;S.plan='weekly';toast('Demo only — no charge made');checkoutNav(u,'weekly');go(16);break}
+    case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});S.premium=true;S.plan='offer';toast('Demo only — no charge made');checkoutNav(u,'offer');go(16);break}
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');toFree();break;
     case 'pack':S.pack=+v;render();break;
     case 'buypack':S.coins+=[1000,1500,2000][S.pack];toast('Demo only — no charge made');S.pack=undefined;next();break;
     case 'share':toast(v&&v!=='Save'?`Opens ${v} share (demo)`:'Saved to Photos (demo)');break;

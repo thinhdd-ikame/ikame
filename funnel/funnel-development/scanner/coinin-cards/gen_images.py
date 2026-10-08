@@ -14,6 +14,8 @@ STYLE = ("Premium collectibles app art, warm charcoal #141311 background, antiqu
 P = {
  "hook-cards": "A loose fan of three generic collectible trading cards (a dragon-like creature, a basketball player silhouette, a wizard) resting on dark cloth under warm light, a shoebox of old cards behind them, gold rim light",
  "card-sample": "A single generic collectible trading card on dark cloth seen from above, slightly worn corners, a fierce ember-colored dragon illustration in the art window, blank name bar, no readable text",
+ "card-sports": "A single generic collectible basketball rookie trading card on dark cloth seen from above, a dynamic invented player silhouette mid-dunk in blue tones in the art window, blank name bar, no readable text, no real player or team",
+ "card-fantasy": "A single generic fantasy strategy trading card on dark cloth seen from above, a hooded mage casting a violet mirror spell in the art window, blank name bar, no readable text",
  "paywall-hero": "A neat stack of trading cards in clear protective sleeves beside a magnifying loupe on dark cloth, gold light, calm and organised mood",
 }
 def gen(name):

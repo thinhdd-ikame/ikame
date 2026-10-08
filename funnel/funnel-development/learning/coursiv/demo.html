@@ -402,6 +402,28 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
 }
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:4px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;padding:4px 0 2px}
+.obrand{display:inline-flex;align-items:center;gap:8px;font:800 16px/1 var(--head);color:var(--t1)}
+.obrand i{width:26px;height:26px;border-radius:8px;background:var(--pri);color:#fff;display:grid;place-items:center;font:800 13px/1 var(--head);font-style:normal}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.ohead .display{font-size:27px}
+.ohead .eyebrow{font:700 11px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--pri)}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pri);font-variant-numeric:tabular-nums}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:22px;border:2px solid var(--pri);background:linear-gradient(180deg,#F7F6FF,#fff 40%);box-shadow:0 0 0 5px var(--pri-soft),0 24px 44px -26px #3B30C466}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--pri);color:#fff;font:700 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.obadge .ph{background:transparent;color:#fff;border-color:#ffffffaa}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font:800 18px/1.2 var(--head)}.oname span{font-size:13px;color:var(--t2)}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:14px;background:var(--soft);border:1px solid var(--line)}
+.oprice s,.oprice s .ph{color:var(--t3);font-size:14px;text-decoration:line-through;text-decoration-thickness:1.5px}.oprice b{font:800 26px/1 var(--head);color:var(--pri)}.oprice>span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--t1)}
+.ochecks .ck{width:20px;height:20px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex:none;margin-top:1px}
+.ocard .pays span{font:700 10.5px/1 var(--sans);padding:5px 7px;border-radius:6px;border:1px solid var(--line);color:var(--t2);background:#fff}
+.ocard .fine{margin:0}
 </style>
 
 <div class="wrap">
@@ -485,7 +507,13 @@ const PLANS={
  '12w':{n:'12-week plan',today:'[12-week intro price]',renew:'[regular 12-week price]',per:'12 weeks',days:84,badge:'BEST VALUE'}
 };
 
-const INIT=()=>({v:'A',i:1,hist:[],work:'',age:'',goal:'',goalOther:'',industry:'',indOther:'',exp:'',blocker:'',blockerOther:'',uses:[],useOther:'',worry:'',win:'',winOther:'',minutes:15,name:'',lesson:'',email:'',tips:false,plan:'4w',agree:false,sheet:null,fallback:false,paid:false,err:''});
+/* Last-chance offer: shown once per session when the paywall is closed without paying (close X or back).
+   Real terms only: price / renews stay placeholders until the growth team sets them, and checkout must charge exactly these.
+   compareAt = the plan it undercuts (that plan's real intro price is struck). period = how often it renews.
+   expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session. */
+const CONFIG={funnel:'coursiv',offer:{enabled:true,name:'4-week plan',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'4 weeks',compareAt:'4w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+
+const INIT=()=>({v:'A',i:1,hist:[],work:'',age:'',goal:'',goalOther:'',industry:'',indOther:'',exp:'',blocker:'',blockerOther:'',uses:[],useOther:'',worry:'',win:'',winOther:'',minutes:15,name:'',lesson:'',email:'',tips:false,plan:'4w',agree:false,sheet:null,offerSeen:false,offerEnd:0,offerViewed:false,paid:false,offer:false,err:''});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const nm=()=>esc(S.name.trim()||'Maya');
@@ -511,8 +539,8 @@ const FLOW=[
  ['D · Anticipation',[[17,'Building the plan','auto']]],
  ['E · Gate',[[18,'Email gate']]],
  ['D · Anticipation (reveal)',[[19,'Personal summary'],[20,'Plan + certificate date','hero'],[21,"What's inside"]]],
- ['F · Monetization',[[22,'Paywall','+ fallback'],[23,'Checkout summary']]],
- ['G · Payoff',[[24,'Welcome + app handoff']]]
+ ['F · Monetization',[[22,'Paywall'],[23,'Last-chance offer','once'],[24,'Checkout summary']]],
+ ['G · Payoff',[[25,'Welcome + app handoff']]]
 ];
 const QN={3:1,4:2,5:3,6:4,7:4,8:5,9:6,10:7,11:7,12:8,13:9,14:10,15:11};
 
@@ -546,7 +574,7 @@ function fillTo(n){
 
 function nav(){
   const n=S.i;
-  if(n===1||n===17||n===24)return '';
+  if(n===1||n===17||n===25||n===OFFER_N)return '';
   const q=QN[n];
   const right=n===22?`<button class="closex" data-a="dismiss" aria-label="Close">${ic('x',18)}</button>`:q?`<span class="pcount">${q} / 11</span>`:'<div class="navspacer"></div>';
   const mid=q?`<div class="prog" role="progressbar" aria-valuenow="${q}" aria-valuemin="0" aria-valuemax="11"><span style="width:${Math.round(q/11*100)}%"></span></div>`:'<div style="flex:1"></div>';
@@ -570,6 +598,29 @@ const ok=n=>OK[n]?!!OK[n]():true;
 
 /* hero certificate markup (mounted into 3D by mountCert) */
 const certEl=(mode,w,{faint=false,stamp=true}={})=>`<div class="cert ${faint?'faint':''}" data-mode="${mode}" data-w="${w}" data-stamp="${stamp?1:0}"></div>`;
+
+/* prototype event log: same names the production build emits (window.dataLayer + ikfunnel:* DOM events) */
+function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const PW_N=22,OFFER_N=23;
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view')}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* leaving the offer without buying = the paywall's existing close path: back to the screen before the paywall */
+function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
 
 const V={
 1:()=>`<div class="scr" style="padding-top:12px">
@@ -736,13 +787,26 @@ const V={
   <div class="pays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>AMEX</span></div></div>
   <div class="foot" style="padding-top:10px;border-top:1px solid var(--line)"><button class="cbx ${S.agree?'on':''}" data-a="agree" aria-pressed="${S.agree}"><span class="sq">${S.agree?ic('check',12,'currentColor',3.2):''}</span><span>I agree to the <span class="tlink">Terms</span>, <span class="tlink">Subscription</span> and <span class="tlink">Refund Policy</span></span></button>
   <div class="payline">You'll pay ${ph(P.today)} today. It renews at ${ph(P.renew)} every ${P.per} until you cancel. We'll email you before each renewal.</div>
-  ${cta('Get my plan',S.agree,'buy')}</div>
-  ${S.sheet==='fallback'?`<div class="dim" data-a="nothanks"></div><div class="sheet" role="dialog" aria-label="One-time offer"><span class="grab"></span><span class="pill">One genuine offer · no timer</span>
-  <h2 class="display sm">Keep your intro price</h2>
-  <p class="lead" style="color:var(--t1)">4-week plan: ${ph('[4-week intro price]')} today, then ${ph('[regular 4-week price]')} every 4 weeks.</p>
-  <button class="btn" data-a="offer">Use this offer</button><button class="link" data-a="nothanks">No thanks</button></div>`:''}`},
+  ${cta('Get my plan',S.agree,'buy')}</div>`},
 
-23:()=>{const P=PLANS[S.plan];
+23:()=>{const o=CONFIG.offer,base=PLANS[o.compareAt],was=base?base.today:'';
+  return `<div class="scr owrap">
+  <div class="obar"><span class="obrand"><i>C</i>Coursiv</span><button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display">${`Wait, ${nm()}: keep your certificate date`}</h1>
+   <p class="lead">${`Your plan still finishes ${certDate()}. Start it for a lower first payment.`}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${ph(o.badge)}</span>`:''}
+   <div class="minip"><span class="ic">🏅</span><div><small>${esc(goalL())}</small><b>Certificate by ${certDate()}</b></div></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>The same full plan, a lower first payment</span></div>
+   <div class="oprice">${was?`<s>${ph(was)}</s>`:''}<b>${ph(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${['Every lesson in your 28-day plan','Practice with built-in AI tools','Certificate for each finished guide'].map(x=>`<div><span class="ck">${ic('check',12,'currentColor',3)}</span><span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="pays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
+   <p class="fine">${ph(o.price)} today, then ${ph(o.renews)} every ${esc(o.period)} until you cancel. Cancel anytime in your account.</p></div>
+  <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
+
+24:()=>{const P=PLANS[S.plan];
   return `<div class="scr" style="gap:14px">${qhead(t('Review your order',"Here's what you'll pay"),t("Today's total and your renewal, spelled out.",'No surprises. Cancel anytime before renewal.'))}
   <div class="receipt"><h4>${P.n}</h4>
     <div class="rr"><span>Today</span><span>${ph(P.today+' + tax')}</span></div>
@@ -753,7 +817,7 @@ const V={
   <div class="cardform"><div class="box full">${ic('card',18)}<input placeholder="Card number" inputmode="numeric" aria-label="Card number"></div><div class="box"><input placeholder="MM / YY" aria-label="Expiry"></div><div class="box"><input placeholder="CVC" aria-label="CVC"></div></div></div>
   <div class="foot">${cta('Pay securely',true,'pay')}<div class="note">${ic('lock',12)} Demo form. Nothing you type is sent anywhere.</div></div>`},
 
-24:()=>`<div class="scr" style="gap:16px;padding-top:18px"><span class="okbig">${ic('check',38,'currentColor',3)}</span>
+25:()=>`<div class="scr" style="gap:16px;padding-top:18px"><span class="okbig">${ic('check',38,'currentColor',3)}</span>
   <h1 class="display" style="text-align:center">${S.v==='A'?`Welcome aboard, ${nm()}!`:'Day 1 is waiting for you'}</h1>
   <p class="lead" style="text-align:center;margin-top:-8px">${S.v==='A'?`Get the app and log in with ${esc(S.email||'your email')}.`:'Your first 15-minute lesson is ready now.'}</p>
   <div class="d1"><span class="ic">${ic('play',18,'#fff',2.2)}</span><div><small>Up next in the app</small><b>Day 1 · ${esc(useL1())}</b></div></div>
@@ -797,6 +861,7 @@ function render(dir){
   if(n===17)runLoading();
   const f=v.querySelector('#nm,#em,#oth');
   if(f&&(dir||f.id==='oth')&&!('ontouchstart' in window)){setTimeout(()=>{if(cur()!==v||!f.isConnected)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  if(n===OFFER_N)runOffer();
   renderPanel();
 }
 
@@ -865,7 +930,8 @@ function renderPanel(){
     ['Certificate',certDate()],
     ['Email',S.email||'—'],
     ['Tips opt-in',S.tips?'Yes':'No'],
-    ['Plan',PLANS[S.plan].n+(S.paid?' · paid (demo)':'')],
+    ['Plan',(S.offer?'Last-chance offer':PLANS[S.plan].n)+(S.paid?' · paid (demo)':'')],
+    ['Offer',S.offer?'Accepted':S.offerSeen?'Declined':S.offerViewed?'Shown':'—'],
     ['Agreed terms',S.agree?'Yes':'No']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
@@ -897,11 +963,12 @@ phone.addEventListener('click',e=>{
     case 'tips':S.tips=!S.tips;render();break;
     case 'plan':S.plan=v;render();break;
     case 'agree':S.agree=!S.agree;render();break;
-    case 'buy':go(23);break;
-    case 'dismiss':if(!S.fallback){S.fallback=true;S.sheet='fallback';render()}else back();break;
-    case 'offer':S.plan='4w';S.sheet=null;render();toast('4-week intro price applied (demo)');break;
+    case 'buy':go(24);break;
+    case 'dismiss':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else back()}break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;clearInterval(window.__oiv);offerCheckout();S.paid=true;go(25);toast('Demo only — offer checkout, no charge made');break;
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'nothanks':S.sheet=null;render();break;
-    case 'pay':S.paid=true;go(24);toast('Demo only — no charge made');break;
+    case 'pay':S.paid=true;go(25);toast('Demo only — no charge made');break;
     case 'store':toast('Demo only — store link would open');break;
   }
 });
@@ -920,7 +987,7 @@ const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A'
   if(S.i===17){const h=document.getElementById('lh');if(h)h.innerHTML=t(`Building ${nm()}'s AI plan...`,'Crafting your 28-day path...')}else render()};
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
-document.getElementById('restart').onclick=()=>{clearInterval(timer);clearTimeout(timer);const v=S.v;S=INIT();S.v=v;render('b')};
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearInterval(timer);clearTimeout(timer);const v=S.v;S=INIT();S.v=v;render('b')};
 
 /* scale the 390x812 phone down on narrow viewports (16px gutters) */
 const box=document.getElementById('phonebox');

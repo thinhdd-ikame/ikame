@@ -28,6 +28,8 @@ Everything else — how many screens, which blocks, in what order — is a per-a
 
 ## 1. Intake
 
+**First, check `references/app-rules.md`.** If the app is listed there (ChatChi, Starlyn, CoinIdentify), its rules are binding: brand, legal, flow shape, plans, prices, Paddle IDs and app links. They override every generic default in this skill.
+
 If it isn't already clear from the conversation, ask once, briefly, in a single message:
 
 1. **App / niche name** — becomes the folder, kebab-case.
@@ -73,6 +75,16 @@ Sanity checks before writing:
 - **Is friction ordered right?** Cheap taps first, high-friction inputs after investment, the upload/identity ask last.
 - **Does a trust beat sit immediately after the highest-friction screen?**
 - **Is the payoff gated?** The user should never see the finished value before the gate/paywall.
+- **Is the paywall a web page?** These funnels are web2app, so the paywall is a long-scroll landing page (personal hero → plan block → what's inside → how it works → proof → guarantee → FAQ → plan block again, with a sticky CTA). It is not a compact app-style sheet. See `references/blocks.md` → Paywall.
+- **Does the paywall show a CTA and price on first view?** Check at 375×667 and 430×932. The sticky bottom bar shows from first view whenever no plan-block CTA is on screen.
+- **Is the gate email-only and mandatory?** One email input right before the paywall: no skip, guest, or Google/Apple sign-in. See `blocks.md` → Registration.
+- **What happens on decline?** It follows the app's rules in `references/app-rules.md`:
+  - **ChatChi:** a per-plan sale, then a lifetime offer, then back to the paywall (hard paywall, no free tier).
+  - **Starlyn:** no offer at all.
+  - **An app with no rules yet:** a one-time fallback offer (`blocks.md` → Fallback offer), and ask the user.
+- **Is a chat taste short?** In chat apps, the taste before the paywall is 1-2 chat screens with at most 2 user messages. After that, the user must buy.
+- **Is there an under-18 way back?** An 18+ block always has "Change my birth date".
+- **Is there a post-purchase step?** A purchase leads to the one-time add-on upsell (own checkout, the subscription stays), then the get-app screen.
 - **How many monetization layers?** If there are two (subscription + consumable/marketplace), they are separate metrics — write both, and say so in the notes.
 
 ## 4. Where the file goes
@@ -114,6 +126,23 @@ It must follow the brief exactly: the same screens, numbering, A/B copy and bran
 
 If the brief changes later, update the demo in the same turn, so the two never drift apart.
 
+## 8. QA before shipping
+
+Run the checklist in `references/prototype.md` → "Checking it" before handing off a demo or pushing a funnel. The checklist covers:
+- every branch reaching the paywall by real clicks;
+- overlay stacking;
+- back, close and reload;
+- 360/375/430 widths;
+- first-view CTA.
+
+The owner reports bugs from a QA sheet. For each bug, fix it, verify it with before/after screenshots, and write a status per bug (Fixed / Not a bug / Won't fix, with a note).
+
+## 9. Ship to FunnelFox
+
+When the funnel is verified, push it to FunnelFox as a **draft** right away, without asking. The FunnelFox projects and app links are listed in `references/app-rules.md`.
+- **Publishing stays with the user.** The live link shows only the last published version, so always end with a reminder to **Publish**, and name the funnels.
+- **Before you diagnose a live bug, check whether the live link is just an old publish.** FunnelFox's `funnel_get` `updated_at` is the last publish time.
+
 ## What NOT to do
 
 - **Don't copy a previous funnel's screen list into a different app category.** Reskinning copy over a flow designed for another product shape is the exact failure mode this skill exists to prevent.
@@ -121,4 +150,6 @@ If the brief changes later, update the demo in the same turn, so the two never d
 - Don't write app code (React Native, Swift, …). The brief is Markdown. The only code this skill produces is the optional HTML prototype in §7, and only when asked.
 - Don't add urgency mechanics (countdowns, "offer expires" timers) when the app's own positioning promises the opposite. Read the store screenshots and the paywall copy first.
 - Don't reuse stat numbers or press-logo placeholders verbatim across niches — "The Dodo" fits pets, not fitness.
+- **Don't invent or borrow proof.** Use no made-up stats or reviews. Don't present a competitor's store reviews, or a positive fragment cut from a negative review, as our users'. Use honest product facts instead, and hide the reviews block.
+- **Don't cut onboarding screens to change monetization.** Email, opt-ins, journals and voice notes stay; change only the monetization screens.
 - Don't skip the frontmatter. Downstream skills (`creative-video-generator`) parse it; a file without it falls back to fragile title matching.

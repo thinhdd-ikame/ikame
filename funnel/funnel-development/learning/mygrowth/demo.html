@@ -346,6 +346,28 @@ button{font:inherit;color:inherit;cursor:pointer}
   .ms{animation:none!important;opacity:0}.ms.s1{opacity:1}
   .confetti{display:none}
 }
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:6px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.oclose{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;background:#fff;border:1.5px solid var(--line);color:var(--ink2);font-size:16px;line-height:1}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;font-size:13px;background:var(--lav2);color:var(--ink2)}
+.otimer b{font-variant-numeric:tabular-nums;color:var(--vio)}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:24px;background:linear-gradient(180deg,var(--lav2),#fff 45%);border:2px solid var(--vio);box-shadow:0 0 0 5px #7D73E322,0 24px 44px -26px #7D73E388;color:var(--ink)}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;white-space:nowrap;background:var(--grad);color:#fff}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font-size:18px;line-height:1.2}.oname span{font-size:13px;opacity:.8}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.oprice s,.oprice s .tok{font-size:14px;opacity:.75;text-decoration:line-through;text-decoration-thickness:1.5px}
+.oprice b{font-size:26px;line-height:1;color:var(--vio)}.oprice>span{font-size:13px;opacity:.8}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.35}
+.ochecks i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;margin-top:1px;background:var(--green);color:#fff;font-size:11px;font-weight:900}
+.opays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.opays span{font-size:10.5px;font-weight:700;padding:5px 7px;border-radius:6px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.ofine{font-size:12px;line-height:1.45;text-align:center;margin:0;opacity:.85}
+.ocard .oname b,.ocard .oprice b{font-family:var(--disp);font-weight:800}
+.obadge .tok{background:transparent;color:#fff;border-color:#ffffffaa}
 </style>
 
 <div class="wrap">
@@ -430,8 +452,16 @@ const RV='<p>"Real App Store review goes here, 15 words max."</p><small>First na
 const qp=new URLSearchParams(location.search).get('ad_subject');
 const AD0=SKEYS.find(k=>k===qp||SUBJ[k].ad===(qp||'').toLowerCase())||'hist';
 
+/* Last-chance offer: shown once per session when the paywall is closed without paying.
+   Real terms only: price / renews stay placeholders until the growth team sets them, and checkout must charge exactly these.
+   compareAt = the plan it undercuts (its real current price is struck); null = nothing struck.
+   expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session. */
+/* MyGrowth brief #24: the exit offer is the store app's own 7-day free trial, with its terms shown (the listing read "then $24.99/month"
+   on 2026-09-28). No extra discount, no timer. checkoutUrl = the store listing / trial deep link. */
+const CONFIG={funnel:'mygrowth',offer:{enabled:true,name:'7-day free trial in the app',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'month',compareAt:'m1',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+
 const INIT=()=>({v:'A',i:1,hist:[],adSubj:AD0,age:'',subject:AD0,subjO:'',goals:[],goalsO:'',name:'',ints:[],intsO:'',level:'',q1:null,q2:null,
-  style:[],styleO:'',lik:0,dist:[],distO:'',mom:'',momT:'',mins:0,email:'',mkt:false,acct:'',plan:'m1',paid:false,addon:null,sheet:null,fbShown:false,faq:false,err:''});
+  style:[],styleO:'',lik:0,dist:[],distO:'',mom:'',momT:'',mins:0,email:'',mkt:false,acct:'',plan:'m1',paid:false,addon:null,sheet:null,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,faq:false,err:''});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const nm=()=>esc(S.name||'Maya');
@@ -460,8 +490,8 @@ const FLOW=[
  ['D · Anticipation',[[19,'Building the plan','auto'],[20,'Course match (tease)']]],
  ['E · Gate',[[21,'Email']]],
  ['D · Anticipation (reveal)',[[22,'Your 4-week plan']]],
- ['F · Monetization',[[23,'Paywall','exit sheet'],[24,'Optional add-on','post-purchase']]],
- ['G · Payoff',[[25,'Get the app']]]
+ ['F · Monetization',[[23,'Paywall'],[24,'Last-chance offer','once'],[25,'Optional add-on','post-purchase']]],
+ ['G · Payoff',[[26,'Get the app']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -493,8 +523,8 @@ function fillTo(n){
   if(n>17&&!OKF[17]())S.mom='coffee';
   if(n>18&&!S.mins)S.mins=15;
   if(n>21&&!S.email)S.email='maya@example.com';
-  if(n>23)S.paid=true;
-  if(n>24&&S.addon===null)S.addon=false;
+  if(n>24)S.paid=true;
+  if(n>25&&S.addon===null)S.addon=false;
 }
 
 function nav(){
@@ -564,6 +594,30 @@ function laurel(flip){
 }
 const APL=s=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.8zM14.1 5.8c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2.1-.5 2.7-1.3z"/></svg>`;
 const stores=()=>`<div class="stores"><button class="store" data-a="store"><span class="g">${APL(18)}</span><span><small>Download on the</small>App Store</span></button><button class="store" data-a="store"><span class="g">▶</span><span><small>GET IT ON</small>Google Play</span></button></div>`;
+
+/* prototype event log: the names a production build emits (window.dataLayer + ikfunnel:* DOM events) */
+function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* '{{token}}' config values render as the funnel's placeholder token, real values as text */
+const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?TK(m[1]):esc(s)};
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const PW_N=23,OFFER_N=24;
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view',{price:CONFIG.offer.price})}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
 
 const V={
 1:()=>{const s=SUBJ[S.adSubj];return `<div class="scr" style="padding-top:8px"><div style="display:flex;flex-direction:column;gap:6px"><div class="logo"><i>🌱</i>${TK('app_name')}</div><span class="rating"><b>★</b> ${TK('app_rating')} · ${TK('rating_count')} App Store ratings</span></div>
@@ -704,12 +758,24 @@ const V={
   <div class="faq"><button data-a="faq" aria-expanded="${S.faq}">How do I cancel?<span>${S.faq?'−':'+'}</span></button>${S.faq?`<p class="fadein">Profile → Settings → Manage subscription, or the link in your receipt.</p>`:''}</div>
   <div class="ph">More FAQ entries go here (the brief specifies only the cancel answer).</div>
   <div class="legal"><span>Terms</span><span>Privacy</span><span>Subscription terms</span></div></div>
-  <div class="foot" style="padding-top:10px;box-shadow:0 -10px 20px -14px #1E1B3940"><div class="note" style="color:var(--ink);font-size:13px;font-weight:500">${money(P.intro)} today. Then ${money(P.ren)} every ${P.every} until you cancel.</div>${cta('Start my plan',true,'buy')}</div>
-  ${S.sheet==='fallback'?`<div class="dimbg" data-a="sheetback"></div><div class="sheet" role="dialog" aria-label="Try the app first"><span class="grab"></span>
-  <h2 class="h1" style="font-size:24px">Prefer to try the app first?</h2>
-  <p class="lead" style="color:var(--ink)">The app has a 7-day free trial, then $24.99/month.</p>
-  <button class="btn" data-a="trial">Try it in the app</button><button class="link" data-a="sheetback">Back to plans</button></div>`:''}`},
-24:()=>`<div class="scr" style="padding-top:12px"><h1 class="h1">${t('Add visual lesson summaries?','Remember more with infographics')}</h1>
+  <div class="foot" style="padding-top:10px;box-shadow:0 -10px 20px -14px #1E1B3940"><div class="note" style="color:var(--ink);font-size:13px;font-weight:500">${money(P.intro)} today. Then ${money(P.ren)} every ${P.every} until you cancel.</div>${cta('Start my plan',true,'buy')}</div>`},
+24:()=>{const o=CONFIG.offer,base=PLANS[o.compareAt],was=base?money(base.intro):'',s=coverSubj();
+  return `<div class="scr owrap">
+  <div class="obar"><div class="logo"><i>🌱</i>${TK('app_name')}</div><button class="oclose" data-a="offerno" aria-label="No thanks">✕</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="h1 c">${t(`Wait, ${nm()}: try it free first`,`Try your ${subjL()} plan free`)}</h1>
+   <p class="lead c">${t(`Your ${subjL()} plan is ready. Start with 7 days free in the app.`,'Seven days of lessons before you pay anything.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tv(o.badge)}</span>`:''}
+   <div class="pwtop"><span class="thumb" style="background:${s.bg};overflow:hidden">${sk()?thumb(SUBJ[sk()],'height:100%;aspect-ratio:1'):'✨'}</span><div><div class="eyebrow">Your course</div><div style="font:800 15px/1.2 var(--disp);margin-top:4px">${courseT()}</div></div></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>Every lesson, audio and game, billed by the store</span></div>
+   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${['15-minute lessons in 6 subjects','Read or listen to every lesson','Quizzes and games: True or False, Spot the Fake'].map(x=>`<div><i>✓</i><span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="opays"><span>App Store</span><span>Google Play</span></div>
+   <p class="ofine">${tv(o.price)} for 7 days, then ${tv(o.renews)} / ${esc(o.period)} until you cancel. Cancel anytime in your store subscriptions.</p></div>
+  <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
+25:()=>`<div class="scr" style="padding-top:12px"><h1 class="h1">${t('Add visual lesson summaries?','Remember more with infographics')}</h1>
   <p class="lead" style="margin-top:-6px">${t('A one-page visual recap after every lesson.','See each lesson in one picture.')}</p>
   <div class="info"><div class="eyebrow">Sample · Lesson 1 of ${courseT()}</div>
    <div class="ib">${coverSubj().art.map((e,i)=>`<div>${e}<small class="sk" style="width:${[70,85,60][i]}%;margin:8px auto 0"></small></div>`).join('')}</div>
@@ -718,7 +784,7 @@ const V={
    <p class="hint" style="margin:0">Placeholder: confirm the add-on's real contents before building.</p></div></div>
   <div class="foot">${cta('Add for '+money(ADDON)+'/mo',true,'add')}<div class="note" style="margin-top:-4px">Separate subscription: ${money(ADDON)}/month, renews monthly, cancel anytime. · Not charged unless you tap Add.</div>
   <button class="btn outline" data-a="noadd">No thanks, take me to my plan</button></div>`,
-25:()=>`<div class="scr" style="padding-top:14px"><div class="okhead"><span class="lg">🌱</span><span class="gc">✓</span></div>
+26:()=>`<div class="scr" style="padding-top:14px"><div class="okhead"><span class="lg">🌱</span><span class="gc">✓</span></div>
   <h1 class="h1 c">${t(`You're in, ${nm()}!`,'Last step: open the app')}</h1>
   <p class="lead c" style="margin-top:-6px">${t(`Get the app and sign in with ${esc(S.email||'your email')}.`,`Your ${subjL()} plan is waiting inside.`)}</p>
   <div class="nsteps"><div><b>1</b>Download</div><div><b>2</b>Tap the sign-in link we emailed</div><div><b>3</b>Start lesson 1</div></div>
@@ -754,6 +820,7 @@ function render(anim){
   const v=cur();
   v.querySelectorAll('.deck').forEach(mountDeck);
   if(n===19)runLoading();
+  if(n===OFFER_N)runOffer();
   const f=v.querySelector('#nm,#em');
   if(f)setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},anim?320:0);
   renderPanel();
@@ -838,6 +905,7 @@ function renderPanel(){
     ['Email',S.email?(S.acct?`${S.email} (via ${S.acct})`:S.email):'—'],
     ['Marketing emails',S.mkt?'Opted in':'Not opted in'],
     ['Plan',S.paid?`${PLANS[S.plan].n} (demo, not charged)`:S.i>=23?`${PLANS[S.plan].n} selected`:'—'],
+    ['Offer',S.offer?'Accepted (store trial)':S.offerSeen?'Declined':S.offerViewed?'Shown':'—'],
     ['Add-on',S.addon===null?'—':S.addon?`Added, ${money(ADDON)}/mo (demo)`:'Declined']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
@@ -864,12 +932,13 @@ phone.addEventListener('click',e=>{
     case 'email':{const m=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)){S.err='Please enter a valid email address';render()}else if(/^taken@/i.test(m)){S.err='This email already has a plan. Check your inbox.';render()}else{S.email=m;S.acct='';next()}break}
     case 'plan':S.plan=v;render();break;
     case 'faq':S.faq=!S.faq;render();break;
-    case 'buy':S.paid=true;toast('Demo only — no charge made');go(24);break;
-    case 'close':if(!S.fbShown){S.fbShown=true;S.sheet='fallback';render()}else toast('Would leave the funnel (demo)');break;
+    case 'buy':S.paid=true;toast('Demo only — no charge made');go(25);break;
+    case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('Would leave the funnel (demo)')}break;
     case 'sheetback':S.sheet=null;render();break;
-    case 'trial':toast('Would open the App Store listing (demo)');break;
-    case 'add':S.addon=true;toast('Demo only — no charge made');go(25);break;
-    case 'noadd':S.addon=false;go(25);break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();renderPanel();toast('Would open the store app\'s 7-day trial (demo)');break;
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
+    case 'add':S.addon=true;toast('Demo only — no charge made');go(26);break;
+    case 'noadd':S.addon=false;go(26);break;
     case 'store':toast('Would open the store (demo)');break;
     case 'open':toast('Would deep-link into the app (demo)');break;
   }
@@ -892,7 +961,7 @@ const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A'
   if(S.i===19){const h=document.getElementById('h19');if(h)h.innerHTML=t(`Building ${nm()}'s learning plan…`,`Picking ${nm()}'s first lessons…`)}else render()};
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
-document.getElementById('restart').onclick=()=>{clearT();const v=S.v,ad=S.adSubj;S=INIT();S.v=v;S.adSubj=ad;S.subject=ad;render(true)};
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v,ad=S.adSubj;S=INIT();S.v=v;S.adSubj=ad;S.subject=ad;render(true)};
 
 /* fit the 390x812 phone into narrow viewports */
 const pbox=document.getElementById('pbox');

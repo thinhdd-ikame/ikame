@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: work situation, goal, industry, AI experience, blocker, first use case, career worry, first-week result, daily minutes, name, email
 output: personalized 28-day AI skills plan with a projected certificate date and a first micro-lesson
-screens: 24
+screens: 25
 monetization: web subscription paywall (1-week / 4-week pre-selected / 12-week, intro price with renewal price shown on every card), app unlocked by the same email
 creative_screens:
   hook-a: 1
@@ -20,7 +20,7 @@ motion: >
 
 # Funnel Content — Coursiv-style AI Skills Plan
 
-Coursiv (Coursiv Limited, Limassol, Cyprus; App Store "Coursiv - AI Certificates", 4.8★ from ~3.1K ratings) is a micro-learning app for adults who feel behind on AI. It runs daily ~15-minute lessons on ChatGPT, Claude, Gemini, Midjourney and other tools, a "28-Day AI Challenge", practice in a built-in AI playground, a 1000+ prompt library, leaderboards, and **non-accredited completion certificates** for each main guide. It acquires almost entirely through a **web quiz funnel** (`coursiv.io/dynamic`, ~2,900 live Meta/TikTok ads across ~40 page names) that sells a web subscription before install. The user logs into the app with the same email. The user gives ~14 answers about their work, AI level and goals, and gets a "Personalized AI Certificate Program" with a projected finish date. This brief is **ikame's version of that shape**. The flow comes from an adspylab capture of Coursiv's live funnel (30 screens, captured Sept 2026, plus a 46-screen Sept 2 version with checkout and downsell), cut to 24 screens. Nothing registered fits it cleanly. It is close to **personalization-quiz** (the quiz is the demo), but the output is a *dated plan plus a daily habit* rather than a one-shot reading, so it's filed as a new **learning-plan** archetype. Three things are deliberately different from Coursiv. (1) A real 60-second micro-lesson in the funnel (screen 15), so the user tastes the loop before paying. (2) Answers visibly change the plan and date; a review site (marksinsights.com) claims Coursiv sends everyone to the same courses whatever they answer. (3) No spin wheel, fake timer or name-based "promo code", and every plan card shows its renewal price. Look: this overrides the repo's dark default with a **light, professional "career" theme** (white background, deep-indigo primary, green progress and success states, real AI-tool logos as chips). The audience is 25-55 office workers, and neon-on-black reads as entertainment. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on every screen.
+Coursiv (Coursiv Limited, Limassol, Cyprus; App Store "Coursiv - AI Certificates", 4.8★ from ~3.1K ratings) is a micro-learning app for adults who feel behind on AI. It runs daily ~15-minute lessons on ChatGPT, Claude, Gemini, Midjourney and other tools, a "28-Day AI Challenge", practice in a built-in AI playground, a 1000+ prompt library, leaderboards, and **non-accredited completion certificates** for each main guide. It acquires almost entirely through a **web quiz funnel** (`coursiv.io/dynamic`, ~2,900 live Meta/TikTok ads across ~40 page names) that sells a web subscription before install. The user logs into the app with the same email. The user gives ~14 answers about their work, AI level and goals, and gets a "Personalized AI Certificate Program" with a projected finish date. This brief is **ikame's version of that shape**. The flow comes from an adspylab capture of Coursiv's live funnel (30 screens, captured Sept 2026, plus a 46-screen Sept 2 version with checkout and downsell), cut to 25 screens. Nothing registered fits it cleanly. It is close to **personalization-quiz** (the quiz is the demo), but the output is a *dated plan plus a daily habit* rather than a one-shot reading, so it's filed as a new **learning-plan** archetype. Three things are deliberately different from Coursiv. (1) A real 60-second micro-lesson in the funnel (screen 15), so the user tastes the loop before paying. (2) Answers visibly change the plan and date; a review site (marksinsights.com) claims Coursiv sends everyone to the same courses whatever they answer. (3) No spin wheel, fake timer or name-based "promo code", and every plan card shows its renewal price. Look: this overrides the repo's dark default with a **light, professional "career" theme** (white background, deep-indigo primary, green progress and success states, real AI-tool logos as chips). The audience is 25-55 office workers, and neon-on-black reads as entertainment. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on every screen.
 
 ---
 
@@ -342,10 +342,19 @@ Coursiv (Coursiv Limited, Limassol, Cyprus; App Store "Coursiv - AI Certificates
 - If an intro discount is shown, the struck-through price must be the real regular renewal price, and the intro must apply to a genuine first period.
 **Visual:** Top: mini plan card echoing goal and date. Then 3 stacked plan cards, the 4-week one highlighted with an indigo border; renewal line in the same size and colour as the price, not grey fine print. Payment row: Apple Pay / Google Pay / card logos.
 **Microcopy:** Trust row: "🔒 Secure payment · Cancel anytime in 2 taps · [N]-day refund window". Agreement checkbox **unchecked**: "I agree to the Terms, Subscription and Refund Policy". Line above CTA, filled dynamically from the selected card: "You'll pay [today's price] today. It renews at [renewal price] every [period] until you cancel. We'll email you before each renewal."
-**Fallback offer:** On dismiss or back, show a single sheet with one genuine offer, e.g. the 4-week plan's intro price extended once. The renewal price is stated on the same line. No countdown.
+**Fallback offer:** On dismiss (✕ or back), the last-chance offer (#23) once per session: the 4-week plan at a lower first payment, renewal stated on the card. No countdown.
 **CTA:** Get my plan
 
-### 23. Checkout summary
+### 23. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall (✕ or back) without paying: the same 4-week plan at a lower first payment. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: keep your certificate date
+**Body A:** Your plan still finishes {{cert_date}}. Start it for a lower first payment.
+**Plans:** One offer card: **4-week plan**, "The same full plan, a lower first payment". {{offer_price}} today, with the 4-week plan's real intro price ([4-week intro price], `compareAt: '4w'`) struck, then {{offer_renew_price}} every 4 weeks until cancelled. Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #22: sticky bar with the Coursiv logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one indigo-bordered offer card holding a mini plan card ("{{goal}}" · "Certificate by {{cert_date}}"), the plan name, the price row (struck intro price → {{offer_price}} "today"), 3 checks ("Every lesson in your 28-day plan", "Practice with built-in AI tools", "Certificate for each finished guide"), the CTA, Apple Pay / G Pay / VISA / Mastercard badges and the renewal line. Plain decline link below the card.
+**Microcopy:** Renewal line: "{{offer_price}} today, then {{offer_renew_price}} every 4 weeks until you cancel. Cancel anytime in your account." Shown once per session (sessionStorage `ikf_offer_coursiv`): a second paywall close goes straight to the previous screen (#21 What's inside). No timer: `CONFIG.offer.expiresMin` is `null`. If the growth team sets a real deadline, a countdown shows and the offer is withdrawn when it ends (`offer_expired`), never reset on reload. Decline (link and ✕): "No thanks, back to my plan", which returns to #21 What's inside. Accept opens the offer checkout (`CONFIG.offer.checkoutUrl` with plan `offer`, email and UTMs); that checkout must show the same receipt rows as #24. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
+
+### 24. Checkout summary
 **Purpose:** Confirms exactly what is charged today and later before the card form. This cuts refunds and chargebacks, which is the category's known complaint (Coursiv's Trustpilot/BBB reviews centre on surprise renewals).
 **Headline A:** Review your order
 **Headline B:** Here's what you'll pay
@@ -359,7 +368,7 @@ Coursiv (Coursiv Limited, Limassol, Cyprus; App Store "Coursiv - AI Certificates
 
 ## G. Payoff
 
-### 24. Welcome + app handoff
+### 25. Welcome + app handoff
 **Purpose:** Activation. The user installs, logs in with the same email and starts Day 1 right away. A web sale that never opens the app turns into a refund.
 **Headline A:** Welcome aboard, {{name}}!
 **Headline B:** Day 1 is waiting for you
@@ -390,5 +399,7 @@ Coursiv (Coursiv Limited, Limassol, Cyprus; App Store "Coursiv - AI Certificates
 **First A/B tests:** (1) micro-lesson at 15 vs. no micro-lesson (Coursiv's shape). (2) Email gate before the plan (18) vs. after the plan, before the paywall. (3) 4-week vs. 12-week pre-selected.
 
 **Monetization:** one layer, the web subscription. Track paywall conversion, and separately **install + login + Day 1 lesson completed** within 48h, plus refund/chargeback rate by plan. The 1-week plan's refund rate is the early warning.
+
+**Last-chance offer:** measure offer CVR (#23 `offer_view` → `offer_accept`) separately from paywall CVR (#22).
 
 **Unverified / assumed:** Coursiv's in-app (non-web) onboarding; the exact current live prices (captures are dated, EUR); the HBR quote wording; and which features in screen 21 ikame's app will actually ship. All ikame stats are placeholders `[N]` until real.

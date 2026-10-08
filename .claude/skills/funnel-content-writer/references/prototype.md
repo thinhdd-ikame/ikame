@@ -55,7 +55,33 @@ An optional follow-up to `funnel-content.md`, built only when the user asks for 
   - A sheen on the primary CTA.
 - **Reduced motion:** respect `prefers-reduced-motion`. It turns off loops and animations, and the 3D wheel renders one static frame.
 
+## Paywall screen (web funnel)
+
+- Build it as a long-scroll landing page per `visual-language.md` → "Web paywall", not a compact app sheet. The user rejected the app-style paywall on 2026-09-30.
+- Put everything the page needs in CONFIG: plans, refund days, rating, reviews, support email, legal entity. Any `{{token}}` renders as a dashed placeholder.
+- Plan selection mutates the DOM in place. Wire the sticky CTA with an IntersectionObserver on the plan blocks.
+- Screenshot the paywall by scrolling its container in steps (for example 780px), not with one full-page shot, so the sticky elements show as a user sees them.
+
+## Decline screens (follow `app-rules.md`)
+
+- **ChatChi:** `CONFIG.declineFlow` maps each plan's checkout close to its sale screen, sales to `sale_lifetime`, and `lifetime` back to the paywall. `checkout(plan)` opens a demo checkout sheet (Pay / Close without paying) when there's no checkout URL. The sheet sits above every layer.
+- **Hard paywall:** no free-chat path. A non-paying user who lands on a chat screen (by back, reload, deep link or restore) is forwarded to the paywall with the composer locked.
+- **Apps without rules:** use the fallback-offer pattern below.
+
+## Fallback offer screen (default for apps without rules)
+
+- Every demo wires the paywall close (and any "continue free" link) to a one-time offer screen first. Keep the offer in `CONFIG.offer` (`enabled, name, price, renews, compareAt, badge, checkoutUrl, expiresMin`), and set a sessionStorage flag so it is shown once. Reference: `nebula/palm-reading/demo.html` screen 22.
+- Test it: close → offer, decline → free path, close again → free path (no second offer). With `expiresMin` set, the offer must withdraw itself when time runs out.
+
 ## Checking it
 
-- **Headless screenshots:** Python/Node aren't on this machine. Render single screens with Edge headless, e.g. `msedge --headless=new --window-size=460,860 --virtual-time-budget=4000 --screenshot=out.png "file:///…/demo.html#s=15"`. Look at the screenshot once, fix, then publish.
+**QA checklist (run before any hand-off or FunnelFox push):**
+- **Every branch reaches the paywall by real clicks from screen 1.** Use no `#s=` jumps. Cover every option, "Other" with text, skip links, the A/B variant, every character variant, typed chat versus reply chips, under-18 → Change my birth date, back/forward and reload mid-funnel. Run it in the standalone page and in the FunnelFox harness.
+- **Overlays stack correctly.** Sheets and paywall overlays get an explicit z-index above the chat layers: the paywall over the chat, the checkout sheet over the paywall, toasts on top. One missing z-index once put the paywall under chat bubbles in production.
+- **Every button does something.** Check each back, close and X, "No thanks", legal link and store badge. Nothing should be covered (`elementFromPoint`) or too small to tap.
+- **Viewports:** 360×640, 375×667, 430×932. Nothing clipped, and a CTA and price visible on the paywall's first view.
+- **Reload and restore:** reloading during the chat taste never grants extra messages, and reloading on the paywall stays there.
+- **Placeholders:** no raw `{{tokens}}`. Disabled screens (an old offer) are removed from the engine, not just hidden.
+
+- **Headless screenshots:** on the Windows machine, Python/Node aren't available: render single screens with Edge headless, e.g. `msedge --headless=new --window-size=460,860 --virtual-time-budget=4000 --screenshot=out.png "file:///…/demo.html#s=15"`. On the Mac, Node + `playwright-core` (Chromium in `~/Library/Caches/ms-playwright`) can click through the whole funnel, upload files with `setInputFiles`, and scroll the paywall. Look at the screenshots, fix, then publish.
 - **Pencil's integrated browser** can time out on screenshots, so don't depend on it.

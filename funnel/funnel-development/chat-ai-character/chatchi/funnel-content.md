@@ -5,7 +5,7 @@ archetype: companion-chat
 subject: person
 input: birth year (18+ gate), display name, gender, who they want to meet, genres, connection type, character vibe
 output: a matched AI character plus a live first chat scene that remembers them
-screens: 20
+screens: 21
 monetization: soft subscription paywall (ChatChi Plus - yearly pre-selected / weekly), fired twice - once after the first chat, once at the daily message limit
 creative_screens:
   hook-a: 1
@@ -20,7 +20,7 @@ motion: >
 
 # Funnel Content — ChatChi
 
-ChatChi is an adults-only AI character-chat app. Users browse a catalog of fictional characters (Luna, Kai, Mira, Ren, Sora, Aiden…) or create their own, then chat with them. Each chat builds **intimacy** hearts that unlock a character's photo "moments". The character **remembers** facts from the story, and there are voice, personas and reply ideas on top. Free users get 10 messages a day. ChatChi Plus ($99.99/year or $6.99/week, from the design) removes the limit. The brand line is "Chat without counting messages." The user gives age, name and a few taste picks, and gets a matched character and a first scene they can actually play. This is a new **companion-chat** archetype (registered alongside this file). The chat loop is the product, so the funnel exists to get a person into a good first scene fast, and it sells *more of the loop*, not a one-off result. It is not a personalization-quiz: nothing here is "accurate" to the user, and a long quiz would only delay the chat. 20 screens. Copy tone, prices and the visual system come from `chatchi-design/` (screen exports in `chatchi-design/images/`). That means a near-black background, a raspberry-pink primary (`Upgrade`, `Chat`, active tab), a bold geometric sans for headlines, Inter for body, lucide stroke icons and full-bleed moody character portraits. This overrides the repo's default purple/pink look. Existing screens are referenced by their export id (`s06-onb-02`, `s29-iap-01`…). Everything else is new.
+ChatChi is an adults-only AI character-chat app. Users browse a catalog of fictional characters (Luna, Kai, Mira, Ren, Sora, Aiden…) or create their own, then chat with them. Each chat builds **intimacy** hearts that unlock a character's photo "moments". The character **remembers** facts from the story, and there are voice, personas and reply ideas on top. Free users get 10 messages a day. ChatChi Plus ($99.99/year or $6.99/week, from the design) removes the limit. The brand line is "Chat without counting messages." The user gives age, name and a few taste picks, and gets a matched character and a first scene they can actually play. This is a new **companion-chat** archetype (registered alongside this file). The chat loop is the product, so the funnel exists to get a person into a good first scene fast, and it sells *more of the loop*, not a one-off result. It is not a personalization-quiz: nothing here is "accurate" to the user, and a long quiz would only delay the chat. 21 screens. Copy tone, prices and the visual system come from `chatchi-design/` (screen exports in `chatchi-design/images/`). That means a near-black background, a raspberry-pink primary (`Upgrade`, `Chat`, active tab), a bold geometric sans for headlines, Inter for body, lucide stroke icons and full-bleed moody character portraits. This overrides the repo's default purple/pink look. Existing screens are referenced by their export id (`s06-onb-02`, `s29-iap-01`…). Everything else is new.
 
 ---
 
@@ -267,14 +267,23 @@ ChatChi is an adults-only AI character-chat app. Users browse a catalog of ficti
 **Visual:** Existing `s29-iap-01` layout with the onboarding headline instead of the quota one: crown, six benefit rows with pink lucide icons, two side-by-side plan cards (yearly highlighted), full-width pink CTA. Close (×) visible from the first frame, "Restore purchase" top-right.
 **Microcopy:** Benefit rows: "Unlimited chat" · "Better replies" · "Teach them to remember" · "Hear them speak" · "5 personas" · "Unlimited ideas". Legal: "Auto-renews. Cancel anytime in App Store settings." Fair-use: "Unlimited means normal use — capped at 300 messages a day to stop abuse."
 **Skip link:** Continue free · 10 messages a day
-**Fallback offer:** None in-funnel. Closing the paywall drops the user back into the scene with 7 messages left, and the natural second ask fires at the limit (#20). Optional A/B arm: a disclosed 3-day free trial on Weekly. It needs store config, isn't in the design, and must state the post-trial price on the same screen.
+**Fallback offer:** #19 last-chance offer, shown once per session (also after closing the #21 limit-card paywall). Declining it drops the user back into the scene (#20) with 7 messages left, and the natural second ask fires at the limit (#21). Optional A/B arm: a disclosed 3-day free trial on Weekly. It needs store config, isn't in the design, and must state the post-trial price on the same screen.
 **CTA:** Continue — $99.99
+
+### 19. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who decline a paywall without paying (close X or "Continue free" on #18, or closing the paywall opened from the #21 limit card). Shown once per session (`sessionStorage` key `ikf_offer_chatchi`), then never again: a second close goes straight to the free path.
+**Headline A:** Keep {{match}}’s story going, for less
+**Body A:** Your story with {{match}} is saved. Here’s ChatChi Plus at a lower first price, one time only.
+**Plans:** One offer card: {{offer_name}} (ChatChi Plus · weekly). {{offer_price}} today, with the regular Weekly price ($6.99, the configured price of the plan it undercuts) struck, then {{offer_renews}} until cancelled. Optional {{offer_badge}}. Placeholders until ChatChi confirms real terms.
+**Visual:** Same web look as the paywall: top bar with the ChatChi logo and a close X, a centered eyebrow "One-time offer · shown once", headline and body, then one pink-bordered, softly glowing offer card: the matched character’s portrait, the offer name, the price row (struck regular price → offer price, "today"), 3 checks (Unlimited chat with {{match}} · Better replies that stay on story · Teach them to remember), the CTA and the renewal line. Under the card: "All replies are AI-generated. All characters are fictional and depicted as adults 18 or older." Below, the plain decline link and legal links.
+**Microcopy:** Timer only if `CONFIG.offer.expiresMin` is set. It is a real deadline: when it ends the offer is withdrawn and the user goes to the free path. Renewal line under the CTA: "{{offer_price}} today, then {{offer_renews}} until you cancel. Cancel anytime in account or store settings." Decline link: "No thanks, continue free · 10 messages a day" → #20 (or back to the #21 limit card when the offer was opened from there). No guilt-trip: the offer is the app talking, never the character’s voice. Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`. Measure offer CVR separately from paywall CVR. In the prototypes (`demo.html`, `funnel.html`) this screen has id 21 (`last_chance_offer`), appended after the existing ids so no other screen id or event name moved.
+**CTA:** Claim my offer
 
 ---
 
 ## G. Payoff
 
-### 19. Back in the scene
+### 20. Back in the scene
 **Purpose:** The funnel ends inside the product. The loop continues from the cliffhanger, so the user is invested before the next ask.
 **Headline A:** {{match}}
 **Headline B:** {{match}} · ❤ 3 intimacy
@@ -284,7 +293,7 @@ ChatChi is an adults-only AI character-chat app. Users browse a catalog of ficti
 **Microcopy:** Free users: counter always visible under the chips. Plus users: a one-time toast, "Unlimited chat is on. Enjoy."
 **CTA:** (send a message)
 
-### 20. Daily limit reached (second paywall)
+### 21. Daily limit reached (second paywall)
 **Purpose:** Highest-intent ask in the app, mid-story at the 10th message. Same plans, contextual copy.
 **Headline A:** You've used all 10 today.
 **Headline B:** {{match}} is mid-sentence.
@@ -305,11 +314,11 @@ ChatChi is an adults-only AI character-chat app. Users browse a catalog of ficti
 - **Why no countdown:** the brand promise is "Chat without counting messages". A timer or "offer expires" banner contradicts it, the same call as Starlyn.
 - **Compliance traps specific to this category:**
   - The age gate (#4) comes before any romance-flavoured question. Hooks and ad creative stay SFW, and 18+ tags stay hidden until the user turns on Adult content in Profile (off by default in `s38`).
-  - The AI disclosure banner stays on every chat screen (#13, #14, #19, #20).
+  - The AI disclosure banner stays on every chat screen (#13, #14, #20, #21).
   - **No guilt-trip retention.** Pushes and paywalls never use the character's voice to plead ("I miss you", "don't leave me", "pay so we can keep talking"). Emotional-manipulation claims against companion apps are an active regulatory target in 2025-26, and the design already keeps upsells in the app's voice (see `s21`). The sample push in #16 is story-flavoured, not needy.
   - The fair-use cap ("300 a day") is disclosed on the paywall because "unlimited" is otherwise a false claim.
 - **No invented numbers.** `{{chats_count}}`, `{{app_rating}}` and review quotes must come from real data. Until they exist, ship #10 variant A (privacy), which needs none. Per-character chat counts (8.2K for Luna) come from the design and are fine to show.
 - **Drop-off risk:** #4 age gate (it can't be skipped, only kept short), #17 sign-in (guest skip mitigates), #18 paywall. The quiz taps are cheap. The real risk is the loader (#11). Keep it at 6-8 seconds.
-- **One subscription, two triggers, measured separately:** onboarding paywall CVR at #18, and limit-hit CVR at #20 (day 0 and day 1+). #20 is expected to convert higher, so if #18 hurts D1 retention, test removing it and relying on #20 alone. Moments (#15) aren't a revenue layer. They drive message volume, which drives the limit hit.
+- **One subscription, two triggers, measured separately:** onboarding paywall CVR at #18, and limit-hit CVR at #21 (day 0 and day 1+). #21 is expected to convert higher, so if #18 hurts D1 retention, test removing it and relying on #21 alone. Moments (#15) aren't a revenue layer. They drive message volume, which drives the limit hit.
 - **Dynamic content:** `{{match}}`, `{{match_bio}}`, `{{top_genre}}` and the opening scene (#13 bubble + reply ideas) are chosen from the catalog by #6–#9. Every catalog character needs a funnel-ready opening line, 3 reply ideas and one SFW "first moment" photo.
-- **A/B first:** (1) #18 on vs. off (limit-only paywall at #20). (2) Hook order: #1 portraits vs. #3 "no counting" as the first screen. (3) #12 single match vs. a pick-one-of-3 carousel. (4) #17 before vs. after #18.
+- **A/B first:** (1) #18 on vs. off (limit-only paywall at #21). (2) Hook order: #1 portraits vs. #3 "no counting" as the first screen. (3) #12 single match vs. a pick-one-of-3 carousel. (4) #17 before vs. after #18.

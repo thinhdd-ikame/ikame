@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: native + target language, goals, self-rated level, struggles, preferred formats, minutes per day, a 2-grid vocabulary check, optional deadline
 output: estimated vocabulary size + level, and a paced personal learning plan with a progress projection
-screens: 23
+screens: 24
 monetization: web subscription paywall (1-month / 3-month pre-selected / 12-month), intro price and renewal price shown together, 3-day disclosed trial as dismiss fallback
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — EWA (AI learn)
 
-EWA (Lithium Lab Pte Ltd, Singapore) teaches English plus 40 other languages through adapted books with audio, short clips from movies and TV series, bite-sized courses, spaced-repetition flashcards, word games and an AI tutor. This is a **web-to-app funnel** of 23 screens. The user tells us who they are as a learner, takes a 30-second word check, taps through one real subtitle line, and gets an **estimated vocabulary size + level** and a **paced plan** before a subscription paywall. After buying, they install the app and log in with the same email. The shape is modeled on **EWA's own live web funnel** (`quiz.appewa.com/sweetboarding/...`, captured Sept 2026 via AdSpyLab, 67 screens, 117 ads pointing at it). That funnel is quiz → level test → email → level result → plan timeline → paywall, and this brief keeps that spine but cuts it by two thirds. None of the registered archetypes fits cleanly, so this is filed as a proposed **learning-plan** archetype. It is close to `personalization-quiz`, but a *skill test* replaces the personal-data inputs, a *first-taste micro-lesson* replaces the reading, and there is one revenue layer, not two. **Verified:** store description, content counts (10,000+ books, 10,000+ clips, 40,000+ flashcards), 41 languages, the 4.7★ / 196K App Store rating, the "70 million users" claim on appewa.com and in the funnel, the real funnel screen order and paywall structure, the 14-day money-back guarantee, App Store and web prices (see Notes). **Assumed / verify before launch:** the AI tutor chat (a third-party summary says EWA has one, and a "SpeakLab AI" page runs ads into the same funnel, but neither the store text nor the captured funnel mention it), and the visual look (no brand file supplied). The look here overrides the repo's dark default: light, warm "edutainment" style, cream/white background, one saturated accent, movie-still and book-cover cards, rounded pill options. Learning is daytime, self-improvement use, and the dark nightlife look doesn't fit it. The social-proof numbers are EWA's own. If this brief ships under a different ikame brand, replace every number and quote tagged *(EWA)* with that app's real ones. Tokens: `{{name}}`, `{{lang}}` (target language, pre-filled from the ad URL, default English), `{{goal}}`, `{{level}}`, `{{next_level}}`, `{{words}}`, `{{minutes}}`, `{{email}}`, plus price tokens on the paywall.
+EWA (Lithium Lab Pte Ltd, Singapore) teaches English plus 40 other languages through adapted books with audio, short clips from movies and TV series, bite-sized courses, spaced-repetition flashcards, word games and an AI tutor. This is a **web-to-app funnel** of 24 screens. The user tells us who they are as a learner, takes a 30-second word check, taps through one real subtitle line, and gets an **estimated vocabulary size + level** and a **paced plan** before a subscription paywall. After buying, they install the app and log in with the same email. The shape is modeled on **EWA's own live web funnel** (`quiz.appewa.com/sweetboarding/...`, captured Sept 2026 via AdSpyLab, 67 screens, 117 ads pointing at it). That funnel is quiz → level test → email → level result → plan timeline → paywall, and this brief keeps that spine but cuts it by two thirds. None of the registered archetypes fits cleanly, so this is filed as a proposed **learning-plan** archetype. It is close to `personalization-quiz`, but a *skill test* replaces the personal-data inputs, a *first-taste micro-lesson* replaces the reading, and there is one revenue layer, not two. **Verified:** store description, content counts (10,000+ books, 10,000+ clips, 40,000+ flashcards), 41 languages, the 4.7★ / 196K App Store rating, the "70 million users" claim on appewa.com and in the funnel, the real funnel screen order and paywall structure, the 14-day money-back guarantee, App Store and web prices (see Notes). **Assumed / verify before launch:** the AI tutor chat (a third-party summary says EWA has one, and a "SpeakLab AI" page runs ads into the same funnel, but neither the store text nor the captured funnel mention it), and the visual look (no brand file supplied). The look here overrides the repo's dark default: light, warm "edutainment" style, cream/white background, one saturated accent, movie-still and book-cover cards, rounded pill options. Learning is daytime, self-improvement use, and the dark nightlife look doesn't fit it. The social-proof numbers are EWA's own. If this brief ships under a different ikame brand, replace every number and quote tagged *(EWA)* with that app's real ones. Tokens: `{{name}}`, `{{lang}}` (target language, pre-filled from the ad URL, default English), `{{goal}}`, `{{level}}`, `{{next_level}}`, `{{words}}`, `{{minutes}}`, `{{email}}`, plus price tokens on the paywall.
 
 ---
 
@@ -345,14 +345,25 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English plus 40 other languages thr
 - On every card the renewal line sits directly under the price, in the same size, not in footer grey. Savings badges compare against the regular monthly price × months, never against an invented "was" price.
 **Visual:** Top: compact summary card from #21 (level → next level, goal, minutes). Then 3 stacked plan cards, 3-month highlighted; big CTA; trust row; benefit rows; 2 real reviews; FAQ accordion with "How do I cancel?" open by default.
 **Microcopy:** Benefit rows: "🎬 10,000+ movie & series clips" / "📚 10,000+ books with audio" / "🧠 40,000+ spaced-repetition flashcards" / "🤖 AI tutor for speaking practice" (verify) / "🎮 Word games and daily streaks". Trust row: "🔒 Secure payment · Cancel anytime · 14-day money-back". Disclosure directly above the CTA, updated live for the selected plan: "You pay {{price_sel}} today. Renews at {{renew_sel}} every {{period}} until you cancel. Cancel anytime, up to 24h before renewal." Under the CTA: "We'll email you before your first renewal."
-**Fallback offer:** On dismiss: a single sheet "Try it free for 3 days" on the 3-month plan. Copy: "Free for 3 days, then {{renew_3m}} every 3 months. We'll remind you a day before." One CTA "Start free trial", plus a "No thanks" link. No timer, no second discount.
+**Fallback offer:** On dismiss, the last-chance offer (#23) once per session: a disclosed 3-day free trial on the 3-month plan, then {{renew_3m}} every 3 months. No timer, no second discount.
 **CTA:** Start learning
+
+### 23. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall without paying: a disclosed 3-day free trial on the 3-month plan, then its regular renewal. No second discount. Shown once per session, then never again.
+**Headline A:** Try {{name}}'s plan free first
+**Headline B:** Reach {{next_level}}, free for 3 days
+**Body A:** Your path to {{next_level}} in {{lang}} is ready. Start with 3 days free.
+**Body B:** Keep your saved words and your plan. Cancel anytime.
+**Plans:** One offer card: **3-month plan, 3 days free first**, "Full library, AI tutor and every lesson level". {{offer_price}} today for 3 days, with the 3-month plan's real price ({{price_3m}}, `compareAt: '3m'`) struck, then {{renew_3m}} every 3 months until cancelled. Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #22: sticky bar with the app name and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one orange-bordered offer card holding the dark level summary card ({{level}} → {{next_level}}, goal and minutes chips), the plan name, the price row (struck {{price_3m}} → {{offer_price}} "today"), 3 checks ("Movie and series clips with tap-to-translate", "Books with audio and spaced-repetition flashcards", "A reminder a day before your trial ends"), the CTA, Apple Pay / G Pay / VISA / Mastercard badges and the renewal line. Plain decline link below the card.
+**Microcopy:** Renewal line: "{{offer_price}} today for 3 days, then {{renew_3m}} every 3 months until you cancel. We'll remind you a day before. Cancel anytime, up to 24h before renewal." Shown once per session (sessionStorage `ikf_offer_ewa`): a second paywall close goes straight to leaving the funnel. No timer: `CONFIG.offer.expiresMin` is `null`. If the growth team sets a real deadline, a countdown shows and the offer is withdrawn when it ends (`offer_expired`), never reset on reload. Decline (link and ✕): "No thanks, back to my plan", which returns to #21 Plan and progress projection. Accept opens the offer checkout (plan `offer`) and then #24. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
 
 ---
 
 ## G. Payoff
 
-### 23. Get the app
+### 24. Get the app
 **Purpose:** Web buyers who never open the app refund. This screen gets them to install, log in with the same email and finish day 1.
 **Headline A:** You're in, {{name}}!
 **Headline B:** Your first scene awaits
@@ -376,10 +387,12 @@ EWA (Lithium Lab Pte Ltd, Singapore) teaches English plus 40 other languages thr
 
 **Blocks deliberately skipped:** gamified wheel (cheapens a self-improvement promise; the word check + first scene already act as the "earned" moment), before/after split (the #21 projection chart does that job with real inputs), post-purchase upsell (no discrete add-on worth selling yet; a Lifetime or Kids add-on could go after #22 later), secondary revenue (one layer only), gender/age questions (unused by the output; add an age question only if the app needs a kids route to its separate EWA Kids app).
 
-**In-app version (post-install onboarding):** same order, but #19 becomes a soft Apple/Google sign-in with "continue as guest", #17 triggers the real push-permission prompt, and #23 is replaced by dropping straight into Day 1 with the saved word.
+**In-app version (post-install onboarding):** same order, but #19 becomes a soft Apple/Google sign-in with "continue as guest", #17 triggers the real push-permission prompt, and #24 is replaced by dropping straight into Day 1 with the saved word.
 
 **Drop-off risk:** #13-14 (word check) and #19 (email before result). #15 carries the most weight: if the clip loads slowly on mobile web, it loses users. Preload it during #11-12 and fall back to a still + audio.
 
-**Monetization and metrics:** one subscription layer. Measure separately: paywall conversion (#22), fallback-trial take rate, trial → paid, **first-renewal retention at full price** (the honest-renewal test; refund and chargeback rate is the guardrail), and **activation** (#23 install + login within 24h).
+**Monetization and metrics:** one subscription layer. Measure separately: paywall conversion (#22), fallback-trial take rate, trial → paid, **first-renewal retention at full price** (the honest-renewal test; refund and chargeback rate is the guardrail), and **activation** (#24 install + login within 24h).
+
+**Last-chance offer:** measure offer CVR (#23 `offer_view` → `offer_accept`) separately from paywall CVR (#22).
 
 **First A/B tests:** (1) email gate before the level result (this brief) vs. after the result, just before the plan. (2) The #15 first scene at position 15 vs. right after #4, as an early hook. (3) Word check on vs. off, to see how completion trades against paywall conversion.

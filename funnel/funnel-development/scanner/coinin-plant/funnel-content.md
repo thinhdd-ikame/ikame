@@ -1,12 +1,13 @@
 ---
 niche: coinin-plant
-display_name: CoinIn Plant (Persona Web Funnel, Plant Care Check)
+display_name: CoinIdentify Plant (Persona Web Funnel, Plant Care Check)
 archetype: scanner-identifier
 subject: plant
 input: name, 4 quick plant answers, 2 guess-the-cause games, 2 photos of one plant (or a sample plant)
-output: free plant ID card, a likely-cause indication and days 1 and 2 of a 7-day care plan; full cause check, days 3 to 7 and a watering and light schedule behind the paywall
+output: free plant ID card, a likely-cause indication and days 1 and 2 of a 7-day care plan; full cause check, days 3 to 7 and a watering and light schedule open in the CoinIdentify app after purchase
 screens: 20
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time single-plant plan offer, then the free plant card
+monetization: hard web paywall after a mandatory email gate; 3 plans 1w $12.99→$39.99/4w, 4w $14.99→$39.99/4w (pre-selected), 12w $39.99→$59.99/12w; no offer on decline; post-purchase one-time add-on (price pending) → get_app
+offer: none
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -18,13 +19,15 @@ motion: >
   sweeps its leaves and a plant ID card with a care-plan checklist slides up
 ---
 
-# Funnel Content — CoinIn Plant (Persona Web Funnel, Plant Care Check)
+# Funnel Content — CoinIdentify Plant (Persona Web Funnel, Plant Care Check)
 
-A web2app funnel for a CoinIn-style plant identifier and care guide, led by a persona host: **Fern**, an illustrated potted-sprout guide who talks the user through the flow. **Fern is clearly labeled "Illustrative guide, not a real botanist" on the hook and meet screens, in the paywall and in the footnote.** Fern has no credentials, no years-of-experience claim and gives no expert advice. The user answers four quick questions (which plant, watering, what looks wrong, light), plays two honest "spot the cause" games, **photographs one real plant (whole plant, then a close-up of the worrying leaf, or taps "Use a sample plant" when no plant or camera is at hand)** and gets a **free plant ID card, a likely-cause indication and days 1 and 2 of a 7-day care plan** before any paywall. The paywall then sells what is still locked on that plant: the full cause check, days 3 to 7, and a watering and light schedule. Archetype: `scanner-identifier`, web variant (20 screens, same flow as `scanner/coinin-collector`, which this folder forks; the plan spine of about 16 screens kept the 2 games and bridge so the persona flow stays comparable across the CoinIn family).
+**2026-10-07:** rebranded to CoinIdentify: Coin Scanner and moved to the Starlyn-shape monetization (hard paywall, 3 plans, add-on upsell, get the app).
 
-**Brand placement unconfirmed.** The task asked to confirm whether a plant funnel belongs to the CoinIn app. The research (`coursiv-coinin.md` section 7) shows PlantIn, a plant app on the same funnel template as CoinIn, but not that it is the same app. The user said to build it under `scanner/coinin-plant` anyway; the "CoinIn" brand name on the brand bar is a placeholder and **the folder and brand may move** to a PlantIn-style listing.
+A web2app funnel for the CoinIdentify: Coin Scanner app's plant identifier and care guide, led by a persona host: **Fern**, an illustrated potted-sprout guide who talks the user through the flow. **Fern is clearly labeled "Illustrative guide, not a real botanist" on the hook and meet screens, in the paywall and in the footnote.** Fern has no credentials, no years-of-experience claim and gives no expert advice. The user answers four quick questions (which plant, watering, what looks wrong, light), plays two honest "spot the cause" games, **photographs one real plant (whole plant, then a close-up of the worrying leaf, or taps "Use a sample plant" when no plant or camera is at hand)** and gets a **free plant ID card, a likely-cause indication and days 1 and 2 of a 7-day care plan** before the mandatory email gate and a hard paywall. The paywall sells what is still locked on that plant (the full cause check, days 3 to 7, and a watering and light schedule), which opens in the CoinIdentify app after purchase. Archetype: `scanner-identifier`, web variant (20 screens, same flow as `scanner/coinin-collector`, which this folder forks; the plan spine of about 16 screens kept the 2 games and bridge so the persona flow stays comparable across the CoinIdentify family).
 
-**Reference funnel:** PlantIn pre-lander and 14-screen funnel (AdSpyLab capture, research section 7 of `coursiv-coinin.md`) plus `funnel.coininapp.com` (the coin version this folder forks). Unverified in this brief: PlantIn's exact copy and the real plant-ID and diagnosis data source. **Deliberate differences from the reference:** a free result (plant ID, likely cause, plan days 1 and 2) before the paywall, where the original gives none; a persona labeled as illustrative; games with real, hedged answers; no countdown, no struck anchor prices, no live counter; **the diagnosis is an indication, never expert advice**; **no pesticide or toxicity safety claims, only "check the product label or ask a professional"**. **Palette:** charcoal ground with a leaf-green accent in place of the coin funnel's antique gold; serif display for plant names (Latin names read well in it). **Reuse:** the niche data (host, Q1 to Q4 options, samples, likely causes with 7-day plans, games, level names) sits in one `COLLECT` block in the demo; the screen copy was rewritten for plants, not swapped by data alone.
+**Brand.** CoinIdentify: Coin Scanner (short: "CoinIdentify") on every screen, by the owner's rule that all `scanner/coinin*` funnels carry it, including this plant niche. The folder name still says `coinin`. Research context: PlantIn (`coursiv-coinin.md` section 7) runs on the same funnel template as CoinIn (competitor).
+
+**Reference funnel:** PlantIn pre-lander and 14-screen funnel (AdSpyLab capture, research section 7 of `coursiv-coinin.md`) plus `funnel.coininapp.com` (CoinIn (competitor), the coin version the sibling folder models). Unverified in this brief: PlantIn's exact copy and the real plant-ID and diagnosis data source. **Deliberate differences from the reference:** a free plant ID card, likely cause and plan days 1 and 2 on screen 15, before the email gate and paywall; a persona labeled as illustrative; games with real, hedged answers; no countdown, no struck anchor prices, no live counter; **the diagnosis is an indication, never expert advice**; **no pesticide or toxicity safety claims, only "check the product label or ask a professional"**. **Palette:** charcoal ground with a leaf-green accent in place of the coin funnel's antique gold; serif display for plant names (Latin names read well in it). **Reuse:** the niche data (host, Q1 to Q4 options, samples, likely causes with 7-day plans, games, level names) sits in one `COLLECT` block in the demo; the screen copy was rewritten for plants, not swapped by data alone.
 
 ---
 
@@ -37,7 +40,7 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 **Body A:** Fern helps you find out what it needs.
 **Body B:** Photograph one plant and get a care check.
 **Visual:** Charcoal ground. Top: a houseplant with drooping, yellowing leaves (`img/hero.jpg`), fading into the ground. Over it, Fern's illustrated avatar (a smiling potted sprout) in a speech bubble: "Let's find out what's wrong." Small chip under the avatar: "Illustrative guide, not a real botanist". Green CTA pinned bottom.
-**Microcopy:** Under CTA: "By continuing you agree to our Terms and Privacy Policy. Results are an indication, not expert advice."
+**Microcopy:** Under CTA: "By continuing you agree to our Terms of Use and Privacy Policy. Results are an indication, not expert advice." Terms and Privacy are real underlined links (https://squad-xteam.com/termofuse.html, https://squad-xteam.com/policy.html).
 **CTA:** Let's check
 
 ### 2. Meet Fern — how this works
@@ -254,15 +257,15 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 ## E. Gate
 
 ### 17. Email gate
-**Purpose:** Capture the email before the value reveal, framed as saving the plan and plant.
+**Purpose:** Mandatory email right before the paywall, framed as saving the plan and plant. The email is how the app finds the purchase.
 **Headline A:** Where should Fern send it?
 **Headline B:** Save your plant card
 **Body A:** Get your care plan and keep your scans safe.
 **Body B:** One email, no spam.
-**Field:** Email input (email keyboard), optional marketing consent checkbox (off).
+**Field:** One email input (email keyboard), validated, required. No skip, guest, Google or Apple option. Optional marketing consent checkbox (off). On submit emit `lead` with the email (FunnelFox fills the checkout email).
 **Visual:** The plant card from screen 15 shrinks into the first slot of an empty plant grid (other slots dashed), email field beneath.
 **Error state:** "Enter a valid email address."
-**Microcopy:** "By continuing you agree to our Terms and Privacy Policy." · "We never sell your email."
+**Microcopy:** "By continuing you agree to our Terms of Use and Privacy Policy. We never sell your email." (real links)
 **CTA:** Continue
 
 ---
@@ -270,78 +273,76 @@ A web2app funnel for a CoinIn-style plant identifier and care guide, led by a pe
 ## F. Monetization
 
 ### 18. Paywall
-**Purpose:** Long web sales page selling what is still locked on their plant (full cause check, days 3 to 7, watering and light schedule), then the ongoing tools. Renewal shown at the same size as the price.
+**Purpose:** Hard web paywall: a long sales page selling what is still locked on their plant (full cause check, days 3 to 7, watering and light schedule), then the ongoing tools. No close X, no free path. Renewal shown at the same size as the price.
 **Headline A:** Plan for the {{symptom}}
 **Headline B:** Save your {{plant_name}}
 **Body A:** Full cause check and a care plan, for every scan.
 **Body B:** Check unlimited plants and track them in one place.
-**Plans:** Structure only, no invented numbers.
-- 1-week intro: intro price token, then weekly renewal shown beside it. Never called free.
-- **4-week: pre-selected**, "Pre-selected", price and renewal tokens.
-- 12-week: anchor, price and renewal tokens.
-- Every plan shows its own renewal price and period next to the price.
-**Visual:** Sticky brand bar with a close X. Hero: the user's plant card (photo, name, level) with three locked rows glowing green as "unlocking". The hero headline uses the first symptom picked ("Plan for the yellow leaves", "...the drooping", "...the brown tips", "...the pests"); default "Get your full care plan". Plan block. "What's inside" list (pest check first if the user picked pests). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
+**Plans:** Three plans, `4w` pre-selected with the badge "Recommended". Each card shows its price and a small line "then {{renewal}} / {{period}}".
+- `1w` "1 week" · "Intro week": **$12.99** today, then **$39.99 every 4 weeks** (it renews every 4 weeks, not weekly).
+- `4w` "4 weeks" · Recommended: **$14.99** today, then **$39.99 every 4 weeks**.
+- `12w` "12 weeks" · "Lowest per week": **$39.99** today, then **$59.99 every 12 weeks**.
+**Visual:** Sticky brand bar ("CoinIdentify", mini CTA after scrolling, **no close X**). Hero: the user's plant card (photo, name, level) with three locked rows glowing green. The hero headline uses the first symptom picked ("Plan for the yellow leaves", "...the drooping", "...the brown tips", "...the pests"); default "Get your full care plan". Plan block. "What's inside" list (pest check first if the user picked pests). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom bar (plan name, "$14.99 today", CTA) shows from the first view whenever no plan-block CTA is on screen, so a CTA and today's price are visible at 375×667 and 430×932.
 **Microcopy:**
-- Under the selected plan: "{{price}} today, then {{renewal}} every period until you cancel."
+- Renewal line under the CTA, per selected plan: "$12.99 today for your first week, then $39.99 every 4 weeks until you cancel." · "$14.99 today for your first 4 weeks, then $39.99 every 4 weeks until you cancel." · "$39.99 today for your first 12 weeks, then $59.99 every 12 weeks until you cancel."
 - What's inside: "Full cause check" · "Care plan, days 3 to 7" · "Watering and light schedule" · "Pest and leaf check" · "Unlimited plant scans" · "Plant tracker".
+- How it works: Checkout ("Secure payment, takes a few seconds.") → Get the app ("Download CoinIdentify: Coin Scanner from the App Store or Google Play.") → Open your report ("Log in with your email. Your scan is saved there.").
 - Fern line near the hero: "Fern is an illustrated guide, not a botanist."
-- Disclaimer (footer): "Results are an indication from your photos, not expert advice. For sprays or toxicity questions, check the product label or ask a professional."
-- FAQ: What's included? · Is this a diagnosis? (answer: "No. It is an indication from your photos, not expert advice.") · What about sprays or toxic plants? (answer: "Fern gives no safety advice. Check the product label or ask a professional.") · How do I cancel? · Will I be charged again? · Is Fern a real person? (answer: "No. Fern is an illustrated guide, not a botanist.")
-- Footer: Terms · Privacy · Subscription terms.
-**Fallback offer:** Close X goes to screen 19 once per session (sessionStorage `ikf_offer_coinin-plant`), then to the free card on any later close.
+- Disclaimer (footer): "Results are an indication from your photos, not expert advice. For sprays or toxicity questions, check the product label or ask a professional." Legal entity hidden while `{{legal_entity}}` is unset.
+- FAQ: When do I get my report? ("Right after checkout, in the CoinIdentify: Coin Scanner app. Log in with {{email}}. Your scan is saved there.") · What's included? · Is this a diagnosis? ("No. It is an indication from your photos, not expert advice.") · What about sprays or toxic plants? ("Fern gives no safety advice. Check the product label or ask a professional.") · How do I cancel? (account settings or `{{support_email}}`) · Will I be charged again? ("Yes, unless you cancel. The 1-week and 4-week plans renew at $39.99 every 4 weeks. The 12-week plan renews at $59.99 every 12 weeks.") · Is Fern a real person? ("No. Fern is an illustrated guide, not a botanist.")
+- Footer: Terms of Use · Privacy Policy · Subscription terms (squad-xteam links).
+- No "continue free", "maybe later" or close link. Closing the plan checkout without paying stays on the paywall.
 **CTA:** Unlock my plan
 
-### 19. Last-chance offer — one-plant plan
-**Purpose:** A genuinely smaller option for people who closed the paywall: a one-time, non-recurring plan for just the plant they scanned. Not a duplicate of a paywall plan.
-**Headline A:** Just this plant?
-**Headline B:** Get one plant plan
-**Body A:** Pay once for this plant's full plan.
-**Body B:** No subscription, no renewal.
-**Plans:** One card: "One-plant plan", one-time price token, **paid once, never renews**, no strike price. It lists what it includes (this plant's full cause check, full 7-day care plan, watering and light schedule) and what it does **not** include (unlimited scans, plant tracker, other plants).
-**Visual:** Web page in the paywall's look: brand bar with a close X, green eyebrow "One-time offer, shown once", then one green-bordered card with the plant thumbnail, price row, three checks, a muted "Not included" list, CTA, payment badges and a one-line terms note.
-**Microcopy:**
-- Terms line: "{{offer_price}} once. No renewal. Nothing to cancel."
-- No timer (`expiresMin` is null; none until a real deadline exists).
-- Decline link: "No thanks, keep the free plant card"
-- Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`.
-**CTA:** Get my plan
+### 19. Add-on upsell — 30-day recovery plan
+**Purpose:** Right after the plan purchase, offer one add-on for the plant they just scanned at its listed price, then hand off to the app either way.
+**Headline A:** Add a 30-day recovery plan
+**Headline B:** Keep it recovering past day 7
+**Body A:** Week-by-week steps after your 7-day plan.
+**Body B:** General care steps, built from your answers.
+**Plans:** One add-on, paid once: "30-Day Recovery Plan" at `{{addon_price}}` (price pending from the owner, shown as a token). No subscription, no struck price, no countdown. The CTA runs `checkout('addon')`: a hidden one-time plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, never listed on the paywall) with its own checkout. Paying runs `completePurchase('addon')` → get_app with the "added" line. Closing it without paying goes to get_app without it (`CONFIG.declineFlow = {addon:'get_app'}`). The demo shows a stand-in sheet (Pay / Close without paying) while no checkout URL is set.
+**Visual:** Green chip on top "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Cover card with the user's plant photo in a round frame, label "CoinIdentify plan" and the name "30-Day Recovery Plan". Three green checks: "Weekly care steps for days 8 to 30" · "Check-ins to see if it is recovering" · "Saved with your plant card in the app". Price row: `{{addon_price}}` · "Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `upsell_decline`, `purchase_complete` with plan `addon`, `checkout_decline` with plan `addon`.
+**CTA:** Add to my plan
 
 ---
 
 ## G. Payoff
 
-### 20. Your plant card
-**Purpose:** Land the user on their own result. Free path: ID card, days 1 and 2, badge and locked rows with a way back to the paywall. Paid: full card with likely cause, all 7 days and the water and light schedule.
-**Headline A:** Your plant card, {{name}}
-**Headline B:** Your plant, decoded
-**Body A:** Fern saved it to your plants.
-**Body B:** Check your next plant any time.
-**Visual:** Plant card with the user's photos, badge level, fact rows. Free: 7-day plan card with days 1 and 2, three locked rows with an "Unlock" button. Paid: likely-cause card ("Based on your photos and answers. Check the soil, light and leaves yourself before changing anything big."), full 7-day plan, water and light card, plant counter "1 plant". App handoff buttons below.
-**Microcopy:** Under the cause: "An indication, not expert advice. For sprays, check the product label or ask a professional." · Fern bubble: "Nice work. Bring me the next plant."
-**CTA:** Check next plant (paid) / Unlock my plan (free path, with "Check next plant" as a link)
+### 20. Get the app
+**Purpose:** Hand a paying user straight to the CoinIdentify app, where the full report lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** You're in
+**Body A:** Your full report is waiting in the CoinIdentify app.
+**Body B:** Your full report is waiting in the CoinIdentify app.
+**Visual:** Success check in a glowing well, then three numbered steps: "Download CoinIdentify: Coin Scanner" (From the App Store or Google Play.) · "Log in with {{email}}" (Use the email you gave us.) · "Open your report" (Your plant scan is saved to your account.). "Open the app" button with official-looking black App Store and Google Play badges under it. If the add-on was bought, a green line above the steps: "30-Day Recovery Plan added. It opens in the app."
+**Microcopy:** "Results are an indication, not expert advice. Cancel anytime in your account." App links are pending (`CONFIG.appUrl` / store URLs empty), so the button and badges show the toast "App link coming soon". Reached only after purchase (or a return with `?paid=`); there is no free path to it. `complete` fires here.
+**CTA:** Open the app
 
 ---
 
 ## Notes
 
-**Reference.** PlantIn (research section 7 of `coursiv-coinin.md`: 14 screens, care-guide pre-lander, same template as CoinIn) and the coin funnel this folder forks. Exact PlantIn copy is **unverified**; only the pattern (symptom and care questions, upload, paywall with a sheet) is taken. The plan spine of about 16 screens was kept at 20 on purpose: the two games and the bridge are reused from the approved coin flow.
+**Reference.** PlantIn (research section 7 of `coursiv-coinin.md`: 14 screens, care-guide pre-lander, same template as CoinIn (competitor)) and the coin funnel this folder forks. Exact PlantIn copy is **unverified**; only the pattern (symptom and care questions, upload, paywall with a sheet) is taken. The plan spine of about 16 screens was kept at 20 on purpose: the two games and the bridge are reused from the approved coin flow.
 
-**Brand placement.** Unconfirmed whether this belongs under CoinIn. Built under `scanner/coinin-plant` on the user's instruction; the folder and the "CoinIn" brand string may move.
+**Brand (2026-10-07).** CoinIdentify: Coin Scanner on every screen ("CoinIdentify" in the brand bars). The folder keeps its `coinin-plant` name; CoinIn appears only as a competitor in the research notes.
 
 **Persona and safety rules.** The host is a drawn guide with no credentials. Labels: hook chip, meet-screen bubble, paywall bubble and FAQ ("Is Fern a real person?"), demo footnote. The diagnosis is always worded as "likely cause" and "an indication", never "diagnosis" as a promise. No pesticide dosing, no "safe for pets or kids", no "toxic or edible" claims: the only safety line is "check the product label or ask a professional". Day-plan steps are general care (check soil, drainage, light, isolate, wipe leaves) and contain no product advice.
 
-**Blocks deliberately skipped.** Social proof screen (no verified numbers for this listing; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card, post-purchase upsell (contents unverified).
+**Blocks deliberately skipped.** Social proof screen (no verified numbers for this listing; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card, last-chance offer or sale (CoinIdentify policy: no sale, no offer on decline).
 
 **Dark patterns not copied.** Countdown timer, strike-through anchor prices, "payment period" fine print, live user counter, fake expert testimonials, and an email gate that claims no storage.
 
-**Drop-off risk.** Screens 12 to 13 (upload). The sample-plant link, camera or gallery choice and "whole plant only" skip exist for this. Screen 17 (email) is required in the web variant. Users who cannot find a symptom pick Other, which shows "Not sure yet" and a general plan.
+**Drop-off risk.** Screens 12 to 13 (upload). The sample-plant link, camera or gallery choice and "whole plant only" skip exist for this. Screen 17 (email) is mandatory and the paywall is hard, so expect a sharper drop at 17 and 18 than in the old free-card version. Users who cannot find a symptom pick Other, which shows "Not sure yet" and a general plan.
 
-**Monetization.** One layer, the subscription, plus a one-time single-plant plan on decline. Measure separately: first-scan success, paywall conversion by plan, offer accept rate and refund rate.
+**Monetization (2026-10-07, Starlyn shape).** Hard paywall after the mandatory email gate; three plans (1w $12.99 then $39.99 every 4 weeks, 4w $14.99 then $39.99 every 4 weeks, pre-selected, 12w $39.99 then $59.99 every 12 weeks); no sale or offer on decline; after purchase a one-time add-on ("30-Day Recovery Plan"), then get_app. The old last-chance one-plant offer and the free result screen were removed (screens 19 and 20 now hold the add-on and get_app). Measure separately: first-scan success, email submit rate, subscription conversion by plan (`purchase_complete` by plan / `paywall_view`), add-on attach rate (`purchase_complete` with plan `addon` / `upsell_view`), app hand-off rate and refund rate.
+
+**Pending from the owner.** Add-on name and price (`{{addon_price}}`, "30-Day Recovery Plan" is a working name), Paddle price IDs for `1w`, `4w`, `12w` and `addon`, support email (`{{support_email}}`), app links (App Store, Google Play, web2app), legal entity, refund terms, real ratings.
 
 **First A/B test.** Persona host (this brief) vs. no host (same flow, plain copy). **Second:** badge screen before vs. after the email gate.
 
-**Verify before build.** Real plan periods and prices; refund terms; rating and reviews; the real plant-ID and cause-check API and a reviewed cause-to-plan table (the demo's four causes and 7-day plans are general placeholders, unverified by a horticulturist); licensed photos (the demo's four images are drawn placeholders, `gen_images.py` can replace them with the same names); whether the brand is CoinIn or a PlantIn-style listing.
+**Verify before build.** Refund terms; rating and reviews; the real plant-ID and cause-check API and a reviewed cause-to-plan table (the demo's four causes and 7-day plans are general placeholders, unverified by a horticulturist); that the app grants the add-on from its one-time transaction.
 
-**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample (by Q1 pick) with the cause chosen by the first symptom, and a visible "Demo only" note plus "Sample data" chips (cards, paywall hero, offer) say so. Images are placeholders drawn with PIL/SVG (no `IKAME_AI_KEY` was set); `gen_images.py` is ready to replace them.
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample (by Q1 pick) with the cause chosen by the first symptom, and a visible "Demo only" note plus "Sample data" chips (cards, paywall hero) say so. Checkout is a stand-in sheet (Pay / Close without paying) while no checkout URL is set. Images in `img/` are real generated art (gemini-3.1-flash-image via `gen_images.py`, 2026-10-07).
 
 **Demo (Artifact, private):** https://claude.ai/artifact/XF56cAX6rchhcghwa3PQ5w

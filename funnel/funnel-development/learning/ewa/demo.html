@@ -419,6 +419,28 @@ img.cov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;displa
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
 }
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:6px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.oclose{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--card);border:1.5px solid var(--bd);color:var(--t2)}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;font-size:13px;background:var(--s2);color:var(--t2)}
+.otimer b{font-variant-numeric:tabular-nums;color:var(--ac)}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:24px;background:var(--card);border:2px solid var(--ac);box-shadow:0 0 0 5px var(--ac-s),0 24px 44px -26px #E04A1F55}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.06em;white-space:nowrap;background:var(--ac);color:var(--on-ac)}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font-size:18px;line-height:1.2}.oname span{font-size:13px;opacity:.8}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:16px;background:var(--s2);border:1px solid var(--bd)}
+.oprice s,.oprice s .tok{font-size:14px;opacity:.75;text-decoration:line-through;text-decoration-thickness:1.5px}
+.oprice b{font-size:26px;line-height:1;color:var(--ac)}.oprice>span{font-size:13px;opacity:.8}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.35}
+.ochecks i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;margin-top:1px;background:var(--good);color:#fff}
+.opays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.opays span{font-size:10.5px;font-weight:700;padding:5px 7px;border-radius:6px;background:var(--card);border:1px solid var(--bd);color:var(--t2)}
+.ofine{font-size:12px;line-height:1.45;text-align:center;margin:0;opacity:.85}
+.ocard .oname b{font-family:var(--display);font-weight:800}.ocard .oprice b{font-family:var(--display);font-weight:800}
+.obadge .tok{background:transparent;color:#fff;border-color:#ffffffaa}
 </style>
 
 <div class="wrap">
@@ -426,7 +448,7 @@ img.cov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;displa
   <aside class="panel">
     <div>
       <h1>EWA-style web funnel</h1>
-      <p class="intro">An ikame prototype modeled on EWA's web funnel: the 23-screen web-to-app flow in <code>funnel-content.md</code>, in the light, warm look the brief asks for (no brand file exists). Tap through in the phone, or jump to any screen below. Deep link: <code>#s15</code>.</p>
+      <p class="intro">An ikame prototype modeled on EWA's web funnel: the 24-screen web-to-app flow in <code>funnel-content.md</code>, in the light, warm look the brief asks for (no brand file exists). Tap through in the phone, or jump to any screen below. Deep link: <code>#s15</code>.</p>
     </div>
     <div class="ctrls">
       <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
@@ -553,11 +575,18 @@ const savedWord=()=>S.saved[0]||(()=>{const L=line(),p=L.words[L.pick];return{w:
 
 /* ---------- state ---------- */
 const locale=(navigator.language||'es').slice(0,2).toLowerCase();
+/* Last-chance offer: shown once per session when the paywall is closed without paying.
+   Real terms only: price / renews stay placeholders until the growth team sets them, and checkout must charge exactly these.
+   compareAt = the plan it undercuts (its real current price is struck); null = nothing struck.
+   expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session. */
+/* EWA brief #23: the dismiss offer is a disclosed 3-day free trial on the 3-month plan, then its regular renewal. No timer, no second discount. */
+const CONFIG={funnel:'ewa',offer:{enabled:true,name:'3-month plan, 3 days free first',price:'{{offer_price}}',renews:'{{renew_3m}}',period:'3 months',compareAt:'3m',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+
 const INIT=()=>({v:'A',i:1,hist:[],native:NATIVE.some(n=>n[0]===locale)?locale:'es',nSearch:false,nQ:'',target:'en',tSearch:false,tQ:'',
   goals:[],goalOther:'',name:'',self:'',struggles:[],strOther:'',formats:[],fmtOther:'',minutes:10,
   easy:[],hard:[],easyDone:false,hardDone:false,beginnerSkip:false,saved:[],tapped:null,
   deadline:'',deadlineOther:'',deadlineSkip:false,month:null,practice:'evening',exactTime:'19:30',practiceSkip:false,
-  streak:null,email:'',mkt:false,acct:null,plan:'3m',sheet:null,fallbackShown:false,bought:null,faq:{cancel:true,refund:false},err:'',errTaken:false,flipped:false});
+  streak:null,email:'',mkt:false,acct:null,plan:'3m',sheet:null,offerSeen:false,offerEnd:0,offerViewed:false,offer:false,bought:null,faq:{cancel:true,refund:false},err:'',errTaken:false,flipped:false});
 let S=INIT();
 {const m=(location.hash+location.search).match(/lang[-=]?([a-z]{2})/);if(m&&[...TARGET,...TARGET_MORE].some(x=>x[0]===m[1]))S.target=m[1]}
 const t=(a,b)=>S.v==='B'?b:a;
@@ -582,8 +611,8 @@ const FLOW=[
  ['D · Anticipation',[[18,'Building the plan','auto']]],
  ['E · Gate',[[19,'Email']]],
  ['D · Anticipation: reveal',[[20,'Level result'],[21,'Plan + projection']]],
- ['F · Monetization',[[22,'Paywall','+ fallback']]],
- ['G · Payoff',[[23,'Get the app']]]
+ ['F · Monetization',[[22,'Paywall'],[23,'Last-chance offer','once']]],
+ ['G · Payoff',[[24,'Get the app']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -625,7 +654,7 @@ function fillTo(n){
 /* ---------- shared bits ---------- */
 const INV=[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
 function nav(){
-  if([1,18,22,23].includes(S.i))return '';
+  if([1,18,22,23,24].includes(S.i))return '';
   let mid='<div style="flex:1"></div>';
   if(S.i===13||S.i===14)mid=`<div class="seg2" aria-label="Level check ${S.i-12} of 2"><span class="on"></span><span class="${S.i===14?'on':''}"></span><em>Level check ${S.i-12} of 2</em></div>`;
   else if(INV.includes(S.i)){const p=Math.round((INV.indexOf(S.i)+1)/INV.length*100);mid=`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></div>`}
@@ -651,6 +680,30 @@ const COVER=['img/book-1.jpg','img/book-2.jpg','img/book-3.jpg'];
 const coverImg=(i,eager)=>`<img class="cov" src="${COVER[i%3]}" alt="" ${eager?'':'loading="lazy" '}decoding="async">`;
 
 /* ---------- screens ---------- */
+/* prototype event log: the names a production build emits (window.dataLayer + ikfunnel:* DOM events) */
+function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* '{{token}}' config values render as the funnel's placeholder token, real values as text */
+const tv=s=>{const m=/^\{\{(.+)\}\}$/.exec(String(s));return m?tok(m[1]):esc(s)};
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const PW_N=22,OFFER_N=23;
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view',{price:CONFIG.offer.price})}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
+
 const V={
 1:()=>{const hl=HOOKLINE[S.target]||HOOKLINE.en;
   return `<div class="scr" style="padding-top:8px">
@@ -823,12 +876,24 @@ const V={
   <div class="benefits"><div>🎬 ${tok('clip_count')} movie & series clips</div><div>📚 ${tok('book_count')} books with audio</div><div>🧠 ${tok('flashcard_count')} spaced-repetition flashcards</div><div>🤖 AI tutor for speaking practice<span class="verify">verify</span></div><div>🎮 Word games and daily streaks</div></div>
   <div class="stack">${phReview()}${phReview()}</div>
   <div class="stack">${[['cancel','How do I cancel?','Cancel anytime, up to 24h before renewal. We\'ll email you before your first renewal.'],['refund','Is there a money-back guarantee?','Yes: a 14-day money-back guarantee.']].map(([k,q,a])=>`<div class="faq ${S.faq[k]?'open':''}"><button data-a="faq" data-v="${k}" aria-expanded="${!!S.faq[k]}">${q}${ic('chev',18)}</button>${S.faq[k]?`<p>${a}</p>`:''}</div>`).join('')}</div>
-  <div class="legal"><span>Terms</span><span>Privacy Policy</span><span>Restore</span></div><div style="height:6px"></div></div>
-  ${S.sheet==='fallback'?`<div class="dim"></div><div class="sheet" role="dialog" aria-label="Free trial"><span class="grab"></span>
-  <h2 class="display" style="font-size:28px">Try it free for 3 days</h2>
-  <p class="lead" style="color:var(--t1)">Free for 3 days, then ${tok('renew_3m')} every 3 months. We'll remind you a day before.</p>
-  <button class="btn" data-a="trial">Start free trial</button><button class="link" data-a="nothanks">No thanks</button></div>`:''}`},
-23:()=>{const sw=savedWord();
+  <div class="legal"><span>Terms</span><span>Privacy Policy</span><span>Restore</span></div><div style="height:6px"></div></div>`},
+23:()=>{const o=CONFIG.offer,was=o.compareAt?tok('price_'+o.compareAt):'';
+  return `<div class="scr owrap">
+  <div class="obar"><span class="eyebrow" style="font-size:13px;letter-spacing:.04em;text-transform:none;color:var(--t1)">${tok('app_name')}</span><button class="oclose" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display" style="font-size:28px">${t(`Try ${nm()}'s plan free first`,`Reach ${esc(nextLevel())}, free for 3 days`)}</h1>
+   <p class="lead">${t(`Your path to ${esc(nextLevel())} in ${L()} is ready. Start with 3 days free.`,'Keep your saved words and your plan. Cancel anytime.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tv(o.badge)}</span>`:''}
+   <div class="sumc">${sumCard(true)}</div>
+   <div class="oname"><b>${esc(o.name)}</b><span>Full library, AI tutor and every lesson level</span></div>
+   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tv(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${['Movie and series clips with tap-to-translate','Books with audio and spaced-repetition flashcards',"A reminder a day before your trial ends"].map(x=>`<div><i>${ic('check',12,'currentColor',3.2)}</i><span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="opays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
+   <p class="ofine">${tv(o.price)} today for 3 days, then ${tv(o.renews)} every ${esc(o.period)} until you cancel. We'll remind you a day before. Cancel anytime, up to 24h before renewal.</p></div>
+  <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
+24:()=>{const sw=savedWord();
   return `<div class="scr" style="gap:14px"><h1 class="display">${t(`You're in, ${nm()}!`,'Your first scene awaits')}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Get the app and log in with ${esc(S.email||'your email')}.`,'Your plan and saved words are already there.')}</p>
   <div class="mock"><div class="in"><div class="hd"><span>${tok('app_name')}</span><span style="color:var(--t3)">Day 1 of your plan</span></div>
@@ -954,6 +1019,7 @@ function render(dir){
   const v=cur();
   v.querySelectorAll('.hero').forEach(mountHero);
   if(n===18)runLoading();
+  if(n===OFFER_N)runOffer();
   if(n===15)placeBubble();
   const f=v.querySelector(n===6?'#nm':n===19?'#em':null);
   if(f&&dir&&!S.email){setTimeout(()=>{if(cur()===v)f.focus({preventScroll:true})},320)}
@@ -997,7 +1063,8 @@ function renderPanel(){
     ['Practice',S.i>17||S.practiceSkip?(S.practiceSkip?'Decide later':`${PRACT[S.practice][1]} · ${remTime()}`):'—'],
     ['Streak challenge',S.streak===null?'—':S.streak?'Yes':'No thanks'],
     ['Email',S.email||'—'],['Marketing opt-in',S.mkt?'Yes':'No'],
-    ['Plan',S.bought||(S.i>=22?`${S.plan} selected`:'—')]
+    ['Plan',S.bought||(S.i>=22?`${S.plan} selected`:'—')],
+    ['Offer',S.offer?'Accepted':S.offerSeen?'Declined':S.offerViewed?'Shown':'—']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
 }
@@ -1041,10 +1108,10 @@ phone.addEventListener('click',e=>{
     case 'login':toast('Login flow would open (demo)');break;
     case 'plan':S.plan=v;render();break;
     case 'faq':S.faq[v]=!S.faq[v];render();break;
-    case 'buy':S.bought={'1m':'1 month','3m':'3 months','12m':'12 months'}[S.plan]+' (demo)';toast('Demo only — no charge made');go(23);break;
-    case 'close':if(!S.fallbackShown){S.fallbackShown=true;S.sheet='fallback';render()}else toast('User leaves the funnel here (demo)');break;
-    case 'trial':S.sheet=null;S.plan='3m';S.bought='3-day free trial → 3 months (demo)';toast('Demo only — no charge made');go(23);break;
-    case 'nothanks':S.sheet=null;render();break;
+    case 'buy':S.bought={'1m':'1 month','3m':'3 months','12m':'12 months'}[S.plan]+' (demo)';toast('Demo only — no charge made');go(24);break;
+    case 'close':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else toast('User leaves the funnel here (demo)')}break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;offerCheckout();S.plan=CONFIG.offer.compareAt||S.plan;S.bought='Last-chance offer: 3 days free → 3 months (demo)';toast('Demo only — no charge made');go(24);break;
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
     case 'store':toast(isAndroid?'Google Play would open (demo)':'App Store would open (demo)');break;
     case 'flip':{const f=b.querySelector('.hflip');if(!f)break;S.flipped=!S.flipped;f.classList.remove('on','off');void f.offsetWidth;f.classList.add(S.flipped?'on':'off');break}
   }
@@ -1068,7 +1135,7 @@ document.getElementById('flow').addEventListener('click',e=>{const b=e.target.cl
 const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');if(S.i!==18)render()};
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');
-document.getElementById('restart').onclick=()=>{clearT();const v=S.v,tg=S.target;S=INIT();S.v=v;S.target=tg;render('b')};
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v,tg=S.target;S=INIT();S.v=v;S.target=tg;render('b')};
 
 /* fit the 390x812 phone into narrow viewports (16px gutter, no horizontal scroll) */
 function fit(){

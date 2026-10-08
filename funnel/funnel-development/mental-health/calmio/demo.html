@@ -243,6 +243,20 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .toggle.on .sw::after{transform:translateX(18px)}
 .renew{font-size:15px;color:var(--c-ink);text-align:center;margin:0;text-wrap:balance}
 .renew2{font-size:13.5px;color:var(--c-ink2);text-align:center;margin:0}
+/* one-time offer (#22) */
+.obrand{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;font:800 15px/1 var(--sans);color:var(--c-sage)}
+.ocard{position:relative;padding:18px 16px 16px;border-radius:26px;border:1.5px solid var(--c-sage-2);background:radial-gradient(ellipse at 50% 0%,#E2EBE3,#FFFFFF 70%);box-shadow:0 0 0 5px #E2EBE366,0 24px 44px -28px #2D383255;display:flex;flex-direction:column;gap:12px}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--c-sage);color:#fff;font:800 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:58px;height:72px;border-radius:14px;overflow:hidden;flex:none;background:var(--c-sage-soft)}
+.orow .th img{width:100%;height:100%;object-fit:cover;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:16px;background:#FBFDFB;border:1px solid var(--c-line)}
+.oprice s{color:var(--c-ink3);font-size:14px}.oprice b{font:800 26px var(--sans);color:var(--c-sage)}.oprice span{color:var(--c-ink2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:7px}
+.ochecks div{display:flex;gap:9px;align-items:flex-start;font-size:14.5px;font-weight:600}
+.ochecks svg{flex:none;margin-top:2px;color:var(--c-sage)}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--c-card);border:1px solid var(--c-line);font-size:13px;color:var(--c-ink2)}
+.otimer b{color:var(--c-sage);font-variant-numeric:tabular-nums}
 
 /* garden */
 .garden{display:flex;justify-content:space-around;align-items:flex-end;padding:12px 10px 8px;border-radius:22px;background:linear-gradient(180deg,#FFFFFF,#F4F1EA);border:1px solid var(--c-line);position:relative}
@@ -339,7 +353,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
   <aside class="panel">
     <div>
       <h1>Calmio-style onboarding</h1>
-      <p class="intro">An ikame prototype modeled on Calmio: a clickable version of the 22-screen funnel in <code>funnel-content.md</code>, in the brief's soft light theme (off-white, sage, lavender). Tap through it in the phone, or jump to any screen below. Deep link: <code>demo.html#s17</code>.</p>
+      <p class="intro">An ikame prototype modeled on Calmio: a clickable version of the 23-screen funnel in <code>funnel-content.md</code>, in the brief's soft light theme (off-white, sage, lavender). Tap through it in the phone, or jump to any screen below. Deep link: <code>demo.html#s17</code>.</p>
     </div>
     <div class="ctrls">
       <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
@@ -349,7 +363,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
       </select>
     </div>
     <label class="pchk"><input type="checkbox" id="trialarm"> Show #21 optional trial arm (off by default, needs store config)</label>
-    <p class="tip">Safety checks: "Need help now?" is on every screen. Tap "Really low" on #9. Type a crisis phrase (e.g. "end it all") in any "Other" field or in the #18 chat.</p>
+    <p class="tip">Safety checks: "Need help now?" is on every screen. Tap "Really low" on #9. Type a crisis phrase (e.g. "end it all") in any "Other" field or in the #18 chat. After any of these, closing the paywall skips the #22 offer.</p>
+    <p class="tip">One-time offer: closing #21 (× or "Not now") shows #22 once per browser session (sessionStorage <code>ikf_offer_calmio</code>); the second close goes straight to #23. Add <code>?debug=1</code> to log events to the console.</p>
     <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div>
     <div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div>
     <p class="foot-note"><b>Faked in this demo:</b> the programme and all lesson titles (the brief only gives Grief and Alcohol week titles; the rest are placeholders), the companion's replies (a scripted 2-exchange chat seeded from topic and tone), reply ideas outside Grief, the loading steps, sign-in, reminders and purchases (toasts only, no charge made). Crisis detection is a simple keyword list, not a classifier. Helpline numbers are shown as text; in the app they open the dialer or browser. <b>Not faked:</b> prices are the brief's US App Store list (2026-09-28). Inside the phone the app name is the placeholder {{app_name}} (SKUs: {{app_name}} Grief etc.), and rating, rating count and review cards stay placeholders. The brief's figures (Calmio: App Store 4.7 from 1.1K, Trustpilot 4.6 from 451, as of 2026-09-28) are the reference app's, not this app's. "Other" on #5 falls back to the Calm mind path, which the brief doesn't define. Demo email errors: <code>taken@example.com</code>, <code>fail@example.com</code>. Photos (<code>img/</code>) are AI-generated mood stand-ins with no people or faces; they are never used as reviews or social proof.</p>
@@ -457,6 +472,42 @@ const INIT=()=>({v:'A',i:1,hist:[],year:null,minor:false,path:'',pathOther:'',pO
   chat:[],chatStep:0,chatPaused:false,crisisChat:false,notif:null,account:null,emailMode:false,email:'',pw:'',plan:'q3',trial:false,premium:null,err:'',safety:[],jumpPath:'grief'});
 let S=INIT();
 let trialArm=false;
+
+/* ---------- config ---------- */
+const CONFIG={funnel:'calmio',
+  /* Store list prices (US App Store, 2026-09-28). Used here only for the offer's struck "usual" price. */
+  plans:{q3:{name:'3 Months',price:'$132.99'},m1:{name:'1 Month',price:'$70.99'}},
+  checkoutUrl:'',   /* '' = demo toast only */
+  /* Gentle one-time offer shown ONCE when the paywall (#21) is closed without paying (fallback / "upsell on decline").
+     User direction 2026-09-30 overrides the brief's old "no discount-on-close" rule. Kept gentle for a mental-health audience:
+     a trial / lighter tier at a price the store actually lists, no countdown, no pressure wording.
+     Real terms only: price and renewal must be what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
+     expiresMin stays null on purpose: no timer in this category (a countdown contradicts "Breathe"). A number would be a real deadline that withdraws the offer.
+     Never shown after a safety event (crisis sheet, crisis chat, "Really low" mood support sheet, help link). */
+  offer:{enabled:true,name:'7-day trial',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'q3',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+const DEBUG=/[?&]debug=1\b/.test(location.search);
+const EVENTS=window.ikEvents=[];
+function emit(name,data={}){EVENTS.push({event:name,...data,t:Date.now()});if(DEBUG)console.info('[calmio]',name,data);if(typeof renderPanel==='function'&&document.getElementById('data'))renderPanel()}
+const tok=x=>esc(x).replace(/{{(?!app_name)(\w+)}}/g,'<span class="token">{{$1}}</span>');
+
+/* ---------- one-time offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const safetyHit=()=>S.crisisChat||S.chatPaused||S.mood==='rlow'||S.safety.length>0;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen||safetyHit())return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==22)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;S.premium=false;emit('offer_expired');go(23);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+function offerCheckout(){const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+  if(!u)return false;
+  try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);
+    new URLSearchParams(location.search).forEach((v,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,v)});
+    try{window.top.location.href=x.toString()}catch(e){location.href=x.toString()}return true}catch(e){return false}}
 const t=(a,b)=>S.v==='B'?b:a;
 const nm=()=>esc(S.name||'Maya');
 const pk=()=>S.path==='other'||!S.path?(S.path==='other'?'stress':'grief'):S.path;
@@ -471,8 +522,8 @@ const FLOW=[
  ['C · Trust',[[15,'Real people, real ratings']]],
  ['D · Anticipation',[[16,'Shaping the programme','loading'],[17,'Your programme'],[18,'First conversation','AI chat'],[19,'Daily reminder','sheet']]],
  ['E · Gate',[[20,'Save your programme']]],
- ['F · Monetization',[[21,'Paywall','dismissible']]],
- ['G · Payoff',[[22,'Your first flower']]]
+ ['F · Monetization',[[21,'Paywall','dismissible'],[22,'One-time offer','once, on close']]],
+ ['G · Payoff',[[23,'Your first flower']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -544,7 +595,8 @@ function fillTo(n){
 /* ---------- helpers ---------- */
 function nav(){
   const inv=[4,5,6,7,8,9,10,11,12,13,14];const n=S.i;const idx=inv.indexOf(n);
-  const showBack=n>1&&![16,19,21,22].includes(n)&&!(n===4&&S.minor);
+  const showBack=n>1&&![16,19,21,22,23].includes(n)&&!(n===4&&S.minor);
+  if(n===22)return `<div class="nav"><button class="iconbtn" data-a="offerno" aria-label="No thanks" style="background:#fff;border:1px solid var(--c-line)">${ic('x',18)}</button><div class="obrand">${ic('flower',17)} {{app_name}}</div><span class="helpspace"></span></div>`;
   let left=showBack?`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`:'<span class="navspacer"></span>';
   if(n===21)left=`<button class="iconbtn" data-a="close" aria-label="Close" style="background:#fff;border:1px solid var(--c-line)">${ic('x',18)}</button>`;
   const p=Math.round((idx+1)/inv.length*100);
@@ -743,7 +795,22 @@ const V={
    <p class="renew2">We’ll notify and email you 3 days before each renewal.</p>
    <p class="renew2" style="color:var(--c-sage);font-weight:700">Crisis resources are always free.</p>
    <button class="link" data-a="notnow" style="padding:2px">Not now</button></div>`},
-22:()=>{const free=S.premium===false||S.premium===null;
+22:()=>{const p=P(),o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price:'',im=TIMG[pk()];
+  return `<div class="scr" style="gap:14px;padding-top:4px">
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display" style="font-size:27px">${t(`Start gently, ${nm()}`,`Try your ${esc(p.label)} programme first`)}</h1>
+   <p class="lead">${t(`Your ${esc(p.label)} programme is saved. If three months feels like a big step, you can try it first for less.`,'No rush. Here is a smaller first step, if it helps.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard" style="margin-top:${o.badge?10:0}px">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow"><div class="th"><img src="img/${im[0]}.jpg" alt="${esc(im[1])}" onerror="this.remove()"></div><div style="flex:1;min-width:0"><b style="font:800 18px var(--sans)">${esc(o.name)}</b><div class="hint">${esc(p.label)} programme · Week 1: ${esc(week1()[0])}</div></div></div>
+   <div class="oprice">${was?`<s>${esc(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${[`Your 4-week ${esc(p.label)} programme, from lesson one`,'Daily conversations with {{app_name}}','A reminder 3 days before it renews'].map(x=>`<div>${ic('check',16,'currentColor',2.6)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <p class="renew" style="font-size:14px">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in App Store settings.</p>
+   <p class="renew2">We’ll notify and email you 3 days before it renews.</p></div>
+  <p class="renew2" style="color:var(--c-sage);font-weight:700">Crisis resources are always free.</p>
+  <button class="link" data-a="offerno" style="margin-bottom:8px">No thanks, keep lesson one and daily check-ins free</button></div>`},
+23:()=>{const free=S.premium===false||S.premium===null;
   return `${bgph('payoff-sea','A calm sea at sunrise','linear-gradient(180deg,#F7F4EE00 0%,#F7F4EE00 38%,#F7F4EEa6 62%,#F7F4EE 94%)',false,'top')}<div class="scr" style="align-items:center;text-align:center;gap:12px;padding-top:0">${flower('reveal',168)}
   <h1 class="display">${t('Your first flower bloomed',`Welcome in, ${nm()}.`)}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Week one opens at ${qt()}. Or start now.`,'Come back anytime. {{app_name}} is here.')}</p>
@@ -816,6 +883,7 @@ function render(dir){
   const v=cur();
   v.querySelectorAll('.fl').forEach(mountFlower);
   if(n===16)runLoading();
+  if(n===22)runOffer();
   if(n===4&&!S.minor)setupWheel();
   if(n===18)scrollThread();
   const f=v.querySelector('#nm,#oth');
@@ -923,8 +991,9 @@ function renderPanel(){
     ['Chat',S.crisisChat?'Paused: crisis path (no gate or paywall)':S.chatStep>=2?'2 exchanges done':S.chat.length?`${S.chatStep} of 2 exchanges`:'—'],
     ['Reminder',S.notif===null?'—':S.notif?`On, ${qt()}`:'Not now'],
     ['Account',S.account||'—'],
-    ['Plan',S.premium===true?(S.plan==='q3'?'3 Months'+(S.trial?' + trial':''):'1 Month')+' (demo)':S.premium===false?'Free mode':'—'],
-    ['Safety events',S.safety.length?S.safety.join(' · '):'—']
+    ['Plan',S.premium===true&&S.plan==='offer'?CONFIG.offer.name+' (one-time offer, demo)':S.premium===true?(S.plan==='q3'?'3 Months'+(S.trial?' + trial':''):'1 Month')+' (demo)':S.premium===false?'Free mode':'—'],
+    ['Safety events',S.safety.length?S.safety.join(' · '):'—'],
+    ['Offer #22',(()=>{let seen=false;try{seen=!!sessionStorage.getItem(OKEY)}catch(e){}return (S.offerSeen||seen?'Shown this session':safetyHit()?'Suppressed (safety event)':'Not shown yet')+(EVENTS.length?' · events: '+EVENTS.map(e=>e.event).join(', '):'')})()]
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
 }
@@ -971,8 +1040,10 @@ phone.addEventListener('click',e=>{
       render();break}
     case 'plan':S.plan=v;if(v!=='q3')S.trial=false;render();break;
     case 'trial':S.trial=!S.trial;render();break;
-    case 'buy':S.premium=true;toast('Demo only — no charge made');go(22);break;
-    case 'close':case 'notnow':S.premium=false;go(22);break;
+    case 'buy':S.premium=true;emit('checkout_click',{plan:S.plan,url:CONFIG.checkoutUrl});toast('Demo only — no charge made');go(23);break;
+    case 'close':case 'notnow':S.premium=false;emit('paywall_close',{via:a});go(offerOpen()?22:23);break;
+    case 'offerbuy':S.offerSeen=true;clearInterval(window.__oiv);if(!offerCheckout()){S.premium=true;S.plan='offer';toast('Demo only — no charge made');go(23)}break;
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);S.premium=false;emit('offer_decline');go(23);break;
     case 'restore':toast('Demo only — nothing to restore');break;
     case 'lesson':toast('Lesson one would start here (demo)');break;
     case 'unlock':go(21);break;

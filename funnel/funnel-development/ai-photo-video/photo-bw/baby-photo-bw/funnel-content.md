@@ -5,8 +5,8 @@ archetype: ai-transformation
 subject: baby
 input: a photo of their baby
 output: a timeless black and white portrait
-screens: 12
-monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+screens: 13
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it; one-time last-chance offer on paywall close
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -18,7 +18,7 @@ motion: >
 
 # Funnel Content — Baby Photo B&W
 
-AI photo generator funnel: parent uploads a photo of their baby, AI turns it into a timeless black & white portrait. 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall). Copy kept short to fit mobile screens.
+AI photo generator funnel: parent uploads a photo of their baby, AI turns it into a timeless black & white portrait. 13-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall → last-chance offer on close). Copy kept short to fit mobile screens.
 
 ---
 
@@ -126,5 +126,21 @@ AI photo generator funnel: parent uploads a photo of their baby, AI turns it int
 **Body:** Pick a plan.
 **Plans:** Weekly / Annual (highlight savings on annual)
 **Visual:** Two plan cards side by side (Weekly vs Annual), Apple Pay button prominent below.
+**Fallback offer:** #13 last-chance offer, shown once. Declining it leaves the blurred preview with an "Unlock anytime" button.
 **CTA:** Continue with Apple Pay / Continue
 
+## 13. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall without paying. Shown once per session, then never again.
+**Headline A:** Wait — keep {{baby_name}}'s portrait for less
+**Headline B:** One-time price for {{baby_name}}'s portrait
+**Body A:** {{baby_name}}'s black & white portrait is ready. Unlock it for less.
+**Plans:** One offer card: {{offer_name}} (first week). {{offer_price}} today, with the regular {{week_price}} struck (the real current price of the Weekly plan it undercuts), then {{week_price}}/week. Optional {{offer_badge}}. Terms and prices are placeholders until the app supplies them.
+**Visual:** Web page in the paywall's style (dark background, purple accent): sticky top bar with a close X, centered eyebrow "One-time offer · shown once", the headline, then a single offer card holding {{baby_name}}'s generated black & white portrait (soft blur, small lock badge), the price row (struck {{week_price}} → {{offer_price}} "today"), 3 checks ("Full-resolution portrait, no watermark" · "Download and share anywhere" · "Every style, cancel anytime"), the CTA, payment badges (Apple Pay · Google Pay · cards) and the renewal line. Below the card, a plain decline link.
+**Microcopy:** Shown once per session (sessionStorage flag); a second paywall close skips it. Timer only if `CONFIG.offer.expiresMin` is set: it is a real deadline, the offer is withdrawn when it ends and it never resets on reload. If the lucky wheel awarded a plan discount, don't stack it: this card shows one real price. Renewal line: "{{offer_price}} today, then {{week_price}}/week. Cancel anytime." Decline link: "No thanks, keep the blurred preview".
+**CTA:** Claim my offer
+
+---
+
+## Notes
+
+- **Last-chance offer:** measure offer CVR (`offer_accept` / `offer_view`) separately from paywall CVR; also log `offer_decline` and `offer_expired`.

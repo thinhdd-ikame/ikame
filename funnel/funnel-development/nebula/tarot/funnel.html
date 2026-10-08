@@ -542,7 +542,7 @@ const CONFIG={
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
   offer:{enabled:false},   /* Starlyn policy: no sale, no last-chance offer */
   termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',supportEmail:'support@starlyn.co',
-  appUrl:'',appStoreUrl:'',playStoreUrl:'',
+  appUrl:'https://zodiac-app.squad-xteam.com/',appUrlAndroid:'https://zodiac.go.link?adj_t=24mjo8dt_241n7emr',appStoreUrl:'',playStoreUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},
   reviews:[{name:'{{reviewer}}',meta:'{{country}} · verified',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}} · verified',text:'{{real review text}}'}],
   company:'{{legal_entity}}'
@@ -701,7 +701,15 @@ function checkout(plan){plan=plan||S.plan;
   if(!url){demoCheckout(plan);return}let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
 }
-function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
+/* "Open the app": Android -> Adjust web2app link (opens or installs the app), iOS + desktop -> web app.
+   Email, FunnelFox profile id (user_id), UTM and fbclid are appended on tap. */
+function appHandoffUrl(){const ua=navigator.userAgent||'',base=(/Android/i.test(ua)&&CONFIG.appUrlAndroid)||CONFIG.appUrl;if(!base)return '';
+  const q={};try{for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(sessionStorage.getItem(k));Object.assign(q,(v&&v.state)||{})}}}catch(e){}
+  new URLSearchParams(location.search).forEach((v,k)=>{q[k]=v});
+  const ck=document.cookie.match(/(?:^|;\s*)ff-user=([^;]*)/),em=(typeof S!=='undefined'&&S&&S.email)||'';
+  const p={email:String(em).trim(),user_id:q.fpid||(ck?decodeURIComponent(ck[1]):''),af_adset:q.utm_medium||'',c:q.utm_campaign||'',af_ad:q.utm_content||'',clickid:q.fbclid||'',af_channel:q.utm_source||''};
+  return base+(base.indexOf('?')<0?'?':'&')+new URLSearchParams(p).toString()}
+function appLink(){const ua=navigator.userAgent||'';return appHandoffUrl()||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const tlinks=()=>`<a class="il" ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a> and <a class="il" ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>`;
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support: ${esc(CONFIG.supportEmail)}</a>`:''}</div>`;
 
@@ -963,7 +971,7 @@ app.addEventListener('click',e=>{
     case 'offerbuy':S.offerSeen=true;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u)try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});navTop(x.toString())}catch(e){}}break;
     case 'offerno':S.offerSeen=true;emit('offer_decline');go(20);break;
     case 'topw':go(18);break;
-    case 'app':{const u=v==='ios'?(CONFIG.appStoreUrl||CONFIG.appUrl):v==='android'?(CONFIG.playStoreUrl||CONFIG.appUrl):appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
+    case 'app':{const u=v==='ios'?(CONFIG.appStoreUrl||appHandoffUrl()):v==='android'?(CONFIG.playStoreUrl||appHandoffUrl()):appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
   }
 });
 app.addEventListener('change',e=>{const d=e.target.dataset;

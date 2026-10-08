@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0A0911">
-<title>Chai · AI Roleplay</title>
+<title>ChatChi: AI Roleplay Chat · AI Roleplay</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
@@ -319,7 +319,7 @@ svg .lg{fill:url(#cgrad-logo)}
    ============================================================ */
 const CONFIG={
   slug:'chai-roleplay',
-  brand:'Chai',
+  brand:'ChatChi',
   plans:{
     w1: {label:'1 week',  price:'{{price_1w}}', per:'week',    renew:'{{renew_1w}}', renews:'every week',    badge:''},
     w4: {label:'4 weeks', price:'{{price_4w}}', per:'4 weeks', renew:'{{renew_4w}}', renews:'every 4 weeks', badge:'Recommended'},
@@ -335,7 +335,7 @@ const CONFIG={
   app:{deepLink:'',iosUrl:'https://apps.apple.com/app/idTODO',androidUrl:'https://play.google.com/store/apps/details?id=TODO'},
   legal:{termsUrl:'',privacyUrl:''},
   /* Proof blocks: must be real, sourced numbers/reviews before launch. */
-  stats:[['{{app_rating}}','store rating'],['{{app_users}}','people play stories on Chai']],
+  stats:[['{{app_rating}}','store rating'],['{{app_users}}','people play stories on ChatChi']],
   reviews:[['{{reviewer}}','{{country}}','{{review_text}}'],['{{reviewer}}','{{country}}','{{review_text}}']],
   refundDays:'{{refund_days}}',   // guarantee block is hidden until this is a real number
   refundText:''
@@ -538,15 +538,15 @@ function pwHTML(mode){
   const quota=mode==='quota',g=G(),c=compI();
   const bens=[['chat','Unlimited chat','Fair-use cap applies.','PLUS'],['layers','Every genre and scene','Switch whenever you like.',''],['note','Companion memory','Your choices are kept.',''],['mic','Voice notes','Hear your companion.','NEW'],['spark','Change role and tone','Rewrite how it feels.','']];
   const how=[['Pick','Genre, role, companion, tone.'],['Play','Act or type. The scene answers.'],['It remembers','Your choices shape every scene.']];
-  const faq=[['Is it free to start?',`Yes. Free: this scene and ${FREE} messages a day.`],['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],['Is this safe and private?','Chats are never public. Delete your story anytime. Characters are AI and fictional.'],['How do I cancel?','Anytime in your account or store settings.'],['Is it explicit?','No. Chai stories here are SFW.']];
-  return `<div class="pw" id="pw" role="dialog" aria-label="Chai Plus">
+  const faq=[['Is it free to start?',`Yes. Free: this scene and ${FREE} messages a day.`],['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],['Is this safe and private?','Chats are never public. Delete your story anytime. Characters are AI and fictional.'],['How do I cancel?','Anytime in your account or store settings.'],['Is it explicit?','No. ChatChi stories here are SFW.']];
+  return `<div class="pw" id="pw" role="dialog" aria-label="ChatChi Plus">
   <button class="pwx" data-a="${quota?'closeq':'closepw'}" aria-label="Close">${ic('x',16)}</button>
-  <div class="brandbar"><div class="logo">${logo(22)} Chai</div></div>
+  <div class="brandbar"><div class="logo">${logo(22)} ChatChi</div></div>
   <div class="sec" style="padding-top:8px">${coverHTML()}
    <h1 class="h1" style="margin-top:16px;text-align:left;font-size:30px">${quota?t(`You've used today's ${FREE}.`,'Your scene is paused.'):t('Your story, <span class="gt">unlocked</span>','Keep playing <span class="gt">'+esc(g.title)+'</span>')}</h1>
    <p style="margin:6px 0 0;color:var(--t2)">${quota?'Resets at midnight. Or chat without limits.':t('Chat without counting. Every genre, every scene.','One plan. No coins. No per-message charges.')}</p></div>
   <div class="sec" id="plans1">${plansHTML()}<div style="height:12px"></div>${legalFine()}</div>
-  <div class="sec"><h2 class="h2">Everything in<br><span class="gt">Chai Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
+  <div class="sec"><h2 class="h2">Everything in<br><span class="gt">ChatChi Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
   <div class="sec"><h2 class="h2">How it <span class="gt">works</span></h2><div class="how">${how.map(([a,b],j)=>`<div><span class="nn">${j+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</div></div>
   ${(()=>{const real=v=>!/^\{\{/.test(v),st=(CONFIG.stats||[]).filter(([n])=>real(n)),rv=(CONFIG.reviews||[]).filter(([n,cn,x])=>real(n)&&real(x));
    return st.length||rv.length?`<div class="sec"><h2 class="h2">Loved by <span class="gt">players</span></h2>${st.length?`<div class="stats">${st.map(([n,l])=>`<div class="stat"><span class="n gt">${esc(n)}</span><span>${esc(l)}</span></div>`).join('')}</div>`:''}${rv.length?`<div class="stats" style="margin-top:10px">${rv.map(([n,cn,x])=>`<div class="rev"><div class="who"><i>${esc(n.slice(0,2).toUpperCase())}</i><div><b>${esc(n)}</b>${real(cn)?`<div style="font-size:11.5px;color:var(--t3)">${esc(cn)}</div>`:''}</div></div>${esc(x)}</div>`).join('')}</div>`:''}</div>`:''})()}
@@ -570,7 +570,7 @@ function chatView(){
   const head=n!==null?[['The scene begins.',`${c[0]} speaks first.`],['',''],['','']]:[];
   const hl=[t('The scene begins.',c[0]+' speaks first.'),t(c[0]+' will remember that.','Your choice changed things.'),t('The stakes just rose.',c[0]+' leans in.')];
   const bd=[t('Pick an action, or type your own.','Three ways forward. Or write yours.'),t('Each action reshapes what happens next.','Turn two. The scene already shifted.'),t('One more move before the scene turns.','Choose carefully. This one sticks.')];
-  const lim=!S.premium&&S.msgs<=0&&S.i===19?`<div class="limit"><span class="crown">${ic('crown',26)}</span><h3>${t(`You've used today's ${FREE}.`,'Your scene is paused.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to Chai Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`:'';
+  const lim=!S.premium&&S.msgs<=0&&S.i===19?`<div class="limit"><span class="crown">${ic('crown',26)}</span><h3>${t(`You've used today's ${FREE}.`,'Your scene is paused.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to ChatChi Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`:'';
   const pct=n!==null?Math.round((S.turn/3)*100):100;
   return `<div class="chat" style="${accStyle()}"><div class="chead"><span class="av" style="width:40px;height:40px;background:var(--gbg);border:2px solid var(--gacc)">${c[1]}</span><div style="flex:1"><b>${esc(c[0])}</b><small>● online · ${esc(g.title)}</small></div></div>
   <div class="cbody"><div class="cbg tn-${S.tone||'epic'}" style="--scene:url(${src('img/genre-'+gk()+'.jpg')})"></div>
@@ -578,7 +578,7 @@ function chatView(){
    ${n!==null?`<div class="ribbon"><span>${S.mem?'Story path':'This scene only'}</span><div class="rb"><span style="width:${pct}%"></span></div></div><div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${hl[n]}</div><div style="color:var(--t2);font-size:13px">${bd[n]}</div></div>`:`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${t('Right where you left off.',c[0]+' is waiting.')}</div><div style="color:var(--t2);font-size:13px">${S.premium?'Unlimited chat is on.':t('The scene picks up mid-sentence.',`Free: ${Math.max(S.msgs,0)} messages left today.`)}</div></div>`}
    <div class="msgs" id="msgs"><div class="sp"></div>${S.chat.map(m=>`<div class="bub ${m.w}">${fill(m.x)}</div>`).join('')}${S.typing?'<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>':''}${lim}</div>
    ${chips?`<div class="ideas">${chips.map((x,j)=>`<button data-a="say" data-v="${esc(x)}" data-j="${j}">${fill(x)}</button>`).join('')}</div>`:''}</div>
-  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the Chai app</button>`:`<div class="counter ${out?'out':''}">${out?'Out of messages · resets at midnight':S.msgs+' message'+(S.msgs===1?'':'s')+' left today'}</div>`}
+  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the ChatChi app</button>`:`<div class="counter ${out?'out':''}">${out?'Out of messages · resets at midnight':S.msgs+' message'+(S.msgs===1?'':'s')+' left today'}</div>`}
    <div class="composer"><div class="box"><input id="msg" maxlength="300" placeholder="Message ${esc(c[0])}…" ${out?'disabled':''}></div><button class="send" id="sendb" data-a="send" aria-label="Send" disabled>${ic('send',18)}</button></div></div></div>`;
 }
 function say(text,idx){
@@ -601,12 +601,12 @@ const months=()=>'<option value="">Month</option>'+MONTHS.map((m,i)=>`<option va
 const years=()=>{let o='<option value="">Year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
 const otherRow=(on)=>`<button class="opt ${on?'on':''}" data-a="pick" data-f="role" data-v="other" aria-pressed="${on}"><span class="em">✏️</span><span class="lbl">Other</span></button>`;
 const V={
-1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} Chai</div>
+1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} ChatChi</div>
   <h1 class="h1">${t('Step into <span class="gt">any story</span>','Play the story. <span class="gt">Live.</span>')}</h1>
   <p class="sub" style="margin-top:-4px">${t('Pick a genre. Your companion plays the rest.','AI roleplay where your choices change the scene.')}</p>
   <div class="fan">${GORDER.map((k,j)=>`<div class="fc" style="--gbg:${GENRES[k].bg};background:var(--gbg);border-color:${GENRES[k].acc}66;transform:translateX(${(j-2)*54}px) rotate(${(j-2)*11}deg);z-index:${5-Math.abs(j-2)}"><span>${GENRES[k].e}</span>${gimg(k)}</div>`).join('')}</div></div>
   <div class="foot">${cta('Start my story')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
-2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Adults only. Quick check.','When were you born?'),t('Chai roleplay is for people 18 and older.','We only use this to confirm your age.'))}
+2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} ChatChi</div>${q(t('Adults only. Quick check.','When were you born?'),t('ChatChi roleplay is for people 18 and older.','We only use this to confirm your age.'))}
   <div style="display:flex;gap:10px"><select class="sel" id="month" data-f="month" aria-label="Birth month">${months()}</select><select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select></div>
   <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div>
   <div class="foot">${cta('Continue',!!(S.year&&S.month),'age')}</div>`,
@@ -631,7 +631,7 @@ const V={
   <div style="display:flex;gap:8px"><div class="box" style="flex:1"><input id="name" data-f="name" maxlength="20" placeholder="Your character name" value="${esc(S.name)}" aria-label="Character name"></div><button class="btn ghost" style="width:54px;height:50px" data-a="shuffle" aria-label="Shuffle name">${gic('dice',20)}</button></div>
   ${S.emailErr==='name'?'<div class="err">Add a name so your companion can use it</div>':''}</div>
   <div class="foot">${cta('Continue',!!S.name.trim())}<button class="link" data-a="nameskip">Choose one for me</button></div>`,
-9:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Fiction. Private. Yours.','Your story stays yours.'),t('No one else reads your choices. Delete anytime.','Every line is written by AI, for you.'))}
+9:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} ChatChi</div>${q(t('Fiction. Private. Yours.','Your story stays yours.'),t('No one else reads your choices. Delete anytime.','Every line is written by AI, for you.'))}
   <div class="opts" style="margin-top:6px">${[['lock','Your chats are never public'],['trash','Delete your story anytime'],['spark','Characters are AI and fictional']].map(([i,l])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><b style="font:700 15px var(--head)">${l}</b></div>`).join('')}</div>
   <p class="legal">${lnk('Terms',CONFIG.legal.termsUrl)} · ${lnk('Privacy',CONFIG.legal.privacyUrl)}</p></div>
   <div class="foot">${cta('Write my story')}</div>`,
@@ -647,7 +647,7 @@ const V={
   <div class="scard ${S.flip?'flip':''}" id="scard"><div class="bk">…</div><div class="fr">${G().e}</div></div>
   <p class="hint">Scene card 1 saved to your story · Scene 1 of 12</p></div>
   <div class="foot">${cta('Save my story')}</div>`,
-16:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} Chai</div>${q(t('Save '+esc(G().title)+'.','Keep your place in the story.'),t('Add your email so the scene finds you.','Guest stories live only on this device.'))}
+16:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} ChatChi</div>${q(t('Save '+esc(G().title)+'.','Keep your place in the story.'),t('Add your email so the scene finds you.','Guest stories live only on this device.'))}
   <div class="box"><input id="email" data-f="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" value="${esc(S.email)}" aria-label="Email"></div>
   ${S.emailErr==='email'?'<div class="err">That email doesn’t look right. Check it?</div>':''}
   <button class="btn ghost" data-a="social" data-v="apple">Continue with Apple</button><button class="btn ghost" data-a="social" data-v="google">Continue with Google</button>
@@ -695,7 +695,7 @@ function offerTimer(){const o=CONFIG.offer;clearInterval(window.__oiv);if(!o.exp
 V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,c=compI();
   const yes=['Finish this scene to its end','Chapter 2 of this story','Your story saved to your email'],no=['Unlimited chat','Other genres and stories','Companion memory beyond this story','Voice notes'];
   return `<div class="pw ofr" role="dialog" aria-label="One-time offer" style="${accStyle()}">
-  <div class="obar"><div class="logo">${logo(22)} Chai</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="obar"><div class="logo">${logo(22)} ChatChi</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
   <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time pass · shown once</span>
    <h1 class="h2" style="margin:14px 0 8px">${t('Finish this story, <span class="gt">once</span>','A smaller pass, <span class="gt">paid once</span>')}</h1>
    <p class="olead">${t(esc(c[0])+' is mid-sentence. Finish this scene and chapter 2.','No subscription. No renewal. Paid once.')}</p>
@@ -706,14 +706,14 @@ V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,c=compI();
    <div class="ochecks">${yes.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
    <div style="font-size:12.5px;color:var(--t3);line-height:1.6"><b style="color:var(--t2)">Not included:</b> ${no.join(' · ')}</div>
    ${cta('Get the story pass',true,'offerbuy')}
-   <p class="ofine">${otok(o.price)} once. No renewal, nothing to cancel. Unlimited chat needs Chai Plus.</p></div></div>
+   <p class="ofine">${otok(o.price)} once. No renewal, nothing to cancel. Unlimited chat needs ChatChi Plus.</p></div></div>
   <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="offerno">No thanks, continue free · ${FREE} messages a day</button>
    <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
    <p class="odis" style="margin-top:10px">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</p></div></div>`};
 
 function render(anim){
   const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');
-  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, Chai is for adults</h1><p class="sub">You must be 18 or older to continue.</p></div>`:nav()+V[S.i]();
+  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, ChatChi is for adults</h1><p class="sub">You must be 18 or older to continue.</p></div>`:nav()+V[S.i]();
   const old=cur();if(old)old.replaceWith(v);else phone.appendChild(v);
   if(S.blocked)return;
   if(S.i===10)runLoader();

@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: Claude experience, main use, work field, current AI tools, Claude skills to master, certificate use, daily minutes, name, 2-item Claude skill check, email
 output: personalized 28-day Claude skills plan with a dated Coursiv certificate of completion and a first Artifacts micro-lesson
-screens: 23
+screens: 24
 monetization: web subscription paywall (1-week / 4-week pre-selected / 12-week, intro price with renewal price shown on every card and in the CTA line), app unlocked by the same email
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — Coursiv Claude Skills Certificate
 
-Niche "Chứng chỉ Claude AI": a Claude-only entry into the Coursiv app for adults who hear about Claude at work and want a structured way to learn it plus something to show for it. The user answers ~10 taps (Claude experience, use, field, which AI tools they already use, which Claude skills they want) and takes a 2-item Claude check. They get a 28-day Claude track with a dated **Coursiv certificate of completion**, and build one Claude Artifact inside the funnel. Market signal (AdSpyLab Meta ads 03-08/2026 + Google Trends US): Tixu.ai has opened 6 new pages since 06/2026 (Claude AI Academy / Claude AI Certifications / Claude Certified Academy) with 24.5K ads, 15.6K of them in August alone, the fastest-growing cluster in the category. Search for "claude ai" is up 243% YoY. Archetype: **learning-plan**, 23 screens. **Modeled on:** Tixu `tixu.ai/api/experiment/cert` and `/t` (41 screens, captured 2026-09-21; note the captured "cert" landing is Tixu's generic AI-certificate flow, since the Claude-branded pages weren't captured separately), Jobescape `jobescape.me/chat-v3` ("Get confident using Claude", 50 screens, email at 41, paywall at 46) and Kodree's `claude-code` funnel (14 screens, paywall at 14). **What was deliberately changed:** (1) The first tap is the ad's own question ("Have you used Claude?", as Jobescape and Kodree open), not Tixu's gender tap. (2) A real Claude skill check (Projects, long-file prompting) and a one-tap **Artifacts** micro-lesson replace Tixu's opinion sliders. (3) A "which AI tools do you use now?" question routes ChatGPT/Gemini switchers into a switch module, the niche's biggest segment. (4) Certificate framing is honest everywhere. It is a Coursiv certificate of completion, never "Claude Certified" or "official", and Coursiv's non-affiliation with Anthropic is stated on the hook, the plan and the paywall. (5) Cut: gender, income range ($40K-$200K+), "dream home / wedding" goals, "2x more results" and Kodree's "add an official certification?" add-on question. Look: the base Coursiv **light "career" theme** (white, deep-indigo primary, green progress and success states). It must **not** borrow Anthropic's brand look (no Claude spark logo as a brand mark, no Anthropic coral palette, no copy of the claude.ai interface). "Claude" appears only as a plain text tool name. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on most screens.
+Niche "Chứng chỉ Claude AI": a Claude-only entry into the Coursiv app for adults who hear about Claude at work and want a structured way to learn it plus something to show for it. The user answers ~10 taps (Claude experience, use, field, which AI tools they already use, which Claude skills they want) and takes a 2-item Claude check. They get a 28-day Claude track with a dated **Coursiv certificate of completion**, and build one Claude Artifact inside the funnel. Market signal (AdSpyLab Meta ads 03-08/2026 + Google Trends US): Tixu.ai has opened 6 new pages since 06/2026 (Claude AI Academy / Claude AI Certifications / Claude Certified Academy) with 24.5K ads, 15.6K of them in August alone, the fastest-growing cluster in the category. Search for "claude ai" is up 243% YoY. Archetype: **learning-plan**, 24 screens. **Modeled on:** Tixu `tixu.ai/api/experiment/cert` and `/t` (41 screens, captured 2026-09-21; note the captured "cert" landing is Tixu's generic AI-certificate flow, since the Claude-branded pages weren't captured separately), Jobescape `jobescape.me/chat-v3` ("Get confident using Claude", 50 screens, email at 41, paywall at 46) and Kodree's `claude-code` funnel (14 screens, paywall at 14). **What was deliberately changed:** (1) The first tap is the ad's own question ("Have you used Claude?", as Jobescape and Kodree open), not Tixu's gender tap. (2) A real Claude skill check (Projects, long-file prompting) and a one-tap **Artifacts** micro-lesson replace Tixu's opinion sliders. (3) A "which AI tools do you use now?" question routes ChatGPT/Gemini switchers into a switch module, the niche's biggest segment. (4) Certificate framing is honest everywhere. It is a Coursiv certificate of completion, never "Claude Certified" or "official", and Coursiv's non-affiliation with Anthropic is stated on the hook, the plan and the paywall. (5) Cut: gender, income range ($40K-$200K+), "dream home / wedding" goals, "2x more results" and Kodree's "add an official certification?" add-on question. Look: the base Coursiv **light "career" theme** (white, deep-indigo primary, green progress and success states). It must **not** borrow Anthropic's brand look (no Claude spark logo as a brand mark, no Anthropic coral palette, no copy of the claude.ai interface). "Claude" appears only as a plain text tool name. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on most screens.
 
 ---
 
@@ -340,10 +340,19 @@ Niche "Chứng chỉ Claude AI": a Claude-only entry into the Coursiv app for ad
 - Any struck-through price must be the real regular renewal price, and the intro must apply to a genuine first period. Same plan structure as the base `learning/coursiv` funnel; use ikame's real prices at launch.
 **Visual:** Top: a mini plan card echoing focus and date. Three stacked plan cards, the 4-week one with an indigo border. The renewal line uses the same size and colour as the price, not grey fine print. Payment row: Apple Pay / Google Pay / card logos.
 **Microcopy:** Trust row: "🔒 Secure payment · Cancel anytime in 2 taps · [N]-day refund window". Agreement checkbox **unchecked**: "I agree to the Terms, Subscription and Refund Policy". Line above CTA, filled from the selected card: "You'll pay [today's price] today. It renews at [renewal price] every [period] until you cancel. We'll email you before each renewal." Footer: "Coursiv is not affiliated with or endorsed by Anthropic."
-**Fallback offer:** On dismiss or back, one sheet with one genuine offer (e.g. the 4-week intro price extended once), with the renewal price on the same line. No countdown.
+**Fallback offer:** On dismiss (✕ or back), the last-chance offer (#22) once per session: the 4-week plan at a lower first payment, renewal stated on the card. No countdown.
 **CTA:** Get my plan
 
-### 22. Checkout summary
+### 22. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall (✕ or back) without paying: the same 4-week plan at a lower first payment. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: keep your certificate date
+**Body A:** Your Claude plan still finishes {{cert_date}}. Start it for a lower first payment.
+**Plans:** One offer card: **4-week plan**, "The same full plan, a lower first payment". {{offer_price}} today, with the 4-week plan's real intro price ([4-week intro price], `compareAt: '4w'`) struck, then {{offer_renew_price}} every 4 weeks until cancelled. Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #21: sticky bar with the Coursiv logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one indigo-bordered offer card holding a mini plan card ("Focus: {{focus}}" · "Certificate by {{cert_date}}"), the plan name, the price row (struck intro price → {{offer_price}} "today"), 3 checks ("Daily 15-minute Claude lessons", "Hands-on Projects & Artifacts practice", "Certificate of completion with your name"), the CTA, Apple Pay / G Pay / VISA / Mastercard badges and the renewal line. Plain decline link below the card.
+**Microcopy:** Renewal line: "{{offer_price}} today, then {{offer_renew_price}} every 4 weeks until you cancel. Cancel anytime in your account." Shown once per session (sessionStorage `ikf_offer_coursiv-claude-cert`): a second paywall close goes straight to the previous screen (#20 What's inside). No timer: `CONFIG.offer.expiresMin` is `null`. If the growth team sets a real deadline, a countdown shows and the offer is withdrawn when it ends (`offer_expired`), never reset on reload. Decline (link and ✕): "No thanks, back to my plan", which returns to #20 What's inside. Accept opens the offer checkout (`CONFIG.offer.checkoutUrl` with plan `offer`, email and UTMs); that checkout must show the same receipt rows as #23. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
+
+### 23. Checkout summary
 **Purpose:** Confirms exactly what is charged today and later, before the card form. Surprise renewals are the category's top refund and chargeback cause.
 **Headline A:** Review your order
 **Headline B:** Here's what you'll pay
@@ -357,7 +366,7 @@ Niche "Chứng chỉ Claude AI": a Claude-only entry into the Coursiv app for ad
 
 ## G. Payoff
 
-### 23. Welcome + app handoff
+### 24. Welcome + app handoff
 **Purpose:** Activation. The user installs, logs in with the same email by magic link and opens Day 1 at once. A web sale that never opens the app turns into a refund.
 **Headline A:** Welcome aboard, {{name}}!
 **Headline B:** Day 1 of Claude is ready
@@ -386,5 +395,7 @@ Niche "Chứng chỉ Claude AI": a Claude-only entry into the Coursiv app for ad
 **First A/B tests:** (1) Artifact lesson at 14 vs. a "which prompt is better?" lesson (base funnel). (2) Hook B certificate card at 2 vs. straight into questions. (3) Email gate before the plan (17) vs. after the plan, before the paywall.
 
 **Monetization:** one layer, the web subscription. Track paywall conversion, install + login + Day 1 within 48h, and refund/chargeback rate by plan, especially refunds citing "not official".
+
+**Last-chance offer:** measure offer CVR (#22 `offer_view` → `offer_accept`) separately from paywall CVR (#21).
 
 **Unverified / assumed:** Tixu's Claude-branded page flows (only the generic cert flow was captured); current Claude feature names and the prompting tip on 12; how the app provides Claude practice; live prices. All ikame stats are `[N]` placeholders until real.

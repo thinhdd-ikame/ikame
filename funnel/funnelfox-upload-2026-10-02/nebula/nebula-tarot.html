@@ -482,6 +482,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .minispread .tcard .rvt{display:none}
 .minispread .tcard.rev{box-shadow:0 0 0 1px #F29A8A88}
 
+
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
 </style>
 </head>
 <body>
@@ -623,9 +634,9 @@ const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',topic:'',topicOther:'',
 let S=INIT();
 try{if(sessionStorage.getItem('ikf_age_block'))S.blocked=true}catch(e){}
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'topic',3:'situation',4:'question',5:'feeling',6:'bridge',7:'birth_date',8:'birth_card',9:'name',10:'spread',11:'trust',12:'shuffle_cut',13:'pull',14:'cards_reveal',15:'daily_card',16:'email',17:'teaser',18:'paywall',19:'get_app'};
+const SCREENS={1:'hook',2:'topic',3:'situation',4:'question',5:'feeling',6:'bridge',7:'birth_date',8:'birth_card',9:'name',10:'spread',11:'trust',12:'shuffle_cut',13:'pull',14:'cards_reveal',15:'daily_card',16:'email',17:'teaser',18:'paywall',19:'report_upsell',20:'get_app'};
 const QN=[2,3,4,5,7,9,10];
-const SKIPBACK=[12,18,19];
+const SKIPBACK=[12,18,19,20];
 const nm=()=>(S.name||'').trim();
 const N=()=>+S.spread||3;
 const POS=()=>SPREADS[S.spread||'3'].pos;
@@ -829,13 +840,13 @@ const V={
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${esc(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([x,y])=>`<details><summary>${x}</summary><p>${y}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
-  <div class="wfoot">${legal()}<div>For entertainment and reflection. ${tok(CONFIG.company)}</div></div>
+  <div class="wfoot">${legal()}<div>For entertainment and reflection. ${/\{\{/.test(CONFIG.company)?'':esc(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
 };
 
 /* ---------- Starlyn policy: purchase -> get the app (old offer + free reading screens removed) ---------- */
-const IK_GET=19,IK_DOB=7;
+const IK_GET=20,IK_DOB=7;
 V[IK_GET]=()=>{const n=(typeof S.name==='string'?S.name:'').trim(),em=S.email||'your email';
   return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
   <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full reading is waiting in the Starlyn app.</p></div>
@@ -943,8 +954,29 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completeOffer:()=>{S.pack=true;emit('offer_complete');go(IK_GET)},completePurchase:plan=>{if(plan&&CONFIG.plans[plan])S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_GET)}});
-if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_GET}
+  completeOffer:()=>{S.pack=true;emit('offer_complete');go(IK_GET)},completePurchase:plan=>{if(plan&&CONFIG.plans[plan])S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_UP)}});
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   In FunnelFox the CTA clicks the screen's native Button #ikf_upsell_buy: a Paddle one-click charge on the card just used. */
+const IK_UP=19;
+CONFIG.upsell={"id": "tarot_year_2027", "name": "Your 2027 Tarot Year", "art": "img/card-back.jpg", "h": ["Add your <em>2027 tarot year</em>", "See your <em>year ahead</em>"], "lead": ["Twelve cards, one for each month of 2027.", "One card for every month, read for you."], "checks": ["A card for each month of 2027", "What each month asks of you", "Saved with your reading in the app"], "eyebrow": "Add-on · paid once", "price": "$9.99", "cta": "Add for $9.99", "skip": "No thanks, take me to the app", "note": "One-time charge to the card you just used. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&IMG[u.art])||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(S.upBusy?'Adding your report…':u.cta,!S.upBusy,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const _ikGetV=V[IK_GET];V[IK_GET]=()=>{const h=_ikGetV();return S.upsold?h.replace('<div class="how"',`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div><div class="how"`):h};
+window.IkFunnel=window.IkFunnel||{};window.IkFunnel.completeUpsell=()=>{S.upsold=true;S.upBusy=false;emit('upsell_complete',{id:CONFIG.upsell.id,price:CONFIG.upsell.price});go(IK_GET)};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  if(b.dataset.a==='upskip'){emit('upsell_decline',{id:u.id});go(IK_GET);return}
+  emit('upsell_accept',{id:u.id,price:u.price});emit('checkout_click',{plan:'upsell:'+u.id});
+  if(typeof ikfUpsellBuy==='function'&&ikfUpsellBuy())return;   /* FunnelFox build: native one-click charge */
+  toast('Demo only. No charge made');window.IkFunnel.completeUpsell()});
+if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_UP}
 function fillTo(n){Object.assign(S,{topic:S.topic||'love',sit:S.sit||'seeing',q:S.q||'What should I know about us?',feel:S.feel||'hope',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},name:S.name||'Maya',email:S.email||'demo@example.com'});
   if(n>12&&!S.deck.length){S.deck=shuffle();S.piles=true;S.cut=0}if(n>13&&S.picks.length<N()){S.picks=Array.from({length:N()},(_,k)=>({i:k*2,rev:k===1}))}}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();fillTo(n);go(n)};const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}}

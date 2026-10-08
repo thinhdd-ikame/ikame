@@ -25,10 +25,22 @@ The default house look for `Visual:` notes. It is a **default, not a law** — i
 | Preview / tease | VIP badge, 4-5 icon benefit rows, gold/purple glow |
 | Before / after | Split screen, dim cluttered left vs. glowing organized right |
 | Gamified reward | Colorful segmented wheel centered on black, pointer at top, glow behind it, single CTA below |
-| Paywall | 2-3 stacked plan cards, best-value tier pre-highlighted with a savings badge, Apple Pay button prominent below |
-| Upsell | Countdown timer at the top, discounted card with the original price struck through |
+| Paywall | **Web landing page, long scroll** (see "Web paywall" below): sticky brand bar, personal hero with their artifact + fact chips, plan block, what's-inside TOC, how-it-works, proof, guarantee, FAQ, plan block again, sticky bottom CTA |
+| Fallback offer (upsell on decline) | Same web look as the paywall: sticky bar + close, "One-time offer · shown once" eyebrow, one glowing offer card with their artifact thumbnail, struck real price → offer price "today", 3 checks, CTA, payment badges, renewal line, decline link. Timer only for a real deadline |
+| Post-purchase upsell | Countdown only for a real deadline, add-on card with the original price struck through |
 | Reveal / result | Interactive artifact (chart wheel, result gallery) with tappable elements and short tooltips |
 | Success / download | App logo centered, short confirmation line, single CTA |
+
+## Web paywall
+
+The funnels in this repo are web2app, so the paywall is designed like a **sales landing page**, not an app sheet (user direction, 2026-09-30). Reference: `funnel/funnel-development/nebula/palm-reading/demo.html` screen 21.
+
+- **Layout:** full-bleed scroll container with its own sticky top bar. No phone-style nav or progress bar. Sections are separated by generous vertical rhythm (~28px), each with an uppercase eyebrow + serif H2.
+- **Plan block** is one elevated card holding the plans, the due-today row, the CTA, payment badges (Apple Pay · G Pay · VISA · Mastercard · PayPal), the secure/cancel row and the renewal line. The block repeats near the bottom.
+- **Plan cards:** radio left, name + one-line sub, price right with the per-week equivalent under it, a ribbon on the pre-selected plan. Changing plan updates every block and the sticky bar in place, and never re-renders (that would lose the scroll position).
+- **Hero** shows the user's own artifact (their photo with lines, their chart, their character). Never a stock image.
+- **Sticky bottom CTA** slides up only while no plan block is visible (IntersectionObserver). The top-bar mini CTA scrolls to plan block #1.
+- **Proof, guarantee and entity** come from CONFIG. Empty = the block hides; placeholder = dashed token, so nothing fake ships.
 
 ## Writing the `Visual:` field
 

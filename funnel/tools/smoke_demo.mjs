@@ -55,7 +55,7 @@ try {
       if (info.text.includes('{{')) {
         // Check if there are any non-pricing tokens
         const allTokens = info.text.match(/\{\{[^}]+\}\}/g) || [];
-        const hasOtherTokens = allTokens.some(t => !/^\{\{(price|renew|trial|plan|week|annual|offer|refund|rating|reviewer|country|app_|legal|real|badge|review)/i.test(t));
+        const hasOtherTokens = allTokens.some(t => !/^\{\{(price|renew|trial|plan|week|annual|offer|addon|support|refund|rating|reviewer|country|app_|legal|real|badge|review)/i.test(t));
         if (!allowPriceTokens || hasOtherTokens) {
           raw.push(i);
         }

@@ -5,7 +5,7 @@ archetype: personalization-quiz
 subject: person
 input: name, birth date, birth time (optional), birth place, focus areas, optional second person
 output: Big Three reveal (Sun, Moon, Rising) + a personalized daily line
-screens: 21
+screens: 22
 monetization: soft subscription paywall (weekly trial / monthly / yearly pre-selected) + consumable question packs
 creative_screens:
   hook-a: 1
@@ -20,7 +20,7 @@ motion: >
 
 # Funnel Content — Starlyn
 
-Starlyn is a plain-words astrology app: a one-sentence daily reading with do/don't lists, a birth chart explained without jargon, compatibility with people you add, and paid questions where the price is always shown first. The user gives name, birth date/time/place and a few preferences, and gets their Big Three plus a personalized Today screen. It's the **personalization-quiz** archetype (same family as `nebula/`), but Starlyn's brand promises change the back half. The app has a guest mode, so there is no hard account gate. The Big Three is revealed free before the paywall, so the paywall sells depth (week/month, full chart, compatibility, questions), not access. The paywall can be dismissed from the first frame. There is no countdown upsell, because the app's store page literally says "No timers. No per-minute billing. Ever." There are also no invented stats. 21 screens. Pricing, copy tone and the visual system come straight from `starlyn-design/starlyn.pen` (tokens `$bg #0B0A18`, `$accent #E9C26B`, serif display headlines, lucide stroke icons). This overrides the repo's default purple/pink look. Screens that already exist in the .pen are referenced by their SCR id.
+Starlyn is a plain-words astrology app: a one-sentence daily reading with do/don't lists, a birth chart explained without jargon, compatibility with people you add, and paid questions where the price is always shown first. The user gives name, birth date/time/place and a few preferences, and gets their Big Three plus a personalized Today screen. It's the **personalization-quiz** archetype (same family as `nebula/`), but Starlyn's brand promises change the back half. The app has a guest mode, so there is no hard account gate. The Big Three is revealed free before the paywall, so the paywall sells depth (week/month, full chart, compatibility, questions), not access. The paywall can be dismissed from the first frame. There is no countdown upsell, because the app's store page literally says "No timers. No per-minute billing. Ever." There are also no invented stats. 22 screens. Pricing, copy tone and the visual system come straight from `starlyn-design/starlyn.pen` (tokens `$bg #0B0A18`, `$accent #E9C26B`, serif display headlines, lucide stroke icons). This overrides the repo's default purple/pink look. Screens that already exist in the .pen are referenced by their SCR id.
 
 ---
 
@@ -282,14 +282,23 @@ Starlyn is a plain-words astrology app: a one-sentence daily reading with do/don
 - **Yearly** — pre-selected, "SAVE 50%" badge, $59.99 / year with "$5.00 a month" shown small
 **Visual:** SCR-IAP-01 Default: close ✕ top-left, hero art, four check rows, GC-09 plan cards (Sub Selected on Yearly), gold CTA.
 **Microcopy:** Benefit rows: "Yesterday, tomorrow, weekly and monthly readings" / "Every placement in your birth chart" / "All 5 compatibility areas, up to 20 people" / "5 questions every month". Fine print: "Renews automatically. Cancel any time in the App Store." Links: Restore purchases · Terms of Use · Privacy Policy. When Weekly is selected, the CTA line reads "Free for 3 days, then $4.99/week."
-**Fallback offer:** On ✕, one bottom sheet, once per install: "Try 3 days free", then "$4.99/week after, cancel any time" in the same type size as the offer. Buttons: "Start free trial" / "Not now" → Today.
+**Fallback offer:** #20 last-chance offer (replaces the old bottom sheet), shown once per session: ✕ goes there first. Declining it, or a second ✕, → Today (#21).
 **CTA:** Continue
 
 ---
 
 ## G. Payoff (daily loop + second revenue layer)
 
-### 20. Today (first open)
+### 20. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall. Shown once per session, then never again. Starlyn promises the price first and no timers, so this is the Weekly plan's listed 3-day trial on its own page, not a markdown: nothing is struck and nothing counts down.
+**Headline A:** Try your whole week first
+**Body A:** Your {{sun_sign}} Sun and {{moon_sign}} Moon stay free. Premium adds your week, your month and every placement.
+**Plans:** One offer card: {{offer_name}} (3-day trial of Weekly). `{{offer_price}}` today (SCR-IAP-01 lists it as free for 3 days; confirm with billing), then $4.99/week, the listed Weekly price. No struck price. Optional `{{offer_badge}}`.
+**Visual:** Web page in the paywall's style: sticky bar with a close X, a centered eyebrow "One-time offer · shown once", a "No timer. The price is shown before you pay." line, then a single gold-bordered offer card with the Big Three wheel thumbnail, the price row, 3 checks ("Yesterday, tomorrow, weekly and monthly readings" / "Every placement in your birth chart" / "5 questions every month"), the CTA, payment badges and the renewal line.
+**Microcopy:** Renewal line: "`{{offer_price}}` today for 3 days, then $4.99/week. Renews automatically. Cancel any time in the App Store." No timer, ever (`CONFIG.offer.expiresMin` stays null): a countdown would break the store listing's "No timers" promise. Decline link: "No thanks, keep my free Big Three" → Today (#21). Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`.
+**CTA:** Start my 3-day trial
+
+### 21. Today (first open)
 **Purpose:** First real Today screen, weighted by the focus areas from #4. This is the habit the whole funnel is selling.
 **Headline A:** Good morning, {{name}}.
 **Headline B:** Here's your day, {{name}}.
@@ -298,7 +307,7 @@ Starlyn is a plain-words astrology app: a one-sentence daily reading with do/don
 **Microcopy:** One-time coach mark on the scores: "Your focus areas come first. Change them in Me."
 **CTA:** Read more
 
-### 21. First question
+### 22. First question
 **Purpose:** Introduces the second revenue layer (question packs) at peak trust. It starts with free questions, so the first use costs nothing and the pricing model stays visible.
 **Headline A:** Ask your first question
 **Headline B:** Got a real question?
@@ -313,7 +322,7 @@ Starlyn is a plain-words astrology app: a one-sentence daily reading with do/don
 
 ## Notes
 
-- **What changed from the existing onboarding in the .pen:** today it's Intro → one birth-data form → loading → reveal → notify (S03–S10). This funnel splits the form into single-question screens (#6, #7, #9, #10), adds three cheap taps (#4, #5, #12) and the Sun-sign micro-reveal (#8), and adds a tease + soft sign-in + paywall between the reveal and Today. New screens to design: #1–#3 hook variants, #4, #5, #8, #11, #12, #17, #18, #19's fallback sheet.
+- **What changed from the existing onboarding in the .pen:** today it's Intro → one birth-data form → loading → reveal → notify (S03–S10). This funnel splits the form into single-question screens (#6, #7, #9, #10), adds three cheap taps (#4, #5, #12) and the Sun-sign micro-reveal (#8), and adds a tease + soft sign-in + paywall between the reveal and Today. New screens to design: #1–#3 hook variants, #4, #5, #8, #11, #12, #17, #18, #19, #20 last-chance offer.
 - **Deliberate deviations from `personalization-quiz`:**
   - **No hard gate.** The app has a working guest mode, so a forced account wall would contradict the product.
   - **Big Three before the paywall.** Starlyn is freemium, so the free reveal is the proof and the paywall sells depth.
@@ -322,6 +331,6 @@ Starlyn is a plain-words astrology app: a one-sentence daily reading with do/don
   - **One trust interstitial instead of two,** because the paywall's own trust copy covers the second beat.
 - **No invented numbers.** `{{app_rating}}`, review quotes and any "X people" stat must come from real store/analytics data. Until then, ship #11 variant A (privacy promises), which needs no numbers.
 - **Drop-off risk:** #9 birth time (mitigated by the brand-true "we never guess it" skip), #13 their details (skippable), #18 sign-in, #19 paywall.
-- **Two monetization layers, two metrics:** subscription conversion at #19 (+ fallback trial take-rate) is one number. Question-pack revenue (first pack purchase rate, packs per payer) is separate and should be measured from #21 onward, never folded into paywall CVR.
+- **Two monetization layers, two metrics:** subscription conversion at #19 is one number, the #20 offer take-rate another. Question-pack revenue (first pack purchase rate, packs per payer) is separate and should be measured from #22 onward, never folded into paywall CVR.
 - **Branching:** #13 and #17A exist only on the person path. Track the funnel for both paths, since the compatibility tease is expected to convert better than the solo week tease.
 - **A/B first:** (1) #18 before vs. after the paywall. (2) #8 Sun-sign bridge on vs. off, to measure its lift on #9–#10 completion. (3) #19 Headline A vs. B. (4) #17 person path vs. solo path conversion, to decide whether #12 should be pushed harder.

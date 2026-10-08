@@ -1,12 +1,13 @@
 ---
 niche: coinin-antique
-display_name: CoinIn Antique (Heirloom and Estate Appraisal Web Quiz, Antique Scanner)
+display_name: CoinIdentify Antique (Heirloom and Estate Appraisal Web Quiz, Antique Scanner)
 archetype: scanner-identifier
 subject: antique or heirloom item
 input: 4 quick answers (item, where it came from, maker's mark, goal), one auction guessing game, 1 photo of one item (or a sample item)
-output: free item ID card (era, style, material); value range, where to sell and a real-or-reproduction read behind the paywall
+output: free item ID card (era, style, material); value range, where to sell and a real-or-reproduction read in the CoinIdentify app after purchase
 screens: 18
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time single-item value check, then the free item ID
+monetization: hard web paywall after a mandatory email gate; 3 plans 1w $12.99→$39.99/4w, 4w $14.99→$39.99/4w (pre-selected), 12w $39.99→$59.99/12w; no offer on decline; post-purchase one-time add-on (price pending) → get_app
+offer: none
 creative_screens:
   hook-a: 1
   game: 9
@@ -17,9 +18,11 @@ motion: >
   then its ID card (era, style, material) slides up beside it
 ---
 
-# Funnel Content — CoinIn Antique (Heirloom and Estate Appraisal Web Quiz, Antique Scanner)
+# Funnel Content — CoinIdentify Antique (Heirloom and Estate Appraisal Web Quiz, Antique Scanner)
 
-A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell grandma's vase for $5": the user inherited, cleared out or found something and does not know what it is. They answer four quick questions (what item, where it came from, is there a maker's mark, what they want to know), play one honest "which one sold for more" auction game, **scan one real item (or tap "Use a sample item" when nothing or no camera is at hand)** and get a **free ID card (era, style, material)** before any paywall. The paywall then sells what is still locked on that item: value range, where to sell, and a real-or-reproduction read. Archetype: `scanner-identifier`, web variant (18 screens), same spine as `scanner/coinin-cards` and `scanner/coinin-collector`. **Reference funnel:** none for antiques. Research §4 of `coursiv-coinin.md` found no antique web funnel on Meta (adjacent apps: Antique Identifier by Picture, Vintiq, Relic are store-native photo → ID → paywall), so the flow is **unverified** and adapted from the CoinIn coin funnel. **Deliberate difference:** the **inheritance and house-clearing angle**, which no CoinIn funnel or competitor uses: "Where did it come from?" is a real question, and when the answer is inherited or estate clearing the bridge screen calms the user ("Don't clear it all yet") instead of pushing a jackpot. Also different from the coin reference: personalized free result before the paywall, no "get rich" framing, no countdown, no struck anchor prices, no dollar testimonials, no live counter. **Branch:** Q2 = inherited or estate clearing turns screen 8 into the family-home bridge. **Palette** follows `scanner/coinin` (charcoal, antique gold, serif display). **Reuse:** all niche data (item types, sample items, game pair, sample values) sits in one `ITEMS` block in the demo. Every value is an **estimate**, never "your item is worth $X", and never a formal appraisal.
+On 2026-10-07 this funnel was rebranded to CoinIdentify: Coin Scanner and moved to the Starlyn-shape monetization (hard paywall, no offer, add-on upsell, get-the-app).
+
+A web2app funnel for the CoinIdentify: Coin Scanner app, antique branch. The hook is "Don't sell grandma's vase for $5": the user inherited, cleared out or found something and does not know what it is. They answer four quick questions (what item, where it came from, is there a maker's mark, what they want to know), play one honest "which one sold for more" auction game, **scan one real item (or tap "Use a sample item" when nothing or no camera is at hand)** and get a **free ID card (era, style, material)** before any paywall. The hard paywall then sells what is still locked on that item: value range, where to sell, and a real-or-reproduction read, all opened in the CoinIdentify app. Archetype: `scanner-identifier`, web variant (18 screens), same spine as `scanner/coinin-cards` and `scanner/coinin-collector`. **Reference funnel:** none for antiques. Research §4 of `coursiv-coinin.md` found no antique web funnel on Meta (adjacent apps: Antique Identifier by Picture, Vintiq, Relic are store-native photo → ID → paywall), so the flow is **unverified** and adapted from the CoinIdentify coin funnel (`scanner/coinin`). **Deliberate difference:** the **inheritance and house-clearing angle**, which no CoinIdentify funnel or competitor uses, CoinIn (competitor) included: "Where did it come from?" is a real question, and when the answer is inherited or estate clearing the bridge screen calms the user ("Don't clear it all yet") instead of pushing a jackpot. Also different from the coin reference: personalized free result before the paywall, no "get rich" framing, no countdown, no struck anchor prices, no dollar testimonials, no live counter. **Branch:** Q2 = inherited or estate clearing turns screen 8 into the family-home bridge. **Palette** follows `scanner/coinin` (charcoal, antique gold, serif display). **Reuse:** all niche data (item types, sample items, game pair, sample values) sits in one `ITEMS` block in the demo. Every value is an **estimate**, never "your item is worth $X", and never a formal appraisal.
 
 ---
 
@@ -237,77 +240,81 @@ A web2app funnel for the CoinIn scanner, antique branch. The hook is "Don't sell
 ## F. Monetization
 
 ### 16. Paywall
-**Purpose:** Long web sales page selling what is still locked: value range for this item, where to sell, real-or-reproduction. Renewal shown at the same size as the price.
+**Purpose:** Hard web sales page selling what is still locked: value range for this item, where to sell, real-or-reproduction. Renewal shown at the same size as the price. No way past it without paying.
 **Headline A:** See what it's worth
 **Headline B:** Unlock your whole inventory
 **Body A:** Value range, where to sell, real or reproduction.
 **Body B:** Scan every piece in the house.
-**Plans:** Structure only, no invented numbers.
-- 1-week intro: intro price token, then weekly renewal shown beside it. Never called free.
-- **4-week: pre-selected**, neutral "Pre-selected" label (no popularity claim), price and renewal tokens.
-- 12-week: anchor, price and renewal tokens.
-- Every plan shows its own renewal price and period next to the price.
-**Visual:** Sticky brand bar with a close X. Hero: the user's item with three locked rows glowing gold as "unlocking". Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
+**Plans:** Three plans, `4w` pre-selected with the badge "Recommended":
+- 1 week: `$12.99` for the first week, then `$39.99` every 4 weeks (sub-line "Intro week"). It renews every 4 weeks, not weekly.
+- **4 weeks (pre-selected):** `$14.99` for the first 4 weeks, then `$39.99` every 4 weeks.
+- 12 weeks: `$39.99` for the first 12 weeks, then `$59.99` every 12 weeks (sub-line "Lowest per week").
+- Each card shows its renewal beside the price: "then $39.99 / 4 weeks", "then $59.99 / 12 weeks". No struck prices, no discount badges.
+**Visual:** Sticky brand bar ("CoinIdentify", mini "Unlock my item" CTA after scrolling, **no close X**). Hero: the user's item with three locked rows glowing gold. Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. The sticky bottom bar (plan name, "$14.99 today", CTA) shows from the first view whenever no plan-block CTA is on screen, so a CTA and today's price are visible at 375×667 and 430×932.
 **Microcopy:**
-- Under the selected plan: "{{price}} today, then {{renewal}} every period until you cancel."
+- Renewal line under the plan CTA, per plan: "$12.99 today for your first week, then $39.99 every 4 weeks until you cancel." · "$14.99 today for your first 4 weeks, then $39.99 every 4 weeks until you cancel." · "$39.99 today for your first 12 weeks, then $59.99 every 12 weeks until you cancel."
 - What's inside: "Estimated value range" · "Where to sell it" · "Real or reproduction read" · "History and style notes" · "Unlimited item scans" · "Rare-piece flags" · "Saved inventory".
+- How it works: "Checkout" (secure payment, takes a few seconds) · "Get the app" (Download CoinIdentify: Coin Scanner from the App Store or Google Play) · "Open your report" (Log in with your email. Your scan is saved there.)
+- FAQ: When do I get my report? ("Right after checkout, in the CoinIdentify: Coin Scanner app. Log in with {{email}}.") · What's included? · How is value estimated? · How do I cancel? · Will I be charged again? ("Yes, unless you cancel. The 1-week and 4-week plans renew at $39.99 every 4 weeks. The 12-week plan renews at $59.99 every 12 weeks.") · Is this a formal appraisal?
 - Value disclaimer: "Values are estimates, not appraisals. For insurance or legal use, ask a qualified appraiser."
-- FAQ: What's included? · How is value estimated? · How do I cancel? · Will I be charged again? · Is this a formal appraisal?
-- Footer: Terms · Privacy · Subscription terms.
-**Fallback offer:** Close X goes to screen 17 once per session (sessionStorage `ikf_offer_coinin-antique`), then to the free item ID on any later close.
+- Footer: Terms of Use (https://squad-xteam.com/termofuse.html) · Privacy Policy (https://squad-xteam.com/policy.html) · Subscription terms. Legal entity hidden while `{{legal_entity}}` is unset.
+- Hard paywall: no close X, no "continue free", no "maybe later", no sale or offer on decline.
 **CTA:** Unlock my item
 
-### 17. Last-chance offer — one-item value check
-**Purpose:** A genuinely smaller option for people who closed the paywall: a one-time, non-recurring value check for just the item they scanned. Not a duplicate of a paywall plan.
-**Headline A:** Just this piece?
-**Headline B:** Get one value check
-**Body A:** Pay once for this item's value range.
-**Body B:** No subscription, no renewal.
-**Plans:** One item: "One-item value check", one-time price token, **paid once, never renews**, no strike price. Includes this item's estimated value range by condition. Does **not** include unlimited scans, where to sell, the real-or-reproduction read, history notes or other items.
-**Visual:** Web page in the paywall's look: brand bar with a close X, gold eyebrow "One-time offer, shown once", one gold-bordered card with the item thumbnail, price row, two checks, a muted "Not included" list, CTA, payment badges, one-line terms note.
+### 17. Add-on upsell — Maker's Mark & Provenance Report
+**Purpose:** Right after the plan purchase, offer one add-on about the piece they just scanned, at its listed price, then hand off to the app either way.
+**Headline A:** Who made your piece?
+**Headline B:** Trace its maker and past
+**Body A:** Read its maker's mark and trace its past.
+**Body B:** A deeper look at the item you scanned.
+**Plans:** One add-on, paid once: "Maker's Mark & Provenance Report" at `{{addon_price}}` (name and price pending from the owner). No subscription, no struck price, no countdown. The CTA opens its own one-time checkout: a hidden plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, never on the paywall) opened with `checkout('addon')`. Paying runs `completePurchase('addon')` and lands on Get the app with the "added" line; closing the checkout without paying goes to Get the app without it (`CONFIG.declineFlow = {addon:'get_app'}`). The demo shows a stand-in sheet (Pay / Close without paying) while no checkout URL is set.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card ("CoinIdentify report" label, report name, the user's item beside a stamped base), three gold checks, price row with the price token and "Paid once · no subscription". No back button, no close X.
 **Microcopy:**
-- Terms line: "{{offer_price}} once. No renewal. Nothing to cancel."
-- No timer (`expiresMin` is null; none until a real deadline exists).
-- Decline link: "No thanks, keep the free item ID"
-- Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`.
-**CTA:** Get my value check
+- Checks: "Maker's mark read from a close-up photo" · "Likely maker, region and period, as an estimate" · "Provenance checklist: papers and history to gather".
+- Under the card: "One-time payment at a secure checkout. No subscription."
+- Skip link: "No thanks, take me to the app"
+- The CTA carries no price while the price is a token.
+- Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `upsell_decline`, `purchase_complete` with plan `addon`, `checkout_decline` with plan `addon`.
+**CTA:** Add to my plan
 
 ---
 
 ## G. Payoff
 
-### 18. Your item report
-**Purpose:** Land the user on their own result. Free path: ID card and locked rows with a way back to the paywall. Paid: value range, where to sell, authenticity read and "scan next". Offer-only: the value range for this item.
-**Headline A:** Your piece, {{name}}
-**Headline B:** Your item, decoded
-**Body A:** Saved to your inventory.
-**Body B:** Scan the next piece any time.
-**Visual:** Item photo, ID rows. Free: three locked rows with an "Unlock" button. Paid: estimated value range with a low-to-high bar, "Where to sell" list (channel types: specialist auction, online marketplace, local dealer), authenticity read with the four clues marked, inventory counter "1 item". App handoff buttons below.
-**Microcopy:** Under the range: "Estimate only. For a possibly valuable piece, get a qualified appraisal before selling."
-**CTA:** Scan next item
+### 18. Get the app
+**Purpose:** Hand a paying user straight to the CoinIdentify app, where the full item report lives. Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**Headline A:** You're in, {{name}}
+**Headline B:** You're in
+**Body A:** Your full report is waiting in the CoinIdentify app.
+**Body B:** Your full report is waiting in the CoinIdentify app.
+**Visual:** A success check in a glowing well, three numbered steps (Download CoinIdentify: Coin Scanner · Log in with {{email}} · Open your report), "Open the app" button, black App Store and Google Play badges. If the add-on was bought, a green line "Maker's Mark & Provenance Report added. It opens in the app." sits above the steps.
+**Microcopy:** "Values are estimates, not appraisals. For insurance or legal use, ask a qualified appraiser. Cancel anytime in your account." App links pending: "Open the app" and the badges show "App link coming soon" until `CONFIG.appUrl` / `appStoreUrl` / `appUrlAndroid` are set.
+**CTA:** Open the app
 
 ---
 
 ## Notes
 
-**Reference.** None. Research §4 of `coursiv-coinin.md`: no antique web2app funnel found on Meta; store apps (Antique Identifier, Vintiq, Relic) are photo → ID → paywall. This flow is **unverified** and adapted from the CoinIn coin funnel and its card sibling. Also unverified: the in-app antique database coverage, the value and where-to-sell data source, and the authenticity model.
+**Reference.** None. Research §4 of `coursiv-coinin.md`: no antique web2app funnel found on Meta; store apps (Antique Identifier, Vintiq, Relic) are photo → ID → paywall. This flow is **unverified** and adapted from the CoinIdentify coin funnel and its card sibling. CoinIn (competitor) research lives in `coursiv-coinin.md`. Also unverified: the in-app antique database coverage, the value and where-to-sell data source, and the authenticity model.
 
 **Inheritance branch.** Q2 = inherited or estate clearing turns screen 8 into the "Don't clear it all yet" bridge. Measure its drop-off and paywall conversion against the other sources. The wording is deliberately calm: no urgency, no "treasure in your attic" framing.
 
 **Auction game data.** Screen 9 needs one verified, dated, sourced past auction result per item type before launch. The demo shows labelled illustrative figures ("Illustrative sample, not a real sale"); they are not real sales. The game never shows a value for the user's own item.
 
-**Blocks deliberately skipped.** Persona host (the coin funnel's collector guide), social proof screen (no verified numbers; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card, post-purchase upsell, fear-of-loss statistic ("most heirlooms sell below value" has no source, not used).
+**Blocks deliberately skipped.** Persona host (the coin funnel's collector guide), social proof screen (no verified numbers; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card, last-chance offer (CoinIdentify policy: no sale, no offer), free result screen (hard paywall), fear-of-loss statistic ("most heirlooms sell below value" has no source, not used).
 
 **Dark patterns not copied.** Countdown, struck anchor prices, fine-print "payment period", live user counter, dollar testimonials, "get rich" framing, an email gate that claims no storage.
 
-**Drop-off risk.** Screen 11 (upload): heavy furniture is hard to photograph, so the sample-item link and camera or gallery choice exist for this. Screen 15 (email) is required in the web variant.
+**Drop-off risk.** Screen 11 (upload): heavy furniture is hard to photograph, so the sample-item link and camera or gallery choice exist for this. Screen 15 (email) is mandatory: one email input, no skip, guest, Google or Apple sign-in; it emits `lead` with the email so the checkout is prefilled and the app can activate the plan. Screen 16 is a hard paywall, so expect a lower paywall pass rate than the old dismissible version.
 
-**Monetization.** One layer, the subscription, plus a one-time single-item value check on decline. Measure separately: first-scan success, paywall conversion by plan, offer accept rate, refund rate.
+**Monetization (CoinIdentify, 2026-10-07).** Hard paywall with three plans (1w $12.99 then $39.99 / 4 weeks, 4w $14.99 then $39.99 / 4 weeks pre-selected, 12w $39.99 then $59.99 / 12 weeks); no sale or offer on decline; after purchase one optional add-on (Maker's Mark & Provenance Report, paid once) and then Get the app. Measure separately: first-scan success, email gate pass rate, subscription conversion by plan (`purchase_complete` by plan / `paywall_view`), add-on attach rate (`purchase_complete` with plan `addon` / `upsell_view`), app hand-off clicks, refund rate.
+
+**Pending from the owner.** Add-on name confirmation and price (`{{addon_price}}`); Paddle price IDs for `1w`, `4w`, `12w` and `addon`; support email (`{{support_email}}`); App Store / Google Play / app links; legal entity; real images (`gen_images.py` not run).
 
 **First A/B test.** Hook "Don't sell grandma's vase for $5" vs. "Clearing out a family home?" **Second:** authenticity teaser (screen 14) shown vs. skipped.
 
-**Verify before build.** Real plan periods and prices; refund terms; rating and reviews; antique database source and coverage; the real identify API; real sold-lot data for the game; the cancel path and "how to cancel" FAQ wording (unverified); legal review of "$5" in the hook (a cautionary example, not a value claim).
+**Verify before build.** Refund terms; rating and reviews; antique database source and coverage; the real identify API; real sold-lot data for the game; the cancel path and "how to cancel" FAQ wording (unverified); legal review of "$5" in the hook (a cautionary example, not a value claim).
 
-**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result for the chosen item type, with the ID card, value range and authenticity verdict all marked "Sample data". Item art in the demo is drawn SVG; images in `img/` are drawn placeholders and `gen_images.py` is ready (set `IKAME_AI_KEY`, not set during this build).
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result for the chosen item type, with the ID card, value range and authenticity verdict all marked "Sample data". Images in `img/` are real generated art (gemini-3.1-flash-image via `gen_images.py`, 2026-10-07), including one photo per sample item (`item-sample` = vase, `sample-furn`, `sample-silver`, `sample-clock`) shown on the ID card and paywall; the drawn SVG item stays only as a fallback.
 
 **Demo (Artifact, private).** https://claude.ai/artifact/23Pg6ezErm8BYS2t83FqU9

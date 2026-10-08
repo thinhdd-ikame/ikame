@@ -166,6 +166,21 @@ body{background:var(--pg);color:var(--pg-ink);font-family:var(--sys);margin:0;pa
 .sheet{background:#fff;width:100%;border-radius:24px 24px 0 0;padding:22px 16px 38px;animation:up .28s ease both}
 @keyframes up{from{transform:translateY(40px);opacity:0}}
 .link{background:none;border:0;color:var(--mute);font:500 15px var(--sys);width:100%;padding:14px;cursor:pointer}
+/* last-chance offer (screen 13) */
+.obar{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:50px 16px 10px;background:var(--white);border-bottom:1px solid var(--line)}
+.obar .brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px}.obar .brand img{width:28px;height:28px;border-radius:8px}
+.obar .x{width:30px;height:30px;border-radius:50%;border:0;background:var(--pill);color:var(--mute);font-size:16px;cursor:pointer;display:grid;place-items:center}
+.eyebrow{display:inline-block;padding:6px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:12px;font-weight:600;letter-spacing:.3px}
+.ocard{position:relative;margin-top:26px;padding:22px 16px 16px;border-radius:22px;border:1.5px solid var(--blue);background:linear-gradient(180deg,var(--blue-soft),var(--white) 55%);box-shadow:0 0 0 4px rgba(59,124,246,.12),0 24px 40px -28px rgba(30,60,120,.45)}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:5px 12px;border-radius:999px;background:var(--blue);color:#fff;font-size:12px;font-weight:600;letter-spacing:.3px;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{flex:0 0 64px;height:72px;border-radius:14px;background:var(--white);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.orow .th b{font-size:22px;line-height:1;font-variant-numeric:tabular-nums}.orow .th i{width:40px;height:4px;border-radius:2px;background:var(--line);overflow:hidden;display:block}.orow .th i u{display:block;height:100%}
+.orow .nm{font-size:17px;font-weight:600}.orow .hint{font-size:13px;color:var(--mute);margin-top:2px}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding:12px;border-radius:14px;background:var(--white);border:1px solid var(--line)}
+.oprice s{color:var(--mute);font-size:15px}.oprice b{font-size:28px;font-weight:700;color:var(--blue)}.oprice span{color:var(--ink-2);font-size:14px}
+.otimer{display:inline-flex;gap:6px;margin-top:12px;padding:7px 14px;border-radius:999px;background:var(--pill);font-size:13px;color:var(--ink-2)}.otimer b{color:var(--blue);font-variant-numeric:tabular-nums}
+.ocard .feat{margin-top:12px}
 .toast{position:absolute;left:16px;right:16px;bottom:110px;background:rgba(20,22,28,.92);color:#fff;font-size:14px;padding:12px 16px;border-radius:14px;text-align:center;z-index:40;animation:fade .2s both}
 
 /* handoff */
@@ -230,7 +245,7 @@ body{background:var(--pg);color:var(--pg-ink);font-family:var(--sys);margin:0;pa
     </div>
     <div class="pcard"><p class="ptitle">Flow</p><ul class="flow" id="flow"></ul></div>
     <div class="pcard"><p class="ptitle">Collected so far</p><dl class="kv" id="kv"></dl></div>
-    <div class="pcard"><p class="foot-note"><b>Demo only.</b> Prices are the Figma ones ($8.99 / $59.99 / $19.99). "1M+", review quotes and the trial length are design placeholders — swap in real figures before launch. Codes are fake and rotate every 30s. No charge is made, no email is sent. Hero illustrations on screens 1-3 are rebuilt in CSS (Figma MCP rate limit); drop in PNG exports to match pixel-perfect.</p></div>
+    <div class="pcard"><p class="foot-note"><b>Demo only.</b> Prices are the Figma ones ($8.99 / $59.99 / $19.99). "1M+", review quotes and the last-chance offer terms (screen 13, <code>CONFIG.offer</code>) are placeholders — swap in real figures before launch. Codes are fake and rotate every 30s. No charge is made, no email is sent. Hero illustrations on screens 1-3 are rebuilt in CSS (Figma MCP rate limit); drop in PNG exports to match pixel-perfect.</p></div>
   </aside>
 </div>
 
@@ -264,7 +279,7 @@ setInterval(tickCodes,1000);
 /* laurel branch, drawn procedurally */
 function laurel(flip){const P=t=>{const u=1-t;return[u*u*40+2*u*t*8+t*t*26,u*u*96+2*u*t*60+t*t*6]};let g="";for(let i=0;i<8;i++){const t=.1+i*.115,[x,y]=P(t),[x2,y2]=P(t+.01),ang=Math.atan2(y2-y,x2-x)*180/Math.PI;const side=i%2?1:-1;g+=`<ellipse cx="${(x+side*6).toFixed(1)}" cy="${y.toFixed(1)}" rx="3.6" ry="8" transform="rotate(${(ang+90+side*40).toFixed(0)} ${(x+side*6).toFixed(1)} ${y.toFixed(1)})" fill="var(--blue)"/>`}return `<svg width="46" height="96" viewBox="0 0 46 100" style="${flip?"transform:scaleX(-1)":""}" aria-hidden="true"><path d="M40 96Q8 60 26 6" stroke="var(--blue)" stroke-width="2" fill="none" stroke-linecap="round"/>${g}</svg>`}
 /* ---------- state ---------- */
-const S={n:1,hist:[],v:"A",q1:null,q2:[],q3:null,q4:null,email:"",emailErr:"",firstName:"",plan:"yearly",faq:0,sheet:false};
+const S={n:1,hist:[],v:"A",q1:null,q2:[],q3:null,q4:null,email:"",emailErr:"",firstName:"",plan:"yearly",faq:0,sheet:false,offerSeen:false,offerEnd:0,paid:false};
 const T=(a,b)=>S.v==="A"?a:(b??a);
 
 const Q1=[["sms","💬","SMS text"],["email","📧","Email"],["app","🔐","Authenticator app"],["none","🤷","No 2FA / not sure"]];
@@ -272,6 +287,31 @@ const Q2=[["bank","🏦","Banking"],["mail","📧","Main email"],["social","💬
 const Q3=[["unique","#1FB45A","All unique"],["few","#F59E0B","A few reused"],["most","#E5383B","Most are shared"]];
 const Q4=[["yes","🚨","Yes"],["sus","👀","Something suspicious"],["no","✅","No"]];
 const PLANS={weekly:{nm:"Weekly Plan",price:"$8.99",per:"week",day:"$1.28"},yearly:{nm:"Yearly Plan",price:"$59.99",per:"year",day:"$0.16",badge:"BEST VALUE"},monthly:{nm:"Monthly Plan",price:"$19.99",per:"month",day:"$0.67",badge:"MOST POPULAR"}};
+
+/* ---------- config ---------- */
+const CONFIG={
+ funnel:"authenticator",
+ /* Last-chance offer shown ONCE when the paywall is closed without paying (fallback / "upsell on decline").
+    Replaces the old exit-intent trial bottom sheet (one offer only). Real terms only: price and renewal must be
+    what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
+    Brief: Yearly with a clearly stated trial, only if billing supports a trial.
+    expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn for this user. */
+ offer:{enabled:true,name:"Yearly · {{trial_days}}-day trial",price:"{{offer_price}}",renews:"{{offer_renews}}",compareAt:"yearly",badge:"{{offer_badge}}",checkoutUrl:"",expiresMin:null}
+};
+const QS=new URLSearchParams(location.search),DEBUG=QS.get("debug")==="1";
+const PASS=["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid","gclid","ttclid"];
+function emit(ev,data={}){(window.__ikf=window.__ikf||[]).push({ev,...data});if(DEBUG)console.log("[ikf]",ev,data)}
+
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+const OKEY="ikf_offer_"+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+ if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,"1")}catch(e){}emit("offer_view",{price:o.price});
+ if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+ const tick=()=>{const el=document.getElementById("otimer");if(!el)return;const ms=S.offerEnd-Date.now();
+  if(ms<=0){S.offerSeen=true;emit("offer_expired");go(14);return}
+  el.textContent=String(Math.floor(ms/60000)).padStart(2,"0")+":"+String(Math.floor(ms/1000)%60).padStart(2,"0")};
+ tick();timers.push(setInterval(tick,1000))}
 
 function score(){let s=0;s+={sms:30,email:25,app:5,none:35}[S.q1]||0;s+=Math.min(20,S.q2.length*4);s+={unique:0,few:12,most:25}[S.q3]||0;s+={yes:20,sus:12,no:0}[S.q4]||0;return s}
 function band(s){return s>=65?{t:"High",c:"var(--red)",bg:"var(--red-soft)",hex:"#E5383B"}:s>=35?{t:"Medium",c:"#B86E00",bg:"#FEF3DC",hex:"#F59E0B"}:{t:"Low",c:"#12803F",bg:"#E3F6EA",hex:"#1FB45A"}}
@@ -289,10 +329,10 @@ const FLOW=[
  ["D. Anticipation",[[9,"Calculating","auto"]]],
  ["E. Gate",[[10,"Email gate","new"]]],
  ["D. Reveal",[[11,"Security Risk Score","computed"]]],
- ["F. Monetization",[[12,"Paywall","+ fallback"]]],
- ["G. Payoff",[[13,"Download handoff","new"]]]
+ ["F. Monetization",[[12,"Paywall","close → 13"],[13,"Last-chance offer","once"]]],
+ ["G. Payoff",[[14,"Download handoff","new"]]]
 ];
-const LAST=13;
+const LAST=14;
 
 /* ---------- screens ---------- */
 const shell=(body,foot,extra="")=>`<div class="scr">${extra}<div class="body">${body}</div>${foot?`<div class="foot">${foot}</div>`:""}</div>`;
@@ -432,14 +472,32 @@ V[12]=()=>{const plan=PLANS[S.plan];const faqs=[["How does the Authenticator app
  <div style="height:30px"></div>
 `,"",`<button class="close" data-a="exit" aria-label="Close">✕</button>`)};
 
-V[13]=()=>{const qr=[];let h=hash(S.email||"demo");for(let i=0;i<441;i++){const x=i%21,y=Math.floor(i/21);const fin=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);let on;if(fin){const fx=x>13?x-14:x,fy=y>13?y-14:y;on=fx===0||fx===6||fy===0||fy===6||(fx>1&&fx<5&&fy>1&&fy<5)}else{h=Math.imul(h^(h>>>13),1103515245)+12345;on=(h>>>16)&1}qr.push(`<i class="${on?"":"o"}"></i>`)}
+V[13]=()=>{const o=CONFIG.offer,base=PLANS[o.compareAt],s=score(),b=band(s),n=risks().length,low=s<35;
+ return `<div class="scr"><div class="body" style="padding-top:0">
+ <div class="obar" style="margin:0 -16px"><div class="brand"><img src="${ASSET.shield}" alt="">Authenticator</div><button class="x" data-a="offerno" aria-label="No thanks">✕</button></div>
+ <div style="text-align:center;margin-top:22px"><span class="eyebrow">One-time offer · shown once</span>
+  <h1 class="h1" style="margin-top:14px">${low?"Keep your score low, pay less today":`Fix your <em>${s}/100</em> risk for less`}</h1>
+  <p class="sub" style="margin-top:8px">${low?"Protect every account before you change phones.":`${n} risk${n>1?"s":""} found. Start protected at a lower first price.`}</p>
+  ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:""}</div>
+ <div class="ocard">${o.badge?`<span class="obadge">${o.badge}</span>`:""}
+  <div class="orow"><div class="th" aria-label="Your score ${s} of 100"><b style="color:${b.hex}">${s}</b><i><u style="width:${s}%;background:${b.hex}"></u></i><small style="font-size:10px;color:${b.c};font-weight:600">${b.t} risk</small></div>
+   <div style="flex:1;min-width:0"><div class="nm">${o.name}</div><div class="hint">Everything in Premium protection</div></div></div>
+  <div class="oprice">${base?`<s>${base.price}</s>`:""}<b>${o.price}</b><span>today</span></div>
+  ${risks().map(r=>r[2]).concat(["On-device codes that work offline.","Encrypted backup + Apple Watch codes.","Lock the app with Face ID."]).filter((x,i,a)=>a.indexOf(x)===i).slice(0,3).map(x=>`<div class="feat"><span class="tick">${TICK}</span><div><b>${x}</b></div></div>`).join("")}
+  <div style="margin-top:18px">${cta("Claim my offer","offerbuy")}</div>
+  <div style="margin:8px -8px 0"><img src="${ASSET.paylogos}" alt="Visa, Amex, Discover, Mastercard, PayPal, Google Pay, Apple Pay" style="width:100%;display:block"></div>
+  <p class="fine" style="margin-top:6px">${o.price} today, then ${o.renews} until you cancel.<br>Cancel anytime in settings.</p></div>
+ <button class="link" data-a="offerno" style="margin-top:10px">No thanks, just keep my free score</button>
+ <div style="height:30px"></div></div></div>`};
+
+V[14]=()=>{const qr=[];let h=hash(S.email||"demo");for(let i=0;i<441;i++){const x=i%21,y=Math.floor(i/21);const fin=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);let on;if(fin){const fx=x>13?x-14:x,fy=y>13?y-14:y;on=fx===0||fx===6||fy===0||fy===6||(fx>1&&fx<5&&fy>1&&fy<5)}else{h=Math.imul(h^(h>>>13),1103515245)+12345;on=(h>>>16)&1}qr.push(`<i class="${on?"":"o"}"></i>`)}
  return shell(`
  <div style="padding-top:40px;text-align:center;position:relative;width:110px;margin:0 auto"><img src="${ASSET.shield}" alt="" width="100" height="100" style="border-radius:24px"><span class="bub" style="width:38px;height:38px;right:-6px;bottom:-6px;background:var(--green);border:3px solid #fff"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
- <h1 class="h1" style="margin-top:30px">${T(`You're protected${S.firstName?", "+S.firstName:""}`,"Last step: get the app")}</h1>
- <p class="sub">${T(`Install the app and sign in with ${S.email||"your email"}.`,"Your plan is active on this email.")}</p>
+ <h1 class="h1" style="margin-top:30px">${!S.paid?"Get the app":T(`You're protected${S.firstName?", "+S.firstName:""}`,"Last step: get the app")}</h1>
+ <p class="sub">${!S.paid?`Your score is ${score()}/100. No plan is active on ${S.email||"your email"} yet.`:T(`Install the app and sign in with ${S.email||"your email"}.`,"Your plan is active on this email.")}</p>
  <div class="hsteps"><div class="hstep"><i>1</i>Download Authenticator</div><div class="hstep"><i>2</i>Sign in with ${S.email||"this email"}</div><div class="hstep"><i>3</i>Scan your first QR code</div></div>
  <div class="store"><div class="badge-as">${LOGO.apple(22)}<span><small>Download on the</small><b>App Store</b></span></div><div class="qr" aria-label="Demo QR code">${qr.join("")}</div></div>
- <p class="legal" style="margin-top:22px">Receipt sent to ${S.email||"your email"} · Need help? <u>Contact us</u></p>
+ <p class="legal" style="margin-top:22px">${S.paid?`Receipt sent to ${S.email||"your email"} · `:""}Need help? <u>Contact us</u></p>
 `,cta("Download on App Store","store"))};
 
 /* ---------- engine ---------- */
@@ -447,24 +505,24 @@ const stage=document.getElementById("stage");
 let timers=[];
 function clearTimers(){timers.forEach(clearTimeout);timers=[]}
 function fillTo(n){ if(n>5&&!S.q1)S.q1="sms"; if(n>6&&!S.q2.length)S.q2=["bank","mail","social"]; if(n>7&&!S.q3)S.q3="few"; if(n>8&&!S.q4)S.q4="sus"; if(n>10&&!S.email){S.email="alex@example.com";S.firstName="Alex"} }
-function render(){clearTimers();stage.innerHTML=V[S.n]();if(S.sheet)showSheet();tickCodes();panel();after()}
+function render(){clearTimers();stage.innerHTML=V[S.n]();tickCodes();panel();after()}
 function go(n,push=true){if(n<1||n>LAST)return;if(push&&n!==S.n)S.hist.push(S.n);S.sheet=false;S.n=n;render();try{history.replaceState(null,"","#s"+n)}catch(e){}}
 function next(){go(S.n+1)}
 function back(){if(S.hist.length){S.n=S.hist.pop();S.sheet=false;render()}}
 function after(){
  if(S.n===9){STEPS.forEach((_,i)=>{timers.push(setTimeout(()=>{const e=document.getElementById("st"+i);if(e)e.className="step"},i*1300));timers.push(setTimeout(()=>{const e=document.getElementById("st"+i);if(e)e.className="step done"},i*1300+1200))});timers.push(setTimeout(()=>go(10),STEPS.length*1300+500))}
  if(S.n===11){const s=score();requestAnimationFrame(()=>{const b=document.getElementById("sbar");if(b)b.style.width=s+"%"});const el=document.getElementById("snum"),t0=performance.now();const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;const step=t=>{const k=reduce?1:Math.min(1,(t-t0)/1100);if(el)el.textContent=Math.round(s*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+ if(S.n===13)runOffer();
  if(S.n===10){const em=document.getElementById("em");em.addEventListener("input",()=>{S.email=em.value.trim();if(S.emailErr){S.emailErr="";em.classList.remove("err");document.getElementById("emErr").hidden=true}panel()});em.addEventListener("keydown",e=>{if(e.key==="Enter")submitEmail()})}
 }
 function submitEmail(){const ok=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.email);if(!ok){S.emailErr="1";const em=document.getElementById("em");em.classList.add("err");document.getElementById("emErr").hidden=false;em.focus();return}const nm=S.email.split("@")[0].split(/[._\d-]/)[0];S.firstName=nm?nm[0].toUpperCase()+nm.slice(1):"";next()}
 function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.getElementById("phone").appendChild(t);setTimeout(()=>t.remove(),1800)}
-function showSheet(){const d=document.createElement("div");d.className="scrim";d.id="scrim";d.innerHTML=`<div class="sheet" role="dialog" aria-label="Free trial offer"><div style="text-align:center"><img src="${ASSET.shield}" width="56" height="56" alt="" style="border-radius:14px"></div><h2 class="h2" style="margin-top:12px">Try Yearly free first</h2><p class="sub" style="font-size:15px;margin-top:8px">{{trial_days}}-day free trial, then $59.99/year.<br>Cancel before it ends and pay nothing.</p><div style="margin-top:20px">${cta("Start free trial","trial")}</div><button class="link" data-a="nothanks">No thanks</button><p class="legal" style="margin-top:0">Shown only if billing supports a trial.</p></div>`;document.getElementById("phone").appendChild(d)}
 
 document.addEventListener("click",e=>{
  const p=e.target.closest("[data-p]");
  if(p){const a=p.dataset.p;
   if(a==="vA"||a==="vB"){S.v=a==="vA"?"A":"B";document.getElementById("vA").classList.toggle("on",S.v==="A");document.getElementById("vB").classList.toggle("on",S.v==="B");render()}
-  if(a==="restart"){Object.assign(S,{n:1,hist:[],q1:null,q2:[],q3:null,q4:null,email:"",emailErr:"",firstName:"",plan:"yearly",faq:0,sheet:false});render();try{history.replaceState(null,"","#s1")}catch(e){}}
+  if(a==="restart"){Object.assign(S,{n:1,hist:[],q1:null,q2:[],q3:null,q4:null,email:"",emailErr:"",firstName:"",plan:"yearly",faq:0,sheet:false,offerSeen:false,offerEnd:0,paid:false});render();try{history.replaceState(null,"","#s1")}catch(e){}}
   if(a==="back")back();
   if(a==="jump"){const n=+p.dataset.v;fillTo(n);go(n)}
   return}
@@ -476,10 +534,12 @@ document.addEventListener("click",e=>{
  if(a==="apple"){S.email="alex@privaterelay.appleid.com";S.firstName="Alex";next()}
  if(a==="plan"){S.plan=el.dataset.v;const sc=stage.querySelector(".body").scrollTop;render();stage.querySelector(".body").scrollTop=sc}
  if(a==="faq"){const i=+el.dataset.v;S.faq=S.faq===i?-1:i;const sc=stage.querySelector(".body").scrollTop;render();stage.querySelector(".body").scrollTop=sc}
- if(a==="buy"){toast("Demo only — no charge made");timers.push(setTimeout(()=>go(13),1000))}
- if(a==="exit"){S.sheet=true;showSheet();panel()}
- if(a==="nothanks"){S.sheet=false;document.getElementById("scrim")?.remove();panel()}
- if(a==="trial"){toast("Demo only — trial not started");S.sheet=false;timers.push(setTimeout(()=>go(13),1000))}
+ if(a==="buy"){emit("checkout_click",{plan:S.plan,price:PLANS[S.plan].price});S.paid=true;toast("Demo only — no charge made");timers.push(setTimeout(()=>go(14),1000))}
+ if(a==="exit"){emit("paywall_close");go(offerOpen()?13:14)}
+ if(a==="offerbuy"){S.offerSeen=true;const u=CONFIG.offer.checkoutUrl||"";emit("offer_accept",{price:CONFIG.offer.price,url:u});emit("checkout_click",{plan:"offer",url:u});
+  if(u){try{const x=new URL(u,location.href);x.searchParams.set("plan","offer");if(S.email)x.searchParams.set("email",S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!x.searchParams.has(k))x.searchParams.set(k,v)});(window.top||window).location.href=x.toString()}catch(e){}}
+  else{S.paid=true;toast("Demo only — no charge made");timers.push(setTimeout(()=>go(14),1000))}}
+ if(a==="offerno"){S.offerSeen=true;emit("offer_decline");go(14)}
  if(a==="store")toast("Demo only — would open the App Store");
 });
 
@@ -487,7 +547,7 @@ function panel(){
  document.getElementById("flow").innerHTML=FLOW.map(([st,items])=>`<li class="stg">${st}</li>`+items.map(([n,name,tag])=>`<li><button class="${S.n===n?"cur":""}" data-p="jump" data-v="${n}"><span class="num">${n}</span><span>${name}</span>${tag?`<span class="tag">${tag}</span>`:""}</button></li>`).join("")).join("");
  const lbl=(arr,v)=>{const f=arr.find(x=>x[0]===v);return f?f[2]:"—"};
  const s=score(),b=band(s),answered=S.q1||S.q2.length||S.q3||S.q4;
- const rows=[["Codes via",lbl(Q1,S.q1)],["Exposed",S.q2.length?S.q2.map(v=>lbl(Q2,v)).join(", "):"—"],["Passwords",lbl(Q3,S.q3)],["Incidents",lbl(Q4,S.q4)],["Score",answered?`${s}/100 · ${b.t}`:"—"],["Email",S.email||"—"],["Plan",PLANS[S.plan].nm+" · "+PLANS[S.plan].price],["Variant","Copy "+S.v]];
+ const rows=[["Codes via",lbl(Q1,S.q1)],["Exposed",S.q2.length?S.q2.map(v=>lbl(Q2,v)).join(", "):"—"],["Passwords",lbl(Q3,S.q3)],["Incidents",lbl(Q4,S.q4)],["Score",answered?`${s}/100 · ${b.t}`:"—"],["Email",S.email||"—"],["Plan",PLANS[S.plan].nm+" · "+PLANS[S.plan].price],["Offer",S.offerSeen?"seen":"—"],["Paid",S.paid?"yes":"no"],["Variant","Copy "+S.v]];
  document.getElementById("kv").innerHTML=rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("");
 }
 

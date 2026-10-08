@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: learning goal, Quran journey stage, Arabic reading level, one warm-up quiz answer, barrier, preferred formats, daily minutes, prayer-anchored time
 output: personalized daily Quran learning path (first week syllabus) plus a free first lesson (Bismillah, word by word)
-screens: 23
+screens: 24
 monetization: single subscription paywall (store billing, 2 plans, yearly pre-selected, renewal price shown on the plan card), dismissible, one disclosed fallback
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — AyahPath (Daily Quran Learning)
 
-AyahPath Daily is a Quran micro-learning app (developer SCALENCE LIMITED, iOS "Education", subtitle "Islam Quranic Lessons & Audio"). It offers bite-sized lessons, narrated audio stories, quizzes, reflection and journaling, streaks and reminders, and memorization techniques. It ships in English, Arabic, French, German, Indonesian and Turkish, and is free to install with an "AyahPath Plus" subscription. The user tells us their goal (understand, read, memorize, habit), where they are on their Quran journey, how well they read Arabic and when they can give five minutes. They get a daily path fitted to their level and prayer routine, plus a real first lesson before the paywall. **Shape:** this is the **learning-plan** archetype (faith/devotional variant). It borrows the long quiz and plan reveal from `personalization-quiz`, but it is really a learning app. The quiz places the user on a curriculum, one real micro-lesson replaces the "generated reading", the product is a daily habit, and there is one monetization layer. There are **23 screens**. The flow is modeled on a teardown of AyahPath's own web funnel (`quiz.ayahpath.com`, cohort `ap_quran_313_c`, 41 screens, captured in AdSpyLab in 2026-09, plus cohorts `flow_ayah_313`, `ap_sd_313_c`, `ap_finance_313_c` and `ap_parenting_313_c`). Its question order and plan-reveal logic were kept. Its guilt questions, micro-"yes" loader prompts, scratch-card "90% promo" and intro-price-to-10x auto-renew checkout were **deliberately not copied** (listed in Notes). It is written as **in-app onboarding with Google Play / App Store billing**, because the store link targets Nigeria (Android-first, local-currency store pricing, cancellation in the store). The web-funnel variant is in Notes. **Visual override:** no dark purple house theme. It uses a calm devotional look: deep emerald, cream parchment cards, muted gold, low-opacity Islamic geometric pattern, correctly vowelled Uthmani Arabic, and no depictions of Prophets or Companions. **Tone:** sincere and gentle. No urgency, no guilt about salah or faith, no fabricated hadith or scholar endorsements. Every religious citation is a well-known authenticated text with its reference, and all of it must pass a qualified reviewer before launch. Copy follows the mobile limits: headline ≤6 words, body ≤12 words. Every screen has A/B copy (A = control).
+AyahPath Daily is a Quran micro-learning app (developer SCALENCE LIMITED, iOS "Education", subtitle "Islam Quranic Lessons & Audio"). It offers bite-sized lessons, narrated audio stories, quizzes, reflection and journaling, streaks and reminders, and memorization techniques. It ships in English, Arabic, French, German, Indonesian and Turkish, and is free to install with an "AyahPath Plus" subscription. The user tells us their goal (understand, read, memorize, habit), where they are on their Quran journey, how well they read Arabic and when they can give five minutes. They get a daily path fitted to their level and prayer routine, plus a real first lesson before the paywall. **Shape:** this is the **learning-plan** archetype (faith/devotional variant). It borrows the long quiz and plan reveal from `personalization-quiz`, but it is really a learning app. The quiz places the user on a curriculum, one real micro-lesson replaces the "generated reading", the product is a daily habit, and there is one monetization layer. There are **24 screens**. The flow is modeled on a teardown of AyahPath's own web funnel (`quiz.ayahpath.com`, cohort `ap_quran_313_c`, 41 screens, captured in AdSpyLab in 2026-09, plus cohorts `flow_ayah_313`, `ap_sd_313_c`, `ap_finance_313_c` and `ap_parenting_313_c`). Its question order and plan-reveal logic were kept. Its guilt questions, micro-"yes" loader prompts, scratch-card "90% promo" and intro-price-to-10x auto-renew checkout were **deliberately not copied** (listed in Notes). It is written as **in-app onboarding with Google Play / App Store billing**, because the store link targets Nigeria (Android-first, local-currency store pricing, cancellation in the store). The web-funnel variant is in Notes. **Visual override:** no dark purple house theme. It uses a calm devotional look: deep emerald, cream parchment cards, muted gold, low-opacity Islamic geometric pattern, correctly vowelled Uthmani Arabic, and no depictions of Prophets or Companions. **Tone:** sincere and gentle. No urgency, no guilt about salah or faith, no fabricated hadith or scholar endorsements. Every religious citation is a well-known authenticated text with its reference, and all of it must pass a qualified reviewer before launch. Copy follows the mobile limits: headline ≤6 words, body ≤12 words. Every screen has A/B copy (A = control).
 
 ---
 
@@ -353,14 +353,24 @@ Journey stage adjusts the tone: "New to Islam" adds a short "What is the Quran?"
 - Trust row: "Billed by {{store_name}} · Cancel anytime in your subscriptions · Restore purchase"
 - One review line: "The explanations and insights are clear and to the point" (App Store review)
 - No countdown, no promo code, no "offer expires".
-**Fallback offer:** On ✕, show one bottom sheet with a single disclosed option. If the app has a free tier, "Continue with today's free ayah" is primary. If not, and the product has a trial, the Yearly trial is shown with the same renewal line. Dismissing the sheet goes to the free experience or the app home, never back into the paywall loop.
+**Fallback offer:** On ✕, the last-chance offer (#23) once per session: the Yearly store trial if the product has one, else the lighter Monthly tier at its listed price. Nothing struck, no timer. Declining goes to the free experience (#24), never back into the paywall loop.
 **CTA:** Start my path (trial variant: Start free trial)
+
+### 23. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall (✕) without paying, within the brand promise in #22: store prices only, nothing struck, no urgency. It is not a markdown: the store's own Yearly free trial at the listed yearly renewal, or, when the store product has no trial, the lighter Monthly tier at its listed price. Shown once per session, then never again.
+**Headline A:** {{name}}, keep your path going (no name: "Keep your path going")
+**Headline B:** Try the full path first (lighter tier: "A lighter way to begin")
+**Body A:** Trial: "Day 1 is done. Try every lesson {{prayer_anchor}} before you pay." Lighter tier: "Start month by month, with no yearly commitment."
+**Plans:** One offer card, nothing struck (`compareAt: null`), no badge. Trial (store product has one): **Yearly, free trial first**, {{offer_price}} today (free for {{trial_days}} days), then {{yearly_price}}/year. No trial: **Monthly**, {{monthly_price}} per month, renews monthly.
+**Visual:** Same look as #22: emerald background, bar with the octagram logo, app name and a close ✕, centered gold eyebrow "One-time offer · shown once", headline and lead, then one cream parchment card with a gold border holding the 7-day path (Day 1 checked), the plan name ("Your {{minutes}}-minute {{track}} path, nothing locked"), the price row, 3 checks ("Bite-sized daily lessons", "Narrated audio stories", "Quizzes that check understanding"), the gold CTA, the renewal line and "Billed by {{store_name}} · Cancel anytime in your subscriptions". Plain decline link below the card. No payment badges (store billing).
+**Microcopy:** Renewal line, trial: "{{offer_price}} today: free for {{trial_days}} days, then {{yearly_price}}/year. We'll remind you {{n}} days before you're charged." Lighter tier: "{{monthly_price}} per month. Renews automatically until you cancel." Shown once per session (sessionStorage `ikf_offer_ayahpath`): a second paywall close goes straight to #24 Day 1 complete (free). No timer: `expiresMin` must stay `null` (brand promise, no urgency). Decline (link and ✕): "No thanks, continue with today's free ayah" (app has a free tier) or "No thanks, keep my free first lesson", which goes to #24 Day 1 complete on the free path, never back into the paywall. Accept starts the store purchase for the offer's `productId` (`checkoutUrl` stays empty), then #24. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
 
 ---
 
 ## G. Payoff
 
-### 23. Day 1 complete
+### 24. Day 1 complete
 **Purpose:** Confirms the purchase (or free start), shows the streak begun, and points to tomorrow's lesson so the second open is already set.
 **Headline A:** Your path begins today
 **Headline B:** Day 1 complete, {{name}}
@@ -428,6 +438,8 @@ Journey stage adjusts the tone: "New to Islam" adds a short "What is the Quran?"
 - The gate (21) sits after the free lesson on purpose: the user has something to save.
 
 **Monetization:** one layer, the store subscription. Track paywall conversion, trial-to-paid conversion if a trial exists, and **Day-2 lesson completion** as the leading retention metric. For a habit product, Day 2 predicts renewal better than install-to-pay. Track refund/chargeback rate separately; given the competitor's complaint profile, a low one is a positioning advantage worth showing in ads ("Cancel anytime in Google Play").
+
+**Last-chance offer:** measure offer CVR (#23 `offer_view` → `offer_accept`) separately from paywall CVR (#22).
 
 **First A/B tests:**
 1. First lesson (18) before vs after the paywall. Expect "before" to win on trust and on Day-2 retention.

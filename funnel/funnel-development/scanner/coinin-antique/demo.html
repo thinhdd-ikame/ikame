@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#141311">
 <meta name="robots" content="noindex">
-<title>CoinIn &middot; Antique</title>
+<title>CoinIdentify: Coin Scanner &middot; Antique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&display=swap">
@@ -47,10 +47,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .brand svg{color:var(--acc)}
 .scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none;overscroll-behavior:contain}
 .scr::-webkit-scrollbar{display:none}
-.scr.center{justify-content:center}
+.scr>*{flex-shrink:0}   /* items must not squash on short screens; the .scr scrolls instead */
+.scr.center{justify-content:flex-start}.scr.center>:first-child{margin-top:auto}.scr.center>:last-child{margin-bottom:auto}   /* safe centring: tall content scrolls instead of being cut off at the top */
 .foot{flex:none;padding:10px 20px max(20px,calc(var(--sab) + 12px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
 .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
-.note a{color:var(--t2)}
+.note a{color:inherit;text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:14px 0;margin:-14px 0;font-size:13px}
 .display{font:700 34px/1.08 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
 .display.sm{font-size:29px}
 .display em{font-style:normal;color:var(--acc)}
@@ -191,14 +192,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .thumbrow .th img{width:100%;height:100%;object-fit:cover}
 .thumbrow .th svg{position:absolute;inset:0;width:100%;height:100%}
 .stores{display:flex;gap:8px;justify-content:center}
-.store{display:flex;align-items:center;gap:7px;height:46px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
-.store b{display:block;font-size:13px}
+.store{display:flex;align-items:center;gap:8px;height:44px;padding:0 12px 0 10px;border-radius:8px;background:#000;border:1px solid #A6A6A6;line-height:1.05;text-align:left;color:#fff}
+.store svg{flex:none}
+.store small{display:block;font-size:9.5px;letter-spacing:.02em}
+.store b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
 /* ===== web paywall: long-scroll landing page, not an app sheet ===== */
 .wp{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;scroll-behavior:smooth;background:var(--bg)}
 .wp::-webkit-scrollbar{display:none}
-.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(var(--sat) + 8px) 16px 10px;background:#141311e6;backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:calc(var(--sat) + 8px) 16px 10px;background:#141311f5;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
 .wbar .brand{flex:1;justify-content:flex-start}
-.wbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wbar .mini{height:40px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
 .wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
 .wbar .x{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
 .wsec{padding:28px 18px 0}
@@ -261,7 +264,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .faq p{margin:0 2px 14px;color:var(--t2);font-size:14px}
 .guar{display:flex;gap:14px;align-items:center;padding:18px;border-radius:20px;border:1px solid #C9A45C55;background:radial-gradient(ellipse at 0% 0%,#C9A45C22,transparent 60%),var(--surface)}
 .guar .seal{width:62px;height:62px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--grad);color:var(--btn-text);font:700 11px/1.1 var(--sans);text-align:center;box-shadow:0 0 0 4px #C9A45C33}
-.wfoot{padding:28px 18px calc(var(--sab) + 110px);font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
+.wfoot{padding:28px 18px calc(var(--sab) + 124px);font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
 .ocard{position:relative;padding:18px 16px;border-radius:24px;border:1.5px solid var(--acc);background:radial-gradient(ellipse at 50% 0%,#C9A45C24,transparent 60%),linear-gradient(180deg,#221F1B,#191815);box-shadow:0 0 0 4px #C9A45C18,0 30px 60px -30px #000}
 .obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad);color:var(--btn-text);font:700 11px/1 var(--sans);letter-spacing:.08em;white-space:nowrap}
 .obadge .tok{color:var(--btn-text);border-color:var(--btn-text)}
@@ -272,7 +275,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .oprice s{color:var(--t3);font-size:14px}.oprice b{font:600 30px var(--serif);color:var(--acc)}.oprice>span{color:var(--t2);font-size:13px}
 .otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
 .otimer b{color:var(--acc);font-variant-numeric:tabular-nums}
-.sticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(var(--sab) + 10px));background:linear-gradient(180deg,transparent,#141311 28%);transform:translateY(110%);transition:transform .3s ease}
+.sticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(var(--sab) + 10px));background:#141311f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #ffffff10;transform:translateY(110%);transition:transform .3s ease}
 .sticky.show{transform:none}
 .sticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}
 .sticky .sum b{color:var(--t1)}
@@ -430,6 +433,25 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .home{font-size:56px;text-align:center;line-height:1}
 .sold{display:flex;justify-content:space-between;gap:10px;font-size:14px;color:var(--t2)}
 .sold b{color:var(--acc);font:700 18px var(--serif)}
+
+/* CoinIdentify add-on report (post-purchase upsell) + demo checkout sheet */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #C9A45C55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #C9A45C22}
+.upcov{position:relative;height:150px;border-radius:14px;overflow:hidden;background:radial-gradient(ellipse 70% 70% at 50% 35%,#C9A45C26,transparent 70%),#0E0D0B;border:1px solid #C9A45C66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#0E0D0Beb)}
+.upcov .upart{position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;align-items:flex-end;gap:6px;z-index:1}
+.upcov>div{max-width:58%}
+.upcov .upart .tcard{animation:none}.upcov .upart .tcard::after{display:none}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:700 21px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-top:1px solid var(--border);padding-top:10px}.upr b{font:700 24px var(--serif);color:var(--t1)}.upr b .tok{font-size:13px}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd svg{flex:none}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
+#demock{position:absolute;inset:0;z-index:1000;background:#000000b3;display:flex;flex-direction:column;justify-content:flex-end;animation:ckF .2s ease}
+#demock .iqc{background:var(--bg-elev);border-top:1px solid var(--border);border-radius:22px 22px 0 0;padding:20px 16px max(20px,calc(var(--sab) + 12px));animation:ckU .3s cubic-bezier(.2,.8,.2,1)}
+#demock .iqc b{font:700 21px/1.25 var(--serif);color:var(--t1)}#demock .iqc p{margin:6px 0 0;color:var(--t2);font-size:14px}#demock .iqc .ckf{font-size:12.5px;margin-bottom:14px}#demock .ckb{display:flex;flex-direction:column;gap:8px}
+@keyframes ckF{from{opacity:0}}@keyframes ckU{from{transform:translateY(100%)}}
 </style>
 </head>
 <body>
@@ -437,27 +459,27 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 <script>
 /* ===================== CONFIG - edit before launch ===================== */
 const CONFIG={
-  brand:'CoinIn',
+  brand:'CoinIdentify',
   funnel:'coinin-antique',
-  /* TODO(pricing): replace every {{placeholder}} with the real price string. Do not invent numbers.
-     3 plans: 1-week intro / 4-week pre-selected / 12-week anchor. Renewal shown next to every price. */
+  /* CoinIdentify plans (2026-10-07): 4w pre-selected. The 1-week plan renews every 4 weeks, not weekly. */
   plans:{
-    '1w':{name:'1 week',price:'{{price_1w}}',renew:'{{renewal_1w}}',per:'week',badge:'',sub:'Intro price',save:''},
-    '4w':{name:'4 weeks',price:'{{price_4w}}',renew:'{{renewal_4w}}',per:'4 weeks',badge:'',sub:'Pre-selected',save:''},
-    '12w':{name:'12 weeks',price:'{{price_12w}}',renew:'{{renewal_12w}}',per:'12 weeks',badge:'',sub:'',save:''}
+    '1w':{name:'1 week',price:'$12.99',renew:'$39.99',per:'4 weeks',badge:'',sub:'Intro week',save:''},
+    '4w':{name:'4 weeks',price:'$14.99',renew:'$39.99',per:'4 weeks',badge:'Recommended',sub:'',save:''},
+    '12w':{name:'12 weeks',price:'$39.99',renew:'$59.99',per:'12 weeks',badge:'',sub:'Lowest per week',save:''},
+    /* post-purchase add-on: its own Paddle one-time checkout. hidden = never listed on the paywall. Name and price pending from the owner. */
+    'addon':{name:'Maker\'s Mark & Provenance Report',label:'Maker\'s Mark & Provenance Report',price:'{{addon_price}}',oneTime:true,hidden:true}
   },
   defaultPlan:'4w',
   refundDays:'{{refund_days}}',
-  checkoutUrl:{'1w':'','4w':'','12w':''},   /* '' = only emit checkout_click */
-  /* Last-chance offer shown ONCE when the paywall is closed without paying.
-     One-time "value check" for the scanned item only: no renewal, not a paywall SKU, no strike price (compareAt null).
-     expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
-  offer:{enabled:true,name:'{{offer_name}}',price:'{{offer_price}}',oneTime:true,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
-  termsUrl:'',privacyUrl:'',subscriptionTermsUrl:'',
-  appUrl:'',appStoreUrl:'',playStoreUrl:'',
+  checkoutUrl:{'1w':'','4w':'','12w':'',addon:''},   /* '' = demo checkout sheet (FunnelFox opens its native checkout per plan key) */
+  declineFlow:{addon:'get_app'},   /* checkout closed without paying -> screen name */
+  offer:{enabled:false},   /* CoinIdentify policy: no sale, no last-chance offer */
+  termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',
+  supportEmail:'{{support_email}}',
+  appUrl:'',appStoreUrl:'',playStoreUrl:'',appUrlAndroid:'',   /* pending -> "App link coming soon" */
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},   /* hidden while unset */
   reviews:[{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'}],
-  company:'{{legal_entity}}'
+  company:'{{legal_entity}}'   /* hidden while a token */
 };
 /* ======================================================================= */
 </script>
@@ -465,7 +487,7 @@ const CONFIG={
 <script>
 const QS=new URLSearchParams(location.search);
 const DEBUG=QS.get('debug')==='1';
-const IMG=/*IMG-START*/{'img/hook-attic.jpg':'img/hook-attic.jpg','img/item-sample.jpg':'img/item-sample.jpg','img/item-underside.jpg':'img/item-underside.jpg','img/paywall-hero.jpg':'img/paywall-hero.jpg'}/*IMG-END*/;
+const IMG=/*IMG-START*/{'img/hook-attic.jpg':'img/hook-attic.jpg','img/item-sample.jpg':'img/item-sample.jpg','img/item-underside.jpg':'img/item-underside.jpg','img/paywall-hero.jpg':'img/paywall-hero.jpg','img/sample-furn.jpg':'img/sample-furn.jpg','img/sample-silver.jpg':'img/sample-silver.jpg','img/sample-clock.jpg':'img/sample-clock.jpg'}/*IMG-END*/;
 const im=p=>IMG[p]||p;
 const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
 const IC={
@@ -507,13 +529,13 @@ const ITEMS={
 /* Auction game: ILLUSTRATIVE sample figures. Replace with one verified, dated, sourced sold lot per item type before launch (see brief Notes). */
 const GAMEDATA={verified:false,a:'$45',b:'$380'};
 const NOTE='Values are estimates, not appraisals. For insurance or legal use, ask a qualified appraiser.';
-const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',item:'',itemOther:'',src:'',srcOther:'',mark:'',goals:[],goalOther:'',name:'',gameAns:'',pending:null,photo:null,sample:false,upErr:'',upWarn:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,pass:false,completed:false,offerSeen:false});
+const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',item:'',itemOther:'',src:'',srcOther:'',mark:'',goals:[],goalOther:'',name:'',gameAns:'',pending:null,photo:null,sample:false,upErr:'',upWarn:'',email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'how_it_works',3:'name',4:'q_item',5:'q_source',6:'q_mark',7:'q_goals',8:'bridge_slow_down',9:'game_auction',10:'camera_primer',11:'scan_item',12:'identifying',13:'item_id',14:'authenticity_teaser',15:'email',16:'paywall',17:'offer',18:'report'};
+const SCREENS={1:'hook',2:'how_it_works',3:'name',4:'q_item',5:'q_source',6:'q_mark',7:'q_goals',8:'bridge_slow_down',9:'game_auction',10:'camera_primer',11:'scan_item',12:'identifying',13:'item_id',14:'authenticity_teaser',15:'email',16:'paywall',17:'report_upsell',18:'get_app'};
 const QN=[4,5,6,7];
-const SKIPBACK=[12,16,17];
-const PAYWALL=16,OFFER=17,REPORT=18;
+const SKIPBACK=[12,16,17,18];
+const PAYWALL=16,IK_UP=17,IK_GET=18;
 const item=()=>ITEMS[S.item||'vase'];
 const family=()=>S.src==='inherited'||S.src==='estate';
 const nm=()=>(S.name||'').trim();
@@ -533,7 +555,7 @@ function emit(name,detail){
   const d=Object.assign({},detail||{},{data});
   try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
   try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:name,detail:d},'*')}catch(e){}
-  const f=Object.assign({funnel:CONFIG.funnel},data,detail||{});
+  const f=Object.assign({funnel:CONFIG.funnel},data,detail||{});delete f.email;   /* never send the email to ad pixels */
   try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,f)}catch(e){}
   try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,f)}catch(e){}
   if(DEBUG)try{console.log('[ikfunnel]',name,JSON.stringify(detail||{}))}catch(e){}
@@ -541,17 +563,25 @@ function emit(name,detail){
 const answer=(k,v)=>emit('answer',{key:k,value:v});
 function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
 function addPass(u){PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)})}
-function checkout(){
-  const url=CONFIG.checkoutUrl[S.plan]||'';emit('checkout_click',{plan:S.plan,url});
-  if(!url)return toast('Demo only. No charge made.');
+function checkout(plan){plan=plan||S.plan;
+  const url=CONFIG.checkoutUrl[plan]||'';emit('checkout_click',{plan,url});
+  if(!url){demoCheckout(plan);return}
   let u;try{u=new URL(url,location.href)}catch(e){return}
-  u.searchParams.set('plan',S.plan);addPass(u);navTop(u.toString());
+  u.searchParams.set('plan',plan);addPass(u);navTop(u.toString());
 }
-function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
+/* demo-only checkout sheet when no checkout URL is set (FunnelFox replaces checkout() with its native screen) */
+function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;document.getElementById('demock')?.remove();
+  const el=document.createElement('div');el.id='demock';el.setAttribute('role','dialog');el.setAttribute('aria-label','Checkout');
+  el.innerHTML=`<div class="iqc"><b>Demo checkout</b><p>${esc(CONFIG.brand)} · ${esc(p.label||p.name)} · ${tok(p.price)}</p><p class="ckf">${p.oneTime?'Paid once. No subscription.':`Then ${tok(p.renew)} every ${esc(p.per)} until you cancel.`}</p><div class="ckb"><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  app.appendChild(el)}
+const scrIdx=nm=>+(Object.keys(SCREENS).find(k=>SCREENS[k]===nm)||0);
+function checkoutDeclined(plan){emit('checkout_decline',{plan});const n=scrIdx((CONFIG.declineFlow||{})[plan]);if(n)go(n)}
+function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?(CONFIG.appUrlAndroid||CONFIG.playStoreUrl):CONFIG.appStoreUrl)}
+const agreeLinks=()=>`<a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a> and <a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>`;
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
 
-function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===PAYWALL)emit('paywall_view');if(S.i===OFFER)emit('offer_view');if(S.i===REPORT&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
-function go(n,push=true){clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
+function viewed(){emit('screen_view',{index:S.i,name:SCREENS[S.i]});if(S.i===PAYWALL)emit('paywall_view');if(S.i===IK_GET&&!S.completed){S.completed=true;emit('complete',{paid:S.paid})}}
+function go(n,push=true){document.getElementById('demock')?.remove();clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
 function next(){go(S.i+1)}
 function back(){clearT();let p=S.hist.pop();while(p&&SKIPBACK.includes(p))p=S.hist.pop();if(p){S.i=p;render(true);viewed()}}
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;app.appendChild(e);setTimeout(()=>e.remove(),2700)}
@@ -568,7 +598,9 @@ function tcard(c,o={}){
   const st=o.cw?` style="--cw:${o.cw}px"`:'';
   if(o.photo)return `<div class="tcard ph"${st}><img src="${o.photo}" alt="Your item"></div>`;
   return `<div class="tcard" style="${o.cw?`--cw:${o.cw}px;`:''}color:${COL[c.k]}"><svg class="itm" viewBox="0 0 100 100" role="img" aria-label="${esc(c.name)}">${SHAPES[c.k]}</svg></div>`}
-const myCard=(o={})=>tcard(item(),Object.assign({photo:S.photo},o));
+/* sample items show a real (generated) photo; the drawn shape is only a fallback */
+const SAMPLE_IMG={vase:'img/item-sample.jpg',furn:'img/sample-furn.jpg',silver:'img/sample-silver.jpg',clock:'img/sample-clock.jpg'};
+const myCard=(o={})=>tcard(item(),Object.assign({photo:S.photo||(SAMPLE_IMG[item().k]?im(SAMPLE_IMG[item().k]):null)},o));
 const fanArt=()=>`<div class="fan">${['vase','silver','clock'].map(k=>tcard(ITEMS[k],{})).join('')}</div>`;
 const art=(img,cls='')=>`<div class="art ${cls}">${fanArt()}<img src="${im(img)}" alt="" onload="this.parentNode.classList.add('hasimg')" onerror="this.remove()"></div>`;
 const base=(marked,cls='')=>`<div class="base ${marked?'':'plain'} ${cls}" aria-hidden="true"><b>◈</b></div>`;
@@ -576,10 +608,10 @@ const base=(marked,cls='')=>`<div class="base ${marked?'':'plain'} ${cls}" aria-
 
 /* ---------- blocks ---------- */
 function nav(){
-  if([1,12,PAYWALL,OFFER,REPORT].includes(S.i))return '';
+  if([1,12,PAYWALL,IK_UP,IK_GET].includes(S.i))return '';
   const k=QN.indexOf(S.i),done=QN.filter(x=>x<S.i).length;
   const p=k<0?Math.round(done/QN.length*100):Math.round((k+1)/QN.length*100);
-  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('coin',16)} CoinIn</div><span class="stepn">${k<0?'':(k+1)+'/'+QN.length}</span></div>${S.i<=11?`<div class="prog" style="margin:0 8px"><span style="width:${S.i>7?100:p}%"></span></div>`:''}</div>`;
+  return `<div class="nav" style="height:auto;flex-direction:column;align-items:stretch;gap:6px;padding-top:4px"><div style="display:flex;align-items:center"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="brand" style="flex:1">${ic('coin',16)} CoinIdentify</div><span class="stepn">${k<0?'':(k+1)+'/'+QN.length}</span></div>${S.i<=11?`<div class="prog" style="margin:0 8px"><span style="width:${S.i>7?100:p}%"></span></div>`:''}</div>`;
 }
 const cta=(l,ok=true,a='next')=>`<button class="btn" data-a="${a}" ${ok?'':'disabled'}>${l}</button>`;
 const opts=(f,o)=>`<div class="opts">${Object.entries(o).map(([k,[e,l]])=>`<button class="opt ${S[f]===k?'on':''}" data-a="pick" data-f="${f}" data-v="${k}" aria-pressed="${S[f]===k}"><span class="well">${e}</span><span class="lbl">${l}</span></button>`).join('')}</div>`;
@@ -590,25 +622,17 @@ const skin=(a,l)=>`<button class="link" data-a="${a}">${l}</button>`;
 /* ---------- web paywall blocks ---------- */
 const planOf=k=>CONFIG.plans[k];
 const todayLine=()=>`${tok(planOf(S.plan).price)} today`;
-const renewLine=k=>{const p=planOf(k);return k==='1w'?`${tok(p.price)} today (intro), then ${tok(p.renew)} every week until you cancel.`:`${tok(p.price)} today, then ${tok(p.renew)} every ${p.per} until you cancel.`};
-function planBlock(){const keys=Object.keys(CONFIG.plans);
-  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${keys.map(k=>{const p=planOf(k);return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="rib">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renew)} / ${p.per==='week'?'week':p.per}</small></span></button>`}).join('')}</div>
-   <div class="today"><span>Due today</span><b data-today>${todayLine()}</b></div>
+/* exact renewal lines (CoinIdentify 2026-10-07): the 1-week plan renews every 4 weeks */
+const FIRST={'1w':'your first week','4w':'your first 4 weeks','12w':'your first 12 weeks'};
+const renewLine=k=>{const p=planOf(k);return `${tok(p.price)} today for ${FIRST[k]||'your first period'}, then ${tok(p.renew)} every ${esc(p.per)} until you cancel.`};
+const shownPlans=()=>Object.keys(CONFIG.plans).filter(k=>!CONFIG.plans[k].hidden);
+function planBlock(){if(!planOf(S.plan)||planOf(S.plan).hidden)S.plan=CONFIG.defaultPlan;const keys=shownPlans();
+  return `<div class="pick"><h2 class="wh2" style="text-align:center;margin-bottom:14px">Choose your plan</h2><div class="plans">${keys.map(k=>{const p=planOf(k);return `<button class="wplan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="rib">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,3):''}</span><span class="nm">${p.name}</span><span class="sub">${p.sub}</span><span class="pr">${tok(p.price)}<small>then ${tok(p.renew)} / ${esc(p.per)}</small></span></button>`}).join('')}</div>
+   <div class="today"><span>Due today</span><b data-today>${tok(planOf(S.plan).price)}</b></div>
    <div style="height:12px"></div>${cta('Unlock my item',true,'pay')}
    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
    <div class="secure"><span>${ic('shield',14)} Secure checkout</span><span>${ic('check',14,2.4)} Cancel anytime</span></div>
    <p class="fine" data-renew>${renewLine(S.plan)}</p></div>`}
-
-/* ---------- last-chance offer (once, on paywall close) ---------- */
-const OKEY='ikf_offer_'+CONFIG.funnel;
-const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
-  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
-function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
-  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
-  const tick=()=>{const el=document.getElementById('otimer');if(!el)return clearInterval(window.__iv);const ms=S.offerEnd-Date.now();
-    if(ms<=0){clearInterval(window.__iv);S.offerSeen=true;emit('offer_expired');go(REPORT);return}
-    const m=Math.floor(ms/60000),sec=Math.floor(ms/1000)%60;el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
-  tick();window.__iv=setInterval(tick,1000)}
 
 /* ---------- item report pieces ---------- */
 const markTxt=()=>({yes:'Mark noted',no:'None noted',unsure:'Check underneath'}[S.mark||'unsure']);
@@ -625,7 +649,7 @@ const V={
   <div class="tc" style="margin-top:-30px;position:relative"><h1 class="display" style="margin-top:4px">${t('Don\'t sell grandma\'s vase for $5','Clearing out a family home?')}</h1></div>
   <p class="lead tc">${t('Scan one piece and see what you have.','Quick quiz, then your free item ID.')}</p>
   <div class="trio"><span>${ic('clock',15)} 2-min quiz</span><span>${ic('vase',15)} Free item ID</span><span>${ic('layers',15)} Value range inside</span></div></div>
-  <div class="foot">${cta('Start the quiz')}<p class="note">By continuing you agree to our Terms of Use and Privacy Policy. Values are estimates only.</p></div>`,
+  <div class="foot">${cta('Start the quiz')}<p class="note">By continuing you agree to our ${agreeLinks()}. Values are estimates only.</p></div>`,
 2:()=>`<div class="scr">${q(t('Three steps, one piece','Here\'s how it works'),t('Quick questions, one scan, your free item ID.','Estimates only, never a formal appraisal.'))}
   <div class="steps2">${[['Answer a few questions','vase'],['Scan one item','camera'],['Get its ID card','loupe']].map(([x,i],n)=>`<div class="r"><i>${n+1}</i><span style="flex:1">${x}</span><span style="color:var(--acc)">${ic(i,20)}</span></div>`).join('')}</div>
   <div class="tc"><span class="chip">Estimates only, not an appraisal</span></div>
@@ -687,15 +711,16 @@ const V={
   <div class="box white ${S.emailErr?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" placeholder="Your email" value="${esc(S.email)}" data-f="email"></div>
   ${S.emailErr?`<div class="err" role="alert">${S.emailErr}</div>`:''}
   <button class="link" style="text-align:left;padding-left:0;text-decoration:none;display:flex;gap:10px;align-items:flex-start;color:var(--t2)" data-a="consent"><span style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;${S.consent?'background:var(--grad);border-color:transparent;color:var(--btn-text)':''}">${S.consent?ic('check',13,3):''}</span><span style="font-size:13px">Send me tips and offers by email (optional)</span></button></div>
-  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our Terms of Use and Privacy Policy. We never sell your email.</p></div>`,
+  <div class="foot">${cta('Continue',true,'email')}<p class="note">By continuing, you agree to our ${agreeLinks()}. We never sell your email.</p></div>`,
 16:()=>{const R=CONFIG.rating,RV=(CONFIG.reviews||[]).filter(r=>r&&r.text),c=item();
-  const FAQ=[['What\'s included?','Value range for your item, where to sell, a real-or-reproduction read, history notes and unlimited scans.'],
+  const FAQ=[['When do I get my report?','Right after checkout, in the CoinIdentify: Coin Scanner app. Log in with '+esc(S.email||'your email')+'.'],
+    ['What\'s included?','Value range for your item, where to sell, a real-or-reproduction read, history notes and unlimited scans.'],
     ['How is value estimated?','From your photo and what we can read: era, style, material and condition. It is a range, not an appraisal.'],
     ['How do I cancel?','In your account settings, any time before the next renewal.'],
-    ['Will I be charged again?','Yes, unless you cancel: the plan renews at the price and period shown on the card you pick.'],
+    ['Will I be charged again?','Yes, unless you cancel. The 1-week and 4-week plans renew at $39.99 every 4 weeks. The 12-week plan renews at $59.99 every 12 weeks.'],
     ['Is this a formal appraisal?','No. For insurance, probate or selling a valuable piece, ask a qualified appraiser.']];
   return `<div class="wp" id="wp">
-  <div class="wbar"><div class="brand">${ic('coin',16)} CoinIn</div><button class="mini" data-a="toplans">Unlock my item</button><button class="x" data-a="closepw" aria-label="Close">${ic('x',16)}</button></div>
+  <div class="wbar"><div class="brand">${ic('coin',16)} CoinIdentify</div><button class="mini" data-a="toplans">Unlock my item</button></div>
   <div class="wsec tight"><span class="eyebrow">${family()?'Your family piece report is ready':'Your item report is ready'}</span><h1 class="display" style="font-size:31px">${t('See <em>what it\'s worth</em>','Unlock your <em>whole inventory</em>')}</h1>
    <p class="lead" style="margin:8px 0 14px">${t('Value range, where to sell, real or reproduction.','Scan every piece in the house.')}</p>
    <div class="cidrow">${myCard({cw:112})}<div class="crow" style="flex:1"><div>Item<b style="font-size:12.5px">${esc(c.name)}</b></div><div>Est. era<b style="font-size:12.5px">${esc(c.era)}</b></div><div>Style<b style="font-size:12.5px">${esc(c.style)}</b></div><div>Value<b>Locked</b></div></div></div><div class="hint" style="margin-top:8px"><span class="chip">Sample data</span> Era and style shown are a demo sample.</div>
@@ -704,38 +729,42 @@ const V={
   <div class="wsec"><span class="eyebrow">Inside your report</span><h2 class="wh2">Everything for your pieces</h2><p class="lead">Your item ID is open. Unlock the rest.</p>
    <div class="toc"><div class="open"><span class="n">1</span><span>Item ID: ${esc(c.type)}, ${esc(c.era)}</span><span class="l">${ic('check',16,2.4)}</span></div>${insideList().map((x,i)=>`<div><span class="n">${i+2}</span><span>${x}</span><span class="l">${ic('lock',16)}</span></div>`).join('')}</div></div>
   <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From one scan to the whole house</h2>
-   <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['See your report','The value range for this item opens on this page.'],['Keep scanning in the app','Log in with your email to scan the rest.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
+   <div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Get the app','Download CoinIdentify: Coin Scanner from the App Store or Google Play.'],['Open your report','Log in with your email. Your scan is saved there.']].map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
   ${R&&R.score&&R.count&&!/\{\{/.test(R.score)&&!/\{\{/.test(R.count)&&RV.length&&!RV.some(r=>/\{\{/.test(r.text))?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><div class="sc">${tok(R.score)}</div><div><div class="stars">${stars(parseFloat(R.score))}</div><div class="hint">${tok(R.count)} ratings</div></div></div>
    <div class="stack" style="margin-top:10px">${RV.map(r=>`<div class="rev"><div class="who"><i>${esc(r.name.slice(0,2).toUpperCase())}</i><div>${tok(r.name)}<small>${tok(r.meta)}</small></div>${r.stars>=1?`<span class="stars" style="margin-left:auto;font-size:12px">${stars(r.stars)}</span>`:''}</div>${tok(r.text)}</div>`).join('')}</div></div>`:''}
   ${/\{\{/.test(CONFIG.refundDays)?'':`<div class="wsec"><div class="guar"><div class="seal">${tok(CONFIG.refundDays)}<br>DAY</div><div><b style="font:700 19px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${tok(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
-  <div class="wfoot">${legal()}<div>${NOTE} ${tok(CONFIG.company)}</div></div>
+  <div class="wfoot">${legal()}<div>${NOTE} ${/\{\{/.test(CONFIG.company)?'':esc(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Unlock my item',true,'pay')}</div>`},
-17:()=>{const o=CONFIG.offer,refund=/\{\{/.test(CONFIG.refundDays)?'':` ${esc(CONFIG.refundDays)}-day money-back.`;
-  return `<div class="wp"><div class="wbar"><div class="brand">${ic('coin',16)} CoinIn</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
-  <div class="wsec tight tc"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:31px">${t('Just <em>this piece</em>?','Get one <em>value check</em>')}</h1>
-   <p class="lead" style="margin-top:8px">${t('Pay once for this item\'s value range.','No subscription, no renewal.')}</p>
-   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
-  <div class="wsec tight"><div class="ocard">${o.badge&&!/^\{\{/.test(o.badge)?`<span class="obadge">${tok(o.badge)}</span>`:''}
-   <div class="orow"><div class="th cthumb" style="width:58px;height:74px">${myCard({cw:50})}</div><div style="flex:1;min-width:0"><b style="font:700 19px var(--serif)">${tok(o.name)}</b><div class="hint">One-item value check · one payment</div></div></div>
-   <div class="oprice"><b>${tok(o.price)}</b><span>once</span></div>
-   <div class="checks" style="margin:14px 0">${['This item\'s estimated value range','Low to high by condition'].map(x=>`<div>${ic('check',16,2.4)}<span>${x}</span></div>`).join('')}</div>
-   <p class="hint" style="margin-bottom:10px">Not included: unlimited scans, where to sell, real-or-reproduction read, history notes and other items.</p>
-   ${cta('Get my value check',true,'offerbuy')}
-   <div class="pay"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
-   <p class="fine">${tok(o.price)} once. No renewal, nothing to cancel.${refund}</p></div></div>
-  <div class="wsec tc" style="padding-bottom:calc(var(--sab) + 30px)"><button class="link" data-a="offerno">No thanks, keep the free item ID</button><div class="note" style="margin-top:6px">${NOTE}</div></div></div>`},
-18:()=>{const c=item(),g=S.paid||S.pass,all=S.paid;
-  return `<div class="scr" style="gap:14px">${S.paid?'<span class="badge">'+ic('check',13,2.6)+' Unlocked</span>':S.pass?'<span class="badge">'+ic('check',13,2.6)+' Value check unlocked</span>':''}
-  <div><h1 class="display sm">${t('Your piece'+(nm()?', '+esc(nm()):''),'Your item, decoded')}</h1><p class="lead" style="margin-top:8px">${t('Saved to your inventory.','Scan the next piece any time.')}</p></div>
-  <div class="cidrow">${myCard({cw:118})}<div style="flex:1;min-width:0"><div class="cname">${esc(c.name)}</div><div style="margin-top:8px">${factsDl()}</div></div></div>
-  ${g?`${rawBox()}<p class="hint">Estimate only. For a possibly valuable piece, get a qualified appraisal before selling.</p>`:`<div class="stack">${lockRow('Value range')}</div>`}
-  ${all?`<div class="card"><h4>${ic('check',14,2.6)} Where to sell</h4><p>${c.sell.map(esc).join(' · ')}</p></div><div class="card"><h4>${ic('check',14,2.6)} Real or reproduction <span class="chip" style="margin-left:6px">Sample data</span></h4><div class="cname" style="color:var(--acc);font-size:20px;margin:4px 0 8px">${c.verdict}</div><div class="crow">${c.read.map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('')}</div><p class="hint" style="margin-top:8px">An estimate from your photo, not an expert authentication.</p></div><div class="card"><h4>${ic('check',14,2.6)} Inventory</h4><p>1 item saved. Add more pieces to see the whole house.</p></div>`:`<div class="stack">${lockRow('Where to sell')}${lockRow('Real or reproduction')}</div>`}
-  <p class="note">${NOTE}</p></div>
-  <div class="foot">${all?'':cta(g?'Unlock all':'Unlock my item',true,'topw')}<button class="btn ${all?'':'ghost'}" data-a="scannext">Scan next item</button><div class="stores"><span class="store">${ic('apple',18)}<span>Download on the<b>App Store</b></span></span><span class="store">${ic('play',16)}<span>Get it on<b>Google Play</b></span></span></div></div>`}
+17:()=>{const u=CONFIG.upsell;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov"><span class="upart" aria-hidden="true">${myCard({cw:70})}<span class="under">${base(true)}</span></span><div><small>CoinIdentify report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${tok(u.price)}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`},
+18:()=>{if(S.plan==='addon')S.plan=S.mainPlan||CONFIG.defaultPlan;const n=nm(),em=S.email||'your email';
+  return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
+  <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full report is waiting in the CoinIdentify app.</p></div>
+  ${S.upsold?`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div>`:''}
+  <div class="how" style="margin-top:4px">${[['Download CoinIdentify: Coin Scanner','From the App Store or Google Play.'],['Log in with '+esc(em),'Use the email you gave us.'],['Open your report','Your scan is saved to your account.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div>
+  <p class="note">${NOTE} Cancel anytime in your account.</p></div>
+  <div class="foot">${cta('Open the app',true,'app')}<div class="stores">${[['ios','M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701','Download on the','App Store'],['android','M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z','GET IT ON','Google Play']].map(([k,d,a,b])=>`<button class="store" data-a="app" data-store="${k}"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="${d}"/></svg><span><small>${a}</small><b>${b}</b></span></button>`).join('')}</div></div>`}
 };
+
+/* ---------- CoinIdentify add-on report (post-purchase upsell, 2026-10-07) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA runs checkout('addon'): a hidden one-time plan with its own Paddle checkout (FunnelFox: native
+   checkout_addon screen; success -> completePurchase('addon') -> get_app with the add-on; closed -> get_app without it).
+   Name and price pending from the owner: price stays {{addon_price}} and the CTA carries no price until then. */
+CONFIG.upsell={id:'makers_mark_provenance',name:CONFIG.plans.addon.name,price:CONFIG.plans.addon.price,
+  h:['Who made <em>your piece</em>?','Trace its <em>maker and past</em>'],
+  lead:['Read its maker\'s mark and trace its past.','A deeper look at the item you scanned.'],
+  checks:['Maker\'s mark read from a close-up photo','Likely maker, region and period, as an estimate','Provenance checklist: papers and history to gather'],
+  eyebrow:'Add-on · paid once',cta:'Add to my plan',skip:'No thanks, take me to the app',note:'One-time payment at a secure checkout. No subscription.'};
 
 /* ---------- animated screens ---------- */
 function run12(){let p=0;
@@ -749,16 +778,15 @@ function render(anim){
   const old=app.querySelector('.view');if(old)old.replaceWith(v);else app.appendChild(v);
   if(S.i===12)run12();
   if(S.i===PAYWALL)bindPaywall(v);
-  if(S.i===OFFER)runOffer();
   const o=v.querySelector('#oth');if(o&&!o.value)o.focus();
 }
 function bindPaywall(v){
-  const wp=v.querySelector('#wp'),st=v.querySelector('#sticky'),blocks=[...v.querySelectorAll('.pick')];
+  const wp=v.querySelector('#wp'),st=v.querySelector('#sticky'),blocks=[...v.querySelectorAll('.pick .btn')];
   if(!wp||!('IntersectionObserver' in window)){st&&st.classList.add('show');return}
   const vis=new Set();
-  const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{root:wp,threshold:.25});
+  const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));st.classList.toggle('show',!vis.size)},{root:wp,threshold:.9,rootMargin:'-60px 0px 0px 0px'});   /* sticky shows from first view whenever no plan CTA is on screen */
   blocks.forEach(b=>io.observe(b));
-  wp.addEventListener('scroll',()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);st.classList.toggle('show',!vis.size&&wp.scrollTop>40)},{passive:true});
+  wp.addEventListener('scroll',()=>{wp.classList.toggle('scrolled',wp.scrollTop>260)},{passive:true});
 }
 
 /* ---------- photo intake ---------- */
@@ -794,16 +822,18 @@ app.addEventListener('click',e=>{
     case 'consent':S.consent=!S.consent;render();break;
     case 'email':{const x=(S.email||'').trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.emailErr='Enter a valid email address.';render();document.getElementById('em')?.focus();break}S.email=x;S.emailErr='';emit('lead',{method:'email',marketingConsent:S.consent});next();break}
     case 'plan':{S.plan=v;emit('plan_select',{plan:v});
+      if(S.i!==PAYWALL){render();break}
       app.querySelectorAll('.wplan').forEach(x=>{const on=x.dataset.v===v;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);x.querySelector('.rd').innerHTML=on?ic('check',12,3):''});
-      app.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renewLine(v));app.querySelectorAll('[data-today]').forEach(x=>x.innerHTML=todayLine());
+      app.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renewLine(v));app.querySelectorAll('[data-today]').forEach(x=>x.innerHTML=tok(planOf(v).price));
       document.getElementById('sumline').innerHTML=todayLine();document.querySelector('#sticky .sum span').textContent=planOf(v).name;break}
     case 'toplans':document.getElementById('plans1')?.scrollIntoView({block:'start'});break;
-    case 'pay':checkout();break;
-    case 'closepw':emit('paywall_close');go(offerOpen()?OFFER:REPORT);break;
-    case 'offerbuy':S.offerSeen=true;{const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');addPass(x);navTop(x.toString())}catch(err){}}else{toast('Demo only. No charge made.');S.pass=true;go(REPORT)}}break;
-    case 'offerno':S.offerSeen=true;emit('offer_decline');go(REPORT);break;
-    case 'topw':go(PAYWALL);break;
-    case 'scannext':S.photo=null;S.pending=null;S.gameAns=S.gameAns;go(10);break;
+    case 'pay':checkout(S.plan);break;
+    case 'ckpay':{document.getElementById('demock')?.remove();window.IkFunnel.completePurchase(S.ckPlan);break}
+    case 'ckclose':{document.getElementById('demock')?.remove();checkoutDeclined(S.ckPlan);break}
+    case 'closepw':break;   /* hard paywall: no exit without purchase */
+    case 'upbuy':{const u=CONFIG.upsell;emit('upsell_accept',{id:u.id,price:u.price});checkout('addon');break}
+    case 'upskip':emit('upsell_decline',{id:CONFIG.upsell.id});go(IK_GET);break;
+    case 'app':{const st=b.dataset.store,u=(st==='ios'&&CONFIG.appStoreUrl)||(st==='android'&&(CONFIG.appUrlAndroid||CONFIG.playStoreUrl))||appLink();emit('app_handoff',{url:u});if(u)navTop(u);else toast('App link coming soon');break}
   }
 });
 app.addEventListener('change',e=>{if(e.target.type==='file'){takeFile(e.target.files&&e.target.files[0]);e.target.value=''}});
@@ -817,8 +847,10 @@ app.addEventListener('drop',e=>{const d=e.target.closest('#drop');if(d){e.preven
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(REPORT)}});
-if(QS.get('paid')){S.paid=true;S.plan=QS.get('paid')}
+  /* completePurchase runs after ANY checkout success (FunnelFox: the plan key that was opened): main plan -> add-on screen, addon -> get_app */
+  completePurchase:plan=>{plan=plan||S.plan;if(plan!=='addon'){S.plan=S.mainPlan=plan;S.paid=true;emit('purchase_complete',{plan});if(!S.upsold){go(IK_UP);return}go(IK_GET);return}
+    S.plan=S.mainPlan||CONFIG.defaultPlan;S.upsold=true;emit('purchase_complete',{plan:'addon',id:CONFIG.upsell.id,price:CONFIG.upsell.price});go(IK_GET)}});
+if(QS.get('paid')){const k=QS.get('paid');S.paid=true;S.plan=S.mainPlan=(CONFIG.plans[k]&&!CONFIG.plans[k].hidden)?k:CONFIG.defaultPlan;S.i=IK_UP}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{item:S.item||'vase',src:S.src||'inherited',mark:S.mark||'unsure',goals:S.goals.length?S.goals:['value','real'],email:S.email||'demo@example.com'});go(n)}}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
 render();viewed();

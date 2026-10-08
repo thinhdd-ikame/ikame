@@ -5,7 +5,7 @@ archetype: ai-transformation
 subject: person
 input: one photo (self, pet or baby) plus a trend template pick
 output: a short trend video (dance, viral trend, concert, champion moment)
-screens: 16
+screens: 17
 monetization: weekly subscription paywall + consumable coin packs
 creative_screens:
   hook-a: 1
@@ -28,7 +28,7 @@ This is the **ai-transformation** archetype, with two deviations:
 1. **Multi-subject catalog.** Unlike `dancing/self-dancing`, the app isn't one niche, so screen 4 asks *what* to animate (me, my pet, my baby, a star moment). That choice picks the name token, the style options and the example art for the rest of the flow.
 2. **Two revenue layers.** A weekly subscription plus coin packs. Coins are introduced after the first video, never mixed into the paywall.
 
-16 screens. Real prices come from the App Store listing (US storefront, 2026-09-25).
+17 screens. Real prices come from the App Store listing (US storefront, 2026-09-25).
 
 **Visual system (from the store screenshots):**
 - Black background, purple-to-magenta gradient headline words, white second line in heavy caps.
@@ -225,9 +225,20 @@ This is the **ai-transformation** archetype, with two deviations:
 **Visual:** Benefit rows with icons (HD export · No watermark · All trend templates · Faster renders · +{{bonus_coins}} coins from the spin), blurred video frame behind the plan card, purple gradient CTA, Apple Pay button prominent.
 **Microcopy:** Trust row: "🔒 Secure payment · Cancel anytime". Fine print: "Renews weekly at $14.99 unless canceled at least 24h before renewal." If a trial or intro price is shown, state the renewal price in the same font size right next to it.
 **CTA:** Continue
-**Fallback offer:** On dismiss, one sheet only, and only if product confirms the $10.00 "Unlimited Access" as an intro/discounted offer: "First week $10.00, then $14.99/week". Otherwise no fallback, and the video stays locked with a "Unlock anytime" button.
+**Fallback offer:** Closing the paywall goes to #15 (last-chance offer) first, once per session. After it is declined, or on a second close, the video stays locked and the user returns to the #11 preview with "Unlock anytime".
 
-### 15. More videos (coin packs)
+### 15. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall without paying. Shown once per session (sessionStorage `ikf_offer_ai-video-generator`), then never again. It sells the subscription only; coin packs (#16) stay a separate layer and never trigger it.
+**Headline A:** Wait, {{name}}'s video is still here
+**Headline B:** Keep {{name}}'s video for less
+**Body A:** Your {{template}} video is rendered. Unlock it in HD at a lower first price.
+**Body B:** The {{template}} render is done. Start Pro for less this first week.
+**Plans:** One offer card: First week of Pro. {{offer_price}} today, with the real Weekly price ($14.99/week) struck, then {{offer_renew_price}}/week. Optional {{offer_badge}}. Real terms only: the $10.00 "Unlimited Access" IAP is the likely candidate once product confirms it is an intro week; until then the price stays a placeholder.
+**Visual:** Web page in the paywall's look: top bar with the brand and a close X, a centered eyebrow "One-time offer · shown once", then a single purple-glow offer card with their result thumbnail (template frame with its duration badge), the price row, 3 checks (full HD video with no watermark, every trend template, keep the spin coins), the CTA, payment badges and the renewal line.
+**Microcopy:** Timer only if `CONFIG.offer.expiresMin` is set. It is a real deadline: when it ends the offer is withdrawn (`offer_expired`) and the user goes to the free path. Renewal line: "{{offer_price}} today, then {{offer_renew_price}}/week until you cancel. Cancel anytime, at least 24h before renewal." Decline link: "No thanks, keep my free preview". Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`, `offer_expired`; measure offer CVR separately from #14.
+**CTA:** Claim my offer
+
+### 16. More videos (coin packs)
 **Purpose:** Second revenue layer, introduced after the first video is unlocked and trust is highest. Coins pay for extra renders beyond the plan, and they're measured separately from paywall conversion.
 **Headline A:** Want more trends?
 **Headline B:** Keep the videos coming
@@ -246,7 +257,7 @@ This is the **ai-transformation** archetype, with two deviations:
 
 ## G. Payoff
 
-### 16. Your video
+### 17. Your video
 **Purpose:** Deliver the video, then turn the first creation into the next one and into a share.
 **Headline A:** {{name}} is a star
 **Headline B:** Your video is ready
@@ -265,16 +276,17 @@ This is the **ai-transformation** archetype, with two deviations:
   - **Name capture moved after the subject pick** (#5), so the placeholder and token match the subject.
   - **Preview tease (#11)** added before the wheel. For video output a 2-second muted loop is the strongest desire trigger, and the payoff stays gated.
   - **Paywall is weekly-only** (no annual on the store). The validated weekly-vs-annual comparison doesn't apply.
-  - **Coin packs (#15)** added as a second layer after purchase.
+  - **Last-chance offer (#15)** added on paywall close (user direction, 2026-09-30: every funnel gets the one-time fallback offer).
+  - **Coin packs (#16)** added as a second layer after purchase.
 - **Unknowns to confirm with product before building:**
-  1. What the $10.00 "Unlimited Access" IAP is (period, entitlement). It decides whether #14 has a fallback.
-  2. Coins per video, whether Pro includes coins, and whether coins expire (#12, #15).
+  1. What the $10.00 "Unlimited Access" IAP is (period, entitlement). It decides whether it becomes the #15 offer price.
+  2. Coins per video, whether Pro includes coins, and whether coins expire (#12, #16).
   3. How many templates exist and how often new ones ship (#2 Body B, #8 value line).
   4. Whether the web funnel renders a real video, which needs a backend. If it can't, #10-#11 need a pre-rendered sample per template instead, and the copy must stop saying "{{name}}'s video" at #11.
 - **No invented proof.** The store rating is 5.0 from 2 reviews, too thin to quote. #9 uses example output, and `{{videos_created}}` stays out until analytics provides it.
 - **Two monetization layers, two metrics:**
-  - Weekly subscription conversion at #14 (+ fallback take-rate, if any).
-  - Coin-pack attach rate and revenue per payer from #15.
+  - Weekly subscription conversion at #14 (+ #15 offer take-rate, measured separately).
+  - Coin-pack attach rate and revenue per payer from #16.
   Don't report them as one number.
 - **Drop-off risk:** #8 upload (mitigated by the tips and a real error state), #10 render time if the backend is slow (steps pace to the real job, never fake-complete), #14 paywall.
 - **A/B first:**

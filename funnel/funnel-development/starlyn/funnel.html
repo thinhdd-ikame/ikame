@@ -264,6 +264,27 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
 }
+/* last-chance offer (fallback / "upsell on decline"): shown once when the paywall is left without paying. No timer, ever. */
+.wp{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.wp::-webkit-scrollbar{display:none}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#0B0A18e6;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar .brand{flex:1;display:flex;align-items:center;gap:7px;font:600 15px var(--serif);letter-spacing:.02em;color:var(--t1)}
+.wbar .brand svg{color:var(--accent)}
+.wbar .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
+.wsec{padding:28px 18px 0}.wsec.tight{padding-top:16px}
+.wp .eyebrow{display:block;margin-bottom:10px;font-size:11.5px;letter-spacing:.12em}
+.wp .display em{font-style:normal;color:var(--accent)}
+.ocard{position:relative;padding:18px 16px;border-radius:24px;border:1.5px solid var(--accent);background:radial-gradient(ellipse at 50% 0%,#E9C26B24,transparent 60%),linear-gradient(180deg,#1C1834,#141228);box-shadow:0 0 0 4px #E9C26B18,0 30px 60px -30px #000}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--accent);color:var(--btn-text);font:700 11px/1 var(--sans);letter-spacing:.08em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:58px;height:58px;border-radius:14px;overflow:hidden;position:relative;flex:none;background:var(--bg);border:1px solid var(--border);display:grid;place-items:center}
+.orow .th svg{width:54px;height:54px}
+.oprice{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 10px;margin-top:16px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice b{font:600 30px var(--serif);color:var(--accent)}.oprice>span{color:var(--t2);font-size:13px}
+.onote{display:inline-flex;gap:6px;align-items:center;margin-top:12px;font-size:13px;color:var(--t2)}.onote svg{color:var(--positive)}
+.pay{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F5F2EA;color:#0B0A18;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin:12px 4px 0;line-height:1.5}
 </style>
 </head>
 <body>
@@ -313,7 +334,15 @@ const sunSign=(m,d)=>{const c=[19,18,20,19,20,20,22,22,22,22,21,21];return d<=c[
 const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-const INIT=()=>({v:new URLSearchParams(location.search).get('v')==='B'?'B':'A',i:1,hist:[],name:'',focus:[],focusOther:'',showOther:false,exp:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,place:'',placeQ:'',person:'',pname:'',pdob:{m:'',d:'',y:''},notif:null,notifTime:'8:00 AM',account:null,plan:'yearly',fallback:false,premium:false,trial:false,questions:3,chat:[],tarot:false,readMore:false,err:''});
+/* Last-chance offer shown ONCE when the paywall is closed without paying (fallback / "upsell on decline").
+   Real terms only: price and renewal must be what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
+   expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn for this user.
+   Starlyn rules: the store page promises "No timers. No per-minute billing. Ever." and "you see the price first", so expiresMin
+   MUST stay null, and the offer is the Weekly plan's listed 3-day trial (SCR-IAP-01), not a markdown: compareAt is null, nothing is struck.
+   price stays a placeholder until billing confirms it (SCR-IAP-01 lists the Weekly trial as free for 3 days); renews is the listed Weekly price. */
+const CONFIG={funnel:'starlyn',brand:'Starlyn',
+  offer:{enabled:true,name:'3-day trial',price:'{{offer_price}}',renews:'$4.99/week',compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+const INIT=()=>({v:new URLSearchParams(location.search).get('v')==='B'?'B':'A',i:1,hist:[],name:'',focus:[],focusOther:'',showOther:false,exp:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,place:'',placeQ:'',person:'',pname:'',pdob:{m:'',d:'',y:''},notif:null,notifTime:'8:00 AM',account:null,plan:'yearly',offerSeen:false,premium:false,trial:false,questions:3,chat:[],tarot:false,readMore:false,err:''});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const nm=()=>esc(S.name||'Maya');
@@ -333,8 +362,8 @@ const FLOW=[
  ['Payoff · free',[[15,'Your Big Three']]],
  ['Retention + desire',[[16,'Morning line'],[17,'What’s waiting']]],
  ['Gate · soft',[[18,'Save your chart']]],
- ['Monetization',[[19,'Paywall']]],
- ['Payoff',[[20,'Today'],[21,'First question','2nd layer']]]
+ ['Monetization',[[19,'Paywall'],[20,'Last-chance offer','once, on close']]],
+ ['Payoff',[[21,'Today'],[22,'First question','2nd layer']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -346,7 +375,7 @@ let timer=null;
 
 function snapshot(){return{screen:S.i,variant:S.v,name:S.name,focus:S.focus.concat(S.showOther&&S.focusOther?[S.focusOther]:[]),experience:S.exp,birthDate:S.dob.m?`${S.dob.y}-${String(S.dob.m).padStart(2,'0')}-${String(S.dob.d).padStart(2,'0')}`:null,birthTime:S.timeUnknown?null:S.time||null,birthTimeUnknown:S.timeUnknown,birthPlace:S.place||null,sunSign:S.dob.m?sun():null,person:S.person||null,personName:S.pname||null,personBirthDate:S.pdob.m?`${S.pdob.y}-${String(S.pdob.m).padStart(2,'0')}-${String(S.pdob.d).padStart(2,'0')}`:null,notifications:S.notif,notifTime:S.notifTime,account:S.account,plan:S.plan,premium:S.premium,trial:S.trial}}
 function emit(n,d){try{window.dispatchEvent(new CustomEvent('starlyn:'+n,{detail:Object.assign({data:snapshot()},d||{})}))}catch(e){}}
-function go(n,push=true){clearInterval(timer);timer=null;const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';render(dir);emit('screen',{screen:n})}
+function go(n,push=true){clearInterval(timer);timer=null;const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';render(dir);emit('screen',{screen:n});if(n===OFFER)emit('offer_view',{price:CONFIG.offer.price,renews:CONFIG.offer.renews,timer:false})}
 function next(){let n=S.i+1;if(n===13&&S.person==='me')n=14;go(n)}
 function back(){clearInterval(timer);const p=S.hist.pop();if(p){S.i=p;S.err='';render('b')}}
 function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
@@ -409,7 +438,7 @@ const dateSel=(pre,o)=>{
   return `<div class="row3"><div class="box"><select id="${pre}m" data-f="${pre}.m" aria-label="Month"><option value="">Month</option>${MONTHS.map((m,i)=>`<option value="${i+1}" ${o.m==i+1?'selected':''}>${m}</option>`).join('')}</select></div><div class="box"><select id="${pre}d" data-f="${pre}.d" aria-label="Day"><option value="">Day</option>${Array.from({length:31},(_,i)=>`<option ${o.d==i+1?'selected':''}>${i+1}</option>`).join('')}</select></div><div class="box"><select id="${pre}y" data-f="${pre}.y" aria-label="Year"><option value="">Year</option>${ys.map(y=>`<option ${o.y==y?'selected':''}>${y}</option>`).join('')}</select></div></div>`;
 };
 const dobOk=o=>o.m&&o.d&&o.y;
-const tabbar=on=>`<nav class="tabbar">${[['Today','sun',20],['Chart','chart',0],['People','users',0],['Ask','msg',21],['Me','user',0]].map(([l,i,g])=>`<button class="${on===l?'on':''}" ${g?`data-a="go" data-v="${g}"`:'data-a="soon"'}>${ic(i,22)}<span>${l}</span></button>`).join('')}</nav>`;
+const tabbar=on=>`<nav class="tabbar">${[['Today','sun',21],['Chart','chart',0],['People','users',0],['Ask','msg',22],['Me','user',0]].map(([l,i,g])=>`<button class="${on===l?'on':''}" ${g?`data-a="go" data-v="${g}"`:'data-a="soon"'}>${ic(i,22)}<span>${l}</span></button>`).join('')}</nav>`;
 
 function bigThree(){
   const r=rising();
@@ -537,11 +566,21 @@ const V={
   <div class="checks">${['Yesterday, tomorrow, weekly and monthly readings','Every placement in your birth chart','All 5 compatibility areas, up to 20 people','5 questions every month'].map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>
   <div class="stack">${Object.entries(P).map(([k,[n,p]])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}"><span class="radio">${S.plan===k?ic('check',13,'currentColor',3):''}</span><span><span class="pn">${n}${k==='yearly'?'<span class="save">SAVE 50%</span>':''}</span><span class="pp">${p}</span></span></button>`).join('')}</div></div>
   <div class="foot" style="padding-top:8px">${S.plan==='weekly'?'<div class="note" style="color:var(--t2)">Free for 3 days, then $4.99/week.</div>':''}${cta(S.plan==='weekly'?'Start free trial':'Continue',true,'buy')}
-  <div class="note">Renews automatically. Cancel any time in the App Store.</div><div class="legal"><span>Restore purchases</span><span>Terms of Use</span><span>Privacy Policy</span></div></div>
-  ${S.sheet==='fallback'?`<div class="dim"></div><div class="sheet" role="dialog" aria-label="Free trial"><span class="grab"></span><span class="badge">${ic('spark',14)} One-time offer, no timer</span>
-  <h2 class="display" style="font-size:28px">Try 3 days free</h2><p class="lead" style="color:var(--t1)">Then $4.99/week. Cancel any time before it renews.</p>
-  <button class="btn" data-a="trial">Start free trial</button><button class="link" data-a="notnow">Not now</button></div>`:''}`},
-20:()=>{const order=[...S.focus.filter(k=>AREAS[k]),...Object.keys(AREAS).filter(k=>!S.focus.includes(k))];const r=rising();
+  <div class="note">Renews automatically. Cancel any time in the App Store.</div><div class="legal"><span>Restore purchases</span><span>Terms of Use</span><span>Privacy Policy</span></div></div>`},
+20:()=>{const o=CONFIG.offer,base=o.compareAt&&CONFIG.plans?CONFIG.plans[o.compareAt]:null,was=base?base.price:'';
+  return `<div class="wp"><div class="wbar"><div class="brand">${ic('spark',16)} ${esc(CONFIG.brand)}</div><button class="x" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="wsec tight" style="text-align:center"><span class="eyebrow">One-time offer · shown once</span><h1 class="display" style="font-size:29px">Try your <em>whole week</em> first</h1>
+   <p class="lead" style="margin-top:8px">Your ${sun()} Sun and ${moon()} Moon stay free. Premium adds your week, your month and every placement.</p>
+   ${o.expiresMin?`<div class="onote">Offer ends in <b id="otimer">--:--</b></div>`:`<div class="onote">${ic('check',14,'currentColor',2.4)} No timer. The price is shown before you pay.</div>`}</div>
+  <div class="wsec tight"><div class="ocard">${o.badge?`<span class="obadge">${esc(o.badge)}</span>`:''}
+   <div class="orow"><div class="th">${wheel({lit:'big',size:54})}</div><div style="flex:1;min-width:0"><b style="font:600 18px var(--serif)">${esc(o.name)}</b><div class="hint">Weekly plan, same listed price</div></div></div>
+   <div class="oprice">${was?`<s>${esc(was)}</s>`:''}<b>${esc(o.price)}</b><span>today</span></div>
+   <div class="checks" style="margin:14px 0">${['Yesterday, tomorrow, weekly and monthly readings','Every placement in your birth chart','5 questions every month'].map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Start my 3-day trial',true,'offerbuy')}
+   <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+   <p class="fine">${esc(o.price)} today for 3 days, then ${esc(o.renews)}. Renews automatically. Cancel any time in the App Store.</p></div></div>
+  <div class="wsec" style="text-align:center;padding-bottom:30px"><button class="link" data-a="offerno">No thanks, keep my free Big Three</button><div class="hint" style="margin-top:6px;font-size:12px">For entertainment and self-reflection.</div></div></div>`},
+21:()=>{const order=[...S.focus.filter(k=>AREAS[k]),...Object.keys(AREAS).filter(k=>!S.focus.includes(k))];const r=rising();
   return `<div class="scr"><div style="display:flex;justify-content:space-between;align-items:center"><h1 class="display" style="font-size:28px">${t('Good morning, '+nm()+'.','Here’s your day, '+nm()+'.')}</h1>${S.premium?'<span class="badge">Premium</span>':''}</div>
   <div class="bigchips"><span>${ic('sun',13)} ${sun()}</span><span>${ic('moon',13)} ${moon()}</span><span>${ic('rise',13)} ${r||'Rising —'}</span></div>
   <div class="glance"><span class="eyebrow">Today at a glance</span><q>Say the boring, specific version of what you want — today it lands better than the clever one.</q>
@@ -551,9 +590,9 @@ const V={
   <div><div class="scores">${order.map((k,i)=>`<div class="sc ${i<S.focus.length?'first':''}"><b style="color:${AREAS[k].c}">${AREAS[k].s}</b><span>${AREAS[k].l}</span></div>`).join('')}</div>
   <div class="coach" style="margin-top:12px">Your focus areas come first. Change them in Me.</div></div>
   <button class="tarot" data-a="tarot"><span class="card3d"><span class="flip ${S.tarot?'on':''}"><span class="card">${ic('spark',16)}</span><span class="card rev">The Star</span></span></span><span><b style="display:block">Your card today</b><span class="hint">${S.tarot?'Hope, quietly. Keep the promise you made in private.':'Tap to reveal'}</span></span></button>
-  <button class="tarot" data-a="go" data-v="21"><span class="well" style="width:46px;height:46px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:grid;place-items:center;flex:none">${ic('msg',20)}</span><span style="flex:1"><b style="display:block">Ask a question <span class="hint">· ${S.questions} left</span></b><span class="hint">You see the price before you send.</span></span></button></div>
+  <button class="tarot" data-a="go" data-v="22"><span class="well" style="width:46px;height:46px;border-radius:50%;background:var(--accent-dim);color:var(--accent);display:grid;place-items:center;flex:none">${ic('msg',20)}</span><span style="flex:1"><b style="display:block">Ask a question <span class="hint">· ${S.questions} left</span></b><span class="hint">You see the price before you send.</span></span></button></div>
   ${tabbar('Today')}`},
-21:()=>{const sug=hasPerson()?[`Why do we keep clashing, ${pn()}?`,'What should I focus on this week?','Is this a good time to change jobs?']:['What should I focus on this week?','Is this a good time to change jobs?','Why am I so tired of my routine?'];
+22:()=>{const sug=hasPerson()?[`Why do we keep clashing, ${pn()}?`,'What should I focus on this week?','Is this a good time to change jobs?']:['What should I focus on this week?','Is this a good time to change jobs?','Why am I so tired of my routine?'];
   return `<div class="scr"><div style="display:flex;justify-content:space-between;align-items:center"><h1 class="display" style="font-size:28px">${S.chat.length?'Ask':t('Ask your first question','Got a real question?')}</h1><span class="badge">${S.questions} left</span></div>
   ${S.chat.length?'':`<p class="lead">${t('You have 3 free. You’ll always see the price.','Ask about your week, your chart, or '+(hasPerson()?pn():'someone you know')+'.')}</p>`}
   <div class="stack">${S.chat.map(c=>`<div class="bubble q">${esc(c.q)}</div><div class="bubble a">${c.a?c.a:'<span class="typing"><i></i><i></i><i></i></span>'}</div>`).join('')}</div>
@@ -563,10 +602,20 @@ const V={
   <div class="hint" style="text-align:center">This uses 1 of your ${S.questions} question${S.questions>1?'s':''}.</div>`
   :`<div class="area"><h4>Get more questions</h4><div class="sub">Questions never expire. Your answers stay in your history for good.</div><div class="packs">${[['5 questions','$2.99 · That’s $0.60 each.',''],['10 questions','$4.99 · That’s $0.50 each.','MOST POPULAR'],['25 questions','$9.99 · That’s $0.40 each. Best value.','']].map(([a,b,c],i)=>`<button class="plan ${i===1?'on':''}" data-a="pack"><span class="radio">${i===1?ic('check',13,'currentColor',3):''}</span><span><span class="pn">${a}${c?`<span class="save">${c}</span>`:''}</span><span class="pp">${b}</span></span></button>`).join('')}</div>
   <p class="hint" style="margin:10px 0 0">Premium includes 5 questions every month.</p></div>`}
-  ${S.chat.length?'':'<button class="link" data-a="go" data-v="20">Maybe later</button>'}</div>
+  ${S.chat.length?'':'<button class="link" data-a="go" data-v="21">Maybe later</button>'}</div>
   ${tabbar('Ask')}`}
 };
 
+/* ----- last-chance offer (#20): shown ONCE per session on paywall close; declining it, or a second close, goes to Today (#21) ----- */
+const OFFER=20,FREE=21,OKEY=()=>'ikf_offer_'+CONFIG.funnel;
+function offerOpen(){const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY()))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true}
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY(),'1')}catch(e){}
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;clearInterval(timer);
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER){clearInterval(timer);return}const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(timer);S.offerSeen=true;emit('offer_expired');go(FREE);return}
+    const m=Math.floor(ms/60000),sec=Math.floor(ms/1000)%60;el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
+  tick();timer=setInterval(tick,1000)}
 function revealHTML(behind=false){
   return `<div class="sky"></div><div class="scr z" ${behind?'aria-hidden="true"':''}><div class="wheelwrap">${w3({lit:'big',size:230},behind?'':'land')}</div>
   <h1 class="display" style="text-align:center">${t('Here you are, '+nm()+'.','Meet your Big Three')}</h1>
@@ -600,6 +649,7 @@ function render(dir){
   v.querySelectorAll('.orb').forEach(mountOrb);
   SKY.base=n===14?0.00032:0.00004;
   if(n===14)runLoading();
+  if(n===OFFER)runOffer();
   const f=v.querySelector('input:not([disabled])');
   if(f&&[6,10].includes(n)){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
   renderPanel();
@@ -747,10 +797,13 @@ phone.addEventListener('click',e=>{
     case 'acct':S.account=v;emit('signin',{provider:v});next();break;
     case 'guest':S.account='Guest';emit('signin',{provider:'guest'});next();break;
     case 'plan':S.plan=v;render();break;
-    case 'buy':emit('purchase',{plan:S.plan,trial:S.plan==='weekly'});if(!window.StarlynFunnel||!window.StarlynFunnel.handlesPurchase){S.premium=true;S.trial=S.plan==='weekly';go(20)}break;
-    case 'close':if(!S.fallback){S.fallback=true;S.sheet='fallback';render()}else go(20);break;
-    case 'trial':S.sheet=null;emit('purchase',{plan:'weekly',trial:true,fallback:true});if(!window.StarlynFunnel||!window.StarlynFunnel.handlesPurchase){S.premium=true;S.trial=true;go(20)}break;
-    case 'notnow':S.sheet=null;emit('paywall_dismissed');go(20);break;
+    case 'buy':emit('purchase',{plan:S.plan,trial:S.plan==='weekly'});if(!window.StarlynFunnel||!window.StarlynFunnel.handlesPurchase){S.premium=true;S.trial=S.plan==='weekly';go(FREE)}break;
+    case 'close':{const off=offerOpen();emit('paywall_close',{offer_shown:off});if(off)go(OFFER);else{emit('paywall_dismissed');go(FREE)}break}
+    case 'offerbuy':{const o=CONFIG.offer;S.offerSeen=true;let u='';if(o.checkoutUrl)try{const x=new URL(o.checkoutUrl,location.href);x.searchParams.set('plan','offer');new URLSearchParams(location.search).forEach((val,k)=>{if(/^utm_|^(fbclid|ttclid|gclid)$/i.test(k))x.searchParams.set(k,val)});u=x.toString()}catch(e){}
+      emit('offer_accept',{price:o.price,renews:o.renews,url:u});emit('checkout_click',{plan:'offer',price:o.price,renews:o.renews,trial:true,url:u});
+      if(u){try{(window.top||window).location.href=u}catch(e){location.href=u}break}
+      emit('purchase',{plan:'offer',trial:true,offer:true});if(!window.StarlynFunnel||!window.StarlynFunnel.handlesPurchase){S.premium=true;S.trial=true;go(FREE)}break}
+    case 'offerno':S.offerSeen=true;emit('offer_decline');emit('paywall_dismissed');go(FREE);break;
     case 'more':S.readMore=!S.readMore;render();break;
     case 'tarot':if(!S.tarot){S.tarot=true;b.querySelector('.flip').classList.add('on');setTimeout(()=>{const h=b.querySelector('.hint');if(h)h.textContent='Hope, quietly. Keep the promise you made in private.'},450)}break;
     case 'sugg':ask(v);break;
@@ -761,7 +814,7 @@ phone.addEventListener('click',e=>{
 function ask(q){
   if(S.questions<1)return;
   S.questions--;const item={q,a:''};S.chat.push(item);render();
-  emit('ask',{question:q});const done=a=>{item.a=a;if(S.i===21)render()};const fb=`<b>Short version: yes, but slowly.</b> With your Sun in ${sun()} and Moon in ${moon()}, you decide fast and trust slowly. This week, say the plain version first and let the other person catch up.`;const h=window.StarlynFunnel&&window.StarlynFunnel.answer;if(h){Promise.resolve(h(q,snapshot())).then(a=>done(a?esc(a):fb),()=>done(fb))}else setTimeout(()=>done(fb),1400);
+  emit('ask',{question:q});const done=a=>{item.a=a;if(S.i===22)render()};const fb=`<b>Short version: yes, but slowly.</b> With your Sun in ${sun()} and Moon in ${moon()}, you decide fast and trust slowly. This week, say the plain version first and let the other person catch up.`;const h=window.StarlynFunnel&&window.StarlynFunnel.answer;if(h){Promise.resolve(h(q,snapshot())).then(a=>done(a?esc(a):fb),()=>done(fb))}else setTimeout(()=>done(fb),1400);
 }
 phone.addEventListener('input',e=>{
   const f=e.target.dataset.f;if(!f)return;
@@ -778,7 +831,7 @@ phone.addEventListener('input',e=>{
 phone.addEventListener('change',e=>{if(e.target.tagName==='SELECT'){S.err='';renderPanel()}});
 phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=e.target.id==='q'?cur().querySelector('[data-a="ask"]'):cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
 
-window.StarlynFunnel=Object.assign(window.StarlynFunnel||{},{go:n=>{fillTo(n);S.sheet=null;go(n)},data:snapshot,completePurchase:(plan,trial)=>{S.premium=true;S.trial=!!trial;if(plan)S.plan=plan;S.sheet=null;go(20)}});
+window.StarlynFunnel=Object.assign(window.StarlynFunnel||{},{go:n=>{fillTo(n);S.sheet=null;go(n)},data:snapshot,completePurchase:(plan,trial)=>{S.premium=true;S.trial=!!trial;if(plan&&plan!=='offer')S.plan=plan;S.sheet=null;go(FREE)}});
 {const m=location.hash.match(/s=([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}}
 render();
 </script>

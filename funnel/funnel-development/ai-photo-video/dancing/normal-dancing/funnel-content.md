@@ -1,6 +1,6 @@
 # Funnel Content — Dancing (Standard)
 
-AI video generator funnel: user uploads a photo of themselves (or a friend/couple), AI turns it into a fun dancing video. 12-screen flow, modeled on the reference funnel (hook → personalization quiz → generation → social proof → paywall → payment → success).
+AI video generator funnel: user uploads a photo of themselves (or a friend/couple), AI turns it into a fun dancing video. 13-screen flow, modeled on the reference funnel (hook → personalization quiz → generation → social proof → paywall → payment → last-chance offer on close → success).
 
 ---
 
@@ -83,10 +83,27 @@ AI video generator funnel: user uploads a photo of themselves (or a friend/coupl
 **Headline:** Unlock {{user_name}}'s dancing video
 **Body:** Choose your plan
 **Plans:** Weekly / Annual (highlight savings on annual)
+**Fallback offer:** #12 last-chance offer, shown once. Declining it leaves the locked preview with an "Unlock anytime" button.
 **CTA:** Continue with Apple Pay / Continue
 
-## 12. Success / Download
+## 12. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall without paying. Shown once per session, then never again.
+**Headline A:** Wait — keep {{user_name}}'s dance for less
+**Headline B:** One-time price for {{user_name}}'s dance
+**Body A:** {{user_name}}'s dance video is ready. Unlock it for less today.
+**Plans:** One offer card: {{offer_name}} (first week). {{offer_price}} today, with the regular {{week_price}} struck (the real current price of the Weekly plan it undercuts), then {{week_price}}/week. Optional {{offer_badge}}. Terms and prices are placeholders until the app supplies them.
+**Visual:** Web page in the paywall's style (dark background, purple accent): sticky top bar with a close X, centered eyebrow "One-time offer · shown once", the headline, then a single offer card holding {{user_name}}'s generated dancing video (first frame, soft blur, lock on the play button), the price row (struck {{week_price}} → {{offer_price}} "today"), 3 checks ("Full dance video, no watermark" · "Download and share anywhere" · "Every dance style, cancel anytime"), the CTA, payment badges (Apple Pay · Google Pay · cards) and the renewal line. Below the card, a plain decline link.
+**Microcopy:** Shown once per session (sessionStorage flag); a second paywall close skips it. Timer only if `CONFIG.offer.expiresMin` is set: it is a real deadline, the offer is withdrawn when it ends and it never resets on reload. Renewal line: "{{offer_price}} today, then {{week_price}}/week. Cancel anytime." Decline link: "No thanks, keep the locked preview".
+**CTA:** Claim my offer
+
+## 13. Success / Download
 **Purpose:** Deliver the payoff, drive sharing (viral loop).
 **Headline:** Your video is ready!
 **Body:** Download or share {{user_name}}'s dancing video.
 **CTA:** Download video / Share
+
+---
+
+## Notes
+
+- **Last-chance offer:** measure offer CVR (`offer_accept` / `offer_view`) separately from paywall CVR; also log `offer_decline` and `offer_expired`.

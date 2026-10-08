@@ -294,9 +294,15 @@ code{font-size:.92em;overflow-wrap:anywhere}
 .lcard b{font-size:15px}
 .lcard span{font-size:12px;color:var(--t3)}
 
-.dim{position:absolute;inset:0;background:#15233F66;z-index:4;animation:fi .2s ease}
-.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:#fff;border-radius:26px 26px 0 0;padding:10px 20px 30px;display:flex;flex-direction:column;gap:14px;animation:up .32s cubic-bezier(.2,.8,.2,1);box-shadow:0 -10px 30px #15233F30}
-.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line);align-self:center}
+.wbar{display:flex;align-items:center;justify-content:space-between;padding:2px 0 4px;margin-right:44px}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:20px;border:2px solid var(--ink);background:#fff;box-shadow:0 0 0 5px var(--acc-dim),0 22px 36px -24px #15233F66}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 11px;border-radius:999px;background:var(--acc);color:#2A1A02;font:700 10.5px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{display:block;font:700 18px/1.2 var(--serif);color:var(--ink)}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:14px;background:var(--paper);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:700 28px/1 var(--serif);color:var(--ink)}.oprice span{color:var(--t2);font-size:13px}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc-ink);font-variant-numeric:tabular-nums}
 @keyframes up{from{transform:translateY(100%)}to{transform:none}}
 .toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:9;background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.6s ease forwards;pointer-events:none}
 @keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
@@ -465,8 +471,22 @@ const PLANS={
   t7:{n:'7-day Full Access',today:'$1.95',then:'$39.95 every 4 weeks',badge:'ALL 27 TESTS'},
   t28:{n:'28-day Full Access',today:'$39.95',then:'$39.95 every 4 weeks',d:'Renews at $39.95 every 4 weeks.'}
 };
+const CONFIG={
+  funnel:'testlibrary',
+  /* Last-chance offer shown ONCE per session when the paywall is closed without paying (fallback / "upsell on decline").
+     Default: THIS report only, no subscription (the brief's "Just want this report?" path, now its own screen 12).
+     Real terms only: price/renewal must be what checkout charges. compareAt = the plan it undercuts; its real configured price is struck.
+     compareAt:'one' is only honest if {{offer_price}} is a real lower single-report price. If the offer is the one-time report at its
+     listed $57.00 (no markdown), set price:'$57.00' and compareAt:null so nothing is struck. Never strike a price nobody pays.
+     renews: null = one payment, nothing renews. For a trial offer instead, set renews:'{{offer_renews}}' (consent box then applies).
+     expiresMin: null = no timer (the brief promises no timers). A number = a real deadline; when it ends the offer is withdrawn. */
+  offer:{enabled:true,name:'This IQ report only',price:'{{offer_price}}',renews:null,compareAt:'one',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+const tok=v=>esc(v).replace(/\{\{(\w+)\}\}/g,(_,k)=>ph(k));
+PLANS.offer={n:esc(CONFIG.offer.name),today:tok(CONFIG.offer.price),then:CONFIG.offer.renews?tok(CONFIG.offer.renews):'Nothing renews',later:CONFIG.offer.renews?tok(CONFIG.offer.renews):''};
+const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
 
-const INIT=()=>({v:'A',i:1,hist:[],age:'',under:false,goal:'',goalOther:'',q:0,ans:Array(N).fill(null),cp:1,t0:null,dur:null,email:'',name:'',plan:'t7',sheet:null,fbShown:false,consent:false,pay:'card',cardNo:'',cardExp:'',cardCvc:'',paid:false,paidPlan:null,upsell:false,err:'',errKind:''});
+const INIT=()=>({v:'A',i:1,hist:[],age:'',under:false,goal:'',goalOther:'',q:0,ans:Array(N).fill(null),cp:1,t0:null,dur:null,email:'',name:'',plan:'t7',offerSeen:false,offerEnd:null,consent:false,pay:'card',cardNo:'',cardExp:'',cardCvc:'',paid:false,paidPlan:null,upsell:false,err:'',errKind:''});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
 const nm=()=>esc(S.name||'Maya');
@@ -478,8 +498,8 @@ const FLOW=[
  ['D. Anticipation',[[7,'Scoring','auto']]],
  ['E. Gate',[[8,'Email gate'],[9,'Name for certificate']]],
  ['D. Anticipation (tease)',[[10,'Report preview']]],
- ['F. Monetization',[[11,'Paywall'],[12,'Order summary + consent','consent']]],
- ['G. Payoff',[[13,'Your IQ result'],[14,'Certificate + share','verify'],[15,'Your next test','2nd layer']]]
+ ['F. Monetization',[[11,'Paywall'],[12,'Last-chance offer','once'],[13,'Order summary + consent','consent']]],
+ ['G. Payoff',[[14,'Your IQ result'],[15,'Certificate + share','verify'],[16,'Your next test','2nd layer']]]
 ];
 
 const phone=document.getElementById('phone');
@@ -491,7 +511,10 @@ let timer=null,timer2=null,pend=null;
 function clearTimers(){clearInterval(timer);clearTimeout(timer);clearInterval(timer2);clearTimeout(pend);timer=timer2=pend=null}
 
 function go(n,push=true){clearTimers();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.errKind='';render(dir)}
-function back(){clearTimers();const p=S.hist.pop();if(p){S.i=p;S.err='';S.errKind='';render('b')}}
+let backing=false;
+function back(){clearTimers();const p=S.hist.pop();if(p){S.i=p;S.err='';S.errKind='';backing=true;try{render('b')}finally{backing=false}}}
+const EVENTS=window.__ikfEvents=[];
+function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p)}
 function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
 function startTest(){if(S.t0===null)S.t0=Date.now();if(S.ans.every(a=>a===null))S.q=0;go(4)}
 
@@ -503,7 +526,7 @@ function fillTo(n){
   if(n>5){S.ans=S.ans.map((a,i)=>a===null?PRE[i]:a);S.q=N-1;if(S.dur===null)S.dur=185000}
   if(n>8&&!S.email)S.email='maya@example.com';
   if(n>9&&!S.name)S.name='Maya';
-  if(n>12&&!S.paid){S.paid=true;S.paidPlan=S.plan}
+  if(n>13&&!S.paid){S.paid=true;S.paidPlan=S.plan}
 }
 
 /* ---------- nav bar per screen ---------- */
@@ -511,7 +534,7 @@ function segs(){return `<div class="segs" aria-label="Test progress">${SECS.map(
 function nav(){
   const b=`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`,sp='<div class="navspacer"></div>';
   switch(S.i){
-    case 2:case 9:case 10:case 12:return `<div class="nav">${b}<div style="flex:1"></div>${sp}</div>`;
+    case 2:case 9:case 10:case 13:return `<div class="nav">${b}<div style="flex:1"></div>${sp}</div>`;
     case 3:return `<div class="nav">${b}<div class="navlabel">Warm-up</div>${sp}</div>`;
     case 4:{const first=S.q%2===0;return `<div class="nav">${S.q===0||!first?`<button class="iconbtn" data-a="tback" aria-label="Back">${ic('back',22)}</button>`:sp}${segs()}${sp}</div>`}
     case 5:return `<div class="nav">${sp}${segs()}${sp}</div>`;
@@ -682,18 +705,29 @@ const V={
   <div class="faq">${[['How is my score calculated?',`From your correct answers only, compared with ${ph('norm_group')}. It’s an estimate, not a clinical IQ.`],['What does the trial include?','7 days of Full Access to all 27 tests, including this report, for $1.95.'],['When will I be charged?',`7-day plan: $1.95 today, then $39.95 on ${addDays(7)} and every 4 weeks until you cancel. One-time: $57.00 once.`],['How do I cancel?',`In your account, or in 2 clicks at ${ph('app_domain')}/cancel-sub.`]].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
   <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel at ${ph('app_domain')}/cancel-sub</p>
   <p class="small">For self-discovery only. Not a clinical or diagnostic assessment.</p></div>
-  <div class="foot"><div class="today">${p==='one'?'One payment of $57.00. Nothing renews.':`Today: ${PLANS[p].today}. On ${rd}: $39.95, then every 4 weeks until you cancel.`}</div>${cta('Continue to checkout',true,'checkout')}</div>
-  ${S.sheet==='fallback'?`<div class="dim" data-a="sheetoff"></div><div class="sheet" role="dialog" aria-label="Just this report"><span class="grab"></span>
-  <h2 class="display" style="font-size:25px">Just want this report?</h2>
-  <button class="plan on" role="radio" aria-checked="true" tabindex="-1"><span class="radio"></span><span style="flex:1"><span class="pn">One-time report</span><span class="pl"><span>Today</span><b style="font-weight:600">$57.00</b><span>Then</span><b style="font-weight:600">Nothing renews</b></span><span class="pd" style="display:block">This test’s full report. No subscription.</span></span></button>
-  <div class="today">One payment of $57.00. Nothing renews.</div>
-  <button class="btn" data-a="fbbuy">Continue to checkout</button><button class="link" data-a="sheetoff">Not now</button></div>`:''}`},
-12:()=>{const p=S.plan,P=PLANS[p],rec=p!=='one',rd=renewal(p);
+  <div class="foot"><div class="today">${p==='one'?'One payment of $57.00. Nothing renews.':`Today: ${PLANS[p].today}. On ${rd}: $39.95, then every 4 weeks until you cancel.`}</div>${cta('Continue to checkout',true,'checkout')}</div>`},
+12:()=>{const o=CONFIG.offer,base=o.compareAt?PLANS[o.compareAt]:null,was=base&&base.today!==PLANS.offer.today?base.today:'';
+  return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
+  <div class="wbar"><div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>${ph('app_name')}</div></div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display sm">${nm()}, just want your IQ report?</h1>
+   <p class="lead" style="margin:0">All ${N} answers are scored and <b>${esc(strongest())}</b> is your strongest section. Get this one report, with no subscription.</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow"><div class="minicert"><div class="mc">${nm()}<br><span style="font:500 8px var(--sans);color:var(--t3)">${dstr(new Date())}</span><br><span class="blurv" style="display:inline-block">IQ 000</span></div></div><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">${o.renews?'Full report + library trial':'This test’s full report · no subscription'}</span></div></div>
+   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
+   <div class="checks">${['Your estimated IQ score and age-group comparison','Strengths in 4 sections','Named certificate (PDF)'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>
+   <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
+  <p class="small">For self-discovery only. Not a clinical or diagnostic assessment.</p>
+  <button class="link" data-a="offerno" style="margin-bottom:24px">No thanks, back to my free preview</button></div>`},
+13:()=>{const p=S.plan,P=PLANS[p],rec=recurring(p),rd=renewal(p);
   return `<div class="scr" style="gap:14px"><h1 class="display">${t('Review your order','Confirm your plan')}</h1>
   <p class="lead" style="margin-top:-6px">${t('Here’s exactly what you pay, today and later.','Check the details before you pay.')}</p>
   <div class="ordr"><div class="r"><span>Plan</span><b>${P.n}</b></div><div class="r"><span>Today</span><b>${P.today}</b></div>
-  ${rec?`<div class="r"><span>${rd}</span><b>$39.95, then every 4 weeks</b></div><div class="r" style="font-size:13px"><span>Cancel anytime before ${rd} to pay nothing more.</span></div>`:`<div class="r"><span>Later</span><b>Nothing renews</b></div>`}</div>
-  ${rec?`<label class="consent ${S.errKind==='consent'?'bad':''}"><input type="checkbox" id="consent" data-f="consent" ${S.consent?'checked':''}><span>I understand my plan renews at $39.95 every 4 weeks until I cancel.</span></label>${S.errKind==='consent'?`<div class="err" style="margin-top:-6px">${S.err}</div>`:''}`:''}
+  ${rec?`<div class="r"><span>${rd}</span><b>${P.later||'$39.95, then every 4 weeks'}</b></div><div class="r" style="font-size:13px"><span>Cancel anytime before ${rd} to pay nothing more.</span></div>`:`<div class="r"><span>Later</span><b>Nothing renews</b></div>`}</div>
+  ${rec?`<label class="consent ${S.errKind==='consent'?'bad':''}"><input type="checkbox" id="consent" data-f="consent" ${S.consent?'checked':''}><span>I understand my plan renews at ${P.later||'$39.95 every 4 weeks'} until I cancel.</span></label>${S.errKind==='consent'?`<div class="err" style="margin-top:-6px">${S.err}</div>`:''}`:''}
   <div class="pmeth" role="group" aria-label="Payment method">${[['card','Card'],['apple','Apple Pay'],['google','Google Pay']].map(([k,l])=>`<button class="${S.pay===k?'on':''}" data-a="pay" data-v="${k}" aria-pressed="${S.pay===k}">${l}</button>`).join('')}</div>
   ${S.pay==='card'?`<div class="box"><input data-f="cardNo" inputmode="numeric" placeholder="Card number" aria-label="Card number" value="${esc(S.cardNo)}"></div><div class="cardrow"><div class="box"><input data-f="cardExp" placeholder="MM / YY" aria-label="Expiry" value="${esc(S.cardExp)}"></div><div class="box"><input data-f="cardCvc" inputmode="numeric" placeholder="CVC" aria-label="CVC" value="${esc(S.cardCvc)}"></div></div>`:`<p class="hint" style="margin:0;text-align:center">${S.pay==='apple'?'Apple Pay':'Google Pay'} sheet opens on pay.</p>`}
   ${S.errKind==='card'?`<div class="err">${S.err}</div>`:''}
@@ -701,7 +735,7 @@ const V={
   <p class="small">Fees are generally non-refundable once access starts. Refund window: ${ph('refund_window')}</p>
   <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
   <div class="foot">${cta('Pay and see score',true,'paynow')}</div>`},
-13:()=>{const s=score(),pc=pctile(s),bd=band(s);
+14:()=>{const s=score(),pc=pctile(s),bd=band(s);
   return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`Your estimated IQ: ${s}`,`${nm()}, you scored ${s}`)}</h1>
   <p class="lead" style="margin-top:-6px">${t(`Higher than ${pc}% of people your age.`,'Here’s how you compare, and where you shine.')}</p>
   ${bell3d('land',300,s)}
@@ -711,7 +745,7 @@ const V={
   <div class="method">Estimated from ${N} reasoning items, compared with ${ph('norm_group')}. Not a clinical IQ assessment.</div>
   <div class="goaltips"><h4>💡 Tips for ${esc(goalLabel().toLowerCase())}</h4><ul>${(GTIPS[S.goal]||GTIPS.curious).map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
   <div class="foot">${cta('Get my certificate')}</div>`},
-14:()=>{const s=score();
+15:()=>{const s=score();
   return `<div class="scr" style="gap:14px"><h1 class="display sm" style="margin-top:4px">${t('Your certificate is ready',`Share your score, ${nm()}`)}</h1>
   <p class="lead" style="margin-top:-6px">${t('Download a PDF or share a card with friends.','Proudly yours — download it or share it.')}</p>
   <div class="cert"><div class="ct">${ph('app_name')} · IQ Test</div><div class="cn">${nm()}</div><div class="cs"><small>Estimated IQ score</small>${s}</div>
@@ -720,7 +754,7 @@ const V={
   <div class="share"><button data-a="share" data-v="WhatsApp">${ic('chat',20)}WhatsApp</button><button data-a="share" data-v="Instagram story">${ic('story',20)}Story card</button><button data-a="share" data-v="copy">${ic('link',20)}Copy link</button></div>
   <div class="sharetxt">“I scored ${s} on the {{app_name}} IQ test. Your turn?”</div></div>
   <div class="foot">${cta(`${ic('dl',18,'currentColor',2)} Download PDF`,true,'pdf')}</div>`},
-15:()=>{const one=(S.paidPlan||S.plan)==='one',list=LIB[S.goal]||LIB.curious,rd=renewal(S.paidPlan||S.plan);
+16:()=>{const one=!recurring(S.paidPlan||S.plan),list=LIB[S.goal]||LIB.curious,rd=renewal(S.paidPlan||S.plan);
   return `<div class="scr"><h1 class="display" style="margin-top:4px">${t(`What’s next, ${nm()}?`,'Your mind, from new angles')}</h1>
   <p class="lead" style="margin-top:-6px">${one&&S.v==='A'?'Pair your IQ with how you feel and relate.':t('Your plan includes every test below — start any.','Pair your IQ with how you feel and relate.')}</p>
   <div class="lib">${list.map(([e,n,f,al])=>`<div class="lcard"><img class="lt" src="img/lib-${f}.jpg" alt="${al}" width="400" height="267" loading="lazy"><b>${n}</b><span>${ph('questions')} Qs · ${ph('minutes')} min</span></div>`).join('')}</div>
@@ -756,6 +790,7 @@ function render(dir){
   const v=cur();
   v.querySelectorAll('.bell3d').forEach(mountBell);
   if(n===7)runLoading();
+  if(n===12&&dir&&!backing)runOffer();
   const f=v.querySelector('#em,#nm,#go');
   if(f&&dir!==undefined){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
   renderPanel();
@@ -776,7 +811,7 @@ function renderPanel(){
     ['Email',S.email||'—'],
     ['Name',S.name||'—'],
     ['Plan',S.i>=11?PLANS[S.plan].n:'—'],
-    ['Consent',S.plan==='one'?'n/a (one-time)':S.consent?'Ticked':'Not ticked'],
+    ['Consent',!recurring(S.plan)?'n/a (one-time)':S.consent?'Ticked':'Not ticked'],
     ['Paid',S.paid?`${PLANS[S.paidPlan||S.plan].n} (demo, no charge)`:'—']
   ];
   document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
@@ -803,21 +838,36 @@ phone.addEventListener('click',e=>{
     case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;go(9)}break}
     case 'name':{const x=S.name.trim();if(!x||!/^[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ \-]*$/.test(x)){S.err='Please enter your first name.';render();document.getElementById('nm')?.focus()}else{S.name=x;go(10)}break}
     case 'plan':S.plan=v;S.consent=false;render();break;
-    case 'checkout':go(12);break;
+    case 'checkout':emit('checkout_click',{plan:S.plan});go(13);break;
     case 'exit':exitPaywall();break;
-    case 'sheetoff':S.sheet=null;render();break;
-    case 'fbbuy':S.sheet=null;S.plan='one';go(12);break;
+    case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      else{S.plan='offer';S.consent=false;go(13)}break}
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
     case 'pay':S.pay=v;render();break;
     case 'decline':S.err='Card declined. Try another card or PayPal.';S.errKind='card';render();break;
-    case 'paynow':if(S.plan!=='one'&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
-      S.paid=true;S.paidPlan=S.plan;toast('Demo only — no charge made');{const dest=S.upsell?15:13;S.upsell=false;go(dest)}break;
+    case 'paynow':if(recurring(S.plan)&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
+      S.paid=true;S.paidPlan=S.plan;toast('Demo only — no charge made');{const dest=S.upsell?16:14;S.upsell=false;go(dest)}break;
     case 'stip':{const j=+v;const el=document.getElementById('stip');if(el){el.textContent=`${SECS[j].n}: ${SEC_TIP[j]}`}break}
     case 'share':toast(v==='copy'?'Link copied (demo)':`${v} share sheet would open (demo)`);break;
-    case 'pdf':toast('PDF download would start (demo)');clearTimeout(pend);pend=setTimeout(()=>{if(S.i===14)go(15)},1100);break;
-    case 'nexttest':if((S.paidPlan||S.plan)==='one'){S.plan='t7';S.consent=false;S.upsell=true;go(12)}else toast(`${(LIB[S.goal]||LIB.curious)[0][1]} would open (demo)`);break;
+    case 'pdf':toast('PDF download would start (demo)');clearTimeout(pend);pend=setTimeout(()=>{if(S.i===15)go(16)},1100);break;
+    case 'nexttest':if(!recurring(S.paidPlan||S.plan)){S.plan='t7';S.consent=false;S.upsell=true;go(13)}else toast(`${(LIB[S.goal]||LIB.curious)[0][1]} would open (demo)`);break;
   }
 });
-function exitPaywall(){if(!S.fbShown){S.fbShown=true;S.sheet='fallback';render()}else if(!S.sheet)back()}
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  clearInterval(window.__oiv);
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==12)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');toast('This offer has ended');go(10);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* Every exit from the paywall (close X, nav back) goes to the offer first, once; after that, back to the free preview. */
+function exitPaywall(){emit('paywall_close');if(offerOpen())go(12);else back()}
 phone.addEventListener('input',e=>{
   const f=e.target.dataset.f;if(!f||e.target.type==='checkbox')return;
   S[f]=e.target.value;
@@ -829,7 +879,7 @@ phone.addEventListener('input',e=>{
 phone.addEventListener('change',e=>{if(e.target.dataset.f==='consent'){S.consent=e.target.checked;if(S.consent&&S.errKind==='consent'){S.err='';S.errKind='';render()}else renderPanel()}});
 phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){const b=cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
 
-document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);S.sheet=null;go(n)});
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);go(n)});
 const setV=v=>{S.v=v;['A','B'].forEach(x=>{const el=document.getElementById('v'+x);el.classList.toggle('on',v===x);el.setAttribute('aria-pressed',v===x)});if(S.i!==7)render();else renderPanel()};
 document.getElementById('vA').onclick=()=>setV('A');
 document.getElementById('vB').onclick=()=>setV('B');

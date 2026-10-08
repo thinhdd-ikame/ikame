@@ -383,7 +383,7 @@ const CONFIG={
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn. */
   offer:{enabled:false},   /* Starlyn policy: no sale, no last-chance offer */
   termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',
-  appUrl:'',appStoreUrl:'',playStoreUrl:'',
+  appUrl:'https://zodiac-app.squad-xteam.com/',appUrlAndroid:'https://zodiac.go.link?adj_t=24mjo8dt_241n7emr',appStoreUrl:'',playStoreUrl:'',
   rating:{score:'{{app_rating}}',count:'{{rating_count}}'},   /* hidden while unset */
   reviews:[{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'},{name:'{{reviewer}}',meta:'{{country}}',text:'{{real review text}}'}],
   company:'{{legal_entity}}'
@@ -503,7 +503,15 @@ function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;document.ge
   app.appendChild(el)}
 const scrIdx=nm=>+(Object.keys(SCREENS).find(k=>SCREENS[k]===nm)||0);
 function checkoutDeclined(plan){emit('checkout_decline',{plan});const n=scrIdx((CONFIG.declineFlow||{})[plan]);if(n)go(n)}
-function appLink(){const ua=navigator.userAgent||'';return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
+/* "Open the app": Android -> Adjust web2app link (opens or installs the app), iOS + desktop -> web app.
+   Email, FunnelFox profile id (user_id), UTM and fbclid are appended on tap. */
+function appHandoffUrl(){const ua=navigator.userAgent||'',base=(/Android/i.test(ua)&&CONFIG.appUrlAndroid)||CONFIG.appUrl;if(!base)return '';
+  const q={};try{for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(sessionStorage.getItem(k));Object.assign(q,(v&&v.state)||{})}}}catch(e){}
+  new URLSearchParams(location.search).forEach((v,k)=>{q[k]=v});
+  const ck=document.cookie.match(/(?:^|;\s*)ff-user=([^;]*)/),em=(typeof S!=='undefined'&&S&&S.email)||'';
+  const p={email:String(em).trim(),user_id:q.fpid||(ck?decodeURIComponent(ck[1]):''),af_adset:q.utm_medium||'',c:q.utm_campaign||'',af_ad:q.utm_content||'',clickid:q.fbclid||'',af_channel:q.utm_source||''};
+  return base+(base.indexOf('?')<0?'?':'&')+new URLSearchParams(p).toString()}
+function appLink(){const ua=navigator.userAgent||'';return appHandoffUrl()||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const agreeLinks=()=>`<a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a> and <a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>`;
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}</div>`;
 

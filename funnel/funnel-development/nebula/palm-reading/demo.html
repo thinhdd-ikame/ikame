@@ -321,7 +321,7 @@ const CONFIG={
      expiresMin: null = no timer. A number = a real timer; when it ends the offer is withdrawn for this user. */
   offer:{enabled:false},   /* Starlyn policy: no sale, no last-chance offer */
   termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',   /* TODO */
-  appUrl:'',appStoreUrl:'',playStoreUrl:'',            /* TODO */
+  appUrl:'https://zodiac-app.squad-xteam.com/',appUrlAndroid:'https://zodiac.go.link?adj_t=24mjo8dt_241n7emr',appStoreUrl:'',playStoreUrl:'',            /* TODO */
   /* Optional async (blob, meta)=>void. Called once with the palm photo so the host can generate the real reading.
      null = the photo never leaves the device (prototype). Delete it server-side right after the reading is made. */
   onPalmPhoto:null,
@@ -431,7 +431,15 @@ function checkout(plan){
   let u;try{u=new URL(url,location.href)}catch(e){return}
   u.searchParams.set('plan',plan);if(S.email)u.searchParams.set('email',S.email);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});navTop(u.toString());
 }
-function appLink(which){const ua=navigator.userAgent||'';if(which==='ios')return CONFIG.appStoreUrl||CONFIG.appUrl;if(which==='android')return CONFIG.playStoreUrl||CONFIG.appUrl;return CONFIG.appUrl||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
+/* "Open the app": Android -> Adjust web2app link (opens or installs the app), iOS + desktop -> web app.
+   Email, FunnelFox profile id (user_id), UTM and fbclid are appended on tap. */
+function appHandoffUrl(){const ua=navigator.userAgent||'',base=(/Android/i.test(ua)&&CONFIG.appUrlAndroid)||CONFIG.appUrl;if(!base)return '';
+  const q={};try{for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(sessionStorage.getItem(k));Object.assign(q,(v&&v.state)||{})}}}catch(e){}
+  new URLSearchParams(location.search).forEach((v,k)=>{q[k]=v});
+  const ck=document.cookie.match(/(?:^|;\s*)ff-user=([^;]*)/),em=(typeof S!=='undefined'&&S&&S.email)||'';
+  const p={email:String(em).trim(),user_id:q.fpid||(ck?decodeURIComponent(ck[1]):''),af_adset:q.utm_medium||'',c:q.utm_campaign||'',af_ad:q.utm_content||'',clickid:q.fbclid||'',af_channel:q.utm_source||''};
+  return base+(base.indexOf('?')<0?'?':'&')+new URLSearchParams(p).toString()}
+function appLink(which){const ua=navigator.userAgent||'';if(which==='ios')return CONFIG.appStoreUrl||appHandoffUrl();if(which==='android')return CONFIG.playStoreUrl||appHandoffUrl();return appHandoffUrl()||(/android/i.test(ua)?CONFIG.playStoreUrl:CONFIG.appStoreUrl)}
 const tlinks=()=>`<a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms of Use</a> and <a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy Policy</a>`;
 const legal=()=>`<div class="legal"><a ${CONFIG.termsUrl?`href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener"`:''}>Terms of Use</a><a ${CONFIG.privacyUrl?`href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener"`:''}>Privacy Policy</a>${CONFIG.subscriptionTermsUrl?`<a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>`:''}${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support: ${esc(CONFIG.supportEmail)}</a>`:''}</div>`;
 

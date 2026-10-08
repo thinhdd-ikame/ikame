@@ -5,7 +5,7 @@ archetype: learning-plan
 subject: person
 input: how AI touches their job, coding myth tap, job type, time-eating tasks, tech comfort, AI worry, 28-day goal, daily minutes, learning time of day, name, 1-item AI safety check, email
 output: personalized plain-English 28-day AI plan with a dated certificate of completion and a first "AI writes your weekly report" micro-lesson
-screens: 24
+screens: 25
 monetization: web subscription paywall (1-week / 4-week pre-selected / 12-week, intro price with renewal price shown on every card and in the CTA line), app unlocked by the same email via magic link
 creative_screens:
   hook-a: 1
@@ -21,7 +21,7 @@ motion: >
 
 # Funnel Content — Coursiv AI Made Simple
 
-Niche "AI đơn giản cho người không rành tech / giữ việc": a plain-English entry into the Coursiv app for US office workers aged 35-55 who are not tech-savvy and quietly worry that AI is changing their job. The user answers ~12 easy taps about their work, the tasks that eat their week and how comfortable they are with new apps. They take a single "can AI be wrong?" check and watch AI turn their messy notes into a weekly report in about 60 seconds. They get a gentle 28-day plan with a dated **certificate of completion**. Market signal (AdSpyLab Meta ads 03-08/2026): Coursiv's own pages AI Simplified, AI Essentials, AI Weekly and AI Made Simple run 50K ads, L3M +226%, with the ad hook "AI sắp thay việc bạn? Lấy chứng chỉ AI trong 28 ngày". Archetype: **learning-plan**, 24 screens. **Modeled on:** Coursiv `coursiv.io/pt/dynamic` (46 screens, email and paywall at 44), Tixu `tixu.ai/api/experiment/t` (41 screens; its best idea for this audience is the "Do you need to write code to use AI?" myth tap) and Jobescape `chat-v3` (the "AI wrote it, then I spent as long fixing it" pain question). **What was deliberately changed:** (1) The job-anxiety hook is kept honest. The first tap asks whether AI is changing their job, the worry is defused with a sourced line and a plain "nobody can promise job safety", and there are no "Easy to Replace" or "never worry again" lines. (2) A "what eats your week?" question drives both the micro-lesson and Weeks 2-3, replacing Coursiv's generic "first use case". (3) A tech-comfort question sets lesson style (extra tap-by-tap steps), and a habit-anchor slot (morning coffee / lunch) is added for a daily routine. (4) The one skill-check item teaches safe use (check AI's facts). (5) Plain words only: no "prompt", "LLM", "workflow" or tool-logo walls. Look: the base Coursiv **light "career" theme** with an **older-audience override**: body text ≥18px, tap targets ≥56px tall, high contrast (no grey-on-white body copy), photos of real 40-55-year-old office workers, one idea per screen and no dense logo strips. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on most screens.
+Niche "AI đơn giản cho người không rành tech / giữ việc": a plain-English entry into the Coursiv app for US office workers aged 35-55 who are not tech-savvy and quietly worry that AI is changing their job. The user answers ~12 easy taps about their work, the tasks that eat their week and how comfortable they are with new apps. They take a single "can AI be wrong?" check and watch AI turn their messy notes into a weekly report in about 60 seconds. They get a gentle 28-day plan with a dated **certificate of completion**. Market signal (AdSpyLab Meta ads 03-08/2026): Coursiv's own pages AI Simplified, AI Essentials, AI Weekly and AI Made Simple run 50K ads, L3M +226%, with the ad hook "AI sắp thay việc bạn? Lấy chứng chỉ AI trong 28 ngày". Archetype: **learning-plan**, 25 screens. **Modeled on:** Coursiv `coursiv.io/pt/dynamic` (46 screens, email and paywall at 44), Tixu `tixu.ai/api/experiment/t` (41 screens; its best idea for this audience is the "Do you need to write code to use AI?" myth tap) and Jobescape `chat-v3` (the "AI wrote it, then I spent as long fixing it" pain question). **What was deliberately changed:** (1) The job-anxiety hook is kept honest. The first tap asks whether AI is changing their job, the worry is defused with a sourced line and a plain "nobody can promise job safety", and there are no "Easy to Replace" or "never worry again" lines. (2) A "what eats your week?" question drives both the micro-lesson and Weeks 2-3, replacing Coursiv's generic "first use case". (3) A tech-comfort question sets lesson style (extra tap-by-tap steps), and a habit-anchor slot (morning coffee / lunch) is added for a daily routine. (4) The one skill-check item teaches safe use (check AI's facts). (5) Plain words only: no "prompt", "LLM", "workflow" or tool-logo walls. Look: the base Coursiv **light "career" theme** with an **older-audience override**: body text ≥18px, tap targets ≥56px tall, high contrast (no grey-on-white body copy), photos of real 40-55-year-old office workers, one idea per screen and no dense logo strips. Copy follows the mobile limits (headline ≤6 words, body ≤12 words), with A/B on most screens.
 
 ---
 
@@ -346,10 +346,19 @@ Niche "AI đơn giản cho người không rành tech / giữ việc": a plain-E
 - Any struck-through price must be the real regular renewal price. Same structure as the base `learning/coursiv` funnel; use ikame's real prices at launch.
 **Visual:** Top: a mini plan card echoing goal and date. Three large stacked plan cards (≥18px price text), the 4-week one with an indigo border. The renewal line uses the same size and colour as the price. Payment row: Apple Pay / Google Pay / card logos.
 **Microcopy:** Trust row: "🔒 Secure payment · Cancel in 2 taps · [N]-day refund window". Agreement checkbox **unchecked**: "I agree to the Terms, Subscription and Refund Policy". Line above CTA, from the selected card: "You'll pay [today's price] today. It renews at [renewal price] every [period] until you cancel. We'll email you before each renewal." A "How do I cancel?" link opens a 3-step sheet.
-**Fallback offer:** On dismiss or back, one sheet with one genuine offer (e.g. the 4-week intro price extended once), with the renewal price on the same line. No countdown.
+**Fallback offer:** On dismiss (✕ or back), the last-chance offer (#23) once per session: the 4-week plan at a lower first payment, renewal stated on the card. No countdown.
 **CTA:** Get my plan
 
-### 23. Checkout summary
+### 23. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who close the paywall (✕ or back) without paying: the same 4-week plan at a lower first payment. Shown once per session, then never again.
+**Headline A:** Wait, {{name}}: keep your certificate date
+**Body A:** Your plan still finishes {{cert_date}}. Start it for a lower first payment.
+**Plans:** One offer card: **4-week plan**, "The same full plan, a lower first payment". {{offer_price}} today, with the 4-week plan's real intro price ([4-week intro price], `compareAt: '4w'`) struck, then {{offer_renew_price}} every 4 weeks until cancelled. Optional {{offer_badge}} only if true.
+**Visual:** Same web-page look as #22: sticky bar with the Coursiv logo and a close ✕, centered eyebrow "One-time offer · shown once", headline and lead, then one indigo-bordered offer card holding a mini plan card ("{{goal}}" · "Certificate by {{cert_date}}"), the plan name, the price row (struck intro price → {{offer_price}} "today"), 3 checks ("5-15 minute lessons in plain English", "Tap-by-tap steps, replay anytime", "Certificate of completion with your name"), the CTA, Apple Pay / G Pay / VISA / Mastercard badges and the renewal line. Plain decline link below the card. Keeps the older-audience override (≥18px body, ≥56px tap targets).
+**Microcopy:** Renewal line: "{{offer_price}} today, then {{offer_renew_price}} every 4 weeks until you cancel. Cancel anytime in your account." Shown once per session (sessionStorage `ikf_offer_coursiv-ai-simple`): a second paywall close goes straight to the previous screen (#21 What's inside). No timer: `CONFIG.offer.expiresMin` is `null`. If the growth team sets a real deadline, a countdown shows and the offer is withdrawn when it ends (`offer_expired`), never reset on reload. Decline (link and ✕): "No thanks, back to my plan", which returns to #21 What's inside. Accept opens the offer checkout (`CONFIG.offer.checkoutUrl` with plan `offer`, email and UTMs); that checkout must show the same receipt rows as #24. Events: `paywall_close` (with `offerShown`), `offer_view`, `offer_accept` + `checkout_click` with plan `offer`, `offer_decline`, `offer_expired`.
+**CTA:** Claim my offer
+
+### 24. Checkout summary
 **Purpose:** Confirms exactly what is charged today and later, in plain words. Surprise renewals drive this category's refunds, and a cautious 45-year-old buyer is the one who files the chargeback.
 **Headline A:** Review your order
 **Headline B:** Here's what you'll pay
@@ -363,7 +372,7 @@ Niche "AI đơn giản cho người không rành tech / giữ việc": a plain-E
 
 ## G. Payoff
 
-### 24. Welcome + app handoff
+### 25. Welcome + app handoff
 **Purpose:** Activation for a non-tech user: three very plain steps with no password, and Day 1 is their own chore. A web sale that never opens the app turns into a refund.
 **Headline A:** Welcome aboard, {{name}}!
 **Headline B:** Day 1 is ready for you
@@ -394,5 +403,7 @@ Niche "AI đơn giản cho người không rành tech / giữ việc": a plain-E
 **First A/B tests:** (1) Hook A question vs. Hook B "AI certificate in 28 days" promise at screen 1. (2) Myth tap at 2 vs. straight to social proof. (3) 5/10/15 vs. 10/15/20 pace options (does 5 min lift conversion but hurt Day-7 retention?).
 
 **Monetization:** one layer, the web subscription. Track paywall conversion, install + login + Day 1 within 48h (expect this audience to lag, so watch it), and refund/chargeback rate by plan.
+
+**Last-chance offer:** measure offer CVR (#23 `offer_view` → `offer_accept`) separately from paywall CVR (#22).
 
 **Unverified / assumed:** age mix of real Coursiv/ikame learners; the quote/stat wording on 9; whether support is staffed for the 24 help line; live prices; shipped features on 21. All ikame stats are `[N]` placeholders until real.

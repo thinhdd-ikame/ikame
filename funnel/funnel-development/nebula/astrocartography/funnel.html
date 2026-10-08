@@ -366,7 +366,7 @@ const CONFIG={
   subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',                  /* TODO */
   supportEmail:'support@starlyn.co',         /* TODO: shown as a "Support" link on the paywall once it is a real address */
   loginUrl:'',                              /* "log in instead?" on the email step */
-  appUrl:'',                                /* TODO: deep link / OneLink for "Open the app" (falls back to the store for the device) */
+  appUrl:'https://zodiac-app.squad-xteam.com/',appUrlAndroid:'https://zodiac.go.link?adj_t=24mjo8dt_241n7emr',                                /* "Open the app": web on iOS/desktop, app link on Android (appHandoffUrl) */
   appStoreUrl:'',playStoreUrl:'',           /* TODO */
   qrImage:'',                               /* optional data: or https: QR image, shown on desktop only */
   shareUrl:'',                              /* link used by Share (defaults to this page without query) */
@@ -508,8 +508,16 @@ function checkout(plan,extra){const p=CONFIG.plans[plan]||{},base=(CONFIG.checko
   if(base){try{const u=new URL(base,location.href);u.searchParams.set('plan',plan);for(const k in UTM)u.searchParams.set(k,UTM[k]);clean=u.toString();if(S.email)u.searchParams.set('email',S.email);full=u.toString()}catch(e){}}
   const ok=emit('checkout_click',Object.assign({plan,price:p.price||'',intro_price:p.intro||null,renews:p.renews||null,one_time:!p.renews,url:clean,email_in_url:!!(full&&S.email)},extra||{}));
   if(ok&&full){saveState(plan);nav2(full)}else if(ok&&DEBUG)demoCheckout(plan)}
+/* "Open the app": Android -> Adjust web2app link (opens or installs the app), iOS + desktop -> web app.
+   Email, FunnelFox profile id (user_id), UTM and fbclid are appended on tap. */
+function appHandoffUrl(){const ua=navigator.userAgent||'',base=(/Android/i.test(ua)&&CONFIG.appUrlAndroid)||CONFIG.appUrl;if(!base)return '';
+  const q={};try{for(let i=0;i<sessionStorage.length;i++){const k=sessionStorage.key(i);if(k.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(sessionStorage.getItem(k));Object.assign(q,(v&&v.state)||{})}}}catch(e){}
+  new URLSearchParams(location.search).forEach((v,k)=>{q[k]=v});
+  const ck=document.cookie.match(/(?:^|;\s*)ff-user=([^;]*)/),em=(typeof S!=='undefined'&&S&&S.email)||'';
+  const p={email:String(em).trim(),user_id:q.fpid||(ck?decodeURIComponent(ck[1]):''),af_adset:q.utm_medium||'',c:q.utm_campaign||'',af_ad:q.utm_content||'',clickid:q.fbclid||'',af_channel:q.utm_source||''};
+  return base+(base.indexOf('?')<0?'?':'&')+new URLSearchParams(p).toString()}
 function openApp(which){const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),and=/Android/i.test(ua);
-  const url=which==='ios'?CONFIG.appStoreUrl:which==='android'?CONFIG.playStoreUrl:(CONFIG.appUrl||(ios?CONFIG.appStoreUrl:and?CONFIG.playStoreUrl:''));
+  const url=which==='ios'?CONFIG.appStoreUrl:which==='android'?CONFIG.playStoreUrl:(appHandoffUrl()||(ios?CONFIG.appStoreUrl:and?CONFIG.playStoreUrl:''));
   if(emit('app_handoff',{target:which,url:url||''})&&url)nav2(url)}
 function shareIt(text){const url=CONFIG.shareUrl||(location.origin&&location.origin!=='null'?location.origin+location.pathname:'');emit('share',{});
   if(navigator.share){navigator.share(Object.assign({title:CONFIG.brand,text},url?{url}:{})).catch(()=>{})}

@@ -5,8 +5,8 @@ archetype: ai-transformation
 subject: cat
 input: a photo of their cat
 output: a royal/regal portrait painting (King/Queen style)
-screens: 12
-monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it
+screens: 13
+monetization: hard subscription paywall (weekly vs annual), lucky wheel bonus right before it; one-time last-chance offer on paywall close
 creative_screens:
   hook-a: 1
   hook-b: 2
@@ -18,7 +18,7 @@ motion: >
 
 # Funnel Content — Cat Royal Portrait
 
-AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it into a royal/regal portrait painting (King/Queen style). 12-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall).
+AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it into a royal/regal portrait painting (King/Queen style). 13-screen flow, matching the Figma flow board (hooks → name → style → upload → social proof → generation → lucky wheel → email → paywall → last-chance offer on close).
 
 ---
 
@@ -126,5 +126,21 @@ AI photo generator funnel: cat owner uploads a photo of their cat, AI turns it i
 **Body:** Choose your plan
 **Plans:** Weekly / Annual (highlight savings on annual)
 **Visual:** Two plan cards side by side (Weekly vs Annual), Apple Pay button prominent below.
+**Fallback offer:** #13 last-chance offer, shown once. Declining it leaves the blurred preview with an "Unlock anytime" button.
 **CTA:** Continue with Apple Pay / Continue
 
+## 13. Last-chance offer (on paywall close)
+**Purpose:** Second chance for users who closed the paywall without paying. Shown once per session, then never again.
+**Headline A:** Wait — {{cat_name}}'s crown, for less
+**Headline B:** One-time price for {{cat_name}}'s portrait
+**Body A:** {{cat_name}}'s royal portrait is ready. Unlock it for less today.
+**Plans:** One offer card: {{offer_name}} (first week). {{offer_price}} today, with the regular {{week_price}} struck (the real current price of the Weekly plan it undercuts), then {{week_price}}/week. Optional {{offer_badge}}. Terms and prices are placeholders until the app supplies them.
+**Visual:** Web page in the paywall's style (dark background, purple accent): sticky top bar with a close X, centered eyebrow "One-time offer · shown once", the headline, then a single offer card holding {{cat_name}}'s generated royal portrait (soft blur, small lock badge), the price row (struck {{week_price}} → {{offer_price}} "today"), 3 checks ("Full-resolution royal portrait, no watermark" · "Download and share anywhere" · "Every royal style, cancel anytime"), the CTA, payment badges (Apple Pay · Google Pay · cards) and the renewal line. Below the card, a plain decline link.
+**Microcopy:** Shown once per session (sessionStorage flag); a second paywall close skips it. Timer only if `CONFIG.offer.expiresMin` is set: it is a real deadline, the offer is withdrawn when it ends and it never resets on reload. If the lucky wheel awarded a plan discount, don't stack it: this card shows one real price. Renewal line: "{{offer_price}} today, then {{week_price}}/week. Cancel anytime." Decline link: "No thanks, keep the blurred preview".
+**CTA:** Claim my offer
+
+---
+
+## Notes
+
+- **Last-chance offer:** measure offer CVR (`offer_accept` / `offer_view`) separately from paywall CVR; also log `offer_decline` and `offer_expired`.

@@ -1,12 +1,13 @@
 ---
 niche: coinin-cards
-display_name: CoinIn Cards (Trading-Card Web Quiz, Card Scanner)
+display_name: CoinIdentify Cards (Trading-Card Web Quiz, Card Scanner)
 archetype: scanner-identifier
 subject: trading card
 input: 4 quick collector answers, one guess-the-grade game, 1 photo of one card (or a sample card)
-output: free card ID plus a raw (ungraded) value range; grade potential, top cards to grade and collection value behind the paywall
+output: free card ID plus a raw (ungraded) value range; grade potential, top cards to grade and collection value behind the hard paywall, opened in the CoinIdentify app
 screens: 18
-monetization: web paywall after an email gate (1-week intro, 4-week pre-selected, 12-week anchor, renewal shown next to every price); dismissible to a one-time single-card grade check, then the free card ID
+monetization: hard web paywall after a mandatory email gate; 3 plans 1w $12.99→$39.99/4w, 4w $14.99→$39.99/4w (pre-selected), 12w $39.99→$59.99/12w; no offer on decline; post-purchase one-time add-on (price pending) → get_app
+offer: none
 creative_screens:
   hook-a: 1
   game: 9
@@ -17,9 +18,11 @@ motion: >
   tilts under a light sweep, then its ID card and value range slide up beside it
 ---
 
-# Funnel Content — CoinIn Cards (Trading-Card Web Quiz, Card Scanner)
+# Funnel Content — CoinIdentify Cards (Trading-Card Web Quiz, Card Scanner)
 
-A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn category** (Ludex and Collectr are scan-first with no quiz). The hook asks "Which cards are worth grading?" The user answers four quick questions, plays one honest "which card grades higher" game, **scans one real card (or taps "Use a sample card" when no card or camera is at hand)** and gets a **free card ID plus a raw (ungraded) value range** before any paywall. The paywall then sells what is still locked on that card: grade potential, the top cards in the pile to send for grading, and collection value. Archetype: `scanner-identifier`, web variant (18 screens). **Reference funnel:** none for cards. Research §5 of `coursiv-coinin.md` found no CoinIn card web funnel; the flow is **unverified** and modelled on the CoinIn coin funnel (`scanner/coinin`, `scanner/coinin-collector`) and the scan-first card apps. **Deliberate differences from the coin reference:** a personalized result (ID plus raw range) before the paywall, no dollar-figure guessing games, no "become rich" framing, no countdown, no struck anchor prices, no dollar testimonials, no live user counter. **Branch:** if Q1 is sports cards, screen 8 becomes the "sports-card dad" nostalgia bridge. **Trademark rule:** brand and game names (Pokémon, MTG, PSA) are not used as UI labels. Options say "monster-battle cards", "sports cards", "fantasy strategy cards", the bridge says "pro grading", and all card art is generic, invented art. **Palette** follows `scanner/coinin`: charcoal ground, antique gold, serif display. **Reuse plan:** all niche data (card types, sample cards, game pair, level words) sits in one `CARDS` block in the demo, so the sibling collectibles funnels swap that block and keep the flow. Every value is an **estimate**, never "your card is worth $X".
+Rebranded 2026-10-07 to **CoinIdentify: Coin Scanner** ("CoinIdentify"), with Starlyn-shape monetization: mandatory email, hard paywall with 3 plans, no offer, a one-time add-on after purchase, then get the app.
+
+A web2app funnel for the CoinIdentify card scanner: **the first web quiz in its category** (Ludex and Collectr are scan-first with no quiz). The hook asks "Which cards are worth grading?" The user answers four quick questions, plays one honest "which card grades higher" game, **scans one real card (or taps "Use a sample card" when no card or camera is at hand)** and gets a **free card ID plus a raw (ungraded) value range** before any paywall. The paywall then sells what is still locked on that card: grade potential, the top cards in the pile to send for grading, and collection value. Archetype: `scanner-identifier`, web variant (18 screens). **Reference funnel:** none for cards. Research §5 of `coursiv-coinin.md` found no card web funnel from CoinIn (competitor); the flow is **unverified** and modelled on our coin funnels (`scanner/coinin`, `scanner/coinin-collector`) and the scan-first card apps. **Deliberate differences from the coin reference:** a personalized result (ID plus raw range) before the paywall, no dollar-figure guessing games, no "become rich" framing, no countdown, no struck anchor prices, no dollar testimonials, no live user counter. **Branch:** if Q1 is sports cards, screen 8 becomes the "sports-card dad" nostalgia bridge. **Trademark rule:** brand and game names (Pokémon, MTG, PSA) are not used as UI labels. Options say "monster-battle cards", "sports cards", "fantasy strategy cards", the bridge says "pro grading", and all card art is generic, invented art. **Palette** follows `scanner/coinin`: charcoal ground, antique gold, serif display. **Reuse plan:** all niche data (card types, sample cards, game pair, level words) sits in one `CARDS` block in the demo, so the sibling collectibles funnels swap that block and keep the flow. Every value is an **estimate**, never "your card is worth $X".
 
 ---
 
@@ -32,7 +35,7 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 **Body A:** Scan one card and see what you have.
 **Body B:** Quick quiz, then your free card ID.
 **Visual:** Charcoal ground. Macro of a tipped shoebox and a loose fan of three generic cards under warm light (`img/hook-cards.jpg`), fading into the ground. Below, three trio chips with line icons: "2-min quiz", "Free card ID", "Raw value range". Gold CTA pinned bottom.
-**Microcopy:** Under CTA: "By continuing you agree to our Terms and Privacy Policy. Values are estimates only."
+**Microcopy:** Under CTA: "By continuing you agree to our Terms of Use and Privacy Policy. Values are estimates only." Both are real links (squad-xteam Terms and Privacy).
 **CTA:** Start the quiz
 
 ### 2. How it works
@@ -220,7 +223,7 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 ## E. Gate
 
 ### 15. Email gate
-**Purpose:** Capture the email before the grade reveal, framed as saving the card and collection.
+**Purpose:** Capture the email before the paywall, framed as saving the card and collection. Mandatory: one validated input, no skip, guest, Google or Apple sign-in. The app activates the subscription from this email; emits `lead` with the email.
 **Headline A:** Where should we send it?
 **Headline B:** Save your card report
 **Body A:** Get your result and keep your scans safe.
@@ -228,7 +231,7 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 **Field:** Email input (email keyboard), optional marketing consent checkbox (off).
 **Visual:** The scanned card shrinks into the first slot of an empty collection grid (other slots dashed), email field beneath.
 **Error state:** "Enter a valid email address."
-**Microcopy:** "By continuing you agree to our Terms and Privacy Policy." · "We never sell your email."
+**Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy." (real links) · "We never sell your email."
 **CTA:** Continue
 
 ---
@@ -236,77 +239,75 @@ A web2app funnel for the CoinIn card scanner: **the first web quiz in the CoinIn
 ## F. Monetization
 
 ### 16. Paywall
-**Purpose:** Long web sales page selling what is still locked: grade potential for this card, then the top cards to grade and collection value. Renewal shown at the same size as the price.
+**Purpose:** Hard web paywall, a long sales page selling what is still locked: grade potential for this card, then the top cards to grade and collection value. No close X, no free path.
 **Headline A:** See its grade potential
 **Headline B:** Unlock your whole collection
 **Body A:** Grade band, top cards to grade, collection value.
 **Body B:** Scan unlimited cards and track the pile.
-**Plans:** Structure only, no invented numbers.
-- 1-week intro: intro price token, then weekly renewal shown beside it. Never called free.
-- **4-week: pre-selected**, "Recommended", price and renewal tokens.
-- 12-week: anchor, price and renewal tokens.
-- Every plan shows its own renewal price and period next to the price.
-**Visual:** Sticky brand bar with a close X. Hero: the user's card with its raw range (demo: marked "Sample data") and three locked rows glowing gold as "unlocking". Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Sticky bottom CTA after the first plan block scrolls away.
+**Plans:** Three plans, 4 weeks pre-selected. Every card shows its renewal next to the price.
+- 1 week ("Intro week"): $12.99, then $39.99 / 4 weeks.
+- **4 weeks: pre-selected**, "Recommended": $14.99, then $39.99 / 4 weeks.
+- 12 weeks ("Lowest per week"): $39.99, then $59.99 / 12 weeks.
+**Visual:** Sticky brand bar ("CoinIdentify", mini CTA after scrolling, no close X). Hero: the user's card with its raw range (demo: marked "Sample data") and three locked rows glowing gold. Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. The sticky bottom bar (plan name, today's price, CTA) shows from first view whenever no plan-block CTA is on screen.
 **Microcopy:**
-- Under the selected plan: "{{price}} today, then {{renewal}} every period until you cancel."
+- Renewal line under the CTA, per selected plan: "$12.99 today for your first week, then $39.99 every 4 weeks until you cancel." · "$14.99 today for your first 4 weeks, then $39.99 every 4 weeks until you cancel." · "$39.99 today for your first 12 weeks, then $59.99 every 12 weeks until you cancel."
 - What's inside: "Grade potential estimate" · "Top cards to grade" · "Collection value" · "Unlimited card scans" · "Rare-card flags" · "Sorted collection".
+- How it works: Checkout (secure payment) → Get the app (Download CoinIdentify: Coin Scanner from the App Store or Google Play) → Open your report (Log in with your email. Your scan is saved there.).
+- FAQ: What's included? · How is the grade estimated? · When do I get my report? (in the CoinIdentify: Coin Scanner app, log in with {{email}}) · How do I cancel? · Will I be charged again? (yes unless you cancel: 1-week and 4-week plans renew at $39.99 every 4 weeks, the 12-week plan at $59.99 every 12 weeks) · Is this an official grade?
 - Value disclaimer: "Values and grades are estimates, not appraisals or official grades."
-- FAQ: What's included? · How is the grade estimated? · How do I cancel? · Will I be charged again? · Is this an official grade?
-- Footer: Terms · Privacy · Subscription terms · "Not affiliated with any card publisher or grading company."
-**Fallback offer:** Close X goes to screen 17 once per session (sessionStorage `ikf_offer_coinin-cards`), then to the free card ID on any later close.
+- Footer: Terms · Privacy · Subscription terms · "Not affiliated with any card publisher or grading company." Legal entity hidden while `{{legal_entity}}` is unset.
+- No offer on decline: CoinIdentify policy is no sale and no last-chance offer.
 **CTA:** Unlock my card
 
-### 17. Last-chance offer — one-card grade check
-**Purpose:** A genuinely smaller option for people who closed the paywall: a one-time, non-recurring grade check for just the card they scanned. Not a duplicate of a paywall plan.
-**Headline A:** Just this card?
-**Headline B:** Get one grade check
-**Body A:** Pay once for this card's grade potential.
-**Body B:** No subscription, no renewal.
-**Plans:** One card: "One-card grade check", one-time price token, **paid once, never renews**, no strike price. Includes this card's grade band and the four-criteria read. Does **not** include unlimited scans, top cards to grade, collection value or other cards.
-**Visual:** Web page in the paywall's look: brand bar with a close X, gold eyebrow "One-time offer, shown once", one gold-bordered card with the card thumbnail, price row, two checks, a muted "Not included" list, CTA, payment badges, one-line terms note.
-**Microcopy:**
-- Terms line: "{{offer_price}} once. No renewal. Cancel nothing."
-- No timer (`expiresMin` is null; none until a real deadline exists).
-- Decline link: "No thanks, keep the free card ID"
-- Events: `offer_view`, `offer_accept` + `checkout_click` (plan `offer`), `offer_decline`.
-**CTA:** Get my grade check
+### 17. Add-on upsell — Grading Submission Plan
+**Purpose:** Right after the plan purchase, offer one add-on for the card they just scanned, at its listed price, then hand off to the app either way.
+**Headline A:** Plan your grading submission
+**Headline B:** Send this card in right
+**Body A:** A step-by-step plan for grading the card you scanned.
+**Body B:** Fees, prep and packing, in plain words.
+**Plans:** One add-on, paid once: "Grading Submission Plan" at `{{addon_price}}` (pending from the owner). No subscription, no struck price, no countdown. It is a hidden one-time plan `addon` in `CONFIG.plans`, opened with `checkout('addon')` (FunnelFox: its own native `checkout_addon` screen). Paying runs `completePurchase('addon')` and lands on Get the app with the "added" line; closing the checkout goes to Get the app without it (`CONFIG.declineFlow = {addon:'get_app'}`). The demo shows a stand-in sheet (Pay / Close without paying).
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card ("CoinIdentify report", the add-on name, the user's card), three gold checks: Whether this card is worth the grading fee · How to prep, sleeve and ship it safely · Saved with your card report in the app. Price row with the price token and "Paid once · no subscription". No back button, no close X.
+**Microcopy:** "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". Events: `upsell_view`, `upsell_accept` (+ `checkout_click` plan `addon`), `upsell_decline`, `purchase_complete` plan `addon`, `checkout_decline` plan `addon`.
+**CTA:** Add to my plan
 
 ---
 
 ## G. Payoff
 
-### 18. Your card report
-**Purpose:** Land the user on their own result. Free path: card ID, raw range and locked rows with a way back to the paywall. Paid: full report with grade band, criteria read and "scan next". Offer-only: grade band and criteria read for this card.
-**Headline A:** Your card, {{name}}
-**Headline B:** Your card, decoded
-**Body A:** Saved to your collection.
-**Body B:** Scan your next card any time.
-**Visual:** Card photo, fact rows, raw-range bar. Free: three locked rows with an "Unlock" button. Paid: estimated grade band with the four criteria marked, "Top cards to grade" list (this one marked), collection counter "1 card". App handoff buttons below.
-**Microcopy:** Under the band: "Estimate only. For a possibly valuable card, get an official grade before selling."
-**CTA:** Scan next card
+### 18. Get the app
+**Purpose:** Hand a paying user to the CoinIdentify app, where the full card report lives. Reached only after purchase (or a return with `?paid=`); there is no free result screen.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your report is ready
+**Body A:** Your full report is waiting in the CoinIdentify app.
+**Body B:** Download the app and log in to open it.
+**Visual:** Success check in a glowing well, three numbered steps (Download CoinIdentify: Coin Scanner · Log in with {{email}} · Open your report), "Open the app" button, black App Store and Google Play badges. If the add-on was bought, a green line "Grading Submission Plan added. It opens in the app." sits above the steps.
+**Microcopy:** Value disclaimer and "Cancel anytime in your account." App links are pending: tapping shows "App link coming soon".
+**CTA:** Open the app
 
 ---
 
 ## Notes
 
-**Reference.** None. Research §5 of `coursiv-coinin.md`: no CoinIn card web funnel found; Ludex and Collectr are scan-first. This flow is **unverified** and adapted from the coin funnel. Also unverified: the in-app card database coverage and the value data source.
+**Reference.** None. Research §5 of `coursiv-coinin.md`: no card web funnel from CoinIn (competitor) found; Ludex and Collectr are scan-first. This flow is **unverified** and adapted from our coin funnel. Also unverified: the in-app card database coverage and the value data source.
 
 **Trademark and risk.** Pokémon, MTG and PSA are trademarks. The UI uses descriptive text only ("monster-battle cards", "pro grading", "official grade") and the footer says "Not affiliated with any card publisher or grading company". All card art is generated and generic. No official-grade claim: the funnel only estimates a grade band.
 
 **Sports-card dad branch.** Q1 = sports cards turns screen 8 into the shoebox nostalgia bridge and picks a sports sample card. Measure its drop-off and paywall conversion against the other branches.
 
-**Blocks deliberately skipped.** Persona host (the coin funnel's guide), social proof screen (no verified numbers; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card, post-purchase upsell.
+**Blocks deliberately skipped.** Persona host (the coin funnel's guide), social proof screen (no verified numbers; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card, last-chance offer (CoinIdentify policy), free result screen (hard paywall).
 
 **Dark patterns not copied.** Countdown, struck anchor prices, fine-print "payment period", live user counter, dollar testimonials, "get rich" framing, an email gate that claims no storage.
 
-**Drop-off risk.** Screen 11 (upload). The sample-card link and the camera or gallery choice exist for this. Screen 15 (email) is required in the web variant.
+**Drop-off risk.** Screen 11 (upload). The sample-card link and the camera or gallery choice exist for this. Screen 15 (email) is mandatory and screen 16 is a hard paywall, so watch email-to-paywall and paywall exits closely.
 
-**Monetization.** One layer, the subscription, plus a one-time single-card grade check on decline. Measure separately: first-scan success, paywall conversion by plan, offer accept rate, refund rate.
+**Monetization (2026-10-07, CoinIdentify policy).** Hard paywall, three plans (1w $12.99 then $39.99 every 4 weeks; 4w $14.99 then $39.99 every 4 weeks, pre-selected; 12w $39.99 then $59.99 every 12 weeks), no sale or offer on decline, then a one-time add-on and the app hand-off. Measure separately: first-scan success, email-gate completion, subscription conversion by plan, add-on attach rate (`purchase_complete` plan `addon` / `upsell_view`), app open rate from Get the app, refund rate.
+
+**Pending from the owner.** Add-on name and price (`{{addon_price}}`; "Grading Submission Plan" is a working name), Paddle price IDs for the 3 plans and the add-on, support email (`{{support_email}}`), App Store / Google Play links, legal entity, refund terms, and real generated images.
 
 **First A/B test.** Quiz hook "Which cards are worth grading?" vs. "Shoebox full of cards?" with the sports branch on in both. **Second:** grade-potential teaser (screen 14) shown vs. skipped.
 
-**Verify before build.** Real plan periods and prices; refund terms; rating and reviews; card database source and coverage; licensed or generated photos for the game; the real identify API.
+**Verify before build.** Refund terms; rating and reviews; card database source and coverage; licensed or generated photos for the game; the real identify API.
 
-**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result for the chosen card type, with raw range figures marked "sample data". Card images in `img/` are drawn placeholders; `gen_images.py` is ready (set `IKAME_AI_KEY`, not set during this build).
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result for the chosen card type, with raw range figures marked "sample data". Card images in `img/` are real generated art (gemini-3.1-flash-image via `gen_images.py`, 2026-10-07): hook fan, paywall hero and one invented sample card per type (`card-sample` = Ember Drake, `card-sports`, `card-fantasy`), shown on the ID card and paywall when the sample is used; the drawn card stays only as a fallback.
 
 **Demo link (private Artifact):** https://claude.ai/artifact/XhpHge1WxEHMpxkmxx2zzA

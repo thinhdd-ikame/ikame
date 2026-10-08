@@ -108,7 +108,7 @@ Legend: **Fields** = the per-screen fields this block needs in the output file (
 ### Registration / account gate
 **Job:** Capture identity before the value is revealed.
 **Use when:** Always, unless the platform's policy forbids gating.
-**Copy pattern:** Email + password, plus Apple/Google sign-in. Legal line under the CTA.
+**Copy pattern:** **Email only**: one validated email input, a mandatory step with no skip, guest or "later" link. **No Google / Apple / social sign-in** (owner rule; the email activates the subscription in the app). It sits right before the paywall. The headline ties to saving their result ("Where should we save {{name}}?"), and the body says why ("We use it to activate your Plus and save your chat."). The legal line under the CTA has real Terms and Privacy links.
 **Fields:** Purpose, Headline, Body, Field, Visual, Error states, Microcopy (legal line), CTA.
 
 ---
@@ -117,17 +117,41 @@ Legend: **Fields** = the per-screen fields this block needs in the output file (
 
 ### Paywall
 **Job:** The primary ask.
-**Copy pattern:** 2-3 plan cards. With 3, the middle tier is a deliberate decoy that makes annual read as obvious value; annual pre-selected with a savings badge and a per-week price shown small. Trust row (secure payment · cancel anytime · refund window) and auto-renew fine print. **Describe the structure; only use real numbers when the user supplies them.**
-**Fields:** Purpose, Headline, Body, Plans, Visual, Microcopy, CTA, (Fallback offer).
+**Shape: a web-funnel landing page, not an in-app sheet.** These funnels run on the web after a Meta ad (web2app), so the paywall is a **long-scroll sales page** that sells the result the user just built, then asks twice. A compact "2 plan cards + CTA" screen reads like an app store sheet and under-sells on web. User direction, 2026-09-30.
+**Section stack (top → bottom), cut what the app can't back with real data:**
+1. **Sticky top bar**: brand, close X, and a mini CTA that fades in once the first plan block scrolls away.
+2. **Personal hero**: eyebrow ("Your reading is ready"), headline naming *their* result, their own artifact (photo, chart, sketch, character) next to 3-4 fact chips drawn from their answers.
+3. **Plan block #1**: in one card, 2-3 plans (annual pre-selected with a ribbon, per-week equivalent small), a "Due today" row, CTA, payment-method badges, "Secure checkout · Cancel anytime", and the renewal line for the selected plan.
+4. **What's inside**: a table of contents of the product. The first item is open, the rest locked or blurred.
+5. **How it works**: 3 steps from checkout to the app (web2app handoff).
+6. **Proof**: rating + reviews. **Only real data**; otherwise the block hides or shows visible placeholders.
+7. **Guarantee**: only if the refund policy exists.
+8. **FAQ accordion**: when do I get it · how to cancel · will I be charged again · what happens to my data/photo · accuracy/entertainment disclaimer.
+9. **Plan block #2**: the same component again.
+10. **Footer**: legal links, entity, disclaimer.
+11. **Sticky bottom CTA**: it shows the selected plan and today's charge, and it is visible **from first view**. It hides only while a plan-block CTA is on screen. Give it a solid background, and pad the footer so it never covers the last line.
+**First-view rule:** at 375×667 and 430×932, the user sees a CTA and a price without scrolling. Legal and support links are real links: underlined, at least 13px, with a tap area at least 40px tall. Sticky bars have a solid background.
+**Hard paywall:** when the app's rules say so (`app-rules.md`), there is no free tier, no "Continue free", and every decline returns to the paywall.
+**Copy pattern:** 2-3 plan cards. With 3, the middle tier is a deliberate decoy that makes annual read as obvious value. Annual is pre-selected with a savings ribbon and a small per-week price. Trust row and auto-renew fine print sit under every CTA. **Describe the structure; only use real numbers when the user supplies them.** No countdowns or struck "was" prices unless the offer genuinely expires or the reference price is real.
+**Fields:** Purpose, Headline, Body, Plans, Visual (list the sections used), Microcopy (FAQ answers, renewal line, guarantee), CTA, (Fallback offer).
 
-### Fallback offer
-**Job:** Second chance after a paywall dismiss — trial, discount, or cheaper tier.
-**Use when:** Hard-gated funnels, always worth specifying.
-**Fields:** folded into the paywall screen as **Fallback offer**, or its own screen when the offer differs materially.
+### Fallback offer (the "upsell on decline", required)
+**Job:** Second chance after a paywall close without paying: a lower first price, a trial, or a lighter tier. The team calls this "Upsell"; in funnel terms it is a downsell.
+**Use when:** the app's rules in `app-rules.md` decide the shape. **ChatChi:** a per-plan sale on leaving a checkout, then a lifetime offer, then back to the paywall (no free path). **Starlyn:** none. Apps without rules: one fallback offer, per the default below (user direction, 2026-09-30). The paywall's close X and every "no thanks / continue free" link go here first. Only after it is declined does the user reach the free path, the limited result or the app handoff.
+**Rules:**
+- **Shown once per user session** (sessionStorage flag). A second paywall close goes straight to the free path.
+- **Real terms only.** Offer price, renewal price and period are placeholders until the app supplies them. The struck "was" price may only be the real current price of the plan being undercut.
+- **Timer only when the deadline is real.** When `expiresMin` is set, the offer is withdrawn when it ends. Never reset it on reload.
+- **Same web-page look as the paywall:** sticky bar with close, an eyebrow "One-time offer · shown once", a headline tying back to their result, and one offer card holding their artifact thumbnail, a price row (struck regular price → offer price, "today"), 3 checks, CTA, payment badges and the renewal line. Below the card, a plain decline link naming what they keep for free.
+- **Events:** `offer_view`, `offer_accept` (+ `checkout_click` with plan `offer`), `offer_decline`, `offer_expired`. Measure offer CVR separately from paywall CVR.
+- **Brand promises still win:** if the app promises "no discounts / price shown first" (e.g. Starlyn), the offer is a lighter tier or a trial at the listed price, not a markdown.
+**Fields:** its own screen: Purpose, Headline, Body, Plans (the one offer), Visual, Microcopy (timer rule, decline link), CTA. The paywall screen's `Fallback offer:` field points to it.
 
 ### Post-purchase upsell
-**Job:** Sell an add-on while intent is still hot, with a countdown.
-**Use when:** There's a discrete add-on worth buying (extra report, extra styles, HD pack).
+**Job:** Sell a one-time add-on while intent is still hot, right after the subscription purchase.
+**Use when:** There's a discrete add-on worth buying (an extra report, a bonus character, extra styles). It is a hidden one-time plan (`addon`) with **its own checkout and price**, and the subscription just bought stays as it is.
+**Routing:** paid, skipped or checkout closed → the get-app screen (with an "added" line when paid). Buyers of a one-time lifetime plan skip it.
+**Countdown:** only when the deadline is real.
 **Fields:** Purpose, Headline, Body, Visual, Microcopy (timer, skip link), CTA.
 
 ### Secondary revenue
@@ -143,8 +167,9 @@ Legend: **Fields** = the per-screen fields this block needs in the output file (
 **Job:** Deliver the thing, interactively where possible, so the purchase feels justified.
 **Fields:** Purpose, Headline, Body, Visual, Microcopy (sample content, share row), CTA.
 
-### Success / download
-**Job:** Confirm and hand over the artifact.
+### Success / download (get the app)
+**Job:** Confirm and hand over the artifact. In web2app funnels this is the get-app screen: a check, "You're in", and 3 steps (download the app · log in with your checkout email · open your result). It has an "Open the app" CTA and store badges that look like the official black badges.
+**Open the app** routes by device and fills the tokens: email, the FunnelFox user id, and utm/fbclid captured on the first screen. The links per app are in `app-rules.md`.
 **Use when:** The output is a file the user saves or shares.
 **Fields:** Purpose, Headline, Body, Visual, CTA.
 

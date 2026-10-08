@@ -337,6 +337,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .cityl button{padding:9px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--t2);font-size:13.5px;min-height:40px}
 .cityl button:hover{border-color:var(--acc);color:var(--t1)}
 .oprice{flex-wrap:wrap}.oprice .tok{font-size:13px;white-space:normal;word-break:break-all}.oprice b{font-size:24px}
+
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
 </style>
 </head>
 <body>
@@ -467,9 +478,9 @@ const blot=()=>`<svg class="blot" viewBox="0 0 200 160" aria-hidden="true"><g fi
 const INIT=()=>({i:1,hist:[],v:QS.get('v')==='B'?'B':'A',gender:'',a3:'',a4:'',a5:'',a6:'',a7:'',a8:'',a10:'',a11:'',fam:'',side:'',img:'',imgOther:'',dob:{m:'',d:'',y:''},bt:{h:'',mi:'',ap:'AM'},btSkip:false,place:'',placeSkip:false,email:'',emailErr:'',consent:false,plan:CONFIG.defaultPlan,paid:false,completed:false,offerSeen:false});
 let S=INIT();
 const t=(a,b)=>S.v==='B'?b:a;
-const SCREENS={1:'hook',2:'gender',3:'st_intuition',4:'st_dreams',5:'st_deja_vu',6:'st_signs',7:'st_moon',8:'st_nature',9:'bridge',10:'empath_moods',11:'empath_confide',12:'family',13:'family_side',14:'image_test',15:'birth_date',16:'birth_time',17:'birth_place',18:'loader',19:'big_three',20:'email',21:'power_teaser',22:'paywall',23:'get_app'};
+const SCREENS={1:'hook',2:'gender',3:'st_intuition',4:'st_dreams',5:'st_deja_vu',6:'st_signs',7:'st_moon',8:'st_nature',9:'bridge',10:'empath_moods',11:'empath_confide',12:'family',13:'family_side',14:'image_test',15:'birth_date',16:'birth_time',17:'birth_place',18:'loader',19:'big_three',20:'email',21:'power_teaser',22:'paywall',23:'report_upsell',24:'get_app'};
 const QN=[2,3,4,5,6,7,8,10,11,12,14,15,16,17];
-const SKIPBACK=[18,22,23];
+const SKIPBACK=[18,22,23,24];
 
 const app=document.getElementById('app');
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -627,13 +638,13 @@ const V={
   ${refundReal()?`<div class="wsec"><div class="guar"><div class="seal">${esc(CONFIG.refundDays)}<br>DAY</div><div><b style="font:600 18px var(--serif)">Money-back guarantee</b><p class="lead" style="font-size:13.5px;margin-top:4px">Not for you? Ask within ${esc(CONFIG.refundDays)} days for a full refund.</p></div></div></div>`:''}
   <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
   <div class="wsec" id="plans2">${planBlock()}</div>
-  <div class="wfoot">${legal()}<div>For entertainment purposes only. ${tok(CONFIG.company)}</div></div>
+  <div class="wfoot">${legal()}<div>For entertainment purposes only. ${/\{\{/.test(CONFIG.company)?'':esc(CONFIG.company)}</div></div>
   </div>
   <div class="sticky" id="sticky"><div class="sum"><span>${esc(planOf(S.plan).name)}</span><b id="sumline">${todayLine()}</b></div>${cta('Get my reading',true,'pay')}</div>`},
 };
 
 /* ---------- Starlyn policy: purchase -> get the app (old offer + free reading screens removed) ---------- */
-const IK_GET=23,IK_DOB=15;
+const IK_GET=24,IK_DOB=15;
 V[IK_GET]=()=>{const n=(typeof S.name==='string'?S.name:'').trim(),em=S.email||'your email';
   return `<div class="scr" style="gap:16px;padding-top:22px"><div class="bigwell" style="color:var(--pos)">${ic('check',36,2.4)}</div>
   <div class="tc"><h1 class="display">You're in${n?', '+esc(n):''}</h1><p class="lead" style="margin-top:8px">Your full reading is waiting in the Starlyn app.</p></div>
@@ -717,8 +728,29 @@ app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='em')app.qu
 
 /* host API */
 window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
-  completeOffer:()=>{S.pack=true;emit('offer_complete');go(IK_GET)},completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_GET)}});
-if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_GET}
+  completeOffer:()=>{S.pack=true;emit('offer_complete');go(IK_GET)},completePurchase:plan=>{if(plan)S.plan=plan;S.paid=true;emit('purchase_complete',{plan:S.plan});go(IK_UP)}});
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   In FunnelFox the CTA clicks the screen's native Button #ikf_upsell_buy: a Paddle one-click charge on the card just used. */
+const IK_UP=23;
+CONFIG.upsell={"id": "personal_spellbook", "name": "Personal Spellbook", "art": "img/hook-moon.jpg", "h": ["Add your <em>personal spellbook</em>", "13 rituals <em>for your power</em>"], "lead": ["13 moon-timed rituals made for your power type.", "One ritual for each new moon of the year."], "checks": ["13 rituals for your power type", "Timed to the moon, step by step", "Saved with your reading in the app"], "eyebrow": "Add-on · paid once", "price": "$9.99", "cta": "Add for $9.99", "skip": "No thanks, take me to the app", "note": "One-time charge to the card you just used. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&IMG[u.art])||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(S.upBusy?'Adding your report…':u.cta,!S.upBusy,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const _ikGetV=V[IK_GET];V[IK_GET]=()=>{const h=_ikGetV();return S.upsold?h.replace('<div class="how"',`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div><div class="how"`):h};
+window.IkFunnel=window.IkFunnel||{};window.IkFunnel.completeUpsell=()=>{S.upsold=true;S.upBusy=false;emit('upsell_complete',{id:CONFIG.upsell.id,price:CONFIG.upsell.price});go(IK_GET)};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  if(b.dataset.a==='upskip'){emit('upsell_decline',{id:u.id});go(IK_GET);return}
+  emit('upsell_accept',{id:u.id,price:u.price});emit('checkout_click',{plan:'upsell:'+u.id});
+  if(typeof ikfUpsellBuy==='function'&&ikfUpsellBuy())return;   /* FunnelFox build: native one-click charge */
+  toast('Demo only. No charge made');window.IkFunnel.completeUpsell()});
+if(QS.get('paid')){S.paid=true;S.plan='1w';S.i=IK_UP}
 if(DEBUG){window.IkFunnel.go=n=>{clearT();Object.assign(S,{gender:S.gender||'f',a3:S.a3||'tot',a4:S.a4||'mos',a5:S.a5||'tot',a6:S.a6||'mos',a7:S.a7||'uns',a8:S.a8||'no',a10:S.a10||'mos',a11:S.a11||'mos',fam:S.fam||'yes',side:S.side||'mother',img:S.img||'eye',dob:S.dob.m?S.dob:{m:'5',d:'14',y:'1994'},bt:S.bt.h?S.bt:{h:'9',mi:'30',ap:'PM'},place:S.place||'London',email:S.email||'demo@example.com'});go(n)}}
 emit('funnel_start',{referrer:(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch(e){return ''}})()});
 try{if(sessionStorage.getItem('ikf_age_block')){S.u18=true;S.i=IK_DOB}}catch(e){}

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0A0911">
-<title>Chai · Short Drama</title>
+<title>ChatChi: AI Roleplay Chat · Short Drama</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
@@ -377,23 +377,23 @@ svg .lg{fill:url(#cgrad-logo)}
    ============================================================ */
 const CONFIG={
   slug:'chai-short-drama',
-  brand:'Chai',
+  brand:'ChatChi',
   plans:{
     w1: {label:'1 week',  price:'{{price_1w}}', per:'week',    renew:'{{renew_1w}}', renews:'every week',    badge:''},
     w4: {label:'4 weeks', price:'{{price_4w}}', per:'4 weeks', renew:'{{renew_4w}}', renews:'every 4 weeks', badge:'Recommended'},
     w12:{label:'12 weeks',price:'{{price_12w}}',per:'12 weeks',renew:'{{renew_12w}}',renews:'every 12 weeks',badge:''}
   },
   defaultPlan:'w4',
-  fairUseCap:300,          // confirm with Chai
-  freeMessagesPerDay:10,   // confirm with Chai
+  fairUseCap:300,          // confirm with ChatChi
+  freeMessagesPerDay:10,   // confirm with ChatChi
   checkoutUrl:{w1:'',w4:'',w12:''},
   /* Last-chance offer, shown ONCE per session when a paywall is declined: a one-time series pass (paid once, no renewal).
-     Terms are placeholders until Chai confirms a one-time product exists. expiresMin: null = no timer. */
+     Terms are placeholders until ChatChi confirms a one-time product exists. expiresMin: null = no timer. */
   offer:{enabled:true,name:'Series pass',price:'{{offer_price}}',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null},
   app:{deepLink:'',iosUrl:'https://apps.apple.com/app/idTODO',androidUrl:'https://play.google.com/store/apps/details?id=TODO'},
   legal:{termsUrl:'',privacyUrl:''},
   /* Proof blocks: hidden until these are real, sourced values (not a {{token}}). */
-  stats:[['{{app_rating}}','store rating'],['{{app_users}}','people watch and chat on Chai']],
+  stats:[['{{app_rating}}','store rating'],['{{app_users}}','people watch and chat on ChatChi']],
   reviews:[['{{reviewer}}','{{country}}','{{review_text}}']],
   refundDays:'{{refund_days}}',   // guarantee block is hidden until this is a real number
   refundText:''
@@ -571,22 +571,22 @@ const stickHTML=()=>{const p=PLANS[S.plan];return `<div class="stick" id="stick"
 const legalFine=()=>`<div class="fine">Auto-renews at the price and period shown until cancelled. Cancel anytime in account or store settings.<br>Unlimited means normal use, capped at ${CONFIG.fairUseCap} messages a day.</div>`;
 function coverHTML(){const g=G();
   return `<div class="cover" style="${accStyle()}"><span class="gc">${g.e}</span>${im(g.img)}<span class="pill">Episode 3 · locked</span><span class="cav">${g.le}</span>
-  <div class="ct"><h2>${esc(g.t)}</h2><div class="chips"><span>With ${lead()}</span><span>Ep 1-2 free</span><span>Ep 3 in Chai Plus</span></div></div></div>`;
+  <div class="ct"><h2>${esc(g.t)}</h2><div class="chips"><span>With ${lead()}</span><span>Ep 1-2 free</span><span>Ep 3 in ChatChi Plus</span></div></div></div>`;
 }
 function pwHTML(mode){
   const quota=mode==='quota',g=G();
   const bens=[['layers','Every episode, every series','Switch series whenever you like.','PLUS'],['note','A lead who remembers','Quotes what you watched.',''],['chat','Unlimited chat','Fair-use cap applies.',''],['vol','Voice lines','Hear the lead speak.','NEW'],['book','Pick up where you stopped','Your place is saved.','']];
   const how=[['Watch','Short episodes, art and captions.'],['Talk','The lead replies to what you saw.'],['Unlock','Plus opens the next episode.']];
-  const faq=[['Is it free to start?',`Yes. Free: Episodes 1-2 and ${FREE} messages a day.`],['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],['What is in the app?','The app shows which episodes of each series are available now.'],['Is this safe and private?','Chats are never public. Delete your story anytime. Characters are AI and fictional.'],['Is it explicit?','No. Chai dramas here are SFW.'],['How do I cancel?','Anytime in your account or store settings.']];
+  const faq=[['Is it free to start?',`Yes. Free: Episodes 1-2 and ${FREE} messages a day.`],['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],['What is in the app?','The app shows which episodes of each series are available now.'],['Is this safe and private?','Chats are never public. Delete your story anytime. Characters are AI and fictional.'],['Is it explicit?','No. ChatChi dramas here are SFW.'],['How do I cancel?','Anytime in your account or store settings.']];
   const stats=(CONFIG.stats||[]).filter(([n])=>real(n)),revs=(CONFIG.reviews||[]).filter(r=>real(r[2]));
-  return `<div class="pw" id="pw" role="dialog" aria-label="Chai Plus">
+  return `<div class="pw" id="pw" role="dialog" aria-label="ChatChi Plus">
   <button class="pwx" data-a="${quota?'closeq':'closepw'}" aria-label="Close">${ic('x',16)}</button>
-  <div class="brandbar"><div class="logo">${logo(22)} Chai</div></div>
+  <div class="brandbar"><div class="logo">${logo(22)} ChatChi</div></div>
   <div class="sec" style="padding-top:8px">${coverHTML()}
    <h1 class="h1" style="margin-top:16px;text-align:left;font-size:30px">${quota?t(`You've used today's ${FREE}.`,'Your chat is paused.'):t('Unlock the whole <span class="gt">series</span>','Keep watching <span class="gt">'+esc(g.t)+'</span>')}</h1>
    <p style="margin:6px 0 0;color:var(--t2)">${quota?'Resets at midnight. Or chat without limits.':t('Every episode, plus chat that remembers.','One plan. No coins. No per-episode charges.')}</p></div>
   <div class="sec" id="plans1">${plansHTML()}<div style="height:12px"></div>${legalFine()}</div>
-  <div class="sec"><h2 class="h2">Everything in<br><span class="gt">Chai Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
+  <div class="sec"><h2 class="h2">Everything in<br><span class="gt">ChatChi Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
   <div class="sec"><h2 class="h2">How it <span class="gt">works</span></h2><div class="how">${how.map(([a,b],j)=>`<div><span class="nn">${j+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</div></div>
   ${stats.length||revs.length?`<div class="sec"><h2 class="h2">Loved by <span class="gt">viewers</span></h2>${stats.length?`<div class="stats">${stats.map(([n,l])=>`<div class="stat"><span class="n gt">${esc(n)}</span><span>${esc(l)}</span></div>`).join('')}</div>`:''}
    ${revs.length?`<div class="stats" style="margin-top:10px">${revs.map(([n,cn,x])=>`<div class="rev"><div class="who"><i>${esc(n.slice(0,2).toUpperCase())}</i><div><b>${esc(n)}</b><div style="font-size:11.5px;color:var(--t3)">${esc(cn)}</div></div><span class="st">★★★★★</span></div>${esc(x)}</div>`).join('')}</div>`:''}</div>`:''}
@@ -611,7 +611,7 @@ function storyPause(){if(!isStory()||S.ps)return;S.ps=true;S.rem=Math.max(300,(S
 function storyResume(){if(!S.ps)return;S.ps=false;const e=phone.querySelector('.story');if(e)e.style.setProperty('--ps','running');if(isStory()&&S.sl<2){SLT=Date.now();later(()=>{if(isStory()&&!S.ps&&S.sl<2){S.sl++;S.rem=4000;render()}},S.rem||4000)}}
 function storyHTML(){
   const g=G(),ep=epIdx(),slides=g.eps[ep],sl=Math.min(S.sl,2),c=slides[sl],paid=ep===2;
-  const lab=paid?'Episode 3 · Chai Plus':`Episode ${ep+1} of 3 · free`;
+  const lab=paid?'Episode 3 · ChatChi Plus':`Episode ${ep+1} of 3 · free`;
   const lastCta=S.i===5?'Next episode':S.i===6?'See what happens':'Back to chat';
   return `<div class="story ${ep>0?'dk':''}" style="${accStyle()}">
    <div class="bg"><span class="big">${c[1]}</span>${im(g.img).replace('<img ','<img style="object-position:'+g.pos[sl]+'% 30%" ')}</div><div class="shade"></div>
@@ -633,7 +633,7 @@ function chatView(){
   }
   const hl=[t(g.lead+' speaks first.','They were there too.'),t(g.lead+' remembers.','They quoted the show.')];
   const bd=[t('Pick a reply, or type your own.','Three ways to answer.'),t('Every detail you watched is in their memory.','Reply once more. Episode 3 is next.')];
-  const lim=!S.premium&&S.msgs<=0&&S.i===14?`<div class="limit"><span class="crown">${ic('crown',26)}</span><h3>${t(`You've used today's ${FREE}.`,'Your chat is paused.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to Chai Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`:'';
+  const lim=!S.premium&&S.msgs<=0&&S.i===14?`<div class="limit"><span class="crown">${ic('crown',26)}</span><h3>${t(`You've used today's ${FREE}.`,'Your chat is paused.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to ChatChi Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`:'';
   const watched=S.i===14&&S.premium?'Watched Ep 1-3':'Watched Ep 1-2';
   const memline=S.i===9||S.i===14?` · remembers ${g.m[0]}, ${g.m[1]}`:'';
   return `<div class="chat" style="${accStyle()}"><div class="chead"><span class="av" style="width:40px;height:40px;background:var(--gbg);border:2px solid var(--gacc)">${g.le}</span><div style="flex:1"><b>${lead()}</b><small>● online · ${esc(g.t)}</small></div></div>
@@ -643,8 +643,8 @@ function chatView(){
    ${n!==null?`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${hl[n]}</div><div style="color:var(--t2);font-size:13px">${bd[n]}</div></div>`:`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${t('Back with '+g.lead+'.',g.lead+' is waiting.')}</div><div style="color:var(--t2);font-size:13px">${S.premium?'Unlimited chat is on.':t('Episode 3 is still locked.',`Free: ${Math.max(S.msgs,0)} messages left today.`)}</div></div>`}
    <div class="msgs" id="msgs"><div class="sp"></div>${S.chat.map(m=>`<div class="bub ${m.w}">${fill(m.x)}</div>`).join('')}${S.typing?'<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>':''}${lim}</div>
    ${chips?`<div class="ideas">${chips.map((x,j)=>`<button data-a="say" data-v="${esc(x)}" data-j="${j}">${esc(x)}</button>`).join('')}</div>`:''}
-   ${S.i===14&&!S.premium?`<button class="lockstrip" data-a="upgrade">${ic('lock',16)}<span>Episode 3 · ${esc(g.t)}</span><b>Chai Plus</b></button>`:''}</div>
-  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the Chai app</button>`:`<div class="counter ${out?'out':''}">${out?'Out of messages · resets at midnight':S.msgs+' message'+(S.msgs===1?'':'s')+' left today'}</div>`}
+   ${S.i===14&&!S.premium?`<button class="lockstrip" data-a="upgrade">${ic('lock',16)}<span>Episode 3 · ${esc(g.t)}</span><b>ChatChi Plus</b></button>`:''}</div>
+  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the ChatChi app</button>`:`<div class="counter ${out?'out':''}">${out?'Out of messages · resets at midnight':S.msgs+' message'+(S.msgs===1?'':'s')+' left today'}</div>`}
    <div class="composer"><div class="box"><input id="msg" maxlength="300" placeholder="Message ${lead()}…" ${out?'disabled':''}></div><button class="send" id="sendb" data-a="send" aria-label="Send" disabled>${ic('send',18)}</button></div></div></div>`;
 }
 function say(text,idx){
@@ -665,12 +665,12 @@ const MONTHS=['January','February','March','April','May','June','July','August',
 const months=()=>'<option value="">Month</option>'+MONTHS.map((m,i)=>`<option value="${i+1}" ${String(i+1)===String(S.month)?'selected':''}>${m}</option>`).join('');
 const years=()=>{let o='<option value="">Birth year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
 const V={
-1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} Chai</div>
+1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} ChatChi</div>
   <h1 class="h1">${t('Watch it. <span class="gt">Then talk back.</span>','Short dramas <span class="gt">that answer you</span>')}</h1>
   <p class="sub" style="margin-top:-4px">${t('Two episodes free. Then the lead chats with you.','They remember what you just watched.')}</p>
   <div class="fan">${SORDER.map((k,j)=>`<div class="fc" style="--gbg:${SERIES[k].bg};background:var(--gbg);border-color:${SERIES[k].acc}88;transform:translateX(${(j-1)*66}px) rotate(${(j-1)*9}deg);z-index:${3-Math.abs(j-1)}"><span>${SERIES[k].e}</span>${im(SERIES[k].img)}<div class="bars"><i></i><i></i><i></i></div></div>`).join('')}</div></div>
   <div class="foot">${cta('Start watching')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
-2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} Chai</div>${q(t('Adults only. Quick check.','When were you born?'),t('Chai dramas are for people 18 and older.','We only use this to confirm your age.'))}
+2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} ChatChi</div>${q(t('Adults only. Quick check.','When were you born?'),t('ChatChi dramas are for people 18 and older.','We only use this to confirm your age.'))}
   <div style="display:flex;gap:10px"><select class="sel" id="month" data-f="month" aria-label="Birth month">${months()}</select><select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select></div>
   <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div>
   <div class="foot">${cta('Continue',!!(S.year&&S.month),'age')}</div>`,
@@ -690,12 +690,12 @@ const V={
   <p class="hint">${AIPILL()}</p></div>
   <div class="foot">${cta('Chat with '+esc(g.lead))}</div>`},
 8:()=>chatView(),9:()=>chatView(),
-10:()=>{const g=G();return `<div class="scr" style="${accStyle()};padding-top:20px">${q(t('Episode 3 is locked.','What happens next?'),t('Unlock it and keep talking to '+esc(g.lead)+'.','Part of Chai Plus. Free users stay on 1-2.'))}
-  <div class="lockbox" style="${accStyle()}"><span class="gc">${g.e}</span>${im(g.img)}<span class="tagk">Ep 3 · Chai Plus</span>
+10:()=>{const g=G();return `<div class="scr" style="${accStyle()};padding-top:20px">${q(t('Episode 3 is locked.','What happens next?'),t('Unlock it and keep talking to '+esc(g.lead)+'.','Part of ChatChi Plus. Free users stay on 1-2.'))}
+  <div class="lockbox" style="${accStyle()}"><span class="gc">${g.e}</span>${im(g.img)}<span class="tagk">Ep 3 · ChatChi Plus</span>
    <div class="lk"><span class="ring2">${ic('lock',26,'#fff')}</span><i>${fill(g.tease)}</i></div></div>
   <p class="hint">Free: Episodes 1-2 and ${FREE} messages a day.</p></div>
   <div class="foot">${cta('Unlock Episode 3')}</div>`},
-11:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} Chai</div>${q(t('Save your progress.','Keep your place.'),t('Add your email so the lead finds you.','Guest progress lives only on this device.'))}
+11:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} ChatChi</div>${q(t('Save your progress.','Keep your place.'),t('Add your email so the lead finds you.','Guest progress lives only on this device.'))}
   <div class="box"><input id="email" data-f="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" value="${esc(S.email)}" aria-label="Email"></div>
   ${S.emailErr==='email'?'<div class="err">That email doesn’t look right. Check it?</div>':''}
   <button class="btn ghost" data-a="social" data-v="apple">Continue with Apple</button><button class="btn ghost" data-a="social" data-v="google">Continue with Google</button>
@@ -723,10 +723,10 @@ function offerTimer(){const o=CONFIG.offer;clearInterval(window.__oiv);if(!o.exp
 V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,g=G();
   const yes=[`Every episode of ${esc(g.t)}`,`Chat with ${esc(g.lead)}, normal daily limit`],no=['Other series','Unlimited chat and voice lines'];
   return `<div class="pw ofr" role="dialog" aria-label="One-time offer" style="${accStyle()}">
-  <div class="obar"><div class="logo">${logo(22)} Chai</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="obar"><div class="logo">${logo(22)} ChatChi</div><button class="obx" data-a="offerno" aria-label="No thanks">${ic('x',16)}</button></div>
   <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">One-time offer · shown once</span>
    <h1 class="h2" style="margin:14px 0 8px">${t('Just want <span class="gt">this series?</span>','One smaller <span class="gt">option</span>')}</h1>
-   <p class="olead">${t('Pay once for '+esc(g.t)+'. No renewal.','Shown once only. Not part of Chai Plus.')}</p>
+   <p class="olead">${t('Pay once for '+esc(g.t)+'. No renewal.','Shown once only. Not part of ChatChi Plus.')}</p>
    ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
   <div class="sec"><div class="ocard">${o.badge?`<span class="obadge">${otok(o.badge)}</span>`:''}
    <div class="orow"><span class="oth" style="display:grid;place-items:center;font-size:26px;background:var(--gbg)">${g.le}</span><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><div class="osub">${esc(g.t)} · with ${esc(g.lead)}</div></div></div>
@@ -740,7 +740,7 @@ V[OFFER_ID]=()=>{setTimeout(offerTimer,0);const o=CONFIG.offer,g=G();
 
 function render(anim){
   const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');
-  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, Chai is for adults</h1><p class="sub">You must be 18 or older to continue.</p></div>`:nav()+V[S.i]();
+  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, ChatChi is for adults</h1><p class="sub">You must be 18 or older to continue.</p></div>`:nav()+V[S.i]();
   const old=cur();if(old)old.replaceWith(v);else phone.appendChild(v);
   if(S.blocked)return;
   if(isStory()){if(anim||!S.rem)S.rem=4000;storySchedule()}
