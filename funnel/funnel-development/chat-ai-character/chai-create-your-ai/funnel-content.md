@@ -312,3 +312,13 @@ Paddle prices are flat, so screens 21-22 no longer promise a discount (this over
 - The consent checkbox is pre-ticked (owner, 2026-10-08).
 - "Your own background" shows the chosen idol under the write-your-own input, in the page flow, so the chip rows never cover it.
 - iOS/desktop "Open the app" goes to `https://chatchi-app.squad-xteam.com/payment/funnel?...`.
+
+## Update 2026-10-08 (later): 50% off the in-app price
+
+The in-app prices are $19.99 / $59.99 / $235.99 and the web always charges half, so the discount is real and permanent. This brings back:
+- the spin wheel (10-50% off, always 50%, "applied automatically, on every renewal");
+- "Special discount 50%", "Your entitlement 50% discount" and the name promo code;
+- the in-app price struck on each plan card, next to the web price, with the price per day and per week on the right;
+- a line under the plans: "Crossed-out prices are ChatChi's in-app prices. On the web you pay 50% less, every renewal."
+
+The disclosure adds "(50% off the in-app price of $X)". There is still no countdown, since the web price never expires.
