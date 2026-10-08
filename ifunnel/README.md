@@ -22,6 +22,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | [docs/specs/2026-10-06-edge-router-publisher-design.md](docs/specs/2026-10-06-edge-router-publisher-design.md) | **Spec Edge Router + Publisher:** CLI `ikf` → Publisher API, version bất biến + preview, route host+prefix qua Postgres → KV, Worker phục vụ từ R2 |
 | [docs/plans/2026-10-06-edge-router-publisher.md](docs/plans/2026-10-06-edge-router-publisher.md) | **Plan TDD Edge Router + Publisher** (16 task): route-match, core publisher, Worker, Terraform domain funnel, CLI `ikf`, E2E staging |
 | [docs/specs/2026-10-08-runtime-sdk-collector-design.md](docs/specs/2026-10-08-runtime-sdk-collector-design.md) | **Spec Runtime SDK + Collector:** `ikf.js` bắt event `ikfunnel:*`, lọc PII, Meta Pixel + consent EEA, `/_ikf/c` → Queue → ClickHouse |
+| [docs/plans/2026-10-08-runtime-sdk-collector.md](docs/plans/2026-10-08-runtime-sdk-collector.md) | **Plan TDD Runtime SDK + Collector** (14 task): event-schema, SDK `ikf.js`, collector `/_ikf/c`, event-consumer → ClickHouse, Pixel, infra |
 | [docs/checklist-chuan-bi.md](docs/checklist-chuan-bi.md) | Việc cần chuẩn bị: tài khoản, Paddle, pháp lý, Meta, Adjust, nhân sự |
 
 ## Trạng thái
@@ -31,7 +32,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 - [ ] Checklist chuẩn bị (nhóm 1 xong thì bắt đầu code Task 1–13)
 - [ ] Các plan TDD tiếp theo:
   - edge-router-publisher (spec + plan TDD xong 2026-10-06)
-  - runtime-sdk-collector (spec xong 2026-10-08, chờ plan TDD)
+  - runtime-sdk-collector (spec + plan TDD xong 2026-10-08)
   - billing-paddle
   - entitlement-identity
   - app-sdk-adjust
