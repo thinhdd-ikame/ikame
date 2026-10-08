@@ -65,12 +65,12 @@ Rules the product owner set per app. They override the generic defaults in `SKIL
   | `addon` | `pri_01m47nmvmmav229fqtc2hepwem` | `pri_01m47nqdb1wh61skfrhjcb4ye1` |
 - **Open the app** (`CONFIG.app`, `openApp()`):
   - **Android → web2app:** `https://chatchi.go.link?adj_t=2567dkvx_256m7zvv_25adl2th&email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}`
-  - **iOS and desktop → web2web:** `https://chatchi-app.squad-xteam.com/?` followed by the same parameters.
+  - **iOS and desktop → web2web:** `https://chatchi-app.squad-xteam.com/payment/funnel?` followed by the same parameters (owner, 2026-10-08; was `/?` before, older chai-* funnels still use that).
   - The engine fills the tokens itself, URL-encoded:
     - `email`: the funnel email.
     - `user.id`: the FunnelFox profile id, from `?fpid` or the `ff-user` cookie.
     - utm and fbclid: captured on the first screen into sessionStorage `ikf_attr_<slug>`, because later screens may lose the query.
-- **Exception `chai-create-your-ai` (owner, 2026-10-07):** clone of Chai's quiz v2. No chat taste (AI scenario + voice pick replace it); plans `1w` $9.99→$18.99/wk, `4w` $29.99→$49.99/4wk (pre-selected), `52w` $117.99→$235.99/yr, Paddle IDs pending; spin wheel (always 50%), 10-min timer and `{{name}}_oct2026` promo code allowed. Decline flow pending weekly sale prices; meanwhile a closed checkout returns to the paywall.
+- **Exception `chai-create-your-ai` + `chai-kpop-idol` (owner, 2026-10-07/08):** clones of Chai's quiz v2. No chat taste (AI scenario + voice pick replace it). Plans are **flat Paddle prices** (same price every period, no intro, no struck price, no % off): `1w` $9.99/week (SKU chai_web_1week, sandbox `pri_01m4cwtwccrrpt8qx1v8bxhg0k`), `4w` $29.99 labelled "every 4 weeks" (SKU chai_web_1month, sandbox `pri_01m4cwtwnn2x83b48y47t0dpyj`), `52w` $117.99/year (SKU chai_web_1year, sandbox `pri_01m4cwtwxxgtvzj3jz1vnkwcrs`); live price IDs pending. The spin wheel awards a real Plus feature (voice notes), never a discount; no countdown or promo code. Add-on $22.99 as other ChatChi funnels. A closed checkout returns to the paywall.
 - **Imagery:** glamour-photo style (see `chai-dream-girl/gen_images.py`). When a character funnel can go either way, prefer female leads. Portraits should match the user's picks, e.g. ethnicity × hair colour.
 - **FunnelFox:** project "AI Character", custom domain `app.chatchi.co/<alias>`.
 

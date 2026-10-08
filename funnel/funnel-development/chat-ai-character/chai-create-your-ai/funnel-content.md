@@ -300,3 +300,12 @@ Each card shows the struck regular price (the real renewal price), the intro pri
 - **Drop-off risk:** screens 10-12 and 15 are four chip screens in a row, and the marquee chips are hard to tap while moving (our walker needed a force click). Pause the marquee on touch. Screen 16's LLM wait is the other risk, so keep the fallback under 12 s.
 - **Monetization layers:** subscription (3 plans) + one-time add-on. Track separately. Also track spin → paywall view → plan picked, so we know whether the wheel lifts conversion over a straight paywall.
 - **First A/B:** spin wheel on vs off (same prices); `4w` vs `52w` pre-selected.
+
+## Update 2026-10-08: flat pricing
+
+Paddle prices are flat, so screens 21-22 no longer promise a discount (this overrides the copy above):
+- Plans `1w` $9.99 every week, `4w` $29.99 every 4 weeks, `52w` $117.99 every year. No struck price, no % OFF badge, and the disclosure states the same price for every period.
+- Spin wheel prizes are ChatChi Plus features (voice notes, selfies, unlimited chat, memory, every scenario, morning texts). It always lands on voice notes, framed as "included with ChatChi Plus".
+- No countdown and no promo code (nothing expires). The sticky top bar shows "Due today" and the renewal line.
+- Paddle sandbox IDs are set. Live IDs are pending, so published (live) checkouts won't charge until they are added.
+- iOS/desktop "Open the app" goes to `https://chatchi-app.squad-xteam.com/payment/funnel?...`.

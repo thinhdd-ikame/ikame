@@ -4,11 +4,12 @@
 const CONFIG={
   slug:'chai-kpop-idol',
   brand:'ChatChi',
-  /* Owner exception 2026-10-07: Chai's weekly plans. Prices = intro after the 50% spin; renew = regular price (struck on the card). */
+  /* Paddle prices are flat (owner, 2026-10-08): the same price every period, no intro, no struck price, no % off.
+     Paddle SKUs chai_web_1week / chai_web_1month / chai_web_1year; labels stay 4-week / 52-week (owner choice). */
   plans:{
-    '1w': {label:'1-week plan', price:'$9.99',   renew:'$18.99',  per:'week',     renews:'every week',     off:'47% OFF'},
-    '4w': {label:'4-week plan', price:'$29.99',  renew:'$49.99',  per:'4 weeks',  renews:'every 4 weeks',  off:'40% OFF', badge:'MOST POPULAR'},
-    '52w':{label:'52-week plan',price:'$117.99', renew:'$235.99', per:'year',     renews:'every year',     off:'50% OFF'},
+    '1w': {label:'1-week plan', price:'$9.99',   renew:'$9.99',   per:'week',     renews:'every week'},
+    '4w': {label:'4-week plan', price:'$29.99',  renew:'$29.99',  per:'4 weeks',  renews:'every 4 weeks', badge:'MOST POPULAR'},
+    '52w':{label:'52-week plan',price:'$117.99', renew:'$117.99', per:'year',     renews:'every year'},
     /* Post-purchase add-on for subscribers: its own one-time Paddle price. The subscription just bought stays as it is. */
     addon:{label:'Bonus character', price:'$22.99', per:'once', oneTime:true, hidden:true}
   },
@@ -17,13 +18,12 @@ const CONFIG={
   /* hook badges [eyebrow, line]. Chai uses "15M+ users' choice" / "4.5 stars": put real ChatChi numbers here only when sourced. */
   hookBadges:[['54 IDOLS','All original'],['TWO STYLES','Drawn or real']],
   defaultPlan:'4w',
-  spinWin:50,              // the wheel always lands here (as Chai's does)
-  timerMin:10,             // paywall countdown; at 0:00 prices stay, the row turns into "reserved"
+  spinPerk:0,              // the wheel always lands on PERKS[0]; every prize is a real ChatChi Plus feature (no discount: prices are flat)
   fairUseCap:300,          // TODO confirm
   checkoutUrl:{'1w':'','4w':'','52w':'',addon:''},
   upsell:{name:'Bonus character',title:'Add a second companion',lead:'One more story, one more voice. Yours to keep.',checks:['Create a second companion from scratch','Their own memory and chats','Paid once, no renewal'],cta:'Add for $22.99',note:'$22.99 once. Your plan stays as it is.',decline:'No thanks'},
   app:{web2app:'https://chatchi.go.link?adj_t=2567dkvx_256m7zvv_25adl2th&email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}',
-       web2web:'https://chatchi-app.squad-xteam.com/?email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}'},
+       web2web:'https://chatchi-app.squad-xteam.com/payment/funnel?email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}'},
   legal:{termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',refundUrl:'https://squad-xteam.com/termofuse.html',supportEmail:'support@chatchi.co'}
 };
 /* ============================================================ */
@@ -101,7 +101,7 @@ const PLACE={
 const MEM=['You grew up together','{He} {has} a secret identity','You once betrayed {him}','You were childhood rivals','You can tell {him} anything','You met at summer camp','{He} always make{s} you laugh',"You're teammates",'You share an inside joke','{He} saved your life once','You share a dark past','{He} {has} a nickname for you',"{He}{is} your only friend",'{He} never trust{s} easily','You never expected to meet again'];
 const MYTR=['🧠 Smart','😃 Outgoing','💪 Brave','🎨 Creative','😂 Funny','💖 Kind','🌙 Mysterious','😈 Mischievous','🔥 Ambitious','🎯 Focused','🦋 Free spirit','🌊 Laid-back','🌟 Charming','💡 Introverted','🎭 Playful','🧘 Calm'];
 const MYFACT=["You're a billionaire","You're a famous athlete","You're royalty","You're {his} boss","You're untouchable","You're unbelievably strong","You have a perfect smile","You're new in town"];
-const SPIN=[10,15,20,30,40,50];
+const PERKS=[['🎙️','Voice notes'],['📸','Selfies'],['♾️','Unlimited chat'],['🧠','Memory'],['🎬','Every scenario'],['☀️','Morning texts']];
 
 const INIT=()=>({i:1,hist:[],ai:'',pref:'',own:'',age:'',kind:[],style:'',ref:'',cname:'',cage:22,traits:[],place:'',mems:[],memOwn:[],uname:'',myTr:[],myFacts:[],myOwn:[],plot:0,pick:-1,voice:-1,vg:'',email:'',emErr:'',spun:false,disc:0,plan:CONFIG.defaultPlan,agree:false,agErr:false,pwStart:0,premium:false,addon:false,chat:[],typing:false,sent:0,completed:false});
 let S=INIT();
@@ -164,7 +164,7 @@ function persist(){try{if(typeof ikfSave==='function')ikfSave();else sessionStor
 const clearT=()=>{timers.forEach(clearTimeout);timers=[];if(LD)clearInterval(LD);LD=null;clearInterval(TICK);TICK=0;S.typing=false;stopVoice()};
 
 /* ---------- tracking (no free text) ---------- */
-function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],aiBefore:S.ai||null,prefers:S.pref||null,gender:S.own||null,age:S.age||null,chatKind:S.kind.slice(),style:S.style||null,reference:S.ref||null,charAge:S.cage,traits:S.traits.slice(),place:S.place||null,memories:S.mems.length+S.memOwn.length,background:S.myTr.length+S.myFacts.length+S.myOwn.length,scenario:S.pick,voice:S.voice>=0?vgOf()+'-'+(S.voice+1):null,discount:S.disc,plan:S.plan,premium:S.premium,addon:!!S.addon,hasEmail:!!S.email}}
+function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],aiBefore:S.ai||null,prefers:S.pref||null,gender:S.own||null,age:S.age||null,chatKind:S.kind.slice(),style:S.style||null,reference:S.ref||null,charAge:S.cage,traits:S.traits.slice(),place:S.place||null,memories:S.mems.length+S.memOwn.length,background:S.myTr.length+S.myFacts.length+S.myOwn.length,scenario:S.pick,voice:S.voice>=0?vgOf()+'-'+(S.voice+1):null,perk:S.perk||null,plan:S.plan,premium:S.premium,addon:!!S.addon,hasEmail:!!S.email}}
 function emit(name,detail){
   let data={};try{data=snapshot()}catch(e){}
   const d=Object.assign({},detail||{},{data});
@@ -198,7 +198,7 @@ const DKEY='ikf_demo_'+CONFIG.slug;
 function viewed(){
   if(typeof ffGo!=='function')try{sessionStorage.setItem(DKEY,JSON.stringify(Object.assign({},S,{typing:false})))}catch(e){}
   emit('screen_view',{index:S.i,name:SCREENS[S.i]});
-  if(S.i===22)emit('paywall_view',{placement:'onboarding',discount:S.disc});
+  if(S.i===22)emit('paywall_view',{placement:'onboarding',perk:S.perk});
   if(S.i===CHAT&&S.premium&&!S.completed){S.completed=true;emit('complete',{premium:true})}
 }
 function go(n,push=true){if(n===CHAT&&!S.premium)n=S.email?22:20;clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;render(true);viewed()}
@@ -298,15 +298,16 @@ const V={
   <p class="lockn">${ic('lock',14)}<span>We respect your privacy. Your data is processed under our ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}.</span></p>
   <div class="gift"><span class="g">🎁</span><span>Use a real email so you don't miss your <b>bonus</b>.</span></div></div>
   <div class="foot">${cta('CONTINUE',!!S.email.trim(),'emailgo')}</div>`,
-21:()=>`<div class="scr" style="gap:8px"><div class="emwell" style="width:60px;height:60px;flex:none">${im(refImg())}</div>${q(`Spin & save on <span class="pk">${esc(cfull())}</span>!`,'A personalized offer to start chatting 🎁')}
+21:()=>`<div class="scr" style="gap:8px"><div class="emwell" style="width:60px;height:60px;flex:none">${im(refImg())}</div>${q(`Spin for a perk with <span class="pk">${esc(cfull())}</span>!`,'Every spin unlocks something for your story 🎁')}
   <div class="whl"><div class="rim"></div><div class="bulbs">${Array.from({length:16},(_,j)=>`<i style="--a:${j*22.5}deg"></i>`).join('')}</div>
-   <div class="disc" id="disc" style="transform:rotate(${S.spun?spinTo():0}deg)">${SPIN.map((v,j)=>`<div class="seg" style="--a:${j*60+30}deg"><span>${v}%<small>off</small></span></div>`).join('')}</div><div class="ptr"></div><div class="hub"></div></div></div>
-  <div class="foot">${S.spun?cta('CLAIM MY DISCOUNT',true,'claim'):cta('SPIN',true,'spin')}</div>${S.spun?wonHTML():''}`,
+   <div class="disc" id="disc" style="transform:rotate(${S.spun?spinTo():0}deg)">${PERKS.map(([e,l],j)=>`<div class="seg" style="--a:${j*60+30}deg"><span>${e}<small>${l}</small></span></div>`).join('')}</div><div class="ptr"></div><div class="hub"></div></div></div>
+  <div class="foot">${S.spun?cta('CLAIM MY PERK',true,'claim'):cta('SPIN',true,'spin')}</div>${S.spun?wonHTML():''}`,
 22:()=>pwHTML()
 };
-const spinTo=()=>{const j=SPIN.indexOf(CONFIG.spinWin);return 360*6-(j*60+30)};
+const spinTo=()=>{const j=CONFIG.spinPerk;return 360*6-(j*60+30)};
+const perk=()=>PERKS[CONFIG.spinPerk];
 const wonHTML=()=>`<div class="won" role="dialog" aria-label="You won"><div class="confetti">${RM?'':Array.from({length:24},(_,j)=>`<i style="left:${(j*41)%100}%;background:${['#F2A9DD','#F6D58A','#7FD1A8','#9AB8FF'][j%4]};animation-delay:${(j%6)*.08}s"></i>`).join('')}</div>
-  <h3>Woo hoo! 🥳</h3><p>${esc(uname())}, you won the <b>maximum</b> discount</p><div class="big">${CONFIG.spinWin}% off</div><p>Applied automatically.</p>${cta('CLAIM MY DISCOUNT',true,'claim')}</div>`;
+  <h3>Woo hoo! 🥳</h3><p>${esc(uname())}, you unlocked</p><div class="big">${perk()[0]} ${perk()[1]}</div><p>from ${esc(cshort())}, included with ChatChi Plus.</p>${cta('CLAIM MY PERK',true,'claim')}</div>`;
 function ldHTML(h,p){return `<div class="fb gray">${im(refImg())}</div><div class="ldwrap"><h2>${h}</h2><p>${p}</p><div class="ring" id="ring" style="--p:0"><b>0%</b></div></div>`}
 function runLoad(ms,to){let t0=Date.now();const r=document.getElementById('ring');
   LD=setInterval(()=>{const p=Math.min(100,Math.round((Date.now()-t0)/ms*100));if(r){r.style.setProperty('--p',p);r.querySelector('b').textContent=p+'%'}
@@ -315,17 +316,16 @@ function runLoad(ms,to){let t0=Date.now();const r=document.getElementById('ring'
 /* ---------- paywall (Chai layout) ---------- */
 const PLANS=CONFIG.plans;
 const visPlan=()=>PLANS[S.plan]&&!PLANS[S.plan].hidden?S.plan:CONFIG.defaultPlan;
-const disclose=()=>{const p=PLANS[visPlan()];return `By clicking Get My Plan, I agree to pay ${p.price} for my first ${p.per}. If I don't cancel before the intro period ends, it renews at ${p.renew} ${p.renews} until I cancel. I can cancel anytime in my account settings or by emailing ${CONFIG.legal.supportEmail}.`};
+const disclose=()=>{const p=PLANS[visPlan()];return `By clicking Get My Plan, I agree to pay ${p.price} today and ${p.renew} ${p.renews} after that until I cancel. I can cancel anytime in my account settings or by emailing ${CONFIG.legal.supportEmail}.`};
 const left=()=>{if(!S.pwStart)return CONFIG.timerMin*60;return Math.max(0,CONFIG.timerMin*60-Math.floor((Date.now()-S.pwStart)/1000))};
 const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+' : '+String(s%60).padStart(2,'0');
 function pwHTML(){
-  const p=PLANS[visPlan()],c=esc(cfull()),l=left();
+  const p=PLANS[visPlan()],c=esc(cfull());
   return `<div class="cpw" id="pw" role="dialog" aria-label="ChatChi Plus">
-  <div class="cbar"><div class="tm"><small>Discount ${l?'expires in':'reserved'}</small><b data-timer>${l?mmss(l):'✓'}</b>${l?'<span>min &nbsp; sec</span>':''}</div><div class="pr"><b data-today>${p.price}</b>today</div><button class="btn" data-a="buy" style="margin-left:6px">GET MY PLAN</button></div>
-  <div class="csec"><div class="chero"><div class="pwav">${im(refImg())}</div><span class="tg">🎁 Special discount: <b>${S.disc||CONFIG.spinWin}%</b></span><h1>Endless chats with<br><em>${c}</em></h1><p class="sub2" style="margin:-6px 0 14px">Plus every other character on ChatChi.</p><span class="pill">Your story starts the moment you join</span></div></div>
-  <div class="csec"><div class="ctiles"><div><small>👤 Personalized access to</small><b>ChatChi Plus</b></div><div><small>🎯 Your entitlement</small><b>${S.disc||CONFIG.spinWin}% discount</b></div></div></div>
-  <div class="csec"><div class="promo"><div class="h"><i>%</i>Your promo code is applied!</div><div class="r"><div class="code"><i>✓</i>${esc(promo())}</div>${l?`<div class="clk" data-timer>${mmss(l).replace(/ /g,'')}</div>`:''}</div>${l?'':'<div class="rsv">Your discount is reserved.</div>'}</div></div>
-  <div class="csec"><div class="cplans">${Object.entries(PLANS).filter(([k,x])=>!x.hidden).map(([k,x])=>{const on=visPlan()===k;return `<button class="cplan ${on?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${on}">${x.badge?`<span class="pop">👍 ${x.badge}</span>`:''}<span class="rd"></span><span class="nm"><b>${x.label.toUpperCase()}</b><span><s>${x.renew}</s> ${x.price}</span></span><span class="bx"><em>${x.off}</em><b>${x.price}</b><s>${x.renew}</s></span></button>`}).join('')}</div></div>
+  <div class="cbar"><div class="tm"><small>Due today</small><b data-today>${p.price}</b><span data-per>then ${p.renew} ${p.renews}</span></div><button class="btn" data-a="buy">GET MY PLAN</button></div>
+  <div class="csec"><div class="chero"><div class="pwav">${im(refImg())}</div><span class="tg">🎁 Your perk: <b>${perk()[0]} ${perk()[1]}</b></span><h1>Endless chats with<br><em>${c}</em></h1><p class="sub2" style="margin:-6px 0 14px">Plus every other character on ChatChi.</p><span class="pill">Your story starts the moment you join</span></div></div>
+  <div class="csec"><div class="ctiles"><div><small>👤 Personalized access to</small><b>ChatChi Plus</b></div><div><small>🎯 Your perk</small><b>${perk()[1]} from ${esc(cshort())}</b></div></div></div>
+  <div class="csec"><div class="cplans">${Object.entries(PLANS).filter(([k,x])=>!x.hidden).map(([k,x])=>{const on=visPlan()===k;return `<button class="cplan ${on?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${on}">${x.badge?`<span class="pop">👍 ${x.badge}</span>`:''}<span class="rd"></span><span class="nm"><b>${x.label.toUpperCase()}</b><span>${x.price} ${x.renews}</span></span><span class="bx"><b>${x.price}</b><small>per ${x.per}</small></span></button>`}).join('')}</div></div>
   <div class="csec"><div class="agree ${S.agree?'on':''} ${S.agErr?'bad':''}"><button class="cb" data-a="agree" role="checkbox" aria-checked="${S.agree}" aria-label="I agree to the terms">${S.agree?ic('check',16,'#1a0f1c',3):''}</button><span>I agree to the ${lnk('Terms and Conditions',CONFIG.legal.termsUrl)}, ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)} and ${lnk('Refund Policy',CONFIG.legal.refundUrl)}</span></div>${S.agErr?'<p class="agerr" role="alert">Please accept the terms to continue.</p>':''}</div>
   <div class="csec"><div class="dscl" data-renew>${esc(disclose())}</div><p class="fair">"Endless chats": fair-use limit of ${CONFIG.fairUseCap} messages a day.</p></div>
   <div class="csec"><button class="btn gbtn" data-a="buy">GET MY PLAN</button></div>
@@ -334,10 +334,8 @@ function pwHTML(){
 }
 function paintPlan(){const r=cur();if(!r)return;const v=visPlan();
   r.querySelectorAll('.cplan').forEach(p=>{const on=p.dataset.v===v;p.classList.toggle('on',on);p.setAttribute('aria-pressed',on)});
-  r.querySelectorAll('[data-today]').forEach(x=>x.textContent=PLANS[v].price);r.querySelectorAll('[data-renew]').forEach(x=>x.textContent=disclose())}
-function bindPw(){if(!S.pwStart){S.pwStart=Date.now();persist()}if(!left())return;
-  TICK=setInterval(()=>{const l=left(),r=cur();if(!r)return;if(!l){clearInterval(TICK);render();return}
-    r.querySelectorAll('[data-timer]').forEach((x,j)=>x.textContent=j?mmss(l).replace(/ /g,''):mmss(l))},1000)}
+  r.querySelectorAll('[data-today]').forEach(x=>x.textContent=PLANS[v].price);r.querySelectorAll('[data-per]').forEach(x=>x.textContent='then '+PLANS[v].renew+' '+PLANS[v].renews);r.querySelectorAll('[data-renew]').forEach(x=>x.textContent=disclose())}
+function bindPw(){}   // no countdown: prices are flat, nothing expires
 
 /* ---------- purchase routing. Hard paywall: no free path; every decline ends back on the paywall. ---------- */
 const PAYWALL=22;
@@ -400,7 +398,7 @@ function fillTo(n){
   if(n>5&&!S.kind.length)S.kind=['comfort'];if(n>6&&!S.style)S.style='anime';if(n>7&&!S.ref)S.ref=refSet()[0].k;if(n>8&&!S.cname)S.cname='Julian - Prince';
   if(n>10&&!S.traits.length)S.traits=['💖 Kind','🛡️ Protective'];if(n>11&&!S.place)S.place='woods';if(n>12&&!S.mems.length)S.mems=['You grew up together'];
   if(n>14&&!S.uname)S.uname='Alex';if(n>15&&!S.myTr.length)S.myTr=['🧠 Smart'];if(n>17&&S.pick<0)S.pick=0;if(n>19&&S.voice<0)S.voice=0;
-  if(n>20&&!S.email)S.email='demo@example.com';if(n>21){S.spun=true;S.disc=CONFIG.spinWin}if(n>=25)S.premium=true;
+  if(n>20&&!S.email)S.email='demo@example.com';if(n>21){S.spun=true;S.perk=perk()[1]}if(n>=25)S.premium=true;
 }
 
 phone.addEventListener('click',e=>{
@@ -443,9 +441,9 @@ phone.addEventListener('click',e=>{
     case 'voicesel':answer('voice',vgOf()+'-'+(S.voice+1));next();break;
     case 'emailgo':{const x=S.email.trim();if(!EMRE.test(x)){S.emErr='Please enter a valid email';render();document.getElementById('em')?.focus();break}
       S.email=x;S.emErr='';emit('lead',{method:'email',placement:'pre_spin'});next();break}
-    case 'spin':{if(S.spun)break;S.spun=true;S.disc=CONFIG.spinWin;emit('spin',{result:S.disc});const d=document.getElementById('disc');if(d)d.style.transform=`rotate(${spinTo()}deg)`;b.disabled=true;
+    case 'spin':{if(S.spun)break;S.spun=true;S.perk=perk()[1];emit('spin',{result:S.perk});const d=document.getElementById('disc');if(d)d.style.transform=`rotate(${spinTo()}deg)`;b.disabled=true;
       later(()=>{persist();render()},RM?50:4400);break}
-    case 'claim':emit('discount_claim',{discount:S.disc});next();break;
+    case 'claim':emit('perk_claim',{perk:S.perk});next();break;
     case 'plan':S.plan=v;paintPlan();emit('plan_select',{plan:v,price:CONFIG.plans[v].price});break;
     case 'agree':S.agree=!S.agree;S.agErr=false;{const r=cur(),l=r.querySelector('.agree');l.classList.toggle('on',S.agree);l.classList.remove('bad');b.setAttribute('aria-checked',S.agree);b.innerHTML=S.agree?ic('check',16,'#1a0f1c',3):'';r.querySelector('.agerr')?.remove()}break;
     case 'buy':{if(!S.agree){S.agErr=true;const r=cur(),l=r.querySelector('.agree');l.classList.add('bad');if(!r.querySelector('.agerr'))l.insertAdjacentHTML('afterend','<p class="agerr" role="alert">Please accept the terms to continue.</p>');l.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});break}checkout(visPlan());break}
