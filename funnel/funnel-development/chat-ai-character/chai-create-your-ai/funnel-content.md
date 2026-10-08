@@ -307,5 +307,8 @@ Paddle prices are flat, so screens 21-22 no longer promise a discount (this over
 - Plans `1w` $9.99 every week, `4w` $29.99 every 4 weeks, `52w` $117.99 every year. No struck price, no % OFF badge, and the disclosure states the same price for every period.
 - Spin wheel prizes are ChatChi Plus features (voice notes, selfies, unlimited chat, memory, every scenario, morning texts). It always lands on voice notes, framed as "included with ChatChi Plus".
 - No countdown and no promo code (nothing expires). The sticky top bar shows "Due today" and the renewal line.
-- Paddle sandbox IDs are set. Live IDs are pending, so published (live) checkouts won't charge until they are added.
+- Paddle live and sandbox IDs are set for all three plans.
+- Plan cards: the right side shows price per day (e.g. $1.07 per day, cents raised) and per week ($7.5/wk); the left side shows the real recurring price, with no struck price.
+- The consent checkbox is pre-ticked (owner, 2026-10-08).
+- "Your own background" shows the chosen idol under the write-your-own input, in the page flow, so the chip rows never cover it.
 - iOS/desktop "Open the app" goes to `https://chatchi-app.squad-xteam.com/payment/funnel?...`.

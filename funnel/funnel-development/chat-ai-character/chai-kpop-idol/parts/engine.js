@@ -7,9 +7,9 @@ const CONFIG={
   /* Paddle prices are flat (owner, 2026-10-08): the same price every period, no intro, no struck price, no % off.
      Paddle SKUs chai_web_1week / chai_web_1month / chai_web_1year; labels stay 4-week / 52-week (owner choice). */
   plans:{
-    '1w': {label:'1-week plan', price:'$9.99',   renew:'$9.99',   per:'week',     renews:'every week'},
-    '4w': {label:'4-week plan', price:'$29.99',  renew:'$29.99',  per:'4 weeks',  renews:'every 4 weeks', badge:'MOST POPULAR'},
-    '52w':{label:'52-week plan',price:'$117.99', renew:'$117.99', per:'year',     renews:'every year'},
+    '1w': {label:'1-week plan', price:'$9.99',   renew:'$9.99',   per:'week',     renews:'every week',    days:7},
+    '4w': {label:'4-week plan', price:'$29.99',  renew:'$29.99',  per:'4 weeks',  renews:'every 4 weeks', days:28, badge:'MOST POPULAR'},
+    '52w':{label:'52-week plan',price:'$117.99', renew:'$117.99', per:'year',     renews:'every year',    days:365},
     /* Post-purchase add-on for subscribers: its own one-time Paddle price. The subscription just bought stays as it is. */
     addon:{label:'Bonus character', price:'$22.99', per:'once', oneTime:true, hidden:true}
   },
@@ -103,7 +103,7 @@ const MYTR=['🧠 Smart','😃 Outgoing','💪 Brave','🎨 Creative','😂 Funn
 const MYFACT=["You're a billionaire","You're a famous athlete","You're royalty","You're {his} boss","You're untouchable","You're unbelievably strong","You have a perfect smile","You're new in town"];
 const PERKS=[['🎙️','Voice notes'],['📸','Selfies'],['♾️','Unlimited chat'],['🧠','Memory'],['🎬','Every scenario'],['☀️','Morning texts']];
 
-const INIT=()=>({i:1,hist:[],ai:'',pref:'',own:'',age:'',kind:[],style:'',ref:'',cname:'',cage:22,traits:[],place:'',mems:[],memOwn:[],uname:'',myTr:[],myFacts:[],myOwn:[],plot:0,pick:-1,voice:-1,vg:'',email:'',emErr:'',spun:false,disc:0,plan:CONFIG.defaultPlan,agree:false,agErr:false,pwStart:0,premium:false,addon:false,chat:[],typing:false,sent:0,completed:false});
+const INIT=()=>({i:1,hist:[],ai:'',pref:'',own:'',age:'',kind:[],style:'',ref:'',cname:'',cage:22,traits:[],place:'',mems:[],memOwn:[],uname:'',myTr:[],myFacts:[],myOwn:[],plot:0,pick:-1,voice:-1,vg:'',email:'',emErr:'',spun:false,disc:0,plan:CONFIG.defaultPlan,agree:true,agErr:false,pwStart:0,premium:false,addon:false,chat:[],typing:false,sent:0,completed:false});
 let S=INIT();
 const SCREENS={1:'hook',2:'pref_gender',3:'own_gender',4:'age',5:'chat_kind',6:'style',7:'reference',8:'char_name',9:'char_age',10:'personality',11:'meet_place',12:'memories',13:'bridge_you',14:'your_name',15:'your_background',16:'gen_scenario',17:'scenario',18:'gen_audio',19:'voice',20:'email',21:'spin',22:'paywall'};
 
@@ -275,7 +275,7 @@ const V={
   <div class="foot">${cta('CONTINUE',!!S.uname.trim(),'uname')}</div>`,
 15:()=>`<div class="scr rel">${q('Your own background','Select up to 8.')}
   <div class="grp">Your personalities:</div>${marquee('myTr',MYTR,{max:8,pron:false})}
-  <div class="grp">Facts about you:</div>${marquee('myFacts',MYFACT,{max:8,own:'myOwn'})}${ownBox('myOwn','✏️ Write your own')}</div>
+  <div class="grp">Facts about you:</div>${marquee('myFacts',MYFACT,{max:8,own:'myOwn'})}${ownBox('myOwn','✏️ Write your own')}<div class="peekflow">${im(S.ref?refImg():'img/peek-start.jpg')}</div></div>
   <div class="foot">${cta('CONTINUE',count('myTr','myFacts','myOwn')>0)}</div>`,
 16:()=>ldHTML("You're doing great!",'Writing your scenario…'),
 17:()=>{const ps=plots(),k=S.plot,p=ps[k];
@@ -316,6 +316,9 @@ function runLoad(ms,to){let t0=Date.now();const r=document.getElementById('ring'
 /* ---------- paywall (Chai layout) ---------- */
 const PLANS=CONFIG.plans;
 const visPlan=()=>PLANS[S.plan]&&!PLANS[S.plan].hidden?S.plan:CONFIG.defaultPlan;
+/* right side of a plan card: price per day (big, cents raised) and per week, from the plan's real price and period */
+const perDay=x=>{const v=parseFloat(String(x.price).replace(/[^0-9.]/g,''));if(!x.days||!v)return '';const d=(Math.round(v/x.days*100)/100).toFixed(2).split('.'),w=Math.round(v/(x.days===365?52:x.days/7)*100)/100;
+  return `<span class="pdy"><span class="pdv">$${d[0]}<sup>.${d[1]}</sup><small>per day</small></span><span class="pwk">$${w%1?w.toFixed(2).replace(/0$/,''):w}/wk</span></span>`};
 const disclose=()=>{const p=PLANS[visPlan()];return `By clicking Get My Plan, I agree to pay ${p.price} today and ${p.renew} ${p.renews} after that until I cancel. I can cancel anytime in my account settings or by emailing ${CONFIG.legal.supportEmail}.`};
 const left=()=>{if(!S.pwStart)return CONFIG.timerMin*60;return Math.max(0,CONFIG.timerMin*60-Math.floor((Date.now()-S.pwStart)/1000))};
 const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+' : '+String(s%60).padStart(2,'0');
@@ -325,7 +328,7 @@ function pwHTML(){
   <div class="cbar"><div class="tm"><small>Due today</small><b data-today>${p.price}</b><span data-per>then ${p.renew} ${p.renews}</span></div><button class="btn" data-a="buy">GET MY PLAN</button></div>
   <div class="csec"><div class="chero"><div class="pwav">${im(refImg())}</div><span class="tg">🎁 Your perk: <b>${perk()[0]} ${perk()[1]}</b></span><h1>Endless chats with<br><em>${c}</em></h1><p class="sub2" style="margin:-6px 0 14px">Plus every other character on ChatChi.</p><span class="pill">Your story starts the moment you join</span></div></div>
   <div class="csec"><div class="ctiles"><div><small>👤 Personalized access to</small><b>ChatChi Plus</b></div><div><small>🎯 Your perk</small><b>${perk()[1]} from ${esc(cshort())}</b></div></div></div>
-  <div class="csec"><div class="cplans">${Object.entries(PLANS).filter(([k,x])=>!x.hidden).map(([k,x])=>{const on=visPlan()===k;return `<button class="cplan ${on?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${on}">${x.badge?`<span class="pop">👍 ${x.badge}</span>`:''}<span class="rd"></span><span class="nm"><b>${x.label.toUpperCase()}</b><span>${x.price} ${x.renews}</span></span><span class="bx"><b>${x.price}</b><small>per ${x.per}</small></span></button>`}).join('')}</div></div>
+  <div class="csec"><div class="cplans">${Object.entries(PLANS).filter(([k,x])=>!x.hidden).map(([k,x])=>{const on=visPlan()===k;return `<button class="cplan ${on?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${on}">${x.badge?`<span class="pop">👍 ${x.badge}</span>`:''}<span class="rd"></span><span class="nm"><b>${x.label.toUpperCase()}</b><span>${x.price} ${x.renews}</span></span>${perDay(x)}</button>`}).join('')}</div></div>
   <div class="csec"><div class="agree ${S.agree?'on':''} ${S.agErr?'bad':''}"><button class="cb" data-a="agree" role="checkbox" aria-checked="${S.agree}" aria-label="I agree to the terms">${S.agree?ic('check',16,'#1a0f1c',3):''}</button><span>I agree to the ${lnk('Terms and Conditions',CONFIG.legal.termsUrl)}, ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)} and ${lnk('Refund Policy',CONFIG.legal.refundUrl)}</span></div>${S.agErr?'<p class="agerr" role="alert">Please accept the terms to continue.</p>':''}</div>
   <div class="csec"><div class="dscl" data-renew>${esc(disclose())}</div><p class="fair">"Endless chats": fair-use limit of ${CONFIG.fairUseCap} messages a day.</p></div>
   <div class="csec"><button class="btn gbtn" data-a="buy">GET MY PLAN</button></div>
