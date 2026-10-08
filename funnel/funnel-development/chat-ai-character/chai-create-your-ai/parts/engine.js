@@ -231,7 +231,7 @@ const V={
   <p class="legal hl">By proceeding, you agree with ${lnk('Terms and Conditions',CONFIG.legal.termsUrl)}, ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}, ${lnk('Subscription Terms',CONFIG.legal.termsUrl)}</p>
   <p class="legal corp">ChatChi: AI Roleplay Chat</p></div>`,
 2:()=>`<div class="scr rel">${q('Who do you enjoy chatting with?',SUBP)}${opts('pref',PREF)}</div>`,
-3:()=>`<div class="scr rel">${q('What is your gender?',SUBP)}${opts('own',OWN)}${peek()}</div>`,
+3:()=>`<div class="scr rel">${q('What is your gender?',SUBP)}${opts('own',OWN,{cls:'big narrow'})}${peek()}</div>`,
 4:()=>`<div class="scr rel">${q('What is your age?',SUBP)}<div class="opts">${AGES.map(a=>`<button class="opt narrow ${S.age===a?'on':''}" data-a="pick" data-f="age" data-v="${a}"><span class="lbl">${a}</span></button>`).join('')}</div>${peek()}</div>`,
 5:()=>`<div class="scr">${q('What kind of chat do you want?','Select all that apply.')}${opts('kind',KIND,{multi:true})}</div><div class="foot">${cta('CONTINUE',S.kind.length>0)}</div>`,
 6:()=>`<div class="scr">${q('Anime or photorealistic?',"We'll match your character's style to this.")}${opts('style',STYLE)}</div>`,

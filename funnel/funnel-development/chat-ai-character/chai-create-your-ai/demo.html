@@ -354,8 +354,9 @@ svg .lg{fill:url(#cgrad-logo)}
 .sub2{margin:-4px 0 4px;text-align:center;color:var(--t2);font-size:14px}
 .sub2.pk{color:var(--pink-hi)}
 .opt.big{min-height:62px;font-size:16px}
-.opt.narrow{width:62%;min-height:56px}
-.peek{position:absolute;right:-24px;bottom:0;width:58%;height:52%;pointer-events:none;z-index:0;-webkit-mask:linear-gradient(180deg,transparent,#000 30%);mask:linear-gradient(180deg,transparent,#000 30%)}
+.opt.narrow{width:64%;min-height:56px}
+.opt.narrow .lbl{font-size:15px;line-height:1.25}
+.peek{position:absolute;right:-24px;bottom:0;width:58%;height:52%;pointer-events:none;z-index:0;-webkit-mask:linear-gradient(180deg,transparent,#000 30%),linear-gradient(90deg,transparent,#000 28%);-webkit-mask-composite:source-in;mask:linear-gradient(180deg,transparent,#000 30%),linear-gradient(90deg,transparent,#000 28%);mask-composite:intersect}
 .peek img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
 .scr.rel{position:relative}
 .scr.rel>*:not(.peek){position:relative;z-index:1}
@@ -803,7 +804,7 @@ const V={
   <p class="legal hl">By proceeding, you agree with ${lnk('Terms and Conditions',CONFIG.legal.termsUrl)}, ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}, ${lnk('Subscription Terms',CONFIG.legal.termsUrl)}</p>
   <p class="legal corp">ChatChi: AI Roleplay Chat</p></div>`,
 2:()=>`<div class="scr rel">${q('Who do you enjoy chatting with?',SUBP)}${opts('pref',PREF)}</div>`,
-3:()=>`<div class="scr rel">${q('What is your gender?',SUBP)}${opts('own',OWN)}${peek()}</div>`,
+3:()=>`<div class="scr rel">${q('What is your gender?',SUBP)}${opts('own',OWN,{cls:'big narrow'})}${peek()}</div>`,
 4:()=>`<div class="scr rel">${q('What is your age?',SUBP)}<div class="opts">${AGES.map(a=>`<button class="opt narrow ${S.age===a?'on':''}" data-a="pick" data-f="age" data-v="${a}"><span class="lbl">${a}</span></button>`).join('')}</div>${peek()}</div>`,
 5:()=>`<div class="scr">${q('What kind of chat do you want?','Select all that apply.')}${opts('kind',KIND,{multi:true})}</div><div class="foot">${cta('CONTINUE',S.kind.length>0)}</div>`,
 6:()=>`<div class="scr">${q('Anime or photorealistic?',"We'll match your character's style to this.")}${opts('style',STYLE)}</div>`,
