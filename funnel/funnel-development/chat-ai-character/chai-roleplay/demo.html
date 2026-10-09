@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0911">
+<title>ChatChi: AI Roleplay Chat · AI Roleplay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#06050B;
+  --bg:#0A0911;--bg-elev:#12101B;--surface:#17151F;--surface-2:#221F2D;--border:#2D293B;
+  --t1:#F4F2F8;--t2:#A7A2B7;--t3:#6F6A82;
+  --pink:#B62CB5;--pink-hi:#DA5FD9;--pink-dim:#B62CB52E;--pink-deep:#261230;
+  --grad-a:#9A2ACB;--grad-b:#D82F99;--grad:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+  --amber:#F5B83D;--negative:#F0705F;--positive:#7FD1A8;
+  --head:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--pink-hi);outline-offset:2px}
+
+.phone{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;background:var(--bg);background-image:radial-gradient(ellipse 70% 35% at 50% 0%,#240F2C 0%,transparent 70%);overflow:hidden;isolation:isolate;--top:calc(env(safe-area-inset-top,0px) + 6px)}
+@media (min-width:520px){.phone{border-inline:1px solid #2A2536}}
+/* each screen is its own stacking layer: the limit-card paywall sheet (.pw, z 20) stays inside it, while the demo checkout and toasts (appended to .phone) sit above it */
+.view{position:absolute;inset:0;z-index:0;padding-top:var(--top);display:flex;flex-direction:column}
+.view.in{animation:vin .3s ease both}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Honey-style top bar: back · title · segmented progress */
+.nav{flex:none;padding:0 12px;position:relative;z-index:3}
+.nav .row{height:44px;display:flex;align-items:center}
+.nav .ttl{flex:1;text-align:center;font:700 15px var(--head);margin-right:44px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.segs{display:flex;gap:4px;padding:0 20px 6px}
+.segs i{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}
+.segs i.on{background:var(--grad)}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 16px 16px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.foot{flex:none;padding:10px 16px max(18px,calc(env(safe-area-inset-bottom,0px) + 10px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;background:linear-gradient(180deg,transparent,var(--bg) 30%)}
+.q{font:800 22px/1.2 var(--head);letter-spacing:-.01em;margin:4px 0 0;text-align:center;text-wrap:balance}
+.sub{margin:-6px 0 0;text-align:center;color:var(--t2);font-size:13.5px}
+.h1{font:800 30px/1.1 var(--head);letter-spacing:-.02em;margin:0;text-align:center;text-wrap:balance}
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--pink);color:#fff;font:700 16px/1 var(--head);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;flex:none;transition:transform .12s,opacity .2s;position:relative;overflow:hidden;box-shadow:0 10px 30px -12px #B62CB5cc}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);box-shadow:none}
+.btn:not([disabled]){background:linear-gradient(100deg,transparent 15%,#ffffff45 50%,transparent 85%) no-repeat -70% 0/40% 100%,var(--pink);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{background-position:-70% 0,0 0}28%,100%{background-position:170% 0,0 0}}
+.btn.ghost{animation:none}
+.btn.ghost{background:var(--surface);border:1px solid var(--border);color:var(--t1);box-shadow:none;height:48px}
+.btn.ghost::after{display:none}
+.link{background:none;border:none;color:var(--t2);font-size:14px;min-height:44px}
+.legal{font-size:11.5px;color:var(--t3);text-align:center;line-height:1.5}
+/* legal links: real links, readable, 40px tap target */
+.legal a{display:inline-flex;align-items:center;min-height:40px;padding:0 6px;font-size:13px;color:var(--t1);text-decoration:underline;text-underline-offset:3px}
+
+/* photo cards (Honey's core element) */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{position:relative;border-radius:16px;overflow:hidden;border:2px solid var(--border);background:var(--surface);padding:0;aspect-ratio:3/3.4;display:block;text-align:left;transition:border-color .15s,box-shadow .2s,transform .12s}
+.card.tall{aspect-ratio:3/4.1}
+.card:active{transform:scale(.97)}
+.card .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;background:var(--fb,linear-gradient(160deg,#2a1838,#0d0a18))}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.card .lb{position:absolute;left:0;right:0;bottom:0;padding:9px 10px;background:#0A0911e0;font:700 14px/1.2 var(--head);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px}
+.card .ck{width:20px;height:20px;border-radius:6px;border:1.5px solid #ffffff55;flex:none;display:grid;place-items:center;position:absolute;right:9px;bottom:10px}
+.card.multi .lb{justify-content:flex-start;padding-right:36px;text-align:left}
+.card.on{border-color:transparent;box-shadow:0 0 0 2px var(--grad-b),0 0 24px -4px #B62CB5aa}
+.card.on::before{content:"";position:absolute;inset:-2px;border-radius:16px;padding:2px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:2;pointer-events:none}
+.card.on .ck{background:var(--grad);border-color:transparent}
+.ck svg{opacity:0;transition:opacity .15s}.on .ck svg{opacity:1}
+.collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr}
+.collage img{position:static;width:100%;height:100%}
+
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--surface);border:1.5px solid var(--border);text-align:left;width:100%;min-height:54px}
+.opt .em{font-size:19px;width:24px;text-align:center}
+.opt .lbl{flex:1;font-weight:600}
+.opt .ck{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--border);display:grid;place-items:center}
+.opt.on{border-color:var(--pink);background:linear-gradient(0deg,var(--pink-dim),var(--pink-dim)),var(--surface)}
+.opt.on .ck{background:var(--grad);border-color:transparent}
+.box{height:50px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 14px}
+.box input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+
+/* sliders */
+.sls{display:flex;flex-direction:column;gap:6px;padding:8px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.sl{padding:12px 0;border-top:1px solid var(--border)}
+.sl:first-child{border-top:none}
+.sl .top{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.sl .top .gi{width:30px;height:30px;border-radius:9px;background:var(--pink-dim);display:grid;place-items:center}
+.sl .top b{margin-left:auto;font:600 13px var(--sans);padding:4px 9px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-variant-numeric:tabular-nums}
+.sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:linear-gradient(90deg,var(--grad-a),var(--grad-b) var(--p,50%),var(--surface-2) var(--p,50%));background-clip:content-box;padding:19px 0;outline:none;margin:0}
+.sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--pink);box-shadow:0 2px 10px #0008}
+.sl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--pink)}
+.hint{font-size:12.5px;color:var(--t3);text-align:center}
+
+/* bridge */
+.bridge{flex:1;position:relative;margin:0 -16px -16px;min-height:0}
+.bridge img,.bridge .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.bridge .ph{display:grid;place-items:center;font-size:80px;background:linear-gradient(160deg,#2a1838,#0d0a18)}
+.bridge::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 18%,transparent 70%,var(--bg) 100%)}
+
+/* loader */
+.ldimg{position:relative;flex:1;min-height:180px;margin:0 -16px;overflow:hidden}
+.ldimg img,.ldimg .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;filter:blur(var(--bl,18px)) saturate(1.1);transform:scale(1.08);transition:filter .3s linear}
+.ldimg .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.ldimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 25%,transparent 60%,var(--bg) 100%)}
+.steps{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.step .top{display:flex;justify-content:space-between;font-size:14px;color:var(--t2);margin-bottom:6px}
+.step.done .top{color:var(--t1)}
+.step .top b{font-variant-numeric:tabular-nums;font-weight:600}
+.step.done .top b{color:var(--pink-hi)}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--grad);width:0}
+.iq{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:44px 16px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));background:linear-gradient(180deg,transparent,var(--bg) 36px);display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.iq b{font:800 20px/1.25 var(--head);text-align:center}
+.iq .row{display:flex;gap:10px}
+.iq .row .btn{flex:1}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+
+/* paywall (long scroll) */
+.pw{position:absolute;inset:0;z-index:20;overflow-y:auto;scrollbar-width:none;background:var(--bg)}
+.pw::-webkit-scrollbar{display:none}
+.pwx{position:fixed;z-index:9;top:calc(var(--top) + 6px);width:36px;height:36px;border-radius:50%;background:#0A0911aa;border:1px solid #ffffff22;color:var(--t2);display:grid;place-items:center;margin-left:12px;backdrop-filter:blur(6px)}
+.sec{padding:26px 16px 0}
+.pwhero{position:relative;height:430px;overflow:hidden}
+.pwhero img,.pwhero .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.pwhero .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.pwhero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,var(--bg) 96%)}
+.pwhero .txt{position:absolute;left:16px;right:16px;bottom:8px;z-index:1}
+.pwhero .h1{text-align:left;font-size:34px}
+.pwhero p{margin:6px 0 0;color:var(--t2)}
+.plans{display:flex;flex-direction:column;gap:10px}
+.plan{position:relative;padding:14px 16px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);text-align:left;display:grid;grid-template-columns:24px 1fr auto;gap:2px 12px;align-items:center;width:100%}
+.plan .rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);grid-row:1/3;display:grid;place-items:center}
+.plan.on{border-color:var(--pink);background:var(--pink-deep);box-shadow:0 0 20px -8px #B62CB5}
+.plan.on .rd{background:var(--grad);border-color:transparent}
+.plan .pn{font:800 17px var(--head)}
+.plan .pp{font:800 19px/1.1 var(--head);text-align:right}
+.plan .pp small{font:500 11px var(--sans);color:var(--t2)}
+.plan .rn{font-size:11.5px;color:var(--t2);grid-column:2/4}
+.plan .bv{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--head);letter-spacing:.06em;background:var(--grad);color:#fff;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.ph2{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.45}
+.h2{font:800 26px/1.15 var(--head);margin:0 0 14px;letter-spacing:-.01em}
+.match{display:flex;gap:16px;align-items:center}
+.ring{width:118px;height:118px;flex:none;border-radius:50%;background:conic-gradient(var(--grad-b) calc(var(--m)*1%),var(--grad-a) calc(var(--m)*1%),var(--surface-2) 0);display:grid;place-items:center;position:relative}
+.ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--bg)}
+.ring span{position:relative;text-align:center;font:800 26px/1 var(--head)}
+.ring small{display:block;font:500 12px var(--sans);color:var(--t2);margin-top:4px}
+.traits{display:flex;flex-direction:column;gap:10px;font-weight:600}
+.traits div{display:flex;gap:10px;align-items:center}
+.gw{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#fff;flex:none}
+.pcard{margin-top:16px;border-radius:20px;overflow:hidden;position:relative;aspect-ratio:3/3.6;border:1px solid var(--border)}
+.pcard img,.pcard .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.pcard .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.pcard .cap{position:absolute;left:0;right:0;bottom:0;padding:40px 14px 12px;background:linear-gradient(180deg,transparent,#0A0911f0);display:flex;justify-content:space-between;align-items:flex-end}
+.pcard .cap b{font:800 24px var(--head)}
+.pcard .cap small{font-size:11px;color:var(--t3)}
+.bens{display:flex;flex-direction:column;gap:9px}
+.ben{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.ben b{display:block;font:700 15px var(--head)}
+.ben small{color:var(--t2);font-size:12.5px}
+.ben .tg{margin-left:auto;font:700 10px var(--sans);letter-spacing:.05em;padding:3px 7px;border-radius:6px;background:var(--pink-dim);color:var(--pink-hi)}
+.stats{display:flex;flex-direction:column;gap:10px}
+.stat{display:flex;gap:14px;align-items:center;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font-size:14px}
+.stat .n{font:800 22px var(--head);flex:none;min-width:64px;text-align:center}
+.mock{border-radius:26px;border:1px solid var(--border);background:var(--bg-elev);padding:12px;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+.mock .hd{display:flex;gap:10px;align-items:center;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.mock .hd b{font:700 15px var(--head)}
+.mock .hd small{display:block;color:var(--positive);font-size:11.5px}
+.rev{padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--t2)}
+.rev .who{display:flex;gap:10px;align-items:center;color:var(--t1)}
+.rev .who i{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font:700 12px var(--head);font-style:normal;color:#fff}
+.rev .st{margin-left:auto;color:var(--amber);letter-spacing:2px;font-size:13px}
+.guar{margin:26px 16px 0;padding:18px;border-radius:18px;border:1.5px solid var(--pink);background:var(--pink-deep);font-size:13.5px;color:var(--t2)}
+.guar b{display:block;font:800 20px var(--head);color:var(--t1);margin-bottom:6px}
+
+/* chat */
+.chat{position:absolute;inset:0;top:var(--top);display:flex;flex-direction:column}
+.chead{flex:none;display:flex;align-items:center;gap:10px;padding:4px 12px 8px;border-bottom:1px solid var(--border);background:var(--bg);z-index:2}
+.chead b{font:700 17px/1.1 var(--head);display:block}
+.chead small{font-size:12px;color:var(--positive)}
+.av{position:relative;border-radius:50%;overflow:hidden;flex:none;background:var(--grad);display:grid;place-items:center;font-size:18px}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.cbody{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.cbg{position:absolute;inset:0;background:var(--scene) center/cover no-repeat,linear-gradient(160deg,#2a1838,#0d0a18);opacity:.4}
+.cbg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg),transparent 30%,transparent 55%,var(--bg))}
+.disclose{position:relative;z-index:1;margin:10px 16px 0;padding:8px 12px;border-radius:12px;background:#17151FE6;color:var(--t3);font-size:11.5px;text-align:center}
+.msgs{position:relative;z-index:1;flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.msgs .sp{flex:1}
+.bub{padding:11px 14px;border-radius:18px;max-width:82%;font-size:15px;line-height:1.4;animation:fi .3s ease}
+.bub.c{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:6px}
+.bub.u{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:6px}
+.bub.sys{align-self:center;background:none;color:var(--t3);font-size:12px;padding:2px}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.3}}
+.ideas{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;padding:0 16px 10px}
+.ideas button{min-height:44px;padding:11px 14px;border-radius:14px;background:#17151FE6;border:1px solid var(--border);text-align:left;font-size:14px;color:var(--t2)}
+.cfoot{flex:none;border-top:1px solid var(--border);padding:10px 14px max(14px,calc(env(safe-area-inset-bottom,0px) + 8px));display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.counter{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
+.counter.out{color:var(--negative)}
+.composer{display:flex;gap:8px}
+.composer .box{flex:1;border-radius:999px;height:48px}
+.send{width:48px;height:48px;border-radius:50%;border:none;background:var(--pink);color:#fff;display:grid;place-items:center;flex:none}
+.send[disabled]{background:var(--surface-2);color:var(--t3)}
+.limit{padding:18px 16px;border-radius:18px;border:1.5px solid var(--pink);background:#17151FF2;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;animation:fi .4s ease}
+.limit h3{margin:0;font:800 20px/1.2 var(--head)}
+.limit p{margin:0;color:var(--t2);font-size:14px}
+.limit .crown *{stroke:url(#cgrad)}
+.toast{position:absolute;left:50%;top:calc(var(--top) + 6px);transform:translateX(-50%);z-index:20;background:var(--t1);color:#0A0911;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:fade 2.8s ease forwards}
+@keyframes fade{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0}}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.gicon *{stroke:url(#cgrad)}
+.logo{display:flex;align-items:center;justify-content:center;gap:8px;font:800 17px var(--head)}
+svg .lg{fill:url(#cgrad-logo)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+/* sale / lifetime / add-on screens */
+.oeye{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font:600 12px/1 var(--sans);letter-spacing:.02em}
+.ocard{position:relative;margin-top:6px;padding:22px 16px 16px;border-radius:24px;border:1.5px solid var(--pink);background:radial-gradient(ellipse at 50% 0%,var(--pink-dim),transparent 65%),var(--surface);box-shadow:0 0 0 4px var(--pink-dim),0 30px 60px -30px #000;display:flex;flex-direction:column;gap:14px;flex:none}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad,var(--pink));color:#fff;font:700 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.obadge .otk{color:#fff;border-color:#ffffffaa;background:transparent}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{font:700 17px/1.2 var(--head)}
+.osub{font-size:12.5px;color:var(--t3);margin-top:3px}
+.oth{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:none;position:relative;display:block;box-shadow:0 0 0 2px var(--pink),0 0 24px var(--pink-dim)}
+.oth>img,.oth .pimg{width:100%;height:100%;object-fit:cover;display:block}
+.oth>.av,.oth>.cav{width:100%!important;height:100%!important}
+.ocov{flex:none;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}
+.oprice s .otk{text-decoration:line-through;opacity:.75}
+.oprice b{font:800 28px/1 var(--head);color:var(--t1)}
+.oprice span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:center;font-size:14.5px;font-weight:500}
+.ochecks svg{color:var(--pink-hi);flex:none}
+.ochecks svg *{stroke:url(#cgrad)}
+.ofine{font-size:12px;color:var(--t3);text-align:center;line-height:1.45;margin:0}
+.odis{font-size:11.5px;color:var(--t3);text-align:center;margin:0;line-height:1.4}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pink-hi);font-variant-numeric:tabular-nums}
+.otk{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+.ofr .obar{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:calc(var(--top,8px) + 4px) 16px 10px;background:var(--bg);border-bottom:1px solid #ffffff12}
+.ofr .obx{width:36px;height:36px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);color:var(--t2);display:grid;place-items:center}
+.ofr .olead{color:var(--t2);margin:0;font-size:14.5px;line-height:1.45}
+
+/* chai-roleplay additions */
+.fan{position:relative;flex:none;height:230px;margin:6px 0 0;--fsp:54px}
+.fan .fc{position:absolute;left:50%;top:50%;width:116px;height:176px;margin:-98px 0 0 -58px;border-radius:16px;overflow:hidden;border:2px solid var(--border);box-shadow:0 18px 40px -16px #000;transform-origin:50% 120%;display:grid;place-items:center;font-size:40px}
+.fan .fc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fan .fc span{position:relative}
+.gc{position:absolute;inset:0;display:grid;place-items:center;font-size:46px;background:var(--gbg)}
+.card.gen{aspect-ratio:3/3.8}
+.card.dash{border-style:dashed;background:transparent}
+.card.dash .ph{background:transparent}
+.card.wide{aspect-ratio:auto;height:112px;grid-column:1/-1}
+.card.wide .lb{justify-content:space-between;padding:10px 14px;text-align:left;min-height:48px}
+.cardsc{display:grid;grid-template-columns:1fr;gap:10px}
+.comp{display:flex;gap:14px;align-items:center;padding:12px;border-radius:18px;border:2px solid var(--border);background:var(--surface);width:100%;text-align:left}
+.comp.on{border-color:var(--pink);box-shadow:0 0 22px -6px #B62CB5aa}
+.comp .pt{width:68px;height:68px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:30px;background:var(--gbg);border:2px solid var(--gacc)}
+.comp b{font:800 17px var(--head);display:block}
+.comp small{display:block;color:var(--t2);font-size:12.5px}
+.comp i{display:block;color:var(--t1);font-size:13.5px;font-style:italic;margin-top:4px;font-family:Georgia,serif}
+.sel{width:100%;height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t1);font:600 17px var(--sans);padding:0 14px;appearance:none;-webkit-appearance:none}
+.cover{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--border);aspect-ratio:3/3.9;background:var(--gbg);box-shadow:0 30px 60px -30px #000}
+.cover .gc{position:absolute;inset:0;font-size:90px;opacity:.55}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#0A0911f2)}
+.cover .ct{position:absolute;left:16px;right:16px;bottom:14px;z-index:1}
+.cover .ct h2{font:700 30px/1.05 Georgia,serif;margin:0 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{font-size:11.5px;padding:5px 9px;border-radius:999px;background:#17151Fcc;border:1px solid var(--border)}
+.cover .pill{position:absolute;top:12px;left:12px;z-index:1;font:600 11px var(--sans);padding:5px 10px;border-radius:999px;background:#0A0911cc;border:1px solid var(--border)}
+.cover .cav{position:absolute;top:12px;right:12px;z-index:1;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--gbg);border:2px solid var(--gacc)}
+.ribbon{position:relative;z-index:1;margin:8px 16px 0;font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:8px}
+.ribbon .rb{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.ribbon .rb span{display:block;height:100%;background:var(--grad)}
+.cbg{background:var(--scene) center/cover no-repeat,var(--gbg)}
+.cbg.tn-playful{filter:saturate(1.3) brightness(1.15)}.cbg.tn-dark{filter:brightness(.7) contrast(1.1)}.cbg.tn-epic{filter:sepia(.25) saturate(1.2)}
+.frozen{font:700 26px/1.3 Georgia,serif;text-align:center;text-wrap:balance;padding:6px 4px}
+.scard{position:relative;height:120px;perspective:600px;margin:4px auto 0;width:200px}
+.scard>div{position:absolute;inset:0;border-radius:16px;display:grid;place-items:center;backface-visibility:hidden;transition:transform 1.1s}
+.scard .bk{background:var(--surface-2);border:1px dashed var(--border);color:var(--t3)}
+.scard .fr{background:var(--gbg);border:2px solid var(--gacc);box-shadow:0 0 26px -6px var(--gacc);transform:rotateY(180deg);font-size:44px}
+.scard.flip .bk{transform:rotateY(-180deg)}.scard.flip .fr{transform:rotateY(0)}
+.err{color:var(--negative);font-size:13px;margin:-4px 2px 0}
+.stick{position:sticky;bottom:0;z-index:6;padding:10px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 8px));background:var(--bg);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+.stick .fine{margin:0}
+.faq details{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:0 14px;margin-bottom:8px}
+.faq summary{min-height:48px;display:flex;align-items:center;font:700 15px var(--head);cursor:pointer}
+.faq p{margin:0 0 12px;color:var(--t2);font-size:13.5px}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.how b{display:block;font:700 15px var(--head)}.how small{color:var(--t2);font-size:12.5px}
+.how .nn{width:30px;height:30px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font:800 14px var(--head);flex:none}
+/* ---- web paywall (long-scroll landing) ---- */
+.pw#pw{--bh:calc(var(--top) + 50px)}
+.pwbar{position:sticky;top:0;z-index:8;height:var(--bh);display:flex;align-items:flex-end;justify-content:space-between;padding:0 14px 8px;background:#0A0911e0;border-bottom:1px solid #ffffff12;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.pwbar .pwx{position:static;margin:0;flex:none}
+.pwbar .logo{position:absolute;left:50%;bottom:15px;transform:translateX(-50%);font-size:16px}
+.pwmini{height:34px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:#fff;font:700 13px/1 var(--head);box-shadow:0 6px 20px -8px #B62CB5;animation:fi .25s ease}
+.pwh{position:relative;margin-top:calc(-1 * var(--bh));min-height:min(540px,78vh);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:var(--gbg)}
+.pwh>img,.pwh>.gc{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.pwh>.gc{display:grid;place-items:center;font-size:120px;opacity:.5}
+.pwh::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0A091199 0%,transparent 22%,transparent 40%,#0A0911d9 72%,var(--bg) 96%)}
+.pwh .cav{position:absolute;z-index:1;right:16px;top:calc(var(--bh) + 10px);width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:var(--gbg);border:2px solid var(--gacc);box-shadow:0 8px 30px #0009}
+.pwh .txt{position:relative;z-index:1;padding:0 16px 4px}
+.pwh .h1{text-align:left;font-size:34px}
+.pwh p{margin:8px 0 14px;color:var(--t2);font-size:15px;max-width:34ch}
+.eye2{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:#0A0911b3;border:1px solid #ffffff22;font:600 12px/1 var(--sans);margin-bottom:12px;backdrop-filter:blur(6px)}
+.pw#pw .sec{padding:44px 16px 0}
+.pw#pw .h2{font-size:27px;margin-bottom:16px}
+.eyb{display:block;font:700 11.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--pink-hi);margin-bottom:10px}
+.pblock{padding:20px 14px 16px;border-radius:24px;border:1px solid var(--border);background:radial-gradient(ellipse at 50% 0%,#B62CB524,transparent 60%),var(--bg-elev);box-shadow:0 0 0 4px #B62CB50f,0 30px 60px -30px #000;display:flex;flex-direction:column;gap:12px}
+.pbh{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:6px}
+.pbh .eyb{margin-bottom:6px}
+.pbh b{font:800 21px/1.2 var(--head)}
+.due{display:flex;justify-content:space-between;align-items:baseline;padding:12px 4px 0;border-top:1px dashed var(--border);font-size:14px;color:var(--t2)}
+.due b{font:800 22px var(--head);color:var(--t1)}
+.trust{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--t2)}
+.trust span{display:inline-flex;align-items:center;gap:5px}
+.pblock .fine{margin:0}
+.recap{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.recap div{padding:12px 13px;border-radius:14px;background:var(--surface);border:1px solid var(--border);min-width:0}
+.recap small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.recap b{display:block;font:700 14.5px/1.25 var(--head);overflow-wrap:anywhere}
+.pmock{margin-top:12px;padding:14px;border-radius:20px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:9px}
+.pmock .hd{display:flex;gap:10px;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.pmock .hd b{display:block;font:700 15px var(--head)}.pmock .hd small{color:var(--t2);font-size:12px}
+.pmock .bub{font-size:14px;animation:none}
+.pmock .bub.c{background:var(--surface-2)}
+.cliff{margin-top:4px;padding:14px;border-radius:16px;border:1px dashed var(--pink);background:var(--pink-deep);text-align:center}
+.cliff p{margin:0 0 8px;font:700 17px/1.35 Georgia,serif;text-wrap:balance}
+.cliff span{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--pink-hi);font-weight:600}
+.pwsteps>div{padding:0 0 20px}
+.pwsteps b{font:700 15.5px var(--head);overflow-wrap:anywhere}
+.pfoot{margin-top:44px;padding:26px 16px max(26px,calc(env(safe-area-inset-bottom,0px) + 16px));border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.stick.pwstick{position:absolute;left:0;right:0;bottom:0;z-index:21;transition:transform .25s ease,opacity .25s ease}
+.stick.pwstick.off{transform:translateY(110%);opacity:0;pointer-events:none}
+.srow{display:flex;align-items:center;gap:12px;padding:10px 10px 10px 14px;border-radius:18px;background:var(--bg-elev);border:1px solid var(--border);box-shadow:0 -10px 30px -10px #000}
+.sinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.sinfo>b{font:800 15px var(--head)}
+.sinfo span{font-size:12.5px;color:var(--t2)}.sinfo span b{color:var(--t1);font-weight:700}
+.srow .btn{width:auto;flex:none;padding:0 22px;height:48px}
+.pw#pw .plan .pn{white-space:nowrap}
+.pw#pw .plan .pp small{display:block;margin-top:3px;text-align:right}
+.brandbar{display:flex;justify-content:center;padding:calc(var(--top) + 10px) 0 6px}
+.pwhero.cv{height:auto;padding:0 16px}
+.blocked{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;text-align:center}
+/* get the app (after purchase) */
+.gsteps,.pwsteps{display:flex;flex-direction:column}
+.gsteps>div,.pwsteps>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.gsteps>div:not(:last-child)::before,.pwsteps>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--border)}
+.gsteps i,.pwsteps i{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 14px var(--sans);font-style:normal}
+.gsteps b,.pwsteps b{display:block;margin-top:6px}
+.gsteps span,.pwsteps span{font-size:13.5px;color:var(--t2)}
+.stores{display:flex;gap:8px;justify-content:center}
+.store{display:block;height:44px;padding:0;border:none;background:none;border-radius:8px;line-height:0}
+.store svg,.store img{height:44px;width:auto;display:block}
+.okwell{width:76px;height:76px;border-radius:50%;background:var(--grad);display:grid;place-items:center;color:#fff;margin:0 auto;box-shadow:0 10px 40px #B62CB566}
+.oth.cp{display:grid;place-items:center;font-size:26px;background:var(--gbg)}
+/* QA 06/10: portraits, setting row, tone cards, role icons, hook tag, age gate backdrop, memory note */
+.pt,.oth.cp{position:relative;overflow:hidden}
+.pt img,.cav img,.oth.cp img,.scard .fr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.cav{overflow:hidden}
+.scard .fr{overflow:hidden}
+.setrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.card.setc{aspect-ratio:3/4.7}
+.card.setc img{object-position:50% 50%}
+.card.setc .lb{min-height:50px;padding:8px 6px;font:700 14.5px/1.15 Georgia,serif}
+.opt .ri{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;color:var(--gacc,var(--pink-hi));border:1.5px solid var(--gacc,var(--border));background:#ffffff08}
+.opt.tone{padding:10px;min-height:84px}
+.opt.tone .lbl small{display:block;font-weight:400;font-size:13px;color:var(--t2);margin-top:2px}
+.tth{width:96px;height:64px;border-radius:10px;overflow:hidden;position:relative;flex:none;border:1.5px solid var(--gacc,var(--border));background:var(--gbg)}
+.tth img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tth.tn-playful img{filter:saturate(1.35) brightness(1.25)}.tth.tn-dark img{filter:brightness(.5) contrast(1.15) saturate(.7)}.tth.tn-epic img{filter:sepia(.35) saturate(1.35) brightness(1.08)}
+.tagp{align-self:center;margin-top:-6px;font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border-radius:999px;border:1px solid #ffffff22;background:var(--pink-dim);color:var(--pink-hi)}
+@media (min-height:780px){.fan{--fsp:64px;height:290px;margin-top:22px}.fan .fc{width:138px;height:208px;margin:-114px 0 0 -69px}}
+.agebg{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.agebg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(4px) brightness(.32) saturate(.9);transform:scale(1.06)}
+.agebg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 35%,transparent 60%,var(--bg) 100%)}
+.agebox{padding:16px;border-radius:20px;background:#17151Feb;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;box-shadow:0 30px 60px -30px #000}
+.agebox .sel{background:var(--surface-2)}
+.agebox .legal{margin:0}
+.toast.memnote{position:relative;left:auto;top:auto;transform:none;align-self:center;z-index:1;display:inline-flex;align-items:center;gap:7px;max-width:100%;white-space:normal;text-align:left;background:#F4F2F8f2;animation:fi .35s ease}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cgrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient><linearGradient id="cgrad-logo" gradientUnits="userSpaceOnUse" x1="3" y1="4" x2="37" y2="36"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient></defs></svg>
+<main class="phone" id="phone" aria-live="polite"></main>
+
+<script>
+/* ============================================================
+   CONFIG - edit before launch. Everything in {{...}} is a placeholder, never a real price or claim.
+   ============================================================ */
+const CONFIG={
+  slug:'chai-roleplay',
+  brand:'ChatChi',
+  plans:{
+    m1: {label:'1 month',  price:'$24.99', renew:'$49.99',  per:'month',    renews:'every month',    badge:''},
+    m3: {label:'3 months', price:'$49.99', renew:'$109.99', per:'3 months', renews:'every 3 months', badge:''},
+    y12:{label:'12 months',price:'$119.99',renew:'$299.99', per:'year',     renews:'every year',     badge:'★ MOST POPULAR ★'},
+    /* Sale plans (hidden on the paywall): shown only after the user leaves that plan's checkout without paying.
+       Sale price for the first period, then the regular price. Strike-through compares the same plan length only. */
+    m1_sale: {label:'1 month',  price:'$22.99',  renew:'$49.99',  per:'month',    renews:'every month',    hidden:true, of:'m1'},
+    m3_sale: {label:'3 months', price:'$44.99',  renew:'$109.99', per:'3 months', renews:'every 3 months', hidden:true, of:'m3'},
+    y12_sale:{label:'12 months',price:'$105.99', renew:'$299.99', per:'year',     renews:'every year',     hidden:true, of:'y12'},
+    /* Last step: one payment, no renewal. Shown after a sale is declined. */
+    lifetime:{label:'Lifetime', price:'$99.99', per:'once', oneTime:true, hidden:true},
+    /* Post-purchase add-on for subscribers: a one-time bonus character (its own Paddle price). The plan just bought stays as it is. */
+    addon:{label:'Bonus character', price:'$22.99', per:'once', oneTime:true, hidden:true}
+  },
+  /* Teaser: the companion opens the scene, the user sends this many messages, then email + paywall. Hard paywall: no free plan after it. */
+  teaserMessages:2,
+  /* Where each checkout goes when the user leaves it without paying (FunnelFox native checkout close button too).
+     Hard paywall: nothing leads back to chat without a purchase; the lifetime last step returns to the paywall. */
+  declineFlow:{m1:'sale_m1',m3:'sale_m3',y12:'sale_y12',m1_sale:'sale_lifetime',m3_sale:'sale_lifetime',y12_sale:'sale_lifetime',lifetime:'paywall',addon:'get_app'},
+  defaultPlan:'y12',
+  fairUseCap:300,          // TODO confirm
+  checkoutUrl:{m1:'',m3:'',y12:'',m1_sale:'',m3_sale:'',y12_sale:'',lifetime:'',addon:''},
+  /* Post-purchase add-on (screen upsell_lifetime, plan key addon). */
+  upsell:{name:'Bonus character', title:'Add a second companion', lead:'One more story, one more voice. Yours to keep.',
+    checks:['Create a second companion from scratch','Their own memory and scenes','Paid once, no renewal'],
+    cta:'Add for $22.99', note:'$22.99 once. Your plan stays as it is.', decline:'No thanks'},
+  app:{web2app:'https://chatchi.go.link?adj_t=2567dkvx_256m7zvv_25adl2th&email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}',
+       web2web:'https://chatchi-app.squad-xteam.com/?email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}'},
+  legal:{termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',supportEmail:'support@chatchi.co'},
+  /* Proof block on the paywall. No sourced user stats yet, so it states product facts instead of social proof. null = hidden. */
+  statsTitle:'Why go <span class="gt">Plus</span>',
+  stats:[['24/7','your companion is always in the scene'],['__CAP__','messages a day, fair use'],['__GENRES__','genres to play, switch anytime']],
+  reviews:null,            // only real reviews of ChatChi's own store listing, quoted verbatim: [['Name','App Store','“…”']]
+  refundDays:null,         // guarantee block is hidden until ChatChi actually offers one (a number of days)
+  refundText:''
+};
+/* ============================================================ */
+const QS=new URLSearchParams(location.search);
+const DEBUG=QS.get('debug')==='1';
+const IMG=/*IMG-START*/{'img/hook.jpg':'img/hook.jpg','img/genre-fantasy.jpg':'img/genre-fantasy.jpg','img/genre-mystery.jpg':'img/genre-mystery.jpg','img/genre-scifi.jpg':'img/genre-scifi.jpg','img/genre-romance.jpg':'img/genre-romance.jpg','img/genre-horror.jpg':'img/genre-horror.jpg','img/set-fantasy-0.jpg':'img/set-fantasy-0.jpg','img/set-fantasy-1.jpg':'img/set-fantasy-1.jpg','img/set-fantasy-2.jpg':'img/set-fantasy-2.jpg','img/set-mystery-0.jpg':'img/set-mystery-0.jpg','img/set-mystery-1.jpg':'img/set-mystery-1.jpg','img/set-mystery-2.jpg':'img/set-mystery-2.jpg','img/set-scifi-0.jpg':'img/set-scifi-0.jpg','img/set-scifi-1.jpg':'img/set-scifi-1.jpg','img/set-scifi-2.jpg':'img/set-scifi-2.jpg','img/set-romance-0.jpg':'img/set-romance-0.jpg','img/set-romance-1.jpg':'img/set-romance-1.jpg','img/set-romance-2.jpg':'img/set-romance-2.jpg','img/set-horror-0.jpg':'img/set-horror-0.jpg','img/set-horror-1.jpg':'img/set-horror-1.jpg','img/set-horror-2.jpg':'img/set-horror-2.jpg','img/comp-fantasy-0.jpg':'img/comp-fantasy-0.jpg','img/comp-fantasy-1.jpg':'img/comp-fantasy-1.jpg','img/comp-fantasy-2.jpg':'img/comp-fantasy-2.jpg','img/comp-mystery-0.jpg':'img/comp-mystery-0.jpg','img/comp-mystery-1.jpg':'img/comp-mystery-1.jpg','img/comp-mystery-2.jpg':'img/comp-mystery-2.jpg','img/comp-scifi-0.jpg':'img/comp-scifi-0.jpg','img/comp-scifi-1.jpg':'img/comp-scifi-1.jpg','img/comp-scifi-2.jpg':'img/comp-scifi-2.jpg','img/comp-romance-0.jpg':'img/comp-romance-0.jpg','img/comp-romance-1.jpg':'img/comp-romance-1.jpg','img/comp-romance-2.jpg':'img/comp-romance-2.jpg','img/comp-horror-0.jpg':'img/comp-horror-0.jpg','img/comp-horror-1.jpg':'img/comp-horror-1.jpg','img/comp-horror-2.jpg':'img/comp-horror-2.jpg'}/*IMG-END*/;
+const src=p=>IMG[p]||p;
+const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
+const IC={
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>',play:'<path d="m5 3 14 9-14 9z"/>',
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 19v3"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5z"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  crown:'<path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.3l4.27-3.67a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.67a1 1 0 0 0 1.52-.3z"/><path d="M5 21h14"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+  spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+  dice:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  note:'<path d="M5 3h14v18l-7-4-7 4z"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  swords:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/><path d="M14.5 6.5 18 3h3v3l-3.5 3.5"/><path d="m5 14 4 4"/><path d="m7 17-3 3"/><path d="m3 19 2 2"/>',
+  compass:'<circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/>',
+  pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>'
+};
+/* official store badges: Google Play = Google's own badge artwork (en_badge_web_generic), App Store = Apple's black badge layout */
+const GPBADGE="data:image/png;base64,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";
+const APPBADGE='<svg viewBox="0 0 120 40" width="132" height="44" role="img" aria-label="Download on the App Store"><rect x=".5" y=".5" width="119" height="39" rx="6.5" fill="#000" stroke="#A6A6A6"/><path transform="translate(8.2 8.6) scale(.95)" fill="#fff" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/><text x="33" y="15.6" fill="#fff" font-family="-apple-system,&quot;SF Pro Text&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif" font-size="7.6" font-weight="500">Download on the</text><text x="32.4" y="31.2" fill="#fff" font-family="-apple-system,&quot;SF Pro Display&quot;,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif" font-size="17" font-weight="600" letter-spacing="-.4">App Store</text></svg>';
+const ic=(n,s=20,c='currentColor',w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const gic=(n,s=20)=>`<span class="gicon">${ic(n,s)}</span>`;
+const logo=(s=26)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4C10.6 4 3 10.3 3 18.2c0 5 3 9.3 7.6 11.8L9.5 36l7.4-4c1 .1 2 .2 3.1.2 9.4 0 17-6.3 17-14S29.4 4 20 4Z" fill="#B62CB5" class="lg"/><path d="M26 15.6c0 3.4-6 7.4-6 7.4s-6-4-6-7.4a3.3 3.3 0 0 1 6-1.9 3.3 3.3 0 0 1 6 1.9Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ph=s=>/\{\{.*\}\}/.test(s)?`<span class="ph2">${esc(s)}</span>`:esc(s);
+const im=(p,cls='')=>`<img class="${cls}" src="${src(p)}" alt="" decoding="async" draggable="false" onerror="this.remove()">`;
+
+/* ---- story data: five genres, SFW. {{name}} {{comp}} {{setting}} are filled at render time ---- */
+const GENRES={
+ fantasy:{l:'Fantasy',e:'🐉',acc:'#F5A83D',bg:'linear-gradient(160deg,#5a3410,#150c06)',title:'The Last Ember',
+  set:[['🏰','Ember Keep'],['🌲','Whisperwood'],['🌊','Drowned Harbour']],
+  comps:[['Kael','🛡️','Sworn knight','Notices more than he says.'],['Mira','🔮','Rogue mage','Never gives a straight answer.'],['Fenn','🐺','Shapeshifter','Loyal. Mostly.']],
+  open:'{{name}}. You came. Stay close, the walls of {{setting}} listen.',
+  t1:['🗡️ Draw your blade','🕯️ Step into the light','🤐 Say nothing'],
+  r1:["Easy. Steel won't help where we're going, {{name}}.",'Brave. Or foolish. I like both.','Silence. Good. This place hates loud guests.'],
+  t2:['🚪 Open the door','🗣️ Ask what they know','🏃 Run for cover'],
+  r2:['It opens. Cold air, and a staircase that was not there before.','Fine. The ember went out three nights ago. Someone put it out.','Wait. That was not thunder. Something is awake below.'],
+  t3:['⚔️ Stand your ground','🤝 Trust {{comp}}','🔥 Strike first'],
+  r3:["Steady. Hold the line, {{name}}. I'm right behind you.",'Then follow me. Do not look at the walls.','Reckless. Magnificent. Go.'],
+  cliff:"{{comp}} lowers the lantern. 'The ember was not stolen, {{name}}. It was fed to...' The bell rings."},
+ mystery:{l:'Mystery',e:'🔍',acc:'#3FC1C9',bg:'linear-gradient(160deg,#0f3a40,#071114)',title:'Rain on Glass',
+  set:[['🌧️','Harbor Street'],['🏨','Hotel Lumen'],['📚','the Closed Library']],
+  comps:[['Nora','🕵️','Sharp detective','Trusts nothing, writes everything.'],['Vic','🎩','Charming informant',"Knows everyone's secrets."],['Ash','🔦','Rookie partner','Eager. Too eager?']],
+  open:"{{name}}. You're late. The case at {{setting}} just got worse.",
+  t1:['🔎 Study the scene','🗣️ Question the witness','🚬 Wait in the shadows'],
+  r1:['Good eye. The window, {{name}}. Locked from the inside.','Careful. Their story changed twice already.',"Patience. Someone is watching us from across the street."],
+  t2:['📂 Open the file','📞 Take the call','👣 Follow the footsteps'],
+  r2:['Photos. One of them is dated tomorrow.','A voice you know. It says your name, then hangs up.','Quiet. Two sets of prints. One leaving, one not.'],
+  t3:['🕵️ Confront {{comp}}','🤝 Share what you know','🔦 Check the basement'],
+  r3:["Fair question. I'll answer, if you can handle it.","Then we're even. Here is what I held back.",'Do not. Some doors stay shut for a reason.'],
+  cliff:"{{comp}} slides a photo across the table. 'That is you, {{name}}, at the scene. Taken last night...' The lights die."},
+ scifi:{l:'Sci-fi',e:'🚀',acc:'#4FA8FF',bg:'linear-gradient(160deg,#0f2850,#070b18)',title:'Dead Orbit',
+  set:[['🛰️','Station Vega'],['🚀','the Halcyon'],['🪐','Titan Outpost']],
+  comps:[['Juno','🤖','Ship AI','Calm. Slightly sarcastic.'],['Rook','🧑‍🚀','Weary pilot','Has seen worse. Maybe.'],['Zed','👽','Stranded envoy','Curious about everything.']],
+  open:'{{name}}. Wake up. {{setting}} just lost contact with Earth.',
+  t1:['🔧 Check the systems','📡 Hail the surface','🚪 Seal the hatch'],
+  r1:["Systems are fine. That's the strange part, {{name}}.",'Static. Then one word, repeated: Do not.','Sealed. But something knocked from the other side.'],
+  t2:['🧭 Trace the signal','🛠️ Reboot the core','🚀 Prep the escape pod'],
+  r2:['Source: inside the ship. Deck four.','Rebooting. Lights out for ten seconds. Stay put.','One pod left. Two seats. Your call.'],
+  t3:['👁️ Go to deck four','🤝 Trust {{comp}}','⚡ Cut the power'],
+  r3:["Brave. I'll light the corridor. Stay near.",'Then listen closely. I have not told you everything.','Cutting power. Last thing I say before the dark...'],
+  cliff:"{{comp}} whispers: 'The signal is not calling for help, {{name}}. It is calling for you...' The lights go out."},
+ romance:{l:'Romance',e:'💘',acc:'#FF5E9E',bg:'linear-gradient(160deg,#5a1535,#14070d)',title:'The Midnight Waltz',
+  set:[['💃','the Grand Ballroom'],['🌹','the Rooftop Garden'],['☕','a Rainy Cafe']],
+  comps:[['Elio','🎻','Charming violinist','Plays only for you.'],['Ines','🌹','Mysterious guest','Smiles like a secret.'],['Theo','🎩','Old rival','Hates how much he cares.']],
+  open:'{{name}}. There you are. Dance with me, or I tell all of {{setting}} you ran.',
+  t1:['💃 Take their hand','😏 Make them ask','🚪 Slip away'],
+  r1:["Finally. Don't look at the crowd. Look at me.",'Ha. Please, {{name}}? I do not say that twice.','Wait. At least tell me where you are going.'],
+  t2:['🎶 Ask about the song','💬 Be honest','🌙 Step outside'],
+  r2:['I wrote it the night we met. You did not notice.','Honest. Rarer than you would think. Say more.','Cool air, a sky full of stars. Walk with me.'],
+  t3:['💌 Open the letter','🤝 Stay by {{comp}}','🌹 Say it first'],
+  r3:['It is addressed to you. In my handwriting.','Good. I was afraid you would leave.','You, first? Then I will answer, and mean it.'],
+  cliff:"{{comp}} steps closer. 'There is something I never told you, {{name}}. The letter was not...' The clock strikes midnight."},
+ horror:{l:'Horror',e:'👻',acc:'#E0453F',bg:'linear-gradient(160deg,#4a0f12,#0d0506)',title:"The Keeper's Light",
+  set:[['🗼','the Lighthouse'],['🏚️','Hollow Manor'],['🌲','Pine Hollow Camp']],
+  comps:[['Wick','🕯️','Nervous caretaker',"Pretends he isn't scared."],['Sable','🐈‍⬛','Odd local','Knows the story. All of it.'],['Doc','🔦','Skeptical guide','Believes in nothing. Yet.']],
+  open:"{{name}}. Don't turn the light off. Not here, not at {{setting}}.",
+  t1:['🔦 Check the noise','🚪 Lock the door','🫢 Hold your breath'],
+  r1:['Okay. Slowly. It came from upstairs, {{name}}.','Locked. Though it sounded like it was already inside.',"Shh. Listen. That's not the wind."],
+  t2:['📖 Read the journal','🕯️ Light a candle','🏃 Back to the exit'],
+  r2:["Last entry: 'It learns your voice.' Do not answer if it calls.",'Better. See that? The shadow is a step too late.','The exit is gone. Only a wall, still warm.'],
+  t3:['🔦 Climb the stairs','🤝 Stay with {{comp}}','🗣️ Call out'],
+  r3:['Together then. Count the steps with me. Eleven.','Smart. We stay in the light, whatever it says.','Do not. It has been waiting for someone to ask.'],
+  cliff:"{{comp}} freezes. 'That voice, {{name}}. That is my voice. But I am right here...' The light flickers out."}
+};
+const GORDER=['fantasy','mystery','scifi','romance','horror'];
+const ROLES={hero:['🦸','The hero','the hero'],rival:['⚔️','The rival','the rival'],stranger:['🧳','A stranger','a stranger']};
+const TONES={playful:['😄','Playful'],dark:['🌑','Dark'],epic:['⚡','Epic']};
+const TONEDESC={playful:'Bright, witty, a little teasing',dark:'Shadowed, tense, slow-burn',epic:'Golden sky, big stakes'};
+const NAMES=['Wren','Ash','Juno','Sloane','Rowan','Indigo','Marlow','Sage'];
+/* hard paywall: the only free messages are the chat taste (CONFIG.teaserMessages). After it, chat needs a purchase. */
+const tasteLeft=()=>Math.max(0,CONFIG.teaserMessages-S.sent);
+const locked=()=>!S.premium&&(S.teaserDone||tasteLeft()<=0);
+const PAYWALL=17,CHAT=19;
+const gate=n=>n===CHAT&&!S.premium?PAYWALL:n;   // the web chat is paid-only: any route into it without a purchase lands on the paywall
+const MORE=['I hear you. Tell me more.','Hm. Go on, I am listening.','Interesting. And then?'];
+const THIS_YEAR=new Date().getFullYear();
+
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',month:'',blocked:(()=>{try{return !!sessionStorage.getItem('ikf_age_block')}catch(e){return false}})(),genre:'',gOther:'',role:'',roleOther:'',set:'',comp:'',tone:'',name:'',mem:true,picks:[],chat:[],typing:false,turn:0,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,flip:false});
+let S=INIT();
+const DKEY='ikf_demo_'+CONFIG.slug,saveS=()=>{try{sessionStorage.setItem(DKEY,JSON.stringify(S))}catch(e){}};
+/* reload after the taste: never back into a chat; resume on the paywall (or cliffhanger/email if no email yet) */
+if(typeof ikfSave==='undefined'&&!DEBUG)try{const r=JSON.parse(sessionStorage.getItem(DKEY)||'null');if(r&&r.i>=12){S=Object.assign(S,r,{typing:false,gate:false,sheet:null,hist:[]});if(!S.premium&&S.teaserDone&&(S.i<15||S.i===CHAT))S.i=S.email?PAYWALL:15;S.i=gate(S.i)}}catch(e){}
+const t=(a,b)=>S.v==='B'?b:a;
+const SCREENS={1:'hook',2:'age_gate',3:'genre',4:'role',5:'setting',6:'companion',7:'tone',8:'character_name',9:'trust',10:'loader',11:'story_reveal',12:'scene_turn_1',13:'scene_turn_2',15:'cliffhanger',16:'save_story',17:'paywall',19:'back_in_scene'};
+function matchGenre(s){s=(s||'').toLowerCase();
+  if(/detective|crime|spy|noir|murder|case|heist/.test(s))return 'mystery';
+  if(/space|alien|robot|cyber|future|apocalypse|mars|android/.test(s))return 'scifi';
+  if(/love|date|wedding|romance|royal|ball/.test(s))return 'romance';
+  if(/ghost|haunt|zombie|vampire|monster|scary|horror|dark/.test(s))return 'horror';
+  return 'fantasy'}
+const gk=()=>S.genre==='other'?matchGenre(S.gOther):(S.genre||'fantasy');
+const G=()=>GENRES[gk()];
+const setI=()=>{const n=S.set===''?0:+S.set;return G().set[n]||G().set[0]};
+const compI=()=>{const n=S.comp===''?0:+S.comp;return G().comps[n]||G().comps[0]};
+const cIdx=()=>{const n=S.comp===''?0:+S.comp;return G().comps[n]?n:0};
+/* companion portrait (img/comp-<genre>-<n>.jpg) over its emoji fallback */
+const cpic=(j=cIdx())=>G().comps[j][1]+im('img/comp-'+gk()+'-'+j+'.jpg');
+const setpic=(j=(S.set===''?0:+S.set))=>im('img/set-'+gk()+'-'+(G().set[j]?j:0)+'.jpg');
+const nm=()=>S.name.trim()||'Traveler';
+const roleL=()=>S.role==='other'?(S.roleOther.trim()||'the hero'):(ROLES[S.role]||ROLES.hero)[2];
+function fill(s){return esc(s).replace(/\{\{name\}\}/g,esc(nm())).replace(/\{\{comp\}\}/g,esc(compI()[0])).replace(/\{\{setting\}\}/g,esc(setI()[1])).replace(/\{\{role\}\}/g,esc(roleL())).replace(/\{\{story_title\}\}/g,esc(G().title)).replace(/\{\{genre\}\}/g,esc(G().l))}
+const accStyle=()=>`--gbg:${G().bg};--gacc:${G().acc}`;
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers=[],LD=null;
+const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id};
+const clearT=()=>{timers.forEach(clearTimeout);timers=[];if(LD)clearInterval(LD.t);LD=null;S.typing=false;S.gate=false};
+
+/* ---------- tracking (no free text) ---------- */
+function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,genre:S.genre||null,role:S.role||null,setting:S.set===''?null:S.set,companion:S.comp===''?null:S.comp,tone:S.tone||null,memory:S.mem,actions:S.picks.map(p=>p.idx),plan:S.plan,premium:S.premium,messagesSent:S.sent}}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({},detail||{},{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.slug,event:name,detail:d},'*')}catch(e){}
+  const flat=Object.assign({funnel:CONFIG.slug},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,flat)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,flat)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel] '+name,d)}catch(e){}
+}
+const answer=(key,value)=>emit('answer',{key,value});
+function navTop(href){try{window.top.location.href=href}catch(e){location.href=href}}
+function checkout(plan){
+  const p=CONFIG.plans[plan],url=CONFIG.checkoutUrl[plan]||'';
+  emit('checkout_click',{plan,price:p.price,url});
+  if(!url){demoCheckout(plan);return}
+  let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  navTop(u.toString());
+}
+/* "Open the app": Android -> web2app (Adjust link, opens the store/app), iOS and desktop -> web2web (ChatChi web app).
+   {{email}} = the email given in the funnel, {{user.id}} = FunnelFox profile id (?fpid / ff-user cookie), utm_* and fbclid = the landing query (kept from the first screen). */
+const IKF_ATTR_KEY='ikf_attr_'+CONFIG.slug;
+(function(){try{const q=new URLSearchParams(location.search),o=JSON.parse(sessionStorage.getItem(IKF_ATTR_KEY)||'{}');['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','fpid'].forEach(k=>{const v=q.get(k);if(v)o[k]=v});sessionStorage.setItem(IKF_ATTR_KEY,JSON.stringify(o))}catch(e){}})();
+function attrVal(k){let o={};try{o=JSON.parse(sessionStorage.getItem(IKF_ATTR_KEY)||'{}')}catch(e){}if(o[k])return o[k];try{for(const st of [sessionStorage,localStorage])for(let i=0;i<st.length;i++){const n=st.key(i);if(n&&n.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(st.getItem(n)||'{}');if(v&&v[k])return String(v[k])}}}catch(e){}return ''}
+function ffUserId(){const q=new URLSearchParams(location.search).get('fpid')||attrVal('fpid');if(q)return q;const m=document.cookie.match(/(?:^|;\s*)ff-user=([^;]+)/);return m?decodeURIComponent(m[1]):''}
+function userEmail(){let e=(typeof S!=='undefined'&&S&&S.email)||'';try{const F=window.fox;if(!e&&F&&F.inputs&&F.inputs.getEmail){const r=F.inputs.getEmail();e=typeof r==='string'?r:(r&&r.value)||''}}catch(x){}return String(e||'').trim()}
+function fillLink(t){const v={email:userEmail(),'user.id':ffUserId(),utm_medium:attrVal('utm_medium'),utm_campaign:attrVal('utm_campaign'),utm_content:attrVal('utm_content'),utm_source:attrVal('utm_source'),fbclid:attrVal('fbclid')};return String(t||'').replace(/\{\{\s*([\w.]+)\s*\}\}/g,(m,k)=>encodeURIComponent(v[k]||''))}
+function openApp(){const android=/android/i.test(navigator.userAgent||'');const u=fillLink(android?CONFIG.app.web2app:CONFIG.app.web2web);emit('app_handoff',{url:u,target:android?'web2app':'web2web'});if(u)navTop(u)}
+const lnk=(txt,url)=>url?`<a href="${esc(url)}" target="_blank" rel="noopener">${txt}</a>`:`<a>${txt}</a>`;
+
+function viewed(){
+  emit('screen_view',{index:S.i,name:SCREENS[S.i]});
+  if(S.i===17)emit('paywall_view',{placement:S.teaserDone?'chat_teaser':'onboarding'});
+  if(S.i===19&&!S.completed){S.completed=true;emit('complete',{premium:S.premium})}
+}
+const stripEmoji=s=>s.replace(/^[^\w*"'‘“{]+\s*/u,'');
+const TURNS=2;   // scripted scene turns before the paywall (= CONFIG.teaserMessages)
+const turnN=()=>S.i>=12&&S.i<12+TURNS?S.i-12:null;
+/* keep the chat thread consistent with the screen (go() may jump or step back) */
+function syncChat(){
+  let n=S.i===19?(S.turn<TURNS?TURNS:null):turnN();
+  if(n!==null&&locked())n=TURNS;   // back into a finished taste: full thread, nothing to answer
+  if(n===null||S.turn===n&&(n>0||S.chat.length||S.typing))return;
+  if(n===0){S.chat=[];S.picks=[];S.turn=0;return}
+  const g=G();S.picks=S.picks.slice(0,n);
+  S.chat=[{w:'c',x:g.open}];
+  for(let k=0;k<n;k++){const p=S.picks[k]||{idx:0,text:stripEmoji(g['t'+(k+1)][0])};S.picks[k]=p;S.chat.push({w:'u',x:p.text},{w:'c',x:g['r'+(k+1)][p.idx]})}
+  S.turn=n;
+}
+function go(n,push=true){n=gate(n);clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.sheet=null;syncChat();saveS();render(true);viewed();if(n===13)later(memToast,600)}
+const next=()=>go(S.i+1);
+function back(){if(S.blocked)return;clearT();const p=gate(S.hist.pop());if(p){S.i=p;S.sheet=null;syncChat();saveS();render(true);viewed()}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
+/* memory note slides into the thread (under the last reply), so it never covers the chat header */
+function memToast(){if(S.i!==13)return;const p=S.picks[0],lbl=p?p.text:stripEmoji(G().t1[0]),m=document.getElementById('msgs');const txt=S.mem?`${compI()[0]} will remember: ${lbl}`:'This scene only. Nothing is saved.';
+  if(!m){toast(txt);return}const el=document.createElement('div');el.className='toast memnote';el.setAttribute('role','status');el.innerHTML=ic('note',14)+'<span></span>';el.lastChild.textContent=txt;m.appendChild(el);m.scrollTop=m.scrollHeight}
+
+/* ---------- building blocks ---------- */
+const QN=[3,4,5,6,7,8];
+function nav(){
+  if(S.blocked||!QN.includes(S.i))return '';
+  const k=QN.indexOf(S.i);
+  return `<div class="nav"><div class="row"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="ttl">Build my story</div></div>
+  <div class="segs" role="progressbar" aria-valuemin="0" aria-valuemax="${QN.length}" aria-valuenow="${k+1}">${QN.map((_,j)=>`<i class="${j<=k?'on':''}"></i>`).join('')}</div></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const q=(a,s)=>`<h1 class="q">${a}</h1>${s?`<p class="sub">${s}</p>`:''}`;
+const gimg=k=>im('img/genre-'+k+'.jpg');
+const compAv=(j,sz=68)=>`<span class="pt" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.44)}px;${accStyle()}">${cpic(j)}</span>`;
+
+/* ---------- paywall (long-scroll web sales page) ----------
+   sticky top bar (close, brand, mini CTA) -> personal hero (their story art + picks) -> plan block #1 -> built from your picks (recap + the scene so far)
+   -> what you get -> how it works (checkout -> app -> log in) -> product facts -> FAQ -> plan block #2 -> footer; sticky bottom CTA only while no plan block is on screen */
+const PLANS=CONFIG.plans;
+const realRefund=()=>/^\d+$/.test(String(CONFIG.refundDays));
+const plansHTML=()=>`<div class="plans">${Object.entries(PLANS).filter(([k,p])=>!p.hidden).map(([k,p])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="bv">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,'#fff',3.2):''}</span><span class="pn">${p.label}</span><span class="pp">${ph(p.price)} <small>first ${p.per}</small></span><span class="rn">Then ${ph(p.renew||p.price)} ${p.renews}. Cancel anytime.</span></button>`).join('')}</div>`;
+const pCta=()=>'Continue with '+PLANS[S.plan].label;
+const pRenew=()=>{const p=PLANS[S.plan];return `${ph(p.price)} today for the first ${p.per}, then ${ph(p.renew)} ${p.renews} until you cancel.`};
+const pRenewShort=()=>{const p=PLANS[S.plan];return `then ${ph(p.renew)} ${p.renews} · cancel anytime`};
+const legalFine=()=>`<div class="fine">Auto-renews at the price and period shown until cancelled. Cancel anytime in account or store settings. Unlimited means normal use, capped at ${CONFIG.fairUseCap} messages a day.</div>`;
+const planBlock=n=>`<div class="pblock" id="plans${n}"><div class="pbh"><span class="eyb">ChatChi Plus</span><b>${n===1?'Choose your plan':'Ready to keep playing?'}</b></div>
+  ${plansHTML()}
+  <div class="due"><span>Due today</span><b class="js-due">${ph(PLANS[S.plan].price)}</b></div>
+  <button class="btn" data-a="buy"><span class="js-cta">${pCta()}</span></button>
+  <div class="trust"><span>${ic('lock',13)} Secure checkout</span><span>${ic('check',13,'currentColor',2.4)} Cancel anytime</span></div>
+  <div class="fine js-renew" style="margin:0">${pRenew()}</div>${legalFine()}</div>`;
+const stickHTML=()=>{const p=PLANS[S.plan];return `<div class="stick pwstick off" id="stick"><div class="srow"><div class="sinfo"><b class="js-plabel">${p.label}</b><span><b class="js-due">${ph(p.price)}</b> today</span></div><button class="btn" data-a="buy">Continue</button></div><div class="fine js-renews">${pRenewShort()}</div></div>`};
+/* plan change: update every block and the sticky bar in place (a re-render would lose the scroll position) */
+function pwSync(){const p=PLANS[S.plan];
+  document.querySelectorAll('.plan').forEach(x=>{const on=x.dataset.v===S.plan;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);const r=x.querySelector('.rd');if(r)r.innerHTML=on?ic('check',12,'#fff',3.2):''});
+  const set=(sel,h)=>document.querySelectorAll(sel).forEach(e=>{e.innerHTML=h});
+  set('.js-due',ph(p.price));set('.js-cta',pCta());set('.js-renew',pRenew());set('.js-renews',pRenewShort());set('.js-plabel',esc(p.label))}
+/* sticky bottom CTA only while no plan block (and not the footer) is visible; top-bar mini CTA once plan block #1 has scrolled away */
+function pwInit(){const pw=cur()&&cur().querySelector('.pw#pw');if(!pw)return;const st=cur().querySelector('#stick'),mini=pw.querySelector('.pwmini'),b1=pw.querySelector('#plans1'),ft=pw.querySelector('.pfoot');
+  const ctas=[...pw.querySelectorAll('.pblock .btn[data-a="buy"]')];
+  if(st)st.classList.remove('off');   // first view: price + Continue are on screen right away
+  if(!('IntersectionObserver' in window))return;
+  /* sticky hides only while a plan block's own CTA (or the footer) is actually on screen */
+  const vis=new Map();const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.target===b1){if(mini)mini.hidden=e.isIntersecting||e.boundingClientRect.top>0;return}vis.set(e.target,e.isIntersecting)});
+    if(st)st.classList.toggle('off',[...vis.values()].some(Boolean))},{root:pw,threshold:0,rootMargin:'-60px 0px 0px 0px'});
+  [b1,...ctas,ft].forEach(x=>x&&io.observe(x))}
+function coverHTML(extra=''){const g=G(),c=compI();
+  return `<div class="cover" style="${accStyle()}"><span class="gc">${g.e}</span>${gimg(gk())}<span class="pill">Chapter 1 · live scene</span><span class="cav">${cpic()}</span>
+  <div class="ct"><h2>${esc(g.title)}</h2><div class="chips"><span>${esc(g.l)}</span><span>You: ${esc(roleL())}</span><span>${esc(setI()[1])}</span>${S.tone?`<span>${esc(TONES[S.tone][1])}</span>`:''}</div></div></div>`;
+}
+function pwHTML(){
+  const g=G(),c=compI();
+  const bens=[['chat','Unlimited chat','Talk as long as the story runs. Fair use applies.','PLUS'],['layers','Every genre and scene','Fantasy, mystery, sci-fi, romance, horror. Switch anytime.',''],['note','Companion memory',c[0]+' keeps your choices from scene to scene.',''],['mic','Voice notes','Hear your companion speak.','NEW'],['spark','Change role and tone','Rewrite who you are and how it feels.','']];
+  const recap=[['Story',g.title],['Genre',g.l],['You are',roleL()],['Opening scene',setI()[1]],['Companion',c[0]+' · '+c[2]],['Tone',S.tone?TONES[S.tone][1]:'Your call'],['Your name',nm()],['Memory',S.mem?'On, '+c[0]+' remembers':'Fresh each time']];
+  const steps=[['Check out securely','Pick a plan and pay on this page. Plus turns on for your account right away.'],['Get the ChatChi app','Download ChatChi: AI Roleplay Chat on your phone.'],[S.email?'Log in with '+S.email:'Log in with your email',c[0]+' and '+g.title+' are waiting, right where the scene stopped.']];
+  const faq=[['Is there a free plan?','No. The opening scene was a free preview. To keep playing, pick a plan.'],
+    ['When do I get access?','Right after checkout. Download the ChatChi app and log in with '+(S.email?S.email:'the email you saved your story with')+'.'],
+    ['What happens after I pay?','ChatChi Plus turns on for your account. Your story, '+c[0]+' and every choice you made are waiting in the app.'],
+    ['Will I be charged again?','Yes, unless you cancel. After the first period, your plan renews at the regular price shown on its card.'],
+    ['How do I cancel?','Anytime in your account or store settings.'],
+    ['Is this safe and private?','Chats are never public. Delete your story anytime. Characters are AI and fictional.'],
+    ['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],
+    ['Is it explicit?','No. ChatChi stories here are SFW.']];
+  const thread=(S.chat.length?S.chat:[{w:'c',x:g.open}]).slice(-4);
+  const real=v=>!/^\{\{/.test(v),stv=n=>n==='__CAP__'?String(CONFIG.fairUseCap):n==='__GENRES__'?String(GORDER.length):n,st=(CONFIG.stats||[]).map(([n,l])=>[stv(n),l]).filter(([n])=>real(n)),rv=(CONFIG.reviews||[]).filter(([n,cn,x])=>real(n)&&real(x));
+  const sup=CONFIG.legal.supportEmail;
+  return `<div class="pw" id="pw" role="dialog" aria-label="ChatChi Plus" style="${accStyle()}">
+  <div class="obar pwbar"><button class="pwx" data-a="closepw" aria-label="Close">${ic('x',16)}</button><div class="logo">${logo(20)} ChatChi</div><button class="pwmini" data-a="toplans" hidden>Get Plus</button></div>
+  <div class="pwh"><span class="gc">${g.e}</span>${gimg(gk())}<span class="cav">${cpic()}</span>
+   <div class="txt"><span class="eye2">${S.teaserDone?'Scene 1 saved · '+esc(c[0])+' is waiting':'Your story is ready'}</span>
+    <h1 class="h1">${t('Your story, <span class="gt">unlocked</span>','Keep playing <span class="gt">'+esc(g.title)+'</span>')}</h1>
+    <p>${S.teaserDone?esc(c[0])+' wants to keep talking. Chapter 2 is written from your choices.':t('Chat without counting. Every genre, every scene.','One plan. No coins. No per-message charges.')}</p>
+    <div class="chips"><span>${g.e} ${esc(g.l)}</span><span>You: ${esc(roleL())}</span><span>${esc(setI()[1])}</span>${S.tone?`<span>${esc(TONES[S.tone][1])}</span>`:''}<span>Name: ${esc(nm())}</span></div></div></div>
+  <div class="sec" style="padding-top:18px">${planBlock(1)}</div>
+  <div class="sec"><span class="eyb">Built from your picks</span><h2 class="h2"><span class="gt">${esc(g.title)}</span><br>is waiting for you</h2>
+   <div class="recap">${recap.map(([a,v])=>`<div><small>${a}</small><b>${esc(v)}</b></div>`).join('')}</div>
+   <div class="pmock"><div class="hd"><span class="av" style="width:36px;height:36px;background:var(--gbg);border:2px solid var(--gacc)">${cpic()}</span><div><b>${esc(c[0])}</b><small>Your scene so far</small></div></div>
+    ${thread.map(m=>`<div class="bub ${m.w}">${fill(m.x)}</div>`).join('')}
+    <div class="cliff"><p>${fill(g.cliff)}</p><span>${ic('lock',13)} Chapter 2 continues with ChatChi Plus</span></div></div></div>
+  <div class="sec"><span class="eyb">What you get</span><h2 class="h2">Everything in<br><span class="gt">ChatChi Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${esc(b)}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
+  <div class="sec"><span class="eyb">After checkout</span><h2 class="h2">How it <span class="gt">works</span></h2><div class="pwsteps">${steps.map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${esc(x)}</b><span>${esc(y)}</span></div></div>`).join('')}</div></div>
+  ${st.length||rv.length?`<div class="sec"><span class="eyb">${rv.length?'Reviews':'Product facts'}</span><h2 class="h2">${rv.length?'Loved by <span class="gt">players</span>':CONFIG.statsTitle||'Why go <span class="gt">Plus</span>'}</h2>${st.length?`<div class="stats">${st.map(([n,l])=>`<div class="stat"><span class="n gt">${esc(n)}</span><span>${esc(l)}</span></div>`).join('')}</div>`:''}${rv.length?`<div class="stats" style="margin-top:10px">${rv.map(([n,cn,x])=>`<div class="rev"><div class="who"><i>${esc(n.slice(0,2).toUpperCase())}</i><div><b>${esc(n)}</b>${real(cn)?`<div style="font-size:11.5px;color:var(--t3)">${esc(cn)}</div>`:''}</div></div>${esc(x)}</div>`).join('')}</div>`:''}</div>`:''}
+  ${realRefund()?`<div class="guar"><b>${CONFIG.refundDays}-day money-back guarantee</b>${esc(CONFIG.refundText)}</div>`:''}
+  <div class="sec faq"><span class="eyb">FAQ</span><h2 class="h2">Questions, <span class="gt">answered</span></h2>${faq.map(([a,b])=>`<details><summary>${a}</summary><p>${esc(b)}</p></details>`).join('')}</div>
+  <div class="sec">${planBlock(2)}</div>
+  <footer class="pfoot" style="padding-bottom:max(120px,calc(env(safe-area-inset-bottom,0px) + 110px))"><div class="logo">${logo(18)} ChatChi</div>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
+   ${sup?`<div class="legal">Questions? <a href="mailto:${esc(sup)}">${esc(sup)}</a></div>`:''}
+   <p class="odis">${esc(c[0])} is an AI character. Fictional, and depicted as an adult. Subscriptions auto-renew until cancelled.</p></footer>
+  </div>${stickHTML()}`;
+}
+
+/* ---------- chat ---------- */
+function chatView(){
+  const g=G(),c=compI(),n=turnN(),out=locked(),last=S.chat[S.chat.length-1];
+  let chips=null;
+  if(!S.typing&&!S.gate&&last&&last.w==='c'&&!out){
+    if(n!==null&&S.turn===n)chips=g['t'+(n+1)];
+    else if(S.i===19)chips=['💬 Keep going','🤔 Say that again','👀 What happens now?'];
+  }
+  const head=n!==null?[['The scene begins.',`${c[0]} speaks first.`],['',''],['','']]:[];
+  const hl=[t('The scene begins.',c[0]+' speaks first.'),S.mem?t(c[0]+' will remember that.','Your choice changed things.'):'Your choice changed things.',t('The stakes just rose.',c[0]+' leans in.')];
+  const bd=[t('Pick an action, or type your own.','Three ways forward. Or write yours.'),t('Each action reshapes what happens next.','Turn two. The scene already shifted.'),t('One more move before the scene turns.','Choose carefully. This one sticks.')];
+  const pct=n!==null?Math.round((S.turn/TURNS)*100):100;
+  return `<div class="chat" style="${accStyle()}"><div class="chead"><span class="av" style="width:40px;height:40px;background:var(--gbg);border:2px solid var(--gacc)">${cpic()}</span><div style="flex:1"><b>${esc(c[0])}</b><small>● online · ${esc(g.title)}</small></div></div>
+  <div class="cbody"><div class="cbg tn-${S.tone||'epic'}" style="--scene:url(${src('img/genre-'+gk()+'.jpg')})"></div>
+   <div class="disclose">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</div>
+   ${n!==null?`<div class="ribbon"><span>${S.mem?'Story path':'This scene only'}</span><div class="rb"><span style="width:${pct}%"></span></div></div><div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${hl[n]}</div><div style="color:var(--t2);font-size:13px">${bd[n]}</div></div>`:`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${t('Right where you left off.',c[0]+' is waiting.')}</div><div style="color:var(--t2);font-size:13px">Unlimited chat is on.</div></div>`}
+   <div class="msgs" id="msgs"><div class="sp"></div>${S.chat.map(m=>`<div class="bub ${m.w}">${fill(m.x)}</div>`).join('')}${S.typing?'<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>':''}</div>
+   ${chips?`<div class="ideas">${chips.map((x,j)=>`<button data-a="say" data-v="${esc(x)}" data-j="${j}">${fill(x)}</button>`).join('')}</div>`:''}</div>
+  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the ChatChi app</button>`:`<div class="counter ${out?'out':''}">${out?'Preview over · your story continues with ChatChi Plus':'Free preview · '+tasteLeft()+' message'+(tasteLeft()===1?'':'s')+' left'}</div>`}
+   <div class="composer"><div class="box"><input id="msg" maxlength="300" placeholder="Message ${esc(c[0])}…" ${out||S.gate||S.typing?'disabled':''}></div><button class="send" id="sendb" data-a="send" aria-label="Send" disabled>${ic('send',18)}</button></div></div></div>`;
+}
+function say(text,idx){
+  if(S.typing||S.gate||locked())return;
+  const n=turnN(),g=G();
+  text=stripEmoji(fill(text).replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"'));
+  S.sent++;emit('chat_message',{count:S.sent});
+  S.chat.push({w:'u',x:text.replace(/\{\{/g,'')});
+  const scripted=n!==null&&S.turn===n;
+  if(scripted){S.picks[n]={idx,text};S.turn++;S.gate=true;answer('action_'+(n+1),idx)}   // gate: no more input until the next screen
+  S.typing=true;render();
+  later(()=>{S.typing=false;
+    S.chat.push({w:'c',x:scripted?g['r'+(n+1)][idx]:MORE[S.sent%MORE.length]});
+    /* chat taste over: no reply input, a typing bubble, then the cliffhanger -> email -> paywall */
+    if(!S.premium&&!S.teaserDone&&S.sent>=CONFIG.teaserMessages){S.teaserDone=true;S.gate=true;render();emit('chat_teaser_end',{count:S.sent});later(()=>{S.typing=true;render();later(()=>{S.typing=false;S.gate=false;go(15)},1500)},900);return}
+    render();
+    if(scripted)later(()=>go(S.turn>=TURNS?15:S.i+1),1500)},1200);
+}
+
+/* ---------- screens ---------- */
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const months=()=>'<option value="">Month</option>'+MONTHS.map((m,i)=>`<option value="${i+1}" ${String(i+1)===String(S.month)?'selected':''}>${m}</option>`).join('');
+const years=()=>{let o='<option value="">Year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
+const ROLEIC={hero:'shield',rival:'swords',stranger:'compass'};
+const otherRow=(on)=>`<button class="opt ${on?'on':''}" data-a="pick" data-f="role" data-v="other" aria-pressed="${on}"><span class="ri">${ic('pen',18)}</span><span class="lbl">Other</span></button>`;
+const V={
+1:()=>`<div class="scr" style="padding-top:14px;justify-content:center"><div class="logo">${logo()} ChatChi</div><span class="tagp">AI roleplay</span>
+  <h1 class="h1">${t('Step into <span class="gt">any story</span>','Play the story. <span class="gt">Live.</span>')}</h1>
+  <p class="sub" style="margin-top:-4px">${t('Pick a genre. Your companion plays the rest.','AI roleplay where your choices change the scene.')}</p>
+  <div class="fan">${GORDER.map((k,j)=>`<div class="fc" style="--gbg:${GENRES[k].bg};background:var(--gbg);border-color:${GENRES[k].acc}66;transform:translateX(calc(${j-2} * var(--fsp))) rotate(${(j-2)*11}deg);z-index:${5-Math.abs(j-2)}"><span>${GENRES[k].e}</span>${gimg(k)}</div>`).join('')}</div></div>
+  <div class="foot">${cta('Start my story')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
+2:()=>`<div class="agebg">${im('img/hook.jpg')}</div><div class="scr" style="padding-top:18px"><div class="logo">${logo()} ChatChi</div>${q(t('Adults only. Quick check.','When were you born?'),t('ChatChi roleplay is for people 18 and older.','We only use this to confirm your age.'))}
+  <div class="agebox"><div style="display:flex;gap:10px"><select class="sel" id="month" data-f="month" aria-label="Birth month">${months()}</select><select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select></div>
+  <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div></div>
+  <div class="foot">${cta('Continue',!!(S.year&&S.month),'age')}</div>`,
+3:()=>`<div class="scr">${q(t('Pick your genre.','What kind of story?'),t('It sets the world, the cast, the stakes.','You can switch genres anytime later.'))}
+  <div class="cards">${GORDER.map(k=>{const g=GENRES[k],on=S.genre===k;return `<button class="card gen ${on?'on':''}" data-a="pick" data-f="genre" data-v="${k}" aria-pressed="${on}" style="--gbg:${g.bg}"><span class="gc">${g.e}</span>${gimg(k)}<span class="lb" style="border-top:2px solid ${g.acc}">${g.l}</span></button>`}).join('')}
+   <button class="card gen dash ${S.genre==='other'?'on':''}" data-a="pick" data-f="genre" data-v="other" aria-pressed="${S.genre==='other'}"><span class="gc">✏️</span><span class="lb">Other</span></button></div>
+  ${S.genre==='other'?`<div class="box"><input data-f="gOther" maxlength="40" placeholder="pirates, post-apocalypse…" value="${esc(S.gOther)}" aria-label="Your genre"></div>`:''}</div>
+  ${S.genre==='other'?`<div class="foot">${cta('Continue',!!S.gOther.trim())}</div>`:''}`,
+4:()=>`<div class="scr" style="${accStyle()}">${q(t('Who are you here?','Pick your role.'),t('The scene is written around you.','Change it anytime in the app.'))}
+  <div class="opts">${Object.entries(ROLES).map(([k,[e,l]])=>`<button class="opt ${S.role===k?'on':''}" data-a="pick" data-f="role" data-v="${k}" aria-pressed="${S.role===k}"><span class="ri">${ic(ROLEIC[k],18)}</span><span class="lbl">${l}</span></button>`).join('')}${otherRow(S.role==='other')}</div>
+  ${S.role==='other'?`<div class="box"><input data-f="roleOther" maxlength="30" placeholder="the detective, stowaway…" value="${esc(S.roleOther)}" aria-label="Your role"></div>`:''}</div>
+  ${S.role==='other'?`<div class="foot">${cta('Continue',!!S.roleOther.trim())}</div>`:''}`,
+5:()=>`<div class="scr" style="${accStyle()}">${q(t('Where does it begin?','Choose your opening scene.'),t('Three places. Each starts differently.','Tap a card to set the scene.'))}
+  <div class="setrow">${G().set.map(([e,l],j)=>`<button class="card setc ${S.set===String(j)?'on':''}" data-a="pick" data-f="set" data-v="${j}" aria-pressed="${S.set===String(j)}"><span class="gc" style="background:var(--gbg)">${e}</span>${setpic(j)}<span class="lb">${esc(l.replace(/^(the|a) /,m=>m[0].toUpperCase()+m.slice(1)))}</span></button>`).join('')}</div></div>`,
+6:()=>`<div class="scr" style="${accStyle()}">${q(t("Who's by your side?",'Meet your companion.'),t('They stay with you and remember everything.','Pick one. They play the story with you.'))}
+  <div class="opts">${G().comps.map((c,j)=>`<button class="comp ${S.comp===String(j)?'on':''}" data-a="pick" data-f="comp" data-v="${j}" aria-pressed="${S.comp===String(j)}">${compAv(j)}<span><b>${c[0]} · ${c[2]}</b><small>AI character</small><i>“${c[3]}”</i></span></button>`).join('')}</div>
+  <p class="hint">AI characters. Illustrations only.</p></div>`,
+7:()=>`<div class="scr" style="${accStyle()}">${q(t('Set the tone.','How should it feel?'),t('Last choice before your name.','It changes how your companion speaks.'))}
+  <div class="opts">${Object.entries(TONES).map(([k,[e,l]])=>`<button class="opt tone ${S.tone===k?'on':''}" data-a="pick" data-f="tone" data-v="${k}" aria-pressed="${S.tone===k}"><span class="tth tn-${k}">${gimg(gk())}</span><span class="lbl" style="font-size:18px">${l}<small>${TONEDESC[k]}</small></span></button>`).join('')}</div></div>`,
+8:()=>`<div class="scr" style="${accStyle()}">${q(t("What's your name here?",'Name your character.'),t('Your companion will use it. Change it anytime.','Real name or a character name. Your call.'))}
+  <div style="display:flex;justify-content:center"><span class="pt" style="width:84px;height:84px;font-size:38px;border-radius:50%;display:grid;place-items:center;background:var(--gbg);border:2px solid var(--gacc)">${cpic()}</span></div>
+  <div style="display:flex;gap:8px"><div class="box" style="flex:1"><input id="name" data-f="name" maxlength="20" placeholder="Your character name" value="${esc(S.name)}" aria-label="Character name"></div><button class="btn ghost" style="width:54px;height:50px" data-a="shuffle" aria-label="Shuffle name">${gic('dice',20)}</button></div>
+  ${S.emailErr==='name'?'<div class="err">Add a name so your companion can use it</div>':''}</div>
+  <div class="foot">${cta('Continue',!!S.name.trim())}<button class="link" data-a="nameskip">Choose one for me</button></div>`,
+9:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} ChatChi</div>${q(t('Fiction. Private. Yours.','Your story stays yours.'),t('No one else reads your choices. Delete anytime.','Every line is written by AI, for you.'))}
+  <div class="opts" style="margin-top:6px">${[['lock','Your chats are never public'],['trash','Delete your story anytime'],['spark','Characters are AI and fictional']].map(([i,l])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><b style="font:700 15px var(--head)">${l}</b></div>`).join('')}</div>
+  <p class="legal">${lnk('Terms',CONFIG.legal.termsUrl)} · ${lnk('Privacy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Write my story')}</div>`,
+10:()=>`<div class="scr" style="padding-top:18px;gap:16px;${accStyle()}"><h1 class="q" style="font-size:24px">${t('Writing <span class="gt">'+esc(nm())+'</span>’s scene…','Your story is taking shape…')}</h1>
+  <div class="ldimg" id="ldimg"><i class="ph" style="background:var(--gbg)"></i>${gimg(gk())}</div>
+  <div class="steps">${['Reading your genre and role…',"Casting your companion's voice…",'Building the opening scene…','Almost ready, curtain rising…'].map((l,j)=>`<div class="step" id="st${j}"><div class="top"><span>${l}</span><b>0%</b></div><div class="bar"><span></span></div></div>`).join('')}</div><div style="height:8px"></div></div>`,
+11:()=>`<div class="scr">${q(t(esc(G().title),'Meet '+esc(compI()[0])+'.'),t('You are '+esc(roleL())+'. '+esc(compI()[0])+' plays opposite you.','Built from your genre, role and tone.'))}
+  ${coverHTML()}<p class="legal">Illustration. ${esc(compI()[0])} is an AI character.</p></div>
+  <div class="foot">${cta('Begin the scene')}</div>`,
+12:()=>chatView(),13:()=>chatView(),
+15:()=>`<div class="scr" style="${accStyle()};padding-top:24px">${q(t('The scene stops here.',esc(compI()[0])+' left something unsaid.'),t('Your next scene is written from your choices.','Pick up exactly where you left off.'))}
+  <p class="frozen">${fill(G().cliff)}</p>
+  <div class="scard ${S.flip?'flip':''}" id="scard"><div class="bk">…</div><div class="fr">${G().e}${setpic()}</div></div>
+  <p class="hint">Scene card 1 saved to your story · Scene 1 of 12</p></div>
+  <div class="foot">${cta('Save my story')}</div>`,
+/* email: mandatory (it is the account Plus is activated on). No social sign-in, no guest skip. */
+16:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} ChatChi</div>${q(t('Where should we send '+esc(compI()[0])+'’s messages?','Save '+esc(G().title)+'.'),'We use it to activate your Plus and save your story.')}
+  <div class="box"><input id="email" data-f="email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" value="${esc(S.email)}" aria-label="Email"></div>
+  ${S.emailErr==='email'?'<div class="err">That email doesn’t look right. Check it?</div>':''}
+  <p class="legal">By continuing you agree to the Terms and Privacy Policy. We only email about your story and your account.<br>${lnk('Terms',CONFIG.legal.termsUrl)} | ${lnk('Privacy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Save my story',true,'email')}</div>`,
+17:()=>pwHTML(),
+19:()=>chatView()
+};
+
+/* loader: 4 rows, row 2 pauses at 50% for one inline question */
+function runLoader(){
+  const stops=[null,50,null,null];
+  LD={row:0,pct:0,asked:false,t:0};
+  const img=document.getElementById('ldimg');
+  const tick=()=>{
+    const el=document.getElementById('st'+LD.row);if(!el){clearInterval(LD.t);return}
+    if(!LD.asked&&stops[LD.row]!==null&&LD.pct>=stops[LD.row]){clearInterval(LD.t);ask();return}
+    LD.pct=Math.min(100,LD.pct+3);
+    el.querySelector('.bar span').style.width=LD.pct+'%';el.querySelector('b').textContent=LD.pct+'%';
+    if(img)img.style.setProperty('--bl',(18-(LD.row*100+LD.pct)/400*16).toFixed(1)+'px');
+    if(LD.pct>=100){el.classList.add('done');LD.row++;LD.pct=0;if(LD.row>3){clearInterval(LD.t);later(()=>go(11),900)}}
+  };
+  LD.go=()=>{clearInterval(LD.t);LD.t=setInterval(tick,RM?5:45)};
+  LD.go();
+}
+function ask(){
+  cur().insertAdjacentHTML('beforeend',`<div class="iq" id="iq" role="dialog" aria-label="Quick question"><b>Should ${esc(compI()[0])} remember your choices?</b><div class="row"><button class="btn" data-a="iq" data-v="yes">Yes, remember</button><button class="btn ghost" style="height:54px" data-a="iq" data-v="no">Fresh each time</button></div></div>`);
+}
+const cur=()=>phone.querySelector('.view');
+
+const otok=s=>esc(s).replace(/\{\{[^}]+\}\}/g,m=>`<span class="otk">${m}</span>`);
+
+/* ---------- per-plan sale screens (after leaving a checkout without paying) and the lifetime last step ---------- */
+const SALE={m1:20,m3:21,y12:22},SALE_LT=23;
+let AFTER=24;   // where a purchase lands: 24 add-on upsell for subscribers, 25 get-app for lifetime and add-on buyers
+const DECLINE=k=>{const n=(CONFIG.declineFlow||{})[k];return +Object.keys(SCREENS).find(i=>SCREENS[i]===n)||PAYWALL};
+const compTh=()=>`<span class="oth cp">${cpic()}</span>`;
+function saleHTML(key){const p=CONFIG.plans[key],base=CONFIG.plans[p.of]||{},life=key==='lifetime',c=compI();
+  const checks=life?[`Unlimited chat with ${esc(c[0])}, forever`,'Every genre and scene','Companion memory, kept']:[`Unlimited chat with ${esc(c[0])}`,'Every genre and scene','Companion memory and voice notes'];
+  return `<div class="pw ofr" role="dialog" aria-label="${life?'Lifetime offer':'Special offer'}" style="${accStyle()}">
+  <div class="obar"><div class="logo">${logo(22)} ChatChi</div><button class="obx" data-a="saleno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">${life?'Last offer · pay once':'Special offer · '+esc(p.label)}</span>
+   <h1 class="h2" style="margin:14px 0 8px">${life?`Keep <span class="gt">${esc(G().title)}</span> forever`:`Keep playing <span class="gt">for less</span>`}</h1>
+   <p class="olead">${life?'One payment. No subscription, nothing to renew.':`Your ${esc(p.label.replace(/^(\d+) months?$/,'$1-month'))} plan at a lower first price. ${esc(c[0])} is mid-scene.`}</p></div>
+  <div class="sec"><div class="ocard">
+   <div class="orow">${compTh()}<div style="flex:1;min-width:0"><b>ChatChi Plus · ${esc(p.label)}</b><div class="osub">With ${esc(c[0])} · ${esc(G().title)}</div></div></div>
+   <div class="oprice">${!life&&base.price?`<s>${otok(base.price)}</s>`:''}<b>${otok(p.price)}</b><span>${life?'paid once':'first '+esc(p.per)}</span></div>
+   <div class="ochecks">${checks.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   ${cta(life?'Get lifetime access':'Claim '+esc(p.label)+' offer',true,'salebuy')}
+   <p class="ofine">${life?`${otok(p.price)} once. No renewal, nothing to cancel.`:`${otok(p.price)} for the first ${esc(p.per)}, then ${otok(p.renew)} ${esc(p.renews)} until you cancel. Cancel anytime in account or store settings.`}</p></div></div>
+  <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="saleno">No thanks</button>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
+   <p class="odis" style="margin-top:10px">${esc(c[0])} is an AI character. Fictional, and depicted as an adult.</p></div></div>`}
+const SALEKEY={20:'m1_sale',21:'m3_sale',22:'y12_sale',23:'lifetime'};
+/* ---------- after purchase: one-time add-on upsell (subscribers only), then get the app ---------- */
+const UPSELL=24,GETAPP=25;
+V[UPSELL]=()=>{const p=CONFIG.plans.addon,u=CONFIG.upsell||{},c=compI();
+  return `<div class="pw ofr" role="dialog" aria-label="${esc(u.name||p.label)} add-on" style="${accStyle()}">
+  <div class="obar"><div class="logo">${logo(22)} ChatChi</div><button class="obx" data-a="upno" aria-label="${esc(u.decline||'No thanks')}">${ic('x',16)}</button></div>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">You're in · one more thing</span>
+   <h1 class="h2" style="margin:14px 0 8px">${esc(u.title||'')}</h1>
+   <p class="olead">${esc(u.lead||'')}</p></div>
+  <div class="sec"><div class="ocard">
+   <div class="orow">${compTh()}<div style="flex:1;min-width:0"><b>ChatChi · ${esc(u.name||p.label)}</b><div class="osub">Add-on · ${esc(c[0])} stays with you</div></div></div>
+   <div class="oprice"><b>${otok(p.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${(u.checks||[]).map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${esc(x)}</span></div>`).join('')}</div>
+   ${cta(esc(u.cta||'Add for '+p.price),true,'upbuy')}
+   <p class="ofine">${esc(u.note||'')}</p></div></div>
+  <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="upno">${esc(u.decline||'No thanks')}</button>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div></div></div>`};
+V[GETAPP]=()=>`<div class="scr" style="gap:16px;padding-top:28px;${accStyle()}"><div class="okwell">${ic('check',36,'#fff',2.6)}</div>
+  <div style="text-align:center"><h1 class="h1" style="text-align:center;font-size:30px">You're in.<br><span class="gt">${esc(compI()[0])}</span> is waiting.</h1><p class="sub" style="margin-top:8px">${esc(G().title)} continues in the ChatChi app.</p>${S.addon?`<p class="sub" style="margin-top:6px;color:var(--t1)"><b>${esc((CONFIG.upsell||{}).name||'Bonus character')} added.</b> Create them in the app.</p>`:''}</div>
+  <div class="gsteps" style="margin-top:4px">${[['Download ChatChi: AI Roleplay Chat','From the App Store or Google Play.'],[S.email?'Log in with '+esc(S.email):'Log in with your checkout email',S.email?'The email you saved your story with.':'The one you paid with.'],['Open your chat with '+esc(compI()[0]),'Plus is already on. Your story is saved.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></div>
+  <div class="foot">${cta('Open the app',true,'openapp')}<div class="stores"><button class="store" data-a="openapp" aria-label="Download on the App Store">${APPBADGE}</button><button class="store" data-a="openapp" aria-label="Get it on Google Play"><img src="${GPBADGE}" alt="Get it on Google Play" width="148" height="44"></button></div><button class="link" data-a="keepchat">Keep chatting here</button></div>`;
+SCREENS[UPSELL]='upsell_lifetime';SCREENS[GETAPP]='get_app';
+V[20]=()=>saleHTML('m1_sale');V[21]=()=>saleHTML('m3_sale');V[22]=()=>saleHTML('y12_sale');V[23]=()=>saleHTML('lifetime');
+SCREENS[20]='sale_m1';SCREENS[21]='sale_m3';SCREENS[22]='sale_y12';SCREENS[23]='sale_lifetime';
+/* leaving a checkout without paying: go where CONFIG.declineFlow says (FunnelFox's native checkout close does the same) */
+function checkoutDeclined(plan){emit('checkout_decline',{plan});const n=DECLINE(plan);if(SALEKEY[n])emit('sale_view',{plan:SALEKEY[n]});go(n)}
+/* demo-only checkout sheet when no checkout URL is configured (FunnelFox replaces checkout() with its native screen) */
+function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;
+  const el=document.createElement('div');el.className='iq';el.id='demock';
+  el.innerHTML=`<div><b>Demo checkout</b><p style="margin:6px 0 14px;text-align:center;color:var(--t2)">ChatChi Plus · ${esc(p.label)} · ${otok(p.price)}</p><div style="display:flex;flex-direction:column;gap:8px"><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  phone.appendChild(el)}
+/* demo/debug only: jump straight to a screen with sensible picks (?debug=1#s=N) */
+function fillTo(n){
+  if(n>2){S.year=S.year||String(THIS_YEAR-25);S.month=S.month||'1'}
+  if(n>3&&!S.genre)S.genre='fantasy';if(n>4&&!S.role)S.role='hero';if(n>5&&S.set==='')S.set='0';if(n>6&&S.comp==='')S.comp='0';
+  if(n>7&&!S.tone)S.tone='epic';if(n>8&&!S.name)S.name='Wren';
+  if(n>=15){S.teaserDone=true;S.sent=S.sent||2}if(n>=17){S.email=S.email||'demo@chatchi.co'}if(n>=15){const k=S.i;S.i=12;syncChat();S.i=k}if(n>=24)S.premium=true;
+}
+
+function render(anim){
+  if(!S.blocked&&S.i===CHAT&&!S.premium){go(PAYWALL,false);return}   // safety net (FunnelFox screen show, restore): never a free chat
+  const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');
+  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, ChatChi is for adults</h1><p class="sub">You must be 18 or older to continue.</p><button class="btn ghost" data-a="agereset" style="margin-top:6px">Change my birth date</button></div>`:nav()+V[S.i]();
+  const old=cur();if(old)old.replaceWith(v);else phone.appendChild(v);
+  if(S.blocked)return;
+  if(S.i===10)runLoader();
+  if(S.i===PAYWALL)pwInit();
+  if(S.i===15&&!S.flip)later(()=>{S.flip=true;document.getElementById('scard')?.classList.add('flip')},700);
+  /* back into a finished chat taste: everything stays locked, a typing bubble, then forward again */
+  if((S.i===12||S.i===13)&&locked()&&!S.gate&&!S.typing){S.gate=true;emit('taste_locked');later(()=>{S.typing=true;render();later(()=>{S.typing=false;S.gate=false;go(15,false)},1100)},500)}
+  if(S.i===12&&!S.chat.length&&!S.typing){S.typing=true;render();later(()=>{S.typing=false;S.chat=[{w:'c',x:G().open}];render()},1300);return}
+  const m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;
+}
+
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v,f=b.dataset.f;
+  switch(a){
+    case 'next':
+      if(S.i===8){answer('name_set',!!S.name.trim());S.name=S.name.trim()}
+      next();break;
+    case 'back':back();break;
+    case 'agereset':S.blocked=false;S.year='';S.month='';try{sessionStorage.removeItem('ikf_age_block')}catch(e){}emit('age_change');go(2,false);break;
+    case 'age':{const now=new Date(),age=THIS_YEAR-(+S.year)-((now.getMonth()+1)<(+S.month)?1:0);if(age<18){S.blocked=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render();break}emit('age_confirm',{method:'year'});next();break}
+    case 'pick':{
+      S[f]=v;
+      if(f==='genre'&&v==='other'){render();cur().querySelector('input[data-f="gOther"]')?.focus();break}
+      if(f==='role'&&v==='other'){render();cur().querySelector('input[data-f="roleOther"]')?.focus();break}
+      answer({genre:'genre',role:'role',set:'setting',comp:'companion',tone:'tone'}[f],v);
+      if(f==='genre'){S.set='';S.comp=''}
+      cur().querySelectorAll(`[data-f="${f}"]`).forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+      later(next,RM?0:300);break}
+    case 'shuffle':{S.name=NAMES[Math.floor(Math.random()*NAMES.length)];const i=document.getElementById('name');if(i)i.value=S.name;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=false;break}
+    case 'nameskip':S.name=NAMES[Math.floor(Math.random()*NAMES.length)];answer('name_set',false);next();break;
+    case 'iq':S.mem=v==='yes';answer('memory',v);document.getElementById('iq')?.remove();if(LD)LD.asked=true,LD.go();break;
+    case 'email':{const ok=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(S.email.trim());if(!ok){S.emailErr='email';const i=document.getElementById('email'),keep=S.email;render();const n=document.getElementById('email');if(n){n.focus()}break}S.email=S.email.trim();S.emailErr='';emit('lead',{placement:'save_story'});next();break}
+    case 'plan':S.plan=v;emit('plan_select',{plan:v,price:CONFIG.plans[v].price});
+      pwSync();
+      checkout(v);break;   // tapping a plan opens its checkout right away
+    case 'buy':checkout(S.plan);break;
+    case 'toplans':{const pw=b.closest('.pw'),t=pw&&pw.querySelector('#plans1');if(t)pw.scrollTo({top:Math.max(0,t.offsetTop-70),behavior:RM?'auto':'smooth'});break}
+    case 'salebuy':{const k=SALEKEY[S.i];emit('sale_accept',{plan:k});checkout(k);break}
+    case 'saleno':{const k=SALEKEY[S.i];emit('sale_decline',{plan:k});checkoutDeclined(k);break}
+    case 'ckpay':{document.getElementById('demock')?.remove();window.IkFunnel.completePurchase(S.ckPlan);break}
+    case 'ckclose':{document.getElementById('demock')?.remove();checkoutDeclined(S.ckPlan);break}
+    case 'upbuy':emit('upsell_accept',{plan:'addon'});checkout('addon');break;
+    case 'upno':emit('upsell_decline');go(GETAPP);break;
+    case 'keepchat':go(S.premium?CHAT:PAYWALL);break;
+    /* hard paywall: closing it always shows the lifetime last step; its No thanks returns here (CONFIG.declineFlow.lifetime) */
+    case 'closepw':case 'closeq':emit('paywall_close',{placement:'onboarding',via:'close'});emit('sale_view',{plan:'lifetime'});go(SALE_LT);break;
+    case 'say':say(b.textContent,+b.dataset.j||0);break;
+    case 'send':{const m=document.getElementById('msg');if(m&&m.value.trim())say(m.value.trim(),1);else m?.focus();break}
+    case 'upgrade':go(PAYWALL);break;
+    case 'openapp':openApp();break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;
+  if(e.target.id==='msg'){const s=document.getElementById('sendb');if(s)s.disabled=!e.target.value.trim();return}
+  if(!f)return;
+  if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month);return}
+  S[f]=e.target.value;
+  if(['gOther','roleOther','name'].includes(f)){const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S[f].trim()}
+});
+phone.addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month)}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='msg')cur().querySelector('[data-a="send"]')?.click();if(e.key==='Enter'&&e.target.id==='email'){e.preventDefault();cur().querySelector('[data-a="email"]')?.click()}});
+
+/* Host API: the page embedding this funnel can complete a purchase or read the picks. */
+window.go=go;
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
+  /* main plans -> add-on upsell; lifetime (one-time) -> get-app; addon -> get-app with the "added" line, the plan bought before stays as it is.
+     Kept on one line with go(AFTER) first: the FunnelFox build reads the paid screen from it. */
+  completePurchase:(plan)=>{const k=plan&&CONFIG.plans[plan]?plan:S.plan,add=k==='addon';if(add)S.addon=true;else{S.plan=k;S.ltSeen=true;S.premium=true;S.teaserDone=true}AFTER=add||(CONFIG.plans[k]&&CONFIG.plans[k].oneTime)?GETAPP:UPSELL;S.sheet=null;emit('purchase_complete',{plan:k});go(AFTER);if(add)later(()=>toast((CONFIG.upsell.name||'Bonus character')+' added.'),1600);else later(()=>toast('Unlimited chat is on. Enjoy.'),1600)}});
+if(DEBUG)window.IkFunnel.go=n=>{clearT();fillTo(n);go(n)};
+if(DEBUG){const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=gate(+m[1]);syncChat()}}
+{let ref='';try{ref=document.referrer?new URL(document.referrer).hostname:''}catch(e){}emit('funnel_start',{referrer:ref})}
+render();viewed();
+</script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moon Reading Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#0E111A;
+  --bg:#161A27;--bg-elev:#1C2131;--surface:#212739;--surface-2:#2A3147;--border:#3A4260;
+  --t1:#F6F3EA;--t2:#B5B9C9;--t3:#7C8298;
+  --acc:#E9C26B;--acc-dim:#E9C26B2E;--btn-text:#161A27;--gold-lm:#8A6410;
+  --grad:linear-gradient(100deg,#F4DA96 0%,#E9C26B 50%,#C99A3A 100%);
+  --gold:#E9C26B;--rose:#E8BF5F;--neg:#F29A8A;--pos:#7FD1A8;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--ground);background-image:radial-gradient(ellipse 60% 40% at 30% 0%,#1E2539 0%,transparent 70%);color:var(--t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding-block:32px 48px;padding-inline:16px}
+.phonebox{--k:1;width:calc(412px*var(--k));height:calc(834px*var(--k));position:relative;flex:none}
+.phone{position:absolute;left:calc(11px*var(--k));top:calc(11px*var(--k));width:390px;height:812px;transform:scale(var(--k));transform-origin:0 0;border-radius:52px;background:radial-gradient(ellipse 120% 60% at 50% 0%,#1D2235 0%,var(--bg) 60%);border:1px solid #2B334F;box-shadow:0 0 0 10px #0E111B,0 0 0 11px #2B334F,0 40px 80px -20px #000;overflow:hidden;isolation:isolate}
+#stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--t1)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--t1);border-radius:1px}
+.nav{height:48px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px;position:relative;z-index:3}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2);flex:none}
+.iconbtn:hover{background:var(--surface)}
+.prog{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--grad);border-radius:2px;transition:width .35s ease}
+.navspacer{width:44px}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr.center{justify-content:center}
+.scr>*{flex-shrink:0}
+.navpad{height:48px;flex:none}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2}
+.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+.sky{position:absolute;inset:0 0 auto 0;height:340px;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 70% at 50% 0%,#97701655 0%,#2A334F33 45%,transparent 100%)}
+.z{position:relative;z-index:1}
+.display{font:600 30px/1.12 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
+.display.xl{font-size:36px}
+.display.sm{font-size:26px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+.badge{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--acc-dim);color:var(--acc);font:500 13px/1 var(--sans)}
+.tc{text-align:center}.tc .badge{align-self:center}
+.btn{height:54px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text);font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,opacity .2s;flex:none}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:var(--surface);color:var(--t1);border:1px solid var(--border)}
+.btn.light{background:var(--t1);color:#0E111B}
+.btn.black{background:#000;color:#fff;border:1px solid #3a3a3a}
+.btn:not([disabled]):not(.ghost):not(.light):not(.black){position:relative;overflow:hidden;box-shadow:0 8px 28px -10px #DFA620aa}
+.btn:not([disabled]):not(.ghost):not(.light):not(.black)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px 10px;min-height:44px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--border)}
+.link:hover{color:var(--t1)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);text-align:left;width:100%;transition:border-color .15s,background .15s}
+.opt:hover{border-color:#A97E18}
+.opt .well{width:36px;height:36px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:none;font-size:18px;line-height:1}
+.opt .lbl{flex:1;font-weight:500;font-size:16px}
+.opt .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;color:#fff}
+.opt.on{border-color:transparent;background:var(--grad)}
+.opt.on .well{background:#ffffff2e}
+.opt.on .chk{background:#fff;border-color:#fff;color:var(--gold-lm)}
+.opts.cards .opt{border-radius:18px;padding:14px}
+.opts.cards .opt .well{box-shadow:0 0 16px #E3B03A55;background:radial-gradient(circle,#E3B03A40,var(--surface-2))}
+.opts.cards .opt.on{background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);border:1.5px solid #E5B649}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:500 13px/1 var(--sans);color:var(--t2)}
+.box{height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3)}
+.box.white{background:#F7F4EC;border-color:#F7F4EC;color:var(--gold-lm)}
+.box.white input{color:#161A28}
+.box.white input::placeholder{color:#DFA722}
+.box:focus-within{border-color:var(--acc)}
+.box.bad{border-color:var(--neg)}
+.box input,.box select{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+.box select{appearance:none;cursor:pointer}
+.box input[type=time]{position:relative}
+.box input[type=time]::-webkit-calendar-picker-indicator{opacity:0;position:absolute;inset:0;width:auto;height:auto;cursor:pointer}
+.box select option{background:var(--surface);color:var(--t1)}
+.row3{display:grid;grid-template-columns:1.4fr 1fr 1.2fr;gap:8px}
+.err{font-size:13px;color:var(--neg)}
+.err button{color:var(--t1)}
+.hint{font-size:13px;color:var(--t3)}
+.results{border-radius:14px;background:var(--surface);border:1px solid var(--border);overflow:hidden}
+.results button{display:flex;gap:10px;align-items:center;width:100%;padding:11px 14px;background:none;border:none;border-top:1px solid var(--border);text-align:left;color:var(--t1)}
+.results button:first-child{border-top:none}
+.results button:hover{background:var(--surface-2)}
+.results small{color:var(--t3)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-weight:500;font-size:14px}
+.chip.on{background:var(--grad);border-color:transparent;color:var(--btn-text)}
+.chip.sm{font-size:12px;padding:5px 10px;min-height:0;color:var(--t2)}
+.card{padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.card h4{margin:0 0 3px;font-size:15px;font-weight:600}
+.card p{margin:0;color:var(--t2);font-size:14px}
+.card .sub{font-size:12px;color:var(--t3)}
+.card.dash{border-style:dashed}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;gap:12px;align-items:center}
+.row .btn{flex:1 1 0;width:auto;min-width:0}
+.lockrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t2);font-size:14px}
+.lockrow .l{margin-left:auto;color:var(--acc)}
+.promise{display:flex;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--border)}
+.promise:first-child{border-top:none}
+.promise .well,.iw{width:36px;height:36px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;flex:none;font-size:17px}
+.bigwell{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#E3B03A55,transparent 70%),var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--acc);align-self:center;box-shadow:0 0 40px #E3B03A55}
+.steps{display:flex;flex-direction:column;gap:13px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--t1)}
+.step.done .pct{color:var(--acc)}
+.bar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--grad);width:0}
+.dim{position:absolute;inset:0;background:#06070ACC;z-index:4}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:var(--bg-elev);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:10px 20px 30px;display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--border);align-self:center}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.closex{position:absolute;top:54px;right:16px;z-index:3;width:34px;height:34px;border-radius:50%;background:#0E111BAA;border:1px solid var(--border);display:grid;place-items:center;color:var(--t2)}
+.checks{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t1)}
+.checks div{display:flex;gap:10px;align-items:flex-start}
+.checks svg{color:var(--acc);flex:none;margin-top:2px}
+.plan{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border:1px solid var(--border);background:var(--surface);text-align:left;width:100%;position:relative}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;flex:none;color:#fff}
+.plan.on{border:1.5px solid #E6B951;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface)}
+.plan.on .radio{background:var(--grad);border-color:transparent}
+.plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.plan .pp{font-size:13px;color:var(--t1);font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+.plan .ps{font-size:11px;color:var(--t3);display:block;margin-top:2px}
+.save{font:600 10px/1 var(--sans);letter-spacing:.05em;background:var(--grad);color:var(--btn-text);padding:4px 7px;border-radius:6px}
+.tok{font-family:ui-monospace,Consolas,monospace;font-size:.86em;color:var(--gold);background:#E9C26B14;border:1px dashed #E9C26B77;border-radius:5px;padding:0 4px;white-space:nowrap}
+.legal{display:flex;justify-content:center;gap:14px;font-size:12px;color:var(--t3);flex-wrap:wrap}
+.legal button{background:none;border:none;color:inherit;padding:0;font-size:12px;text-decoration:underline;text-decoration-color:var(--border)}
+.legal a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:inherit;font-size:12px;text-decoration:underline;text-decoration-color:var(--border)}
+.note a{color:var(--t2);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:2px;display:inline-block;padding:14px 2px;margin:-14px 0}
+.trust{font-size:12px;color:var(--t2);text-align:center;line-height:1.5}
+.cardform{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cardform .box{height:46px;font-size:14px}
+.cardform .box:first-child{grid-column:1/-1}
+.paybtns{display:flex;flex-direction:column;gap:8px}
+.or{display:flex;align-items:center;gap:10px;color:var(--t3);font-size:12px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--border)}
+.checkbox{display:flex;gap:10px;align-items:flex-start;background:none;border:none;text-align:left;color:var(--t2);font-size:13px;padding:10px 0;min-height:44px}
+.checkbox .cb{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);flex:none;display:grid;place-items:center;color:#fff}
+.checkbox.on .cb{background:var(--grad);border-color:transparent}
+.toast{position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:20;background:var(--t1);color:#0E111B;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:fade 2.6s ease forwards;box-shadow:0 8px 24px #0008}
+@keyframes fade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.fadein{animation:fi .35s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fseq>*{animation:fi .45s ease both}
+.fseq>*:nth-child(2){animation-delay:.35s}.fseq>*:nth-child(3){animation-delay:.7s}.fseq>*:nth-child(4){animation-delay:1.05s}.fseq>*:nth-child(5){animation-delay:1.4s}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.55}}
+.blurred{filter:blur(6px);user-select:none}
+.mock{width:210px;height:380px;border-radius:30px;border:6px solid #22283E;background:var(--bg);align-self:center;overflow:hidden;position:relative;box-shadow:0 20px 50px -10px #000,0 0 40px #E3B03A33;display:flex;flex-direction:column;gap:8px;padding:22px 10px 10px;flex:none}
+.mock .mrow{padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:11px;color:var(--t2)}
+.mock .mrow b{display:block;color:var(--t1);font-size:12px;margin-bottom:2px}
+.stores{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.store{display:flex;align-items:center;gap:8px;height:44px;min-width:136px;padding:0 12px;border-radius:8px;background:#000;border:1px solid #A6A6A6;font:500 9.5px/1.1 var(--sans);letter-spacing:.02em;text-align:left;color:#fff}
+.store svg{flex:none}
+.store b{display:block;font:600 15px/1.1 var(--sans);letter-spacing:0}
+.qr{display:flex;gap:10px;align-items:center;justify-content:center;font-size:11px;color:var(--t3)}
+.qr svg{background:#fff;border-radius:6px;padding:3px}
+.tips{position:absolute;z-index:6;left:12px;right:12px;padding:12px 14px;border-radius:14px;background:var(--t1);color:#161A28;font-size:13px;box-shadow:0 10px 30px #000a;animation:fi .25s ease}
+.demo-chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.demo-chips button{font-size:11px;padding:4px 9px;border-radius:999px;background:none;border:1px dashed var(--border);color:var(--t3)}
+/* flat map */
+.map{display:block;width:100%;height:auto;border-radius:16px;background:radial-gradient(ellipse at 50% 40%,#20263B,#111520);border:1px solid var(--border)}
+.map .land{fill:#B8881A}
+.map .ln{fill:none;stroke-width:2;stroke-linecap:round}
+.map .ln.draw{stroke-dasharray:1;stroke-dashoffset:1;animation:mdraw 1.6s ease forwards}
+@keyframes mdraw{to{stroke-dashoffset:0}}
+.map .pin{fill:#fff}
+.map .ping{fill:none;stroke:#fff;transform-box:fill-box;transform-origin:center;animation:ping 2s ease-out infinite}
+@keyframes ping{from{opacity:.9;transform:scale(.4)}to{opacity:0;transform:scale(2.4)}}
+/* panel */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:600 28px/1.1 var(--serif);margin:0 0 8px}
+.panel .intro{color:var(--t2);margin:0;font-size:14px}
+.panel code{font-size:12px;color:var(--acc)}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:3px;background:var(--surface)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--t2);font-weight:500}
+.seg button.on{background:var(--grad);color:#fff}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--border);background:none;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--t2)}
+.ctrls .restart:hover{color:var(--t1);border-color:#A97E18}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:12px}
+.flow .grp{display:flex;flex-direction:column;gap:1px}
+.flow .gname{font-size:12px;color:var(--acc);margin-bottom:4px;font-weight:500}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:4px 8px;border-radius:8px;color:var(--t2);font-size:13px;width:100%}
+.flow button:hover{background:var(--surface);color:var(--t1)}
+.flow button.on{background:var(--surface-2);color:var(--t1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--t3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--t3);border:1px solid var(--border);border-radius:4px;padding:1px 5px;flex:none}
+.flow button.skip{opacity:.4}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--t3)}
+.data dd{margin:0;color:var(--t1);overflow-wrap:anywhere}
+.foot-note{font-size:12px;color:var(--t3);margin:0}
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:32px;padding-block:20px 40px}
+  .panel{width:390px}
+}
+/* last-chance offer (fallback / "upsell on decline"): shown once when the paywall is left without paying */
+.wp{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.wp::-webkit-scrollbar{display:none}
+.wbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 16px 10px;background:#161A27f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #ffffff10}
+.wbar .brand{flex:1;display:flex;align-items:center;gap:7px;font:600 15px var(--serif);letter-spacing:.02em;color:var(--t1)}
+.wbar .brand svg{color:var(--acc)}
+.wbar .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--t3);display:grid;place-items:center}
+.wsec{padding:28px 18px 0}.wsec.tight{padding-top:16px}
+.wp .eyebrow{display:block;margin-bottom:10px;font-size:11.5px;letter-spacing:.12em}
+.wp .display em{font-style:normal;color:var(--acc)}
+.ocard{position:relative;padding:18px 16px;border-radius:24px;border:1.5px solid var(--acc);background:radial-gradient(ellipse at 50% 0%,#E9C26B24,transparent 60%),linear-gradient(180deg,#232A40,#1A1F2F);box-shadow:0 0 0 4px #E9C26B18,0 30px 60px -30px #000}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad);color:var(--btn-text);font:700 11px/1 var(--sans);letter-spacing:.08em;white-space:nowrap}
+.obadge .tok{color:var(--btn-text)}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:58px;height:74px;border-radius:12px;overflow:hidden;position:relative;flex:none;background:#111520;border:1px solid var(--border);display:grid;place-items:center}
+.orow .th.wide{width:84px;height:60px}
+.orow .th img{width:100%;height:100%;object-fit:cover}.orow .th>svg{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0}
+.oprice{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 10px;margin-top:16px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:600 30px var(--serif);color:var(--acc)}.oprice>span{color:var(--t2);font-size:13px}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc);font-variant-numeric:tabular-nums}
+.pay{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F6F3EA;color:#161A27;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin:12px 4px 0;line-height:1.5}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+
+/* moon reading: canvas moon hero */
+.moonh{position:relative;display:grid;place-items:center;margin:0 auto;flex:none;touch-action:none}
+.moonh::before{content:"";position:absolute;inset:-22%;border-radius:50%;background:radial-gradient(circle,rgba(226,214,255,var(--gl,.25)) 0%,rgba(230,185,81,.08) 45%,transparent 68%);pointer-events:none}
+.moonh canvas{display:block;position:relative}
+.moonh .ring30{position:absolute;inset:0;overflow:visible;pointer-events:none}
+.ring30 circle{fill:#2B3451}
+.ring30 circle.on{fill:#FAF3E1;filter:drop-shadow(0 0 4px #EAC46C)}
+.ring30 circle.full{fill:#fff}
+.orbit8{position:relative;width:230px;height:230px;margin:0 auto;flex:none}
+.orbit8 .ph{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;gap:2px}
+.orbit8 .ph.on svg{filter:drop-shadow(0 0 8px #FAF3E1)}
+.orbit8 .ph.on::after{content:"Today";font-size:10px;color:var(--acc);position:absolute;top:100%;margin-top:2px}
+.orbit8 .mid{position:absolute;inset:0;display:grid;place-items:center;font-size:54px;color:#FBF6EA;text-shadow:0 0 24px #EAC46C}
+.zband{position:relative;display:grid;grid-template-columns:repeat(12,1fr);border:1px solid var(--border);border-radius:12px;overflow:visible;height:40px;background:var(--surface)}
+.zband span{display:grid;place-items:center;font-size:13px;color:var(--t3);border-left:1px solid var(--border)}
+.zband span:first-child{border-left:none}
+.zband span.on{color:var(--t1);background:var(--acc-dim)}
+.zband .mk{position:absolute;top:-9px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#F1EBDD;box-shadow:0 0 12px #FAF3E1;transition:left .4s ease}
+.cres{display:flex;justify-content:center;align-items:center}
+.toggle{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);width:100%;text-align:left}
+.toggle .sw{margin-left:auto;width:44px;height:26px;border-radius:999px;background:var(--surface-2);position:relative;flex:none;transition:background .2s}
+.toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on .sw{background:var(--grad)}
+.toggle.on .sw::after{transform:translateX(18px)}
+.lock{position:relative;border-radius:22px;padding:16px;background:linear-gradient(160deg,#232A41,#111520);border:1px solid var(--border);overflow:hidden}
+.lock .clock{font:600 40px/1 var(--sans);text-align:center;color:#fff;opacity:.9}
+.lock .dt{text-align:center;font-size:12px;color:var(--t2);margin:4px 0 12px}
+.push{display:flex;gap:10px;padding:11px;border-radius:16px;background:#ffffff17;backdrop-filter:blur(10px);border:1px solid #ffffff1f;font-size:13px}
+.push .app{width:32px;height:32px;border-radius:9px;background:var(--bg);border:1px solid var(--border);display:grid;place-items:center;flex:none}
+.push small{color:var(--t2);display:block;font-size:11px}
+.cal{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.cal div{border-radius:10px;background:var(--surface);border:1px solid var(--border);padding:5px 2px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--t2);font-variant-numeric:tabular-nums}
+.cal div.key{border-color:#E8BE5D;background:linear-gradient(0deg,var(--acc-dim),var(--acc-dim)),var(--surface);color:var(--t1)}
+.cal div.today{outline:1.5px solid var(--t1);outline-offset:-1.5px}
+.cal i{font-style:normal;font-size:8px;filter:blur(2.5px);color:var(--acc);user-select:none}
+.mcard{padding:16px;border-radius:20px;background:linear-gradient(160deg,#2A324D,var(--surface));border:1px solid #BB8B1B;display:flex;flex-direction:column;gap:10px}
+.mcard .g{font-size:40px;line-height:1;color:#FBF6EA;text-shadow:0 0 18px #EAC46C}
+.mcard .ln{display:grid;grid-template-columns:62px 1fr;gap:4px;font-size:13px}
+.mcard .ln b{color:var(--t3);font-weight:500}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two .mcard{padding:12px}
+.two .mcard .ln{grid-template-columns:1fr;gap:0}
+.rit{padding:16px;border-radius:22px;background:#151A28e6;border:1px solid var(--border);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.rit ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.rit li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.rit li b{width:26px;height:26px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;flex:none;font-size:13px}
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center;font-size:11px;color:var(--t2)}
+.strip div{padding:8px 2px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:4px}
+.strip b{color:var(--t1);font-size:12px;font-weight:500}
+.mapcard{padding:14px 12px;border-radius:16px;background:radial-gradient(ellipse at 50% 40%,#20263B,#111520);border:1px solid var(--border)}
+.mapcard .map{border:none;border-radius:0;background:none}
+/* AI image layer (SVG/CSS/canvas art stays underneath as the fallback) */
+.sky{background:radial-gradient(ellipse 80% 70% at 50% 0%,#97701655 0%,#2A334F33 45%,transparent 100%),url(img/sky-night.jpg) 50% 0/cover no-repeat;opacity:.8;-webkit-mask-image:linear-gradient(#000 45%,#0000);mask-image:linear-gradient(#000 45%,#0000)}
+.sky.hook{height:100%;opacity:1;-webkit-mask-image:none;mask-image:none;background:linear-gradient(180deg,#0E111B00 0%,#0E111B33 35%,#0E111Baa 60%,#0E111B 84%),linear-gradient(180deg,#0E111B00 calc(var(--hb,900px) - 170px),#0E111B calc(var(--hb,900px) - 4px)),radial-gradient(circle at var(--mx,50%) var(--my,0px),#304068 var(--mr,0px),#30406800 calc(var(--mr,0px) + 8px)),url(img/hook-window.jpg) var(--hx,-205px) var(--hy,-204px)/var(--hs,600px) auto no-repeat,#0E111B}
+.opt .well .wimg{width:100%;height:100%;border-radius:inherit;object-fit:cover;display:block}
+.ritpic{position:relative;height:112px;border-radius:20px;overflow:hidden;border:1px solid var(--border);flex:none;background:linear-gradient(160deg,#232A41,#111520)}
+.ritpic img{width:100%;height:100%;object-fit:cover;display:block}
+.ritpic::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0E111B00 50%,#0E111B88)}
+
+/* ===== web paywall (long-scroll landing page) ===== */
+.wp .whero{display:flex;flex-direction:column;gap:12px}
+.wp .wh1{font:600 29px/1.12 var(--serif);margin:0;text-wrap:balance}
+.wp .wh1 em{font-style:normal;color:var(--acc)}
+.wp .wh2{font:600 24px/1.18 var(--serif);margin:0 0 6px;text-wrap:balance}
+.wp .wlead{color:var(--t2);margin:0;font-size:15px}
+.wp .wart{display:flex;justify-content:center;padding:6px 0}
+.wp .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.wp .fact{padding:9px 11px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--t3)}
+.wp .fact b{display:block;color:var(--t1);font-size:13.5px;font-weight:600;margin-top:2px}
+.wp .pick{border-radius:24px;padding:18px 14px 16px;background:linear-gradient(180deg,#232A40,#1A1F2F);border:1px solid #E9C26B40;box-shadow:0 30px 60px -30px #000}
+.wp .pick .wh2{text-align:center;margin-bottom:14px}
+.wp .today{display:flex;justify-content:space-between;font-size:13.5px;padding:12px 4px 0;color:var(--t2)}
+.wp .today b{color:var(--t1)}
+.wp .pay span{height:26px;min-width:44px;padding:0 8px;border-radius:6px;background:#F6F3EA;color:#161A27;font:700 10.5px/26px var(--sans);text-align:center;letter-spacing:.02em}
+.wp .secure{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--t2)}
+.wp .wchecks{display:flex;flex-direction:column;gap:8px;font-size:14px;margin:4px 0 12px}
+.wp .wchecks div{display:flex;gap:10px;align-items:flex-start}.wp .wchecks svg{color:var(--acc);flex:none;margin-top:2px}
+.wp .toc{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.wp .toc div{display:flex;gap:12px;align-items:center;padding:14px;background:var(--surface);border-top:1px solid var(--border);font-size:14px}
+.wp .toc div:first-child{border-top:none}
+.wp .toc .n{width:26px;height:26px;border-radius:50%;background:var(--surface-2,#2A3147);display:grid;place-items:center;font:600 12px var(--sans);color:var(--acc);flex:none}
+.wp .toc .l{margin-left:auto;color:var(--t3);font-size:13px}.wp .toc .open .l{color:#7FD1A8}
+.wp .how{display:flex;flex-direction:column}
+.wp .how>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.wp .how>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--border)}
+.wp .how i{width:34px;height:34px;border-radius:50%;background:var(--acc-dim);color:var(--acc);display:grid;place-items:center;font:600 14px var(--sans);font-style:normal;border:1px solid #E9C26B55}
+.wp .how b{display:block;margin-top:6px}.wp .how span{font-size:13.5px;color:var(--t2)}
+.wp .faq details{border-top:1px solid var(--border);padding:4px 0}.wp .faq details:last-child{border-bottom:1px solid var(--border)}
+.wp .faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:12px;padding:14px 2px;font-weight:600;font-size:15px}
+.wp .faq summary::-webkit-details-marker{display:none}
+.wp .faq summary::after{content:"+";color:var(--acc);font-size:20px;line-height:1;transition:transform .2s}
+.wp .faq details[open] summary::after{transform:rotate(45deg)}
+.wp .faq p{margin:0 2px 14px;color:var(--t2);font-size:14px}
+.wp .rate{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--surface);border:1px solid var(--border)}
+.wp .rev{padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--t2);margin-top:10px}
+.wp .wfoot{padding:28px 18px 120px;font-size:11.5px;color:var(--t3);text-align:center;line-height:1.6}
+.wp .wbar .mini{height:40px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:var(--btn-text,#161A27);font:600 13px var(--sans);opacity:0;transform:translateY(-4px);transition:.25s;pointer-events:none}
+.wp.scrolled .wbar .mini{opacity:1;transform:none;pointer-events:auto}
+.wsticky{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:#161A27f5;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid #ffffff10;transform:translateY(110%);transition:transform .3s ease}
+.wsticky.show{transform:none}
+.wp .wfoot .legal{display:flex;justify-content:center;gap:4px 14px;flex-wrap:wrap;margin-top:8px}
+.wp .wfoot .legal button{background:none;border:none;color:var(--t2);font-size:12px;text-decoration:underline;text-underline-offset:2px;min-height:44px;padding:0 4px;filter:none;opacity:1}
+.wsticky .sum{display:flex;justify-content:space-between;font-size:12.5px;color:var(--t2);margin-bottom:8px;padding:0 4px}.wsticky .sum b{color:var(--t1)}
+
+/* demo checkout sheet (no checkout URL configured); FunnelFox replaces checkout() with its native Paddle screen */
+#demock{position:absolute;inset:0;z-index:50;background:#000000b3;display:flex;flex-direction:column;justify-content:flex-end;animation:fade0 .2s ease}
+#demock .dck{background:var(--bg-elev);border-top:1px solid var(--border);border-radius:24px 24px 0 0;padding:20px 20px max(24px,calc(env(safe-area-inset-bottom,0px) + 14px));display:flex;flex-direction:column;gap:8px}
+#demock .dck b{font:600 20px/1.25 var(--serif)}#demock .dck p{margin:0 0 10px;color:var(--t2);font-size:14px}
+@keyframes fade0{from{opacity:0}}
+/* Starlyn add-on report (post-purchase upsell) */
+.upok{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12.5px;color:var(--pos);background:#7FD1A81a;border:1px solid #7FD1A855;border-radius:99px;padding:6px 12px}
+.upcard{background:var(--surface);border:1px solid #E9C26B55;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 40px #E3B03A22}
+.upcov{position:relative;height:140px;border-radius:14px;overflow:hidden;background:#0B0A18 center/cover no-repeat;border:1px solid #E9C26B66;display:flex;align-items:flex-end;padding:12px}
+.upcov::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#0B0A18eb)}
+.upcov div{position:relative;z-index:1}.upcov small{display:block;font:600 10.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.upcov b{font:600 20px/1.15 var(--serif);color:var(--t1)}
+.upl{list-style:none;margin:0;padding:0;display:grid;gap:8px}.upl li{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--t1);text-align:left}.upl li svg{color:var(--acc);flex:none;margin-top:2px}
+.upr{display:flex;align-items:baseline;justify-content:space-between;border-top:1px solid var(--border);padding-top:10px}.upr b{font:600 24px var(--serif);color:var(--t1)}.upr span{font-size:12.5px;color:var(--t2)}
+.upadd{display:flex;gap:8px;align-items:center;justify-content:center;font-size:13.5px;color:var(--pos);text-align:center}
+@media (max-height:700px){.scr.rem{gap:10px}.rem .lock{padding:10px 12px}.rem .lock .clock{font-size:30px}.rem .lock .dt{margin:2px 0 8px}.rem .push{padding:8px}.rem .toggle{padding:8px 14px}.rem .stack{gap:8px}}
+@media (max-height:700px){.scr{gap:14px}.opt{min-height:50px;padding-top:7px;padding-bottom:7px}.opt .well{width:32px;height:32px}.upcov{height:92px}.upcard{gap:10px;padding:12px}}
+</style>
+<body>
+<script>
+/* ===== shared prototype core (per-demo code defines APP, V, FLOW, INIT, NEXT, fillTo, DATA, OK, ACT, INPUT, AFTER, HERO) ===== */
+const IC={
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  back:'<path d="m15 18-6-6 6-6"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
+  down:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/>',
+  loc:'<path d="m3 11 19-9-9 19-2-8-8-2z"/>',
+  pencil:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  chart:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  play:'<path d="m6 3 14 9-14 9V3z"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>'
+};
+const STORE_SVG={apple:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>',play:'<svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg>'};
+const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const ZOD=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+const GLY=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g=>g+'︎');
+const gly=s=>GLY[ZOD.indexOf(s)]||'';
+const SM=['Capricorn','Aquarius','Pisces','Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius'];
+const sunSign=(m,d)=>{const c=[19,18,20,19,20,20,22,22,22,22,21,21];return d<=c[m-1]?SM[m-1]:SM[m%12]};
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const hash=s=>{let h=7;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))>>>0;return h};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tok=n=>{const P=((typeof CONFIG!=='undefined'&&CONFIG.plans)||{}).weekly||{};const v={price_1w:P.intro,price_month:P.price}[n];return v&&!/^\{\{/.test(v)?v:`<span class="tok">{{${n}}}</span>`};
+const fmtDate=o=>o&&o.m?`${MONTHS[o.m-1]} ${o.d}, ${o.y}`:'—';
+/* cities: label, lat, lon, tz (std), region, setting */
+const CITIES=[
+['Austin, Texas, United States',30.27,-97.74,-6,'am','city'],['Chicago, Illinois, United States',41.88,-87.63,-6,'am','city'],['New York, New York, United States',40.71,-74.01,-5,'am','city'],['Los Angeles, California, United States',34.05,-118.24,-8,'am','coast'],['Miami, Florida, United States',25.76,-80.19,-5,'am','coast'],['Seattle, Washington, United States',47.61,-122.33,-8,'am','coast'],['Denver, Colorado, United States',39.74,-104.99,-7,'am','mount'],['Asheville, North Carolina, United States',35.6,-82.55,-5,'am','town'],['Sedona, Arizona, United States',34.87,-111.76,-7,'am','town'],['Honolulu, Hawaii, United States',21.31,-157.86,-10,'am','coast'],['Toronto, Ontario, Canada',43.65,-79.38,-5,'am','city'],['Vancouver, BC, Canada',49.28,-123.12,-8,'am','mount'],['Mexico City, Mexico',19.43,-99.13,-6,'am','city'],['Tulum, Mexico',20.21,-87.47,-5,'am','coast'],['São Paulo, Brazil',-23.55,-46.63,-3,'am','city'],['Buenos Aires, Argentina',-34.6,-58.38,-3,'am','city'],['Cusco, Peru',-13.53,-71.97,-5,'am','mount'],
+['London, United Kingdom',51.51,-0.13,0,'eu','city'],['Paris, France',48.86,2.35,1,'eu','city'],['Lisbon, Portugal',38.72,-9.14,0,'eu','coast'],['Barcelona, Spain',41.39,2.17,1,'eu','coast'],['Berlin, Germany',52.52,13.4,1,'eu','city'],['Rome, Italy',41.9,12.5,1,'eu','city'],['Athens, Greece',37.98,23.73,2,'eu','coast'],['Interlaken, Switzerland',46.69,7.86,1,'eu','mount'],['Reykjavik, Iceland',64.15,-21.94,0,'eu','town'],['Marrakech, Morocco',31.63,-7.99,0,'eu','city'],['Cape Town, South Africa',-33.92,18.42,2,'eu','coast'],['Nairobi, Kenya',-1.29,36.82,3,'eu','city'],
+['Dubai, UAE',25.2,55.27,4,'as','city'],['Mumbai, India',19.08,72.88,5.5,'as','coast'],['Bangkok, Thailand',13.76,100.5,7,'as','city'],['Chiang Mai, Thailand',18.79,98.98,7,'as','mount'],['Bali, Indonesia',-8.65,115.22,8,'as','coast'],['Ho Chi Minh City, Vietnam',10.82,106.63,7,'as','city'],['Hanoi, Vietnam',21.03,105.85,7,'as','city'],['Manila, Philippines',14.6,120.98,8,'as','city'],['Seoul, South Korea',37.57,126.98,9,'as','city'],['Tokyo, Japan',35.68,139.69,9,'as','city'],['Kyoto, Japan',35.01,135.77,9,'as','town'],['Sydney, NSW, Australia',-33.87,151.21,10,'as','coast'],['Melbourne, Victoria, Australia',-37.81,144.96,10,'as','city'],['Queenstown, New Zealand',-45.03,168.66,12,'as','mount']
+];
+const city=l=>{const c=CITIES.find(x=>x[0]===l);return c?{n:c[0],s:c[0].split(',')[0],lat:c[1],lon:c[2],tz:c[3],reg:c[4],set:c[5]}:null};
+/* rough land polygons [lon,lat] (overlaps are fine) */
+const WORLD=[
+[[-165,68],[-156,71],[-140,70],[-125,70],[-110,73],[-95,72],[-82,70],[-78,63],[-90,64],[-94,58],[-82,55],[-78,52],[-66,58],[-60,55],[-56,50],[-66,45],[-70,42],[-76,38],[-76,35],[-81,31],[-80,26],[-82,28],[-84,30],[-90,29],[-97,27],[-97,22],[-92,19],[-87,21],[-88,16],[-84,11],[-80,8],[-78,8],[-83,8],[-86,12],[-92,14],[-96,16],[-105,20],[-110,23],[-117,32],[-121,35],[-124,42],[-124,48],[-130,54],[-137,58],[-146,60],[-152,58],[-158,56],[-162,58],[-160,62],[-166,62]],
+[[-120,72],[-80,72],[-65,80],[-90,82],[-120,78]],[[-80,64],[-62,66],[-70,72],[-80,73]],
+[[-55,60],[-44,60],[-40,65],[-22,70],[-20,76],[-18,81],[-35,83],[-60,82],[-72,78],[-68,76],[-58,75],[-52,70],[-54,66]],
+[[-80,8],[-75,11],[-72,12],[-62,11],[-52,5],[-50,0],[-44,-2],[-35,-5],[-35,-9],[-39,-14],[-40,-21],[-48,-26],[-53,-34],[-58,-38],[-63,-41],[-65,-46],[-68,-50],[-69,-55],[-72,-53],[-75,-47],[-73,-40],[-72,-30],[-71,-20],[-76,-14],[-81,-6],[-80,-1],[-78,2],[-77,7]],
+[[-10,36],[-9,43],[-2,44],[-5,48],[2,51],[8,54],[12,54],[20,55],[28,60],[30,65],[40,67],[45,68],[60,69],[70,73],[80,73],[95,76],[105,78],[115,74],[130,72],[140,72],[160,70],[170,70],[180,68],[180,65],[175,62],[163,60],[160,54],[156,51],[157,58],[150,59],[142,59],[136,54],[140,48],[135,43],[130,42],[128,39],[126,35],[122,37],[121,40],[118,38],[122,31],[120,26],[115,22],[108,21],[106,18],[109,12],[105,9],[103,10],[100,13],[99,8],[103,1],[101,3],[98,8],[98,16],[94,17],[92,22],[88,22],[86,20],[80,15],[78,8],[76,10],[73,17],[72,21],[67,24],[62,25],[57,26],[56,24],[59,22],[55,17],[52,16],[44,12],[42,15],[39,21],[35,28],[34,31],[36,36],[30,36],[27,37],[26,40],[23,39],[22,37],[20,40],[19,42],[14,45],[13,44],[16,41],[18,40],[16,38],[12,38],[12,42],[10,44],[7,44],[3,43],[3,42],[0,39],[-2,37],[-6,36]],
+[[5,58],[5,62],[10,64],[15,68],[20,70],[28,71],[31,70],[28,66],[22,65],[18,62],[18,59],[12,56],[8,58]],
+[[-6,50],[1,51],[2,53],[-1,55],[-2,58],[-5,59],[-6,56],[-5,54],[-3,53],[-5,52]],[[-10,52],[-6,52],[-6,55],[-8,55],[-10,54]],[[-24,64],[-14,64],[-14,66],[-22,66]],
+[[-17,21],[-16,28],[-10,30],[-9,33],[-6,36],[3,37],[10,37],[11,33],[20,31],[30,31],[33,31],[35,28],[39,21],[43,12],[51,12],[51,10],[48,5],[42,-1],[40,-5],[40,-11],[40,-16],[35,-20],[35,-24],[33,-28],[28,-33],[20,-35],[18,-32],[15,-27],[12,-17],[14,-11],[12,-5],[9,-1],[9,4],[5,6],[-2,5],[-8,4],[-13,8],[-17,14]],
+[[44,-25],[47,-25],[50,-15],[49,-12],[44,-16]],[[95,5],[98,4],[106,-6],[102,-5],[95,2]],[[109,1],[113,4],[117,7],[119,5],[117,1],[116,-4],[110,-3]],[[105,-6],[114,-7],[114,-8],[106,-7]],[[131,-1],[141,-3],[150,-10],[143,-9],[138,-8],[132,-4]],[[120,18],[122,18],[124,12],[126,7],[122,7],[121,13]],
+[[130,31],[132,34],[135,34],[140,35],[141,38],[142,42],[145,44],[141,45],[140,41],[137,37],[133,35],[130,33]],[[80,6],[82,7],[80,10]],[[-85,22],[-80,23],[-74,20],[-78,20]],
+[[114,-22],[114,-34],[118,-35],[124,-33],[131,-31],[138,-35],[141,-38],[147,-39],[150,-37],[153,-32],[153,-25],[149,-20],[146,-15],[143,-11],[141,-13],[140,-17],[136,-12],[131,-11],[126,-14],[122,-18]],
+[[172,-35],[175,-37],[178,-38],[175,-42],[172,-44],[167,-46],[170,-43],[174,-41]],[[-180,-72],[180,-72],[180,-90],[-180,-90]]
+];
+function inPoly(x,y,p){let c=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const[xi,yi]=p[i],[xj,yj]=p[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c}return c}
+const isLand=(lon,lat)=>WORLD.some(p=>inPoly(lon,lat,p));
+const LC={};
+function landCells(step,b=[-180,180,-60,80]){const k=step+':'+b.join(',');if(LC[k])return LC[k];const out=[];
+  for(let lat=Math.floor(b[3]/step)*step;lat>=b[2];lat-=step)for(let lon=Math.ceil(b[0]/step)*step;lon<=b[1];lon+=step)if(isLand(lon,lat))out.push([lon,lat]);return LC[k]=out}
+/* flat map: 1 deg = 2 units; world = 720 x 280 (lat 80..-60) */
+const MX=lon=>(lon+180)*2,MY=lat=>(80-lat)*2;
+function mapSVG({vb=[0,0,720,280],step=4,lines='',pins='',extra='',cls='',land=''}={}){
+  const b=[vb[0]/2-180-step,(vb[0]+vb[2])/2-180+step,80-(vb[1]+vb[3])/2-step,80-vb[1]/2+step];
+  const r=step*.62;let d='';for(const[lon,lat]of landCells(step,b)){const x=MX(lon),y=MY(lat);d+=`M${(x-r).toFixed(1)} ${y}a${r} ${r} 0 1 0 ${2*r} 0a${r} ${r} 0 1 0 ${-2*r} 0`}
+  return `<svg class="map ${cls}" viewBox="${vb.join(' ')}" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path class="land" d="${d}" ${land}/>${lines}${pins}${extra}</svg>`;
+}
+const pinSVG=(lon,lat,col='#fff',s=1,ping=true)=>`<g>${ping?`<circle class="ping" cx="${MX(lon)}" cy="${MY(lat)}" r="${6*s}" stroke="${col}"/>`:''}<circle cx="${MX(lon)}" cy="${MY(lat)}" r="${3.4*s}" fill="${col}" style="filter:drop-shadow(0 0 ${4*s}px ${col})"/></g>`;
+
+/* ===== engine ===== */
+let S,phone,stage,timer=null,timers=[];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name||'Maya');
+const cur=()=>stage.querySelector('.view.cur');
+const CSX={};
+function later(fn,ms){const id=setTimeout(fn,ms);timers.push(id);return id}
+function clearT(){clearInterval(timer);timer=null;timers.forEach(clearTimeout);timers=[]}
+function go(n,push=true){clearT();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.sheet=null;render(dir)}
+function next(){go(NEXT(S.i))}
+function back(){clearT();let p=S.hist.pop();if(p===undefined)p=(typeof PREV==='function'?PREV(S.i):S.i-1);if(p>=1){S.i=p;S.err='';S.sheet=null;render('b')}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+function nav(){const n=S.i;if(!APP.nav(n))return '';const idx=APP.inv.indexOf(n);const p=idx<0?0:Math.round((idx+1)/APP.inv.length*100);
+  return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>${idx>=0?`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></div>`:'<div style="flex:1"></div>'}<div class="navspacer"></div></div>`}
+const cta=(label,ok=true,act='next')=>`<button class="btn main" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const chk=()=>`<span class="chk">${ic('check',14,'currentColor',3)}</span>`;
+const pick=(k,val,label,emo)=>{const on=S[k]===val;return `<button class="opt ${on?'on':''}" data-a="pick" data-k="${k}" data-v="${val}" aria-pressed="${on}"><span class="well">${emo}</span><span class="lbl">${label}</span>${on?chk():''}</button>`};
+const multi=(k,val,label,emo,max)=>{const on=S[k].includes(val);return `<button class="opt ${on?'on':''}" data-a="multi" data-k="${k}" data-v="${val}" ${max?`data-max="${max}"`:''} aria-pressed="${on}"><span class="well">${emo}</span><span class="lbl">${label}</span><span class="chk">${on?ic('check',14,'currentColor',3):''}</span></button>`};
+const otherIn=k=>`<div class="box otherin fadein"><input id="oth" data-f="${k}Other" maxlength="40" placeholder="Type it here" value="${esc(S[k+'Other']||'')}"></div>`;
+const pickFoot=(k,extra='')=>`<div class="foot">${S[k]==='other'?cta('Continue',!!(S[k+'Other']||'').trim()):'<div class="note">Tap one to continue</div>'}${extra}</div>`;
+const errHTML=()=>S.err?`<div class="err fadein">${S.err}</div>`:'';
+function dateSel(pre,o){const ys=[];for(let y=2012;y>=1940;y--)ys.push(y);
+  return `<div class="row3"><div class="box"><select data-f="${pre}.m" aria-label="Month"><option value="">Month</option>${MONTHS.map((m,i)=>`<option value="${i+1}" ${o.m==i+1?'selected':''}>${m}</option>`).join('')}</select></div><div class="box"><select data-f="${pre}.d" aria-label="Day"><option value="">Day</option>${Array.from({length:31},(_,i)=>`<option ${o.d==i+1?'selected':''}>${i+1}</option>`).join('')}</select></div><div class="box"><select data-f="${pre}.y" aria-label="Year"><option value="">Year</option>${ys.map(y=>`<option ${o.y==y?'selected':''}>${y}</option>`).join('')}</select></div></div>`}
+function dobErr(o,gate=true){if(!(o.m&&o.d&&o.y))return 'Pick a full date to continue';const b=new Date(+o.y,o.m-1,+o.d);if(b.getDate()!=+o.d)return 'Pick a full date to continue';if(!gate)return '';const n=new Date();const a=n.getFullYear()-b.getFullYear()-((n.getMonth()<b.getMonth()||(n.getMonth()===b.getMonth()&&n.getDate()<b.getDate()))?1:0);return a<18?'You must be 18 or older to continue':''}
+/* ----- 18+ gate: a blocking notice with a way back to fix the date; the block persists for the session ----- */
+const U18='You must be 18 or older to continue',AKEY='ikf_age_block';
+function ageBlock(){S.blocked=true;try{sessionStorage.setItem(AKEY,'1')}catch(e){}emit('age_block',{});clearT();render('f')}
+function ageFix(){S.blocked=false;try{sessionStorage.removeItem(AKEY)}catch(e){}S.dob={m:'',d:'',y:''};S.err='';emit('age_change',{});go(APP.dob)}
+const ageBlockHTML=()=>`<div class="scr center tc" style="align-items:center"><div class="bigwell">${ic('lock',34)}</div><h1 class="display sm">Starlyn is for adults 18+.</h1><p class="lead">You must be 18 or older to use Starlyn. Entered the wrong date? Change it below.</p></div><div class="foot">${cta('Change my birth date',true,'agefix')}</div>`;
+function cityField(k,q,{label,err,hint='',ph='City, country'}){CSX[q]={k,err,hint};const val=S[k]||S[q]||'';
+  return `<div class="field"><label for="f_${q}">${label}</label><div class="box">${ic('pin',18)}<input id="f_${q}" data-f="${q}" data-cq="1" autocomplete="off" placeholder="${ph}" value="${esc(val)}">${S[k]?`<button class="iconbtn" data-a="clearcity" data-k="${k}" data-q="${q}" aria-label="Clear">${ic('x',16)}</button>`:''}</div><div class="res">${cityRes(q)}</div></div>`}
+function cityRes(q){const c=CSX[q];const s=(S[q]||'').trim().toLowerCase();if(S[c.k])return c.hint?`<div class="hint">${c.hint}</div>`:'';
+  const res=s?CITIES.filter(x=>x[0].toLowerCase().includes(s)).slice(0,5):[];
+  return res.length?`<div class="results">${res.map(x=>`<button data-a="city" data-k="${c.k}" data-q="${q}" data-v="${esc(x[0])}">${ic('pin',16,'var(--t3)')}<span>${esc(x[0].split(',')[0])}<br><small>${esc(x[0].split(',').slice(1).join(',').trim())}</small></span></button>`).join('')}</div>`
+    :s?`<div class="err">${c.err}</div>`:`<div class="hint">Try “Austin”, “London” or “Tokyo”.${c.hint?' '+c.hint:''}</div>`}
+const EMRX=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function emailGate({h,b,card='',taken,optin}){const er=S.err==='taken'?esc(taken).replace('log in instead?','<button class="link" style="padding:0;font-size:13px;color:var(--t1)" data-a="login">log in instead?</button>'):S.err;
+  return `<div class="scr">${card}<h1 class="display sm">${h}</h1><p class="lead" style="margin-top:-8px">${b}</p>
+  <div class="field"><label for="em">Email</label><div class="box white ${S.err?'bad':''}">${ic('mail',18,'#BE8D1B')}<input id="em" type="email" data-f="email" autocomplete="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err fadein">${er}</div>`:''}</div>
+  <button class="checkbox ${S.optin?'on':''}" data-a="optin" aria-pressed="${S.optin}"><span class="cb">${S.optin?ic('check',13,'currentColor',3):''}</span><span>${optin}</span></button>
+  <div class="note" style="color:var(--t2)">${ic('lock',12)} Nothing is charged on this step.</div></div>
+  <div class="foot">${cta('Continue',true,'email')}<div class="note">${agree()}.</div></div>`}
+/* paywall: plans [{k,name,badge,price,line,small}] ; lines {k:html} */
+function paywall({top,h,b,benefits,plans,lines,legal,ctaLabel,facts,toc,faqX}){plans=plans.filter(x=>!(CONFIG.plans[x.k]||{}).hidden);const p=plans.find(x=>x.k===S.plan)||plans[0];S.plan=p.k;
+  const ok=v=>v!=null&&v!==''&&!/^\{\{/.test(String(v));
+  const R=(typeof CONFIG!=='undefined'&&CONFIG.rating)||{},RV=((typeof CONFIG!=='undefined'&&CONFIG.reviews)||[]).filter(r=>r&&ok(r.text)&&ok(r.name));
+  const proof=ok(R.score)&&ok(R.count)&&RV.length;
+  const block=n=>`<div class="pick" id="wplans${n}"><h2 class="wh2">Your plan</h2><div class="stack">${plans.map(x=>`<button class="plan ${S.plan===x.k?'on':''}" data-a="plan" data-v="${x.k}" aria-pressed="${S.plan===x.k}"><span class="radio">${S.plan===x.k?ic('check',13,'currentColor',3):''}</span><span style="flex:1"><span class="pn">${x.name}</span><span class="pp">${x.pl}</span></span></button>`).join('')}</div>
+    <div class="today"><span>Due today</span><b>${tok('price_1w')}</b></div><div style="height:12px"></div>${cta(ctaLabel,true,'pay')}
+    <div class="pay" aria-label="Accepted payment methods"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+    <div class="secure"><span>🔒 Secure checkout</span><span>✓ Cancel anytime</span></div>
+    <p class="fine">${lines[p.k]}<br>We email you 3 days before any renewal.</p></div>`;
+  const FAQ=[['When do I get my reading?','Right after checkout. Download the Starlyn app and log in with '+esc(S.email||'your email')+'. Your full reading is waiting there.'],
+    ['How do I cancel?','In your account settings, any time before the next renewal. No calls, no forms.'],
+    ['Will I be charged again?','Yes, unless you cancel: after your first week the plan renews every month at the monthly price shown above.'],
+    ['What happens to my data?','Your answers are used only to build your reading. We never sell them.'],
+    ['Is this a prediction?','No. Readings are for entertainment and reflection. They do not predict or change events.']].concat(faqX||[]);
+  setTimeout(bindWP,0);
+  return `<div class="wp" id="wp"><div class="wbar"><div class="brand">✦ Starlyn</div><button class="mini" id="wmini">${ctaLabel}</button></div>
+  <div class="wsec tight whero"><span class="eyebrow">Your reading is ready</span><h1 class="wh1">${h}</h1><p class="wlead">${b}</p>
+   <div class="wart">${top}</div>
+   ${facts&&facts.length?`<div class="facts">${facts.filter(f=>ok(f[1])).map(([k,v])=>`<div class="fact">${k}<b>${v}</b></div>`).join('')}</div>`:''}</div>
+  <div class="wsec">${block(1)}</div>
+  <div class="wsec"><span class="eyebrow">Inside your reading</span><h2 class="wh2">Everything in your reading</h2>
+   ${benefits?`<div class="wchecks">${benefits.map(x=>`<div>${ic('check',16,'currentColor',2.2)}<span>${x}</span></div>`).join('')}</div>`:''}
+   <div class="toc">${(toc||[]).map((x,i)=>`<div class="${i===0?'open':''}"><span class="n">${i+1}</span><span>${x}</span><span class="l">${i===0?'✓ Ready':'🔒'}</span></div>`).join('')}</div></div>
+  <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From checkout to your reading</h2><div class="how" style="margin-top:14px">${[['Checkout','Secure payment, takes a few seconds.'],['Get the app','Download Starlyn: Daily Astrology from the App Store or Google Play.'],['Open your reading','Log in with '+esc(S.email||'your email')+'. Your reading is waiting.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></div>
+  ${proof?`<div class="wsec"><span class="eyebrow">What people say</span><div class="rate"><b style="font:600 34px var(--serif);color:var(--acc)">${esc(R.score)}</b><div>★★★★★<div class="hint">${esc(R.count)} ratings</div></div></div>${RV.map(r=>`<div class="rev"><b style="color:var(--t1)">${esc(r.name)}</b><br>${esc(r.text)}</div>`).join('')}</div>`:''}
+  <div class="wsec"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2><div class="faq" style="margin-top:8px">${FAQ.map(([x,y])=>`<details><summary>${x}</summary><p>${y}</p></details>`).join('')}</div></div>
+  <div class="wsec">${block(2)}</div>
+  <div class="wfoot"><div class="note">${legal}</div><div class="legal"><a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a><a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy</a><a href="${esc(CONFIG.subscriptionTermsUrl)}" target="_blank" rel="noopener">Subscription terms</a>${CONFIG.supportEmail?`<a href="mailto:${esc(CONFIG.supportEmail)}">Support</a>`:''}</div></div></div>
+  <div class="wsticky" id="wsticky"><div class="sum"><span>${p.name}</span><b>${tok('price_1w')} today</b></div>${cta(ctaLabel,true,'pay')}</div>`}
+function bindWP(){const v=(typeof cur==='function'&&cur())||document;const wp=v.querySelector('.wp'),st=v.querySelector('.wsticky'),mini=v.querySelector('#wmini');if(!wp||wp.dataset.b)return;wp.dataset.b=1;
+  const blocks=[...wp.querySelectorAll('.pick .btn.main')];if(mini)mini.onclick=()=>{const t=wp.querySelector('#wplans1');if(t)wp.scrollTo({top:t.offsetTop-60,behavior:'smooth'})};
+  const vis=new Set(blocks);const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>260);if(st)st.classList.toggle('show',!vis.size)};
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{es.forEach(e=>e.intersectionRatio>=.98?vis.add(e.target):vis.delete(e.target));upd()},{root:wp,threshold:[0,.5,1]});blocks.forEach(b=>io.observe(b))}
+  wp.addEventListener('scroll',upd,{passive:true});upd()}
+function qrSVG(seed,s=64){const n=21,c=s/n;let r='';const fin=(x,y)=>`<rect x="${x*c}" y="${y*c}" width="${7*c}" height="${7*c}" fill="#000"/><rect x="${(x+1)*c}" y="${(y+1)*c}" width="${5*c}" height="${5*c}" fill="#fff"/><rect x="${(x+2)*c}" y="${(y+2)*c}" width="${3*c}" height="${3*c}" fill="#000"/>`;
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){if((x<8&&y<8)||(x>12&&y<8)||(x<8&&y>12))continue;if(hash(seed+x*31+y)%2)r+=`<rect x="${x*c}" y="${y*c}" width="${c}" height="${c}" fill="#000"/>`}
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true">${r}${fin(0,0)}${fin(14,0)}${fin(0,14)}</svg>`}
+function emit(){return true} /* demo: no tracking; the production funnel.html emits offer_view / offer_accept / offer_decline / offer_expired */
+function appScreen({h,b,mock,rows,note='',ctaLabel='Open the app'}){
+  return `<div class="scr"><h1 class="display sm tc">${h}</h1><p class="lead tc" style="margin-top:-8px">${b}</p>
+  <div class="mock">${mock}</div>
+  <div class="card" style="padding:4px 14px">${rows.map(([e,l])=>`<div class="promise"><span class="well">${e}</span><span>${l}</span></div>`).join('')}</div>
+  ${note?`<p class="hint tc" style="margin:0">${note}</p>`:''}
+  <div class="stores"><button class="store" data-a="store">${STORE_SVG.apple}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store">${STORE_SVG.play}<span>GET IT ON<b>Google Play</b></span></button></div>
+  <div class="qr">${qrSVG(S.email||'nebula',56)}<span>On desktop, this page shows a QR code<br>to open Starlyn on your phone.</span></div></div>
+  <div class="foot">${cta(ctaLabel,true,'store')}</div>`}
+/* ----- after purchase: get the app. The full reading lives in the app; there is no free path and no offer. ----- */
+function getApp(extra=''){return `<div class="scr center tc" style="align-items:center;gap:16px"><div class="bigwell">${ic('check',34,'currentColor',2.4)}</div>
+  <h1 class="display sm">You're in${S.name?', '+esc(S.name):''}</h1><p class="lead" style="margin-top:-8px">Your full reading is waiting in the Starlyn app.</p>${extra}
+  <div class="card" style="padding:4px 14px;width:100%;text-align:left">${['Download Starlyn: Daily Astrology',`Log in with ${esc(S.email||'your email')}`,'Open your reading'].map((l,i)=>`<div class="promise"><span class="well">${i+1}</span><span>${l}</span></div>`).join('')}</div>
+  <div class="stores"><button class="store" data-a="store" data-v="ios">${STORE_SVG.apple}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store" data-v="android">${STORE_SVG.play}<span>GET IT ON<b>Google Play</b></span></button></div>
+  <p class="hint" style="margin:0">For entertainment purposes only.</p></div>
+  <div class="foot">${cta('Open the app',true,'store')}</div>`}
+function stepsHTML(rows){return `<div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>`}
+function runLoading(total,onTick,done){let row=0,pct=0;const inc=100/(total/4/50);
+  timer=setInterval(()=>{const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    pct=Math.min(100,pct+inc);el.querySelector('.bar span').style.width=pct+'%';el.querySelector('.pct span').textContent=Math.round(pct)+'%';
+    onTick&&onTick((row+pct/100)/4);
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=ic('check',14,'currentColor',2.5)+'<span>100%</span>';row++;pct=0;if(row>3){clearInterval(timer);timer=null;SKY.boost=1.6;later(done,1000)}}},50)}
+/* hero loop */
+const HEROES=new Set();
+function addHero(o){o.px=o.py=o.tx=o.ty=0;o.t0=performance.now();HEROES.add(o);
+  o.el.addEventListener('pointermove',e=>{const r=o.el.getBoundingClientRect();o.tx=(e.clientX-r.left)/r.width-.5;o.ty=(e.clientY-r.top)/r.height-.5});
+  o.el.addEventListener('pointerleave',()=>{o.tx=o.ty=0});
+  if(RM)o.draw(performance.now()+(o.rmT||4000),0);else if(!HEROES.loop){HEROES.loop=true;HEROES.last=0;requestAnimationFrame(heroFrame)}}
+function heroFrame(){const now=performance.now();const dt=Math.min(50,now-(HEROES.last||now));HEROES.last=now;for(const o of HEROES){if(!o.el.isConnected){HEROES.delete(o);continue}o.px+=(o.tx-o.px)*.08;o.py+=(o.ty-o.py)*.08;o.draw(now,dt)}
+  if(HEROES.size)requestAnimationFrame(heroFrame);else HEROES.loop=false}
+/* starfield */
+const SKY={base:0.00004,boost:0,mx:0,my:0,tx:0,ty:0};
+function starfield(){const cv=document.getElementById('stars'),cx=cv.getContext('2d');let w=0,h=0;const stars=[],shoot=[];let nextShoot=performance.now()+2500;
+  const tint=()=>{const r=Math.random();return r<.72?'245,242,251':r<.86?'210,170,255':'255,170,210'};
+  const spawn=(s,far)=>{s.x=(Math.random()*2-1)*1.1;s.y=(Math.random()*2-1)*1.1;s.z=far?1:0.08+Math.random()*.92;s.c=tint();s.p=Math.random()*6.28;s.f=.6+Math.random()*1.8;return s};
+  for(let i=0;i<240;i++)stars.push(spawn({},false));
+  const d=Math.min(2,devicePixelRatio||1);w=390;h=812;cv.width=w*d;cv.height=h*d;cx.setTransform(d,0,0,d,0,0);
+  const proj=(s,z)=>[w/2+(s.x/z)*w*.42+SKY.mx*(1-z)*26,h*.42+(s.y/z)*h*.42+SKY.my*(1-z)*26];let last=performance.now();
+  function frame(now){const dt=Math.min(50,now-last);last=now;SKY.mx+=(SKY.tx-SKY.mx)*.05;SKY.my+=(SKY.ty-SKY.my)*.05;SKY.boost*=Math.pow(.94,dt/16);
+    const sp=(SKY.base+SKY.boost*0.0011)*dt;cx.clearRect(0,0,w,h);const tt=now/1000;
+    const neb=(x,y,r,col)=>{const g=cx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(0,0,w,h)};
+    neb(w*(.25+.06*Math.sin(tt*.07)),h*(.22+.04*Math.cos(tt*.05)),w*.75,'rgba(219,163,31,.17)');neb(w*(.8+.05*Math.cos(tt*.06)),h*(.6+.05*Math.sin(tt*.04)),w*.7,'rgba(219,163,31,.10)');
+    for(const s of stars){const pz=s.z;s.z-=sp;if(s.z<.04){spawn(s,true);continue}const[x,y]=proj(s,s.z);if(x<-20||x>w+20||y<-20||y>h+20){spawn(s,true);continue}
+      const depth=1-s.z,tw=.55+.45*Math.sin(tt*s.f+s.p),a=Math.min(1,depth*1.25)*tw,r=.35+depth*1.9;
+      if(sp>0.004&&!RM){const[px,py]=proj(s,Math.min(1,pz+sp*5));cx.strokeStyle=`rgba(${s.c},${a*.8})`;cx.lineWidth=r;cx.beginPath();cx.moveTo(px,py);cx.lineTo(x,y);cx.stroke()}
+      cx.fillStyle=`rgba(${s.c},${a})`;cx.beginPath();cx.arc(x,y,r,0,6.283);cx.fill()}
+    if(now>nextShoot){const an=Math.PI*(.72+Math.random()*.12);shoot.push({x:w*(.3+Math.random()*.7),y:h*Math.random()*.35,vx:Math.cos(an)*.55,vy:Math.sin(an)*.55,l:0});nextShoot=now+4000+Math.random()*5000}
+    for(let i=shoot.length-1;i>=0;i--){const m=shoot[i];m.l+=dt;m.x+=m.vx*dt;m.y+=m.vy*dt;const k=1-m.l/1100;if(k<=0){shoot.splice(i,1);continue}
+      const g=cx.createLinearGradient(m.x,m.y,m.x-m.vx*160,m.y-m.vy*160);g.addColorStop(0,`rgba(255,240,250,${k})`);g.addColorStop(1,'rgba(253,250,242,0)');cx.strokeStyle=g;cx.lineWidth=1.6;cx.beginPath();cx.moveTo(m.x,m.y);cx.lineTo(m.x-m.vx*160,m.y-m.vy*160);cx.stroke()}
+    if(!RM)requestAnimationFrame(frame)}
+  requestAnimationFrame(frame);
+  phone.addEventListener('pointermove',e=>{const r=phone.getBoundingClientRect();SKY.tx=((e.clientX-r.left)/r.width-.5)*2;SKY.ty=((e.clientY-r.top)/r.height-.5)*2});
+  phone.addEventListener('pointerleave',()=>{SKY.tx=0;SKY.ty=0})}
+function render(dir){const n=S.i;const html=S.blocked?ageBlockHTML():nav()+V[n]();const old=cur();
+  if(dir&&old&&!RM){old.classList.remove('cur');old.setAttribute('inert','');old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);setTimeout(()=>old.remove(),260);setTimeout(()=>nv.classList.remove('in'),380)}
+  else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else old.innerHTML=html;
+  const v=cur();v.querySelectorAll('[data-hero]').forEach(el=>{if(!el._h&&HERO[el.dataset.hero]){el._h=1;HERO[el.dataset.hero](el)}});
+  SKY.base=n===APP.load?0.00032:0.00004;
+  AFTER(n,v,dir);
+  const f=v.querySelector('input[data-focus]');if(f){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?320:0)}
+  renderPanel()}
+function renderPanel(){document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag])=>`<button class="${S.i===n?'on':''} ${APP.skipped(n)?'skip':''}" data-j="${n}"><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  document.getElementById('data').innerHTML=DATA().map(([k,v])=>`<dt>${k}</dt><dd>${esc(v||'—')}</dd>`).join('')}
+function boot(){
+  document.body.insertAdjacentHTML('afterbegin',`<div class="wrap"><div class="phonebox" id="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel"><div><h1>${APP.title}</h1><p class="intro">${APP.intro}</p></div>
+  <div class="ctrls"><div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div><button class="restart" id="restart">Restart</button></div>
+  <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div><div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div><p class="foot-note">${APP.foot}</p></aside></div>`);
+  phone=document.getElementById('phone');
+  phone.innerHTML=`<canvas id="stars" aria-hidden="true"></canvas><div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+  stage=document.getElementById('stage');S=INIT();try{if(sessionStorage.getItem(AKEY))S.blocked=true}catch(e){}starfield();
+  phone.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled)return;const a=b.dataset.a,v=b.dataset.v;
+    if(ACT(a,v,b))return;
+    switch(a){
+      case 'next':next();break;
+      case 'back':back();break;
+      case 'go':go(+v);break;
+      case 'soon':toast('Not part of this funnel demo');break;
+      case 'pick':{const k=b.dataset.k;S[k]=v;render();if(v!=='other'){const at=S.i;later(()=>{if(S.i===at)next()},300)}else document.getElementById('oth')?.focus();break}
+      case 'multi':{const k=b.dataset.k,max=+b.dataset.max||99,arr=S[k],i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else if(arr.length<max)arr.push(v);else{toast(`Pick up to ${max}`);break}render();if(v==='other'&&arr.includes('other'))document.getElementById('oth')?.focus();break}
+      case 'name':if(!S.name.trim()){S.err='Add your name to continue';render()}else{S.name=S.name.trim();next()}break;
+      case 'dob':{const er=dobErr(S.dob);if(er===U18)ageBlock();else if(er){S.err=er;render()}else next();break}
+      case 'unknown':S.timeUnknown=!S.timeUnknown;if(S.timeUnknown)S.time='';render();break;
+      case 'city':S[b.dataset.k]=v;S[b.dataset.q]='';render();break;
+      case 'clearcity':S[b.dataset.k]='';S[b.dataset.q]='';render();break;
+      case 'optin':S.optin=!S.optin;render();break;
+      case 'email':{const em=S.email.trim();if(!EMRX.test(em)){S.err='Enter a valid email address';render()}else if(/^taken@/i.test(em)){S.err='taken';render()}else{S.email=em;next()}break}
+      case 'login':toast('Demo only — login would open');break;
+      case 'plan':S.plan=v;render();break;
+      case 'pay':checkout(S.plan,{source:'paywall'});break;
+      case 'agefix':ageFix();break;
+      case 'legal':toast('Demo only — legal page would open');break;
+      case 'store':toast('Demo only — app store link would open');break;
+    }});
+  phone.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;
+    if(f.includes('.')){const[o,k]=f.split('.');S[o][k]=e.target.value}else S[f]=e.target.value;
+    if(e.target.dataset.cq){const c=CSX[f];S[c.k]='';e.target.closest('.field').querySelector('.res').innerHTML=cityRes(f)}
+    if(S.err&&(f==='name'||f==='email'||f.startsWith('dob'))){S.err='';const bx=e.target.closest('.box');bx&&bx.classList.remove('bad');const er=e.target.closest('.field')?.querySelector('.err');er&&er.remove()}
+    INPUT(f,e);
+    const btn=cur().querySelector('.foot .btn.main');if(btn&&OK[S.i])btn.disabled=!OK[S.i]();
+    if(f!=='q')renderPanel()});
+  phone.addEventListener('change',e=>{if(e.target.tagName==='SELECT')e.target.dispatchEvent(new Event('input',{bubbles:true}))});
+  phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=cur().querySelector('.foot .btn.main');b&&!b.disabled&&b.click()}});
+  document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n,true);go(n)});
+  const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');if(S.i!==APP.load)render();else{const h=document.getElementById('lh');if(h)h.innerHTML=APP.loadH()}};
+  document.getElementById('vA').onclick=()=>setV('A');document.getElementById('vB').onclick=()=>setV('B');
+  document.getElementById('restart').onclick=()=>{clearT();try{sessionStorage.removeItem(AKEY)}catch(e){}const v=S.v;S=INIT();S.v=v;render('b')};
+  const box=document.getElementById('phonebox');const fit=()=>box.style.setProperty('--k',Math.min(1,(document.documentElement.clientWidth-32)/412).toFixed(4));fit();addEventListener('resize',fit);
+  const hh=decodeURIComponent(location.hash);const m=hh.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1],true);S.i=+m[1]}
+  const vm=hh.match(/v=([AB])/);if(vm){S.v=vm[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}
+  render()}
+
+/* ===== Starlyn · Moon Reading ===== */
+const SYN=29.530588,NM0=Date.UTC(2000,0,6,18,14),RAD=Math.PI/180,nrm=x=>((x%360)+360)%360;
+const ageAt=ms=>(((ms-NM0)/864e5)%SYN+SYN)%SYN;
+const illumAt=a=>(1-Math.cos(2*Math.PI*a/SYN))/2;
+const PHN=['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+const PHT=['you start from instinct, not plans.','you start quietly, then build fast.','you act when things get hard.',"you refine until it's right.",'you feel things in full, and show it.','you share what you learn.','you know what to let go.','you rest, then see what others miss.'];
+const phIdx=a=>Math.floor(a/SYN*8+.5)%8;
+function moonLon(ms){const n=(ms-946728000000)/864e5;const L=218.316+13.176396*n,M=134.963+13.064993*n,D=297.850+12.190749*n,Ms=357.529+0.98560028*n;
+  return nrm(L+6.289*Math.sin(M*RAD)+1.274*Math.sin((2*D-M)*RAD)+0.658*Math.sin(2*D*RAD)+0.214*Math.sin(2*M*RAD)-0.186*Math.sin(Ms*RAD))}
+const signAt=ms=>ZOD[Math.floor(moonLon(ms)/30)];
+const MOONT={Aries:['fast and hot, then it passes','movement, a quick win','waiting, being held back'],Taurus:['slowly, and it stays','good food, soft fabric, routine','sudden change'],Gemini:['in words — you talk it out','a good conversation','silence and boredom'],Cancer:['everything first, then protect it','home, familiar people','feeling unwanted'],Leo:['big and warm','being seen and appreciated','being ignored'],Virgo:['quietly, by fixing things','order, a clear list','mess and chaos'],Libra:['through the people around you','harmony, beauty','conflict left open'],Scorpio:['deeply and privately','trust, honesty','betrayal, small talk'],Sagittarius:['freely, with humor','space, a trip to plan','feeling fenced in'],Capricorn:['in private, with control','progress you can measure','feeling useless'],Aquarius:['from a little distance','friends, ideas, space','clingy moods'],Pisces:['like a sponge','music, water, alone time','harsh words, crowds']};
+const FEEL={restless:['Restless','🌕'],drained:['Drained','😴'],energized:['Energized','✨'],never:['Never noticed','🤷']};
+const INTENT={love:['Love','💞'],money:['Money','💰'],calm:['Calm','🕊️'],letgo:['Letting go','🍂'],worth:['Self-worth','🌟'],other:['Other','✏️']};
+const OFF={over:['Overthinking','🌀'],please:['People-pleasing','🙇'],mood:['Mood swings','🎢'],sleep:['Restless sleep','🌙'],other:['Other','✏️']};
+const MINS={'2':['2 minutes','⏱️',2],'5':['5 minutes','🕯️',5],'15':['15 minutes','🛁',15],big:['Big nights only','🌕',15]};
+const STYLE={journal:['Journaling','✍️'],breath:['Breathwork','🌬️'],affirm:['Affirmations','💬'],candle:['Candle','🕯️'],other:['Other','✏️']};
+const PERS={partner:['Partner','💞'],crush:['Crush','✨'],ex:['An ex','💔'],family:['Family member','👪'],me:['Just me','🙂']};
+const INIT=()=>({v:'A',i:1,hist:[],feel:'',intent:'',intentOther:'',name:'',dob:{m:'',d:'',y:''},time:'',timeUnknown:false,place:'',placeQ:'',off:'',offOther:'',mins:'',styles:[],stylesOther:'',person:'',pname:'',pdob:{m:'',d:'',y:''},rem:{nw:true,fu:true,daily:false},remTime:'8:00 PM',remSaved:null,email:'',optin:false,auth:'',plan:'weekly',paid:'',done:false,offerSeen:false,sheet:null,err:''});
+const bc=()=>city(S.place)||city(CITIES[0][0]);
+const GUESS=(()=>{const o=-new Date().getTimezoneOffset()/60;return city((CITIES.find(c=>c[3]===o)||CITIES[1])[0])})();   /* #8 map pin before a place is picked (time zone level only) */
+const bd=()=>S.dob.m?S.dob:{m:'8',d:'12',y:'1994'};
+const utc=(o,h,m,tz)=>Date.UTC(+o.y,o.m-1,+o.d,h,m)-tz*36e5;
+const birthMs=()=>{const o=bd(),c=bc();if(S.time&&!S.timeUnknown){const[h,m]=S.time.split(':').map(Number);return utc(o,h,m,c.tz)}return utc(o,12,0,c.tz)};
+function moonSigns(){const o=bd(),c=bc();if(S.time&&!S.timeUnknown)return[signAt(birthMs())];const a=signAt(utc(o,0,0,c.tz)),b=signAt(utc(o,23,59,c.tz));return a===b?[a]:[a,b]}
+const msign=()=>moonSigns().join(' or ');
+const bAge=()=>{const o=bd();return ageAt(Date.UTC(+o.y,o.m-1,+o.d,12))},bPhase=()=>PHN[phIdx(bAge())];
+const NOW=Date.now(),tAge=ageAt(NOW),tPhase=PHN[phIdx(tAge)],tSign=signAt(NOW),tIll=Math.round(illumAt(tAge)*100);
+const fullMs=NOW+(((SYN/2-tAge)%SYN+SYN)%SYN)*864e5,newMs=NOW+((SYN-tAge)%SYN)*864e5;
+const fdate=ms=>new Date(ms).toLocaleDateString('en-US',{month:'long',day:'numeric'});
+const sdate=ms=>new Date(ms).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const localDate=new Date(NOW).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+const intentL=()=>S.intent==='other'?esc(S.intentOther||'your intention'):(INTENT[S.intent]||INTENT.calm)[0].toLowerCase();
+const minsN=()=>(MINS[S.mins]||MINS['5'])[2];
+const pn=()=>esc(S.pname||'Jordan');
+const hasP=()=>S.person&&S.person!=='me'&&S.pname;
+const pSign=()=>{const o=S.pdob.m?S.pdob:{m:'6',d:'3',y:'1993'};return signAt(Date.UTC(+o.y,o.m-1,+o.d,12))};
+/* demo date where the Moon changes sign (for the footnote) */
+const SWD=(()=>{for(let i=0;i<5;i++){const d=new Date(Date.UTC(1994,7,12+i));const o={y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate()};if(signAt(utc(o,0,0,-6))!==signAt(utc(o,23,59,-6)))return `${MONTHS[o.m-1]} ${o.d}, ${o.y}`}return 'a sign-change day'})();
+/* prices stay tokens in the demo; the plan mirrors funnel.html CONFIG.plans */
+/* one plan only (Starlyn app policy 2026-10-05): 1-week intro, then monthly. No sale, no offer. */
+const CONFIG={funnel:'moon-reading',brand:'Starlyn',plans:{weekly:{name:'1 week, then monthly',intro:'$13.67',price:'$49.99',renews:'month'},
+  addon:{name:'Moon Calendar 2027',label:'Moon Calendar 2027',price:'$19.99',oneTime:true,hidden:true}},   /* hidden one-time add-on plan (#22), own checkout */
+  defaultPlan:'weekly',declineFlow:{addon:'get_app'},
+  termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',subscriptionTermsUrl:'https://squad-xteam.com/termofuse.html',supportEmail:'support@starlyn.co'};
+const agree=()=>`By continuing, you agree to our <a href="${esc(CONFIG.termsUrl)}" target="_blank" rel="noopener">Terms</a> &amp; <a href="${esc(CONFIG.privacyUrl)}" target="_blank" rel="noopener">Privacy Policy</a>`;
+const APP={title:'Starlyn · Moon Reading',
+  intro:'A clickable prototype of the 23-screen web2app funnel in <code>funnel-content.md</code>. Starlyn house look, with a lit 3D moon as the one hero object. Tonight\'s phase comes from this device\'s date; your birth phase and Moon sign from the date you enter. Tap through it in the phone, or jump to any screen below.',
+  foot:`Phases use the synodic month (29.530588 days from the new moon of 2000-01-06 18:14 UTC). Moon signs use a short lunar-longitude series, accurate to about a degree. Skip birth time with a date like ${SWD} (born in Austin) to see the both-signs path. Rituals and the Moon match are placeholder copy. Stores and checkout (plan and add-on) are simulated; prices, the refund window, {{reader_count}} and reviews stay as tokens. Type an email starting with taken@ to see the "already has an account" error.`,
+  load:17,inv:[3,4,5,6,7,8,9,10,11,12,13,14,15,16],nav:n=>(n>=2&&n<=16)||n===20,dob:5,onPaid:()=>go(22),
+  skipped:n=>n===15&&S.person==='me',loadH:()=>t(`Reading your Moon, ${nm()}…`,`Building ${nm()}'s moon month…`)};
+const FLOW=[
+ ['A · Hook',[[1,'Does the full moon get you?'],[2,"What you'll get"]]],
+ ['B · Investment',[[3,'Intention'],[4,'Name'],[5,'Date of birth'],[6,'Your birth phase','bridge'],[7,'Time of birth'],[8,'Place of birth']]],
+ ['C · Trust',[[9,'Real moon data']]],
+ ['B · How rituals fit you',[[10,'What throws you off'],[11,'Ritual time'],[12,'Ritual style'],[13,"Tonight's Moon",'live bridge'],[14,'Someone on your mind','optional'],[15,'Their birthday','if person'],[16,'Phase reminders']]],
+ ['D · Anticipation',[[17,'Reading your Moon','loading'],[18,'Your Moon sign','free reveal'],[19,'Your moon month','tease']]],
+ ['E · Gate',[[20,'Where to send it']]],
+ ['F · Monetization',[[21,'Paywall','hard'],[22,'Report upsell','add-on']]],
+ ['G · Payoff',[[23,'Get app','after purchase']]]
+];
+/* ---- 2D phase icon ---- */
+function phaseIcon(age,s=22){const k=illumAt(age),r=s/2-1,c=s/2,rx=(Math.abs(1-2*k)*r).toFixed(2),wax=age<SYN/2;
+  const d=wax?`M${c} ${c-r}A${r} ${r} 0 0 1 ${c} ${c+r}A${rx} ${r} 0 0 ${k<.5?0:1} ${c} ${c-r}Z`:`M${c} ${c-r}A${r} ${r} 0 0 0 ${c} ${c+r}A${rx} ${r} 0 0 ${k<.5?1:0} ${c} ${c-r}Z`;
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" aria-hidden="true"><circle cx="${c}" cy="${c}" r="${r}" fill="#2B3451" stroke="#A17817" stroke-width=".8"/><path d="${d}" fill="#F1EBDD"/></svg>`}
+/* ---- 3D moon hero (per-pixel lit sphere) ---- */
+let MTEX=null;const MIMG=new Image();MIMG.src='img/moon-full.jpg';
+function moonTex(){if(MTEX)return MTEX;const W=256,H=128,a=new Float32Array(W*H);
+  const MA=[[33,-16,17,.34],[28,18,10,.32],[8,31,12,.3],[17,59,7,.32],[-8,51,9,.26],[-15,35,5,.24],[-21,-17,11,.24],[-24,-39,5,.26],[18,-57,22,.3],[56,-20,5,.2],[56,10,5,.2],[55,35,4,.18],[13,4,5,.2],[-10,-23,6,.2],[-3,-40,8,.2]];
+  const CR=[];for(let i=0;i<110;i++){const h=hash('cr'+i),h2=hash('cz'+i);CR.push([(h%150)-75,(h2%360)-180,1.2+(h>>>12)%45/10])}
+  for(let y=0;y<H;y++){const la=90-(y+.5)*180/H,cl=Math.cos(la*RAD);for(let x=0;x<W;x++){const lo=-180+(x+.5)*360/W;
+    let v=.8+.05*Math.sin(la*.7)*Math.sin(lo*.5)+.035*Math.sin(la*2.3+lo*1.7);
+    const dd=(b,c)=>{let dl=Math.abs(lo-c);if(dl>180)dl=360-dl;return Math.hypot(la-b,dl*cl)};
+    for(const[b,c,r,m]of MA){const d=dd(b,c);if(d<r*1.5){const k=Math.min(1,(r*1.5-d)/(r*.8));v-=m*k*k*(3-2*k)}}
+    for(const[b,c,r]of CR){const d=dd(b,c);if(d<r*1.25){v+=d<r?-.07*(1-d/r):.05}}
+    const td=dd(-43,-11);if(td<4)v+=.2*(1-td/4);
+    a[y*W+x]=v}}for(let p=0;p<2;p++){const b=a.slice();for(let y=1;y<H-1;y++)for(let x=0;x<W;x++){let s=0;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)s+=b[(y+j)*W+(x+i+W)%W];a[y*W+x]=s/9}}return MTEX={a,W,H}}
+const HERO={moon:el=>{const size=+el.dataset.size||200,mode=el.dataset.mode||'still',fix=+el.dataset.age,cv=el.querySelector('canvas'),dp=Math.min(1.6,devicePixelRatio||1),P=Math.round(size*dp);
+  cv.width=cv.height=P;cv.style.width=cv.style.height=size+'px';const g=cv.getContext('2d'),oc=document.createElement('canvas'),img=g.createImageData(P,P),D=img.data,T=moonTex(),R=P/2-1;
+  let rot=mode==='load'?-40:0,last='';const dots=[...el.querySelectorAll('.ring30 circle')];const o={el,rmT:9000,settle:null};
+  oc.width=oc.height=P;const ox=oc.getContext('2d');
+  function paint(age,rt,tl){const MI=MIMG.complete&&MIMG.naturalWidth>0;const th=2*Math.PI*age/SYN,Lx=Math.sin(th),Lz=-Math.cos(th),ct=Math.cos(tl*RAD),st=Math.sin(tl*RAD);
+    for(let py=0;py<P;py++){const y=(P/2-py-.5)/R;for(let px=0;px<P;px++){const i=(py*P+px)*4,x=(px+.5-P/2)/R,r2=x*x+y*y;if(r2>1.02){D[i+3]=0;continue}
+      const z=Math.sqrt(Math.max(0,1-r2)),yb=y*ct-z*st,zb=y*st+z*ct,la=Math.asin(Math.max(-1,Math.min(1,yb)))/RAD;let lo=Math.atan2(x,zb)/RAD+rt;lo=((lo+180)%360+360)%360;
+      const al=MI?1:T.a[Math.min(T.H-1,((90-la)/180*T.H)|0)*T.W+((lo/360*T.W)|0)%T.W];const nl=x*Lx+z*Lz;let k=Math.max(0,Math.min(1,(nl+.05)/.16));k=k*k*(3-2*k);
+      const b=k*(.5+.5*Math.max(0,nl))*(.82+.18*z),e=(1-k)*.07;const es=MI?(1-k)*(.55+.45*z):0;D[i]=Math.min(255,(290*b+60*e)*al+30*es);D[i+1]=Math.min(255,(280*b+52*e)*al+32*es);D[i+2]=Math.min(255,(258*b+110*e)*al+46*es);D[i+3]=Math.max(0,Math.min(1,(1-Math.sqrt(r2))*R*1.4))*255}}
+    if(MI){ox.putImageData(img,0,0);g.clearRect(0,0,P,P);g.save();g.beginPath();g.arc(P/2,P/2,R+.5,0,6.2832);g.clip();g.translate(P/2,P/2);g.rotate(rt*RAD*.2);const W=MIMG.naturalWidth,k=.875,s0=W*(1-k)/2;g.drawImage(MIMG,s0,s0,W*k,W*k,-R-1,-R-1,2*R+2,2*R+2);g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='multiply';g.drawImage(oc,0,0);g.globalCompositeOperation='destination-in';g.drawImage(oc,0,0);g.restore()}else g.putImageData(img,0,0);el.style.setProperty('--gl',(.1+.32*illumAt(age)).toFixed(2))}
+  o.draw=function(now,dt){const tt=(now-this.t0)/1000;let age=fix,tl=this.py*-30,rt;
+    if(mode==='sweep'){age=(tt*2.2+2)%SYN;rot+=4*dt/1000;rt=rot+this.px*50}
+    else if(mode==='load'){if(this.settle){const k=Math.min(1,(now-this.settle)/1200);age=(this.sAge+(((fix-this.sAge)%SYN+SYN)%SYN)*(1-Math.pow(1-k,3)))%SYN}else{age=(tt*4.2)%SYN;this.sAge=age}rot+=22*dt/1000;rt=rot+this.px*50}
+    else{rt=Math.sin(tt*.35)*5+this.px*50;tl+=Math.sin(tt*.27)*3}
+    const key=[age.toFixed(3),rt.toFixed(1),tl.toFixed(1)].join();if(key!==last){last=key;paint(age,rt,tl)}};
+  o.fill=f=>{const n=Math.round(f*30);dots.forEach((d,i)=>d.classList.toggle('on',i<n))};
+  el._m=o;addHero(o)}};
+const moon=(mode,size,age,ring=false)=>{let r='';if(ring){const cx=size/2,rr=size*.62;for(let i=0;i<30;i++){const a=(i/30)*2*Math.PI-Math.PI/2,dA=ageAt(NOW+i*864e5);r+=`<circle cx="${(cx+rr*Math.cos(a)).toFixed(1)}" cy="${(cx+rr*Math.sin(a)).toFixed(1)}" r="${phIdx(dA)===4||phIdx(dA)===0?3.6:2.6}" class="${phIdx(dA)===4?'full':''}"/>`}r=`<svg class="ring30" viewBox="0 0 ${size} ${size}" aria-hidden="true">${r}</svg>`}
+  return `<div class="moonh" data-hero="moon" data-mode="${mode}" data-size="${size}" data-age="${age}" style="width:${size}px;height:${size}px;${ring?`margin:${size*.14}px auto`:''}"><canvas aria-hidden="true"></canvas>${r}</div>`};
+/* ---- helpers ---- */
+const lockrows=r=>`<div class="stack">${r.map(x=>`<div class="lockrow">${x}<span class="l">${ic('lock',16)}</span></div>`).join('')}</div>`;
+const signCard=(s,small=false)=>{const m=MOONT[s];return `<div class="mcard"><div class="row"><span class="g">${gly(s)}</span><div><b style="font-size:${small?15:17}px">Moon in ${s}</b></div></div>
+  <div class="ln"><b>Feel</b><span>${m[0]}</span><b>Soothe</b><span>${m[1]}</span><b>Drain</b><span>${m[2]}</span></div></div>`};
+function calendar(blur=true){let o='';const t0=new Date(NOW);t0.setHours(12,0,0,0);const fd=new Date(fullMs).toDateString(),nd=new Date(newMs).toDateString();
+  for(let i=0;i<30;i++){const ms=t0.getTime()+i*864e5,dS=new Date(ms).toDateString(),isF=dS===fd,isN=dS===nd;o+=`<div class="${isF||isN?'key':''} ${i===0?'today':''}">${phaseIcon(ageAt(ms),18)}<span>${sdate(ms)}</span>${isF||isN||i===0?`<i>${isF?'release':isN?'intention':'tonight'}</i>`:''}</div>`}
+  return `<div class="cal ${blur?'':''}">${o}</div>`}
+const zband=ms=>{const l=moonLon(ms),si=Math.floor(l/30);return `<div class="zband" id="zb">${GLY.map((g,i)=>`<span class="${i===si?'on':''}">${g}</span>`).join('')}<span class="mk" style="left:${(l/360*100).toFixed(2)}%;position:absolute;border:none"></span></div>`};
+const fullSign=signAt(fullMs);
+const RIMG={journal:'journal',candle:'candle',breath:'water',affirm:'crystals'};
+const pushLine=()=>`🌕 Full Moon in ${fullSign} tonight, ${nm()}. Your ${minsN()}-minute release ritual is ready.`;
+/* ---- screens ---- */
+const V={
+1:()=>`<div class="sky hook"></div><div class="scr z hk" style="gap:14px"><div style="margin:10px 0 6px">${moon('sweep',hookSize(),tAge)}</div>
+  <h1 class="display tc">${t('Does the full moon get you?','Feel different at full moon?')}</h1><p class="lead tc" style="margin-top:-8px">${t("Your Moon sign explains why. We'll show you.",'Many people do. Your chart says why.')}</p>
+  <div class="opts">${Object.entries(FEEL).map(([k,[l,e]])=>pick('feel',k,l,e)).join('')}</div><div class="note">2-minute quiz · For entertainment</div></div>
+  <div class="foot" style="padding-top:0"><div class="note">${agree()}</div></div>`,
+2:()=>{const ti=phIdx(tAge);return `<div class="scr"><h1 class="display">${t('Your Moon sign runs your moods',"Move with the Moon's rhythm")}</h1><p class="lead" style="margin-top:-8px">${t("Your Moon sign plus today's phase, one ritual daily.",'Know when to start, rest and let go.')}</p>
+  <div class="orbit8"><div class="mid">☽︎</div>${PHN.map((p,i)=>{const a=(i/8)*2*Math.PI-Math.PI/2;return `<div class="ph ${i===ti?'on':''}" style="left:${115+95*Math.cos(a)}px;top:${115+95*Math.sin(a)}px" title="${p}">${phaseIcon(i*SYN/8,i===ti?30:22)}</div>`}).join('')}</div>
+  <div class="card fseq" style="padding:4px 14px">${[['☽','Your birth Moon sign'],['🌓',"Tonight's phase, for you"],['🕯️','A ritual that fits your day']].map(([e,l])=>`<div class="promise"><span class="well">${e}</span><span>${l}</span></div>`).join('')}</div></div><div class="foot">${cta('Find my Moon')}</div>`},
+3:()=>`<div class="scr"><h1 class="display">${t('What should this cycle bring?','What are you calling in?')}</h1><p class="lead">Your rituals will focus on this.</p>
+  <div class="opts cards grid2">${Object.entries(INTENT).map(([k,[l,e]])=>pick('intent',k,l,e)).join('')}</div>${S.intent==='other'?otherIn('intent'):''}</div>${pickFoot('intent')}`,
+4:()=>`<div class="scr"><div class="cres">${phaseIcon(SYN*.16,64)}</div><h1 class="display">${t("What's your name?",'What should we call you?')}</h1><p class="lead">We'll write your rituals for you.</p>
+  <div class="field"><label for="nm">Your name</label><div class="box white ${S.err?'bad':''}"><input id="nm" data-f="name" data-focus maxlength="30" autocomplete="given-name" placeholder="Your first name" value="${esc(S.name)}"></div>${errHTML()}</div></div><div class="foot">${cta('Continue',true,'name')}</div>`,
+5:()=>`<div class="scr"><div class="cres" id="dobm">${S.dob.m&&S.dob.d&&S.dob.y?phaseIcon(bAge(),64):phaseIcon(SYN/2,64)}</div><h1 class="display">${t('When were you born?',`Your birthday, ${nm()}?`)}</h1><p class="lead">Your date finds the Moon you were born under.</p>
+  <div class="field"><label>Date of birth</label>${dateSel('dob',S.dob)}${errHTML()}</div><p class="hint">You must be 18 or older.</p></div><div class="foot">${cta('Continue',!!(S.dob.m&&S.dob.d&&S.dob.y),'dob')}</div>`,
+6:()=>`<div class="sky"></div><div class="scr z center tc" style="align-items:center">${moon('still',180,bAge())}
+  <span class="hint">${fmtDate(bd())}</span><h1 class="display">${t(`Born under a ${bPhase()}`,`${nm()}, your Moon at birth`)}</h1>
+  <p class="lead" style="color:#FAF3E1">${bPhase()} — ${PHT[phIdx(bAge())]}</p><p class="lead">${t('Two details pin down your exact Moon sign.','Time and place finish your Moon.')}</p><span class="hint">Your Moon: 1 of 3 details</span></div><div class="foot">${cta('Continue')}</div>`,
+7:()=>`<div class="scr"><div style="margin-top:14px">${zband(birthMs())}</div><h1 class="display">${t('What time were you born?','Know your birth time?')}</h1><p class="lead" style="margin-top:-8px">${t('The Moon changes signs every two or three days.','Time pins your Moon sign exactly.')}</p>
+  <div class="field"><label for="tm">Time of birth</label><div class="box">${ic('clock',18)}<input id="tm" type="time" data-f="time" value="${esc(S.time)}" ${S.timeUnknown?'disabled':''}></div></div>
+  <button class="link" style="align-self:flex-start;padding:0" data-a="unknown">${S.timeUnknown?'I know it after all':"I don't know my birth time"}</button>
+  ${S.timeUnknown?`<p class="hint fadein" style="color:var(--t2)">No problem. If your Moon changed signs that day, we'll show both.</p>`:''}</div><div class="foot">${cta('Continue',S.time||S.timeUnknown)}</div>`,
+8:()=>{const c=city(S.place);return `<div class="scr"><div class="cres" style="margin-bottom:-10px">${phaseIcon(SYN*.15,34)}</div><div class="mapwrap mapcard">${mapSVG({step:5,pins:c?pinSVG(c.lon,c.lat,'#FAF3E1',1.5):pinSVG(GUESS.lon,GUESS.lat,'#FAF3E1',1.2)})}</div>
+  <h1 class="display">${t('Where were you born?','Your birth city, please')}</h1><p class="lead" style="margin-top:-8px">Your time zone sets the Moon's position.</p>
+  ${cityField('place','placeQ',{label:'Place of birth',err:"We couldn't find that place. Try a nearby city.",hint:'We never share or sell your details.'})}</div><div class="foot">${cta('Continue',!!S.place)}</div>`},
+9:()=>{const ph=[0,1,2,3].map(i=>{const tgt=[0,.25,.5,.75][i]*SYN,ms=NOW+((tgt-tAge)%SYN+SYN)%SYN*864e5;return[ms,['New','First Q.','Full','Last Q.'][i],tgt]}).sort((a,b)=>a[0]-b[0]);
+  return `<div class="scr">${S.v==='A'?`<div class="strip">${ph.map(([ms,l,a])=>`<div>${phaseIcon(a,24)}<b>${l}</b><span>${sdate(ms)}<br>${new Date(ms).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</span></div>`).join('')}</div>
+  <h1 class="display sm">Real moon data, not guesses</h1><p class="lead" style="margin-top:-8px">Phases and signs come from astronomical tables.</p>`
+  :`<div class="tc"><div style="font:600 44px/1 var(--serif)">${tok('reader_count')}</div><div style="color:var(--gold);letter-spacing:4px;margin-top:8px">★★★★★</div></div><h1 class="display sm tc">${tok('reader_count')} moons read so far</h1><p class="lead tc">People use it to plan their month.</p>
+  <div class="card dash"><p>“Real review quote goes here — from real ikame data only.”</p><div class="sub" style="margin-top:6px">— First name · ship variant A until real data exists</div></div>`}
+  <div class="card" style="padding:4px 14px">${[['chart','Calculated from astronomical data'],['shield','Your details never sold'],['eye','Price shown before you pay']].map(([i,l])=>`<div class="promise"><span class="well">${ic(i,18)}</span><span>${l}</span></div>`).join('')}</div></div><div class="foot">${cta('Continue')}</div>`},
+10:()=>`<div class="scr"><h1 class="display">${t('What throws you off most?','What drains you lately?')}</h1><p class="lead">Your daily tip will target this.</p>
+  <div class="opts">${Object.entries(OFF).map(([k,[l,e]])=>pick('off',k,l,e)).join('')}${S.off==='other'?otherIn('off'):''}</div></div>${pickFoot('off')}`,
+11:()=>`<div class="scr"><h1 class="display">${t('How long for a ritual?','How much time tonight?')}</h1><p class="lead">We'll fit rituals to your real day.</p>
+  <div class="opts cards">${Object.entries(MINS).map(([k,[l,e,m]])=>pick('mins',k,l,`<svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="11" fill="none" stroke="#8B6714" stroke-width="3"/><circle cx="15" cy="15" r="11" fill="none" stroke="#EAC46C" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(69.1*(k==='big'?1:m/15)).toFixed(1)} 70" transform="rotate(-90 15 15)"/></svg>`).replace('</span><span class="lbl">',`</span><span class="lbl">${e} `)).join('')}</div></div><div class="foot"><div class="note">Tap one to continue</div></div>`,
+12:()=>`<div class="scr"><h1 class="display">${t('Which rituals feel like you?','How do you like to reset?')}</h1><p class="lead">Pick any. We'll mix them through the month.</p>
+  <div class="opts">${Object.entries(STYLE).map(([k,[l,e]])=>multi('styles',k,l,RIMG[k]?`<img class="wimg" src="img/ritual-${RIMG[k]}.jpg" alt="" onerror="this.outerHTML='${e}'">`:e)).join('')}${S.styles.includes('other')?otherIn('styles'):''}</div></div>
+  <div class="foot">${S.styles.length?'':'<div class="note">Pick at least one</div>'}${cta('Continue',S.styles.length>0)}</div>`,
+13:()=>`<div class="sky"></div><div class="scr z center tc" style="align-items:center"><div class="fadein">${moon('still',180,tAge)}</div>
+  <div style="font-size:28px;color:#FBF6EA;margin-top:-6px">${gly(tSign)}</div>
+  <h1 class="display">${t(`Tonight's Moon is in ${tSign}`,`Tonight: ${tPhase} Moon`)}</h1><p class="lead">${tPhase}, ${tIll}% lit. Your first ritual starts here.</p>
+  <span class="hint">Live from astronomical data for ${localDate}</span><span class="hint">2 quick questions left</span></div><div class="foot">${cta('Continue')}</div>`,
+14:()=>`<div class="scr"><div class="cres"><svg width="120" height="70" viewBox="0 0 120 70" aria-hidden="true"><path d="M52 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="#F1EBDD"/><path d="M84 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="none" stroke="#EAC46C" stroke-width="1.6" stroke-dasharray="4 3"/><text x="78" y="41" fill="#EAC46C" font-size="14">?</text></svg></div>
+  <h1 class="display">${t('Whose moods confuse you?','Someone on your mind?')}</h1><p class="lead">We'll compare your Moons — your emotional match.</p>
+  <div class="opts">${Object.entries(PERS).map(([k,[l,e]])=>pick('person',k,l,e)).join('')}</div></div><div class="foot"><div class="note">Tap one to continue</div></div>`,
+15:()=>`<div class="scr"><div class="cres" id="pcres">${pcres()}</div><h1 class="display">${t("When's their birthday?",'Tell us about them')}</h1><p class="lead">A birthday usually finds their Moon sign.</p>
+  <div class="field"><label for="pn">Their name</label><div class="box"><input id="pn" data-f="pname" maxlength="30" placeholder="Name" value="${esc(S.pname)}"></div></div>
+  <div class="field"><label>Their birthday</label>${dateSel('pdob',S.pdob)}</div>${errHTML()}<p class="hint" style="margin:0">They won't be notified.</p></div>
+  <div class="foot">${cta('Continue',true,'person2')}<button class="link" data-a="skipperson">I'll add them later</button></div>`,
+16:()=>`<div class="scr rem"><div class="lock"><div class="clock">${S.remTime.replace(' PM','')}</div><div class="dt">${fdate(fullMs)}</div><div class="push"><span class="app">${phaseIcon(SYN/2,20)}</span><div><small>STARLYN · now</small>${pushLine()}</div></div></div>
+  <h1 class="display sm">${t('Want a nudge each phase?','Never miss a full moon')}</h1><p class="lead" style="margin-top:-8px">We'll remind you before new and full moons.</p>
+  <div class="stack">${[['nw','🌑','New moon'],['fu','🌕','Full moon'],['daily','☀️','Daily moon line']].map(([k,e,l])=>`<button class="toggle ${S.rem[k]?'on':''}" data-a="rem" data-v="${k}" role="switch" aria-checked="${S.rem[k]}"><span>${e}</span><span>${l}</span><span class="sw"></span></button>`).join('')}</div>
+  <button class="chip" style="align-self:flex-start" data-a="remtime">${ic('bell',15)} ${S.remTime} <span style="color:var(--t3)">· change</span></button><p class="hint" style="margin:0">Reminders start once you open the app.</p></div>
+  <div class="foot">${cta('Save my reminders',true,'remsave')}<button class="link" data-a="remno">Not now</button></div>`,
+17:()=>`<div class="sky"></div><div class="scr z" style="gap:10px">${moon('load',150,bAge(),true)}<h1 class="display sm tc" id="lh">${APP.loadH()}</h1>
+  ${stepsHTML(['Finding your Moon at birth…',"Lining it up with tonight's sky…",`Writing rituals around ${intentL()}…`,'Almost ready — your first ritual awaits…'])}</div><div class="foot"><div class="note">For entertainment</div></div>`,
+18:()=>{const ss=moonSigns();return `<div class="navpad"></div><div class="scr"><h1 class="display sm">${t(`${nm()}, your Moon is ${msign()}`,'Meet your Moon sign')}</h1><p class="lead" style="margin-top:-8px">How you feel, what soothes you, what drains you.</p>
+  ${ss.length>1?`<div class="two">${ss.map(s=>signCard(s,true)).join('')}</div><div class="card"><p>Your Moon changed signs on ${fmtDate(bd())}. Add your birth time to choose — we never guess.</p></div><button class="chip" style="align-self:flex-start" data-a="go" data-v="7">${ic('clock',15)} Add your birth time</button>`
+   :`${signCard(ss[0])}<p class="lead" style="color:#FAF3E1">Moon in ${ss[0]} — you feel ${MOONT[ss[0]][0]}.</p>`}
+  <div class="card"><h4>${phaseIcon(bAge(),16)} Born under a ${bPhase()}</h4><p>${(x=>x[0].toUpperCase()+x.slice(1))(PHT[phIdx(bAge())])}</p></div></div><div class="foot">${cta('See my moon month')}</div>`},
+19:()=>`<div class="navpad"></div><div class="scr"><h1 class="display sm">${t('Your moon month, mapped','Your next 30 nights')}</h1><p class="lead" style="margin-top:-8px">Dates are yours. Rituals unlock with Premium.</p>${calendar()}
+  <div class="card"><p style="color:var(--t1)">${fdate(fullMs)} — Full Moon in ${fullSign}: your release night.</p></div>
+  ${lockrows(["Tonight's ritual",'Full moon release','New moon intention',...(hasP()?[`You + ${pn()}: Moon match`]:[])])}<p class="hint tc" style="margin:0">For entertainment.</p></div><div class="foot">${cta('Unlock my rituals')}</div>`,
+20:()=>emailGate({h:t('Where should we send it?','Save your moon month'),b:'Your calendar and app login go here.',card:`<div class="blurred" style="width:200px;align-self:center;max-height:104px;overflow:hidden">${calendar()}</div>`,taken:'This email already has an account — log in instead?',optin:'Email me moon news and tips (optional)'}),
+21:()=>paywall({facts:[['Your Moon',(()=>{try{return msign()}catch(e){return ''}})()],['Sun',S.dob&&S.dob.m?sunSign(+S.dob.m,+S.dob.d):''],['Name',nm()]],toc:['Your Moon sign: '+(()=>{try{return msign()}catch(e){return 'ready'}})(),'Your 30-day moon phase calendar','Rituals sized to your time and style','A daily moon line for you','Moon match for anyone you add'],faqX:[['Do I need candles or supplies?','No. Every ritual has a no-supplies version. Candles and crystals are optional.']],top:`<div class="blurred" style="width:220px;align-self:center;margin-top:10px;max-height:120px;overflow:hidden">${calendar()}</div>`,h:t('Live with your Moon',`${nm()}, unlock your moon month`),b:t('Rituals for every phase, every month.','Your calendar, rituals and daily moon line.'),
+  benefits:['Rituals for every new and full moon',`Daily moon line for your ${msign()} Moon`,'Moon match for anyone you add'],
+  plans:[{k:'weekly',name:'1 week, then monthly',pl:`${tok('price_1w')} first week, then ${tok('price_month')}/month, renews monthly`}],
+  lines:{weekly:`${tok('price_1w')} today for your first week, then ${tok('price_month')} every month until you cancel.`},
+  legal:'For entertainment only. Not medical or mental-health advice.',ctaLabel:'Unlock my rituals'}),
+23:()=>getApp(S.upsold?upAddLine():'')
+};
+
+/* ---------- Starlyn add-on report (post-purchase upsell, 2026-10-06) ----------
+   Shown once, right after the plan purchase. Paid once at its listed price: no timer, no struck price, always skippable.
+   The CTA runs checkout('addon'): CONFIG.plans.addon is a hidden one-time plan with its own checkout (FunnelFox: native Paddle screen checkout_addon).
+   Paid -> IkFunnel.completePurchase('addon') -> get_app with the add-on line. Checkout closed -> get_app without it (CONFIG.declineFlow). */
+const IK_UP=22,IK_GET=23;
+CONFIG.upsell={"id": "moon_calendar_2027", "name": "Moon Calendar 2027", "art": "img/moon-full.jpg", "h": ["Add your <em>2027 moon calendar</em>", "Every <em>moon of 2027</em>"], "lead": ["Every new and full moon of 2027, with a ritual.", "A ritual for each new and full moon, for your sign."], "checks": ["Every new and full moon of 2027", "A ritual matched to your Moon sign", "Saved to your calendar in the app"], "eyebrow": "Add-on · paid once", "price": "$19.99", "cta": "Add for $19.99", "skip": "No thanks, take me to the app", "note": "One-time payment at a secure checkout. No subscription."};
+V[IK_UP]=()=>{const u=CONFIG.upsell,a=(typeof IMG!=='undefined'&&(IMG[u.art]||IMG[u.art.replace(/^img\/|\.\w+$/g,'')]))||u.art;if(!S.upViewed){S.upViewed=true;emit('upsell_view',{id:u.id,price:u.price})}
+  return `<div class="scr" style="gap:14px;padding-top:22px"><div class="upok">${ic('check',14)} Payment complete. Your plan is active.</div>
+  <div class="tc"><span class="eyebrow">${u.eyebrow}</span><h1 class="display">${t(u.h[0],u.h[1])}</h1><p class="lead" style="margin-top:8px">${t(u.lead[0],u.lead[1])}</p></div>
+  <div class="upcard"><div class="upcov" style="background-image:url('${a}')"><div><small>Starlyn report</small><b>${esc(u.name)}</b></div></div>
+   <ul class="upl">${u.checks.map(x=>`<li>${ic('check',16)}<span>${esc(x)}</span></li>`).join('')}</ul>
+   <div class="upr"><b>${u.price}</b><span>Paid once · no subscription</span></div></div>
+  <p class="note">${u.note}</p></div>
+  <div class="foot">${cta(u.cta,true,'upbuy')}<button class="link" data-a="upskip">${u.skip}</button></div>`};
+const upAddLine=()=>`<div class="upadd">${ic('check',16)}<span>${esc(CONFIG.upsell.name)} added. It opens in the app.</span></div>`;
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a="upbuy"],[data-a="upskip"]');if(!b||b.disabled)return;const u=CONFIG.upsell;
+  if(b.dataset.a==='upskip'){emit('upsell_decline',{id:u.id});go(IK_GET);return}
+  emit('upsell_accept',{id:u.id,price:u.price});checkout('addon',{source:'upsell',id:u.id})});
+function pcres(){const f=S.pdob.m&&S.pdob.d&&S.pdob.y;return `<svg width="120" height="70" viewBox="0 0 120 70" aria-hidden="true"><path d="M52 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="#F1EBDD"/><path d="M84 8a28 28 0 1 0 0 54 22 22 0 1 1 0-54z" fill="${f?'#EAC46C':'none'}" stroke="#EAC46C" stroke-width="1.6" ${f?'':'stroke-dasharray="4 3"'}/>${f?'':'<text x="78" y="41" fill="#EAC46C" font-size="14">?</text>'}</svg>`}
+function checkout(plan,extra){emit('checkout_click',Object.assign({plan},extra||{}));demoCheckout(plan)}
+/* demo checkout sheet: shown when no checkout URL is set (FunnelFox hooks checkout(plan) and opens its native checkout per CONFIG.plans key) */
+function demoCheckout(plan){const p=CONFIG.plans[plan]||{};phone.querySelector('#demock')?.remove();const el=document.createElement('div');el.id='demock';el.dataset.plan=plan;el.setAttribute('role','dialog');el.setAttribute('aria-label','Checkout');
+  const price=p.oneTime?`${esc(p.price)}, paid once`:`${esc(p.intro||p.price)} today, then ${esc(p.price)}/${esc(p.renews||'month')}`;
+  el.innerHTML=`<div class="dck"><b>Demo checkout</b><p>${esc(CONFIG.brand)} · ${esc(p.label||p.name||plan)} · ${price}</p><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div>`;
+  phone.appendChild(el)}
+document.addEventListener('click',e=>{const b=e.target.closest('#demock [data-a]');if(!b)return;const el=b.closest('#demock'),plan=el.dataset.plan;el.remove();
+  if(b.dataset.a==='ckpay'){window.IkFunnel.completePurchase(plan);return}
+  emit('checkout_decline',{plan});const to=(CONFIG.declineFlow||{})[plan];if(to){const n=scrByName(to);if(n)go(n)}});
+/* screen NAME (as in the FunnelFox build: the FLOW label in snake_case) -> screen index */
+function scrByName(nm){for(const[,it]of FLOW)for(const[n,l]of it)if(l.toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')===nm)return n;return 0}
+window.IkFunnel=window.IkFunnel||{};
+/* after ANY checkout success: main plan -> add-on screen; hidden add-on -> marked added -> get_app */
+window.IkFunnel.completePurchase=plan=>{plan=plan||S.plan;const P=CONFIG.plans[plan]||{};emit('purchase_complete',{plan});
+  if(P.hidden){S.upsold=true;go(IK_GET);return}S.paid=plan;S.plan=plan;APP.onPaid()};
+function NEXT(n){if(n===7&&S.hist[S.hist.length-1]===18)return 18;if(n===14)return S.person==='me'?16:15;return n+1}
+function PREV(n){if(n===16)return S.person==='me'?14:15;return n-1}
+function fillTo(n){if(n>1&&!S.feel)S.feel='restless';if(n>3&&!S.intent)S.intent='calm';if(n>4&&!S.name)S.name='Maya';if(n>5&&!S.dob.m)S.dob={m:'8',d:'12',y:'1994'};
+  if(n>7&&!S.time&&!S.timeUnknown)S.time='07:40';if(n>8&&!S.place)S.place=CITIES[0][0];if(n>10&&!S.off)S.off='over';if(n>11&&!S.mins)S.mins='5';if(n>12&&!S.styles.length)S.styles=['breath','journal'];
+  if(n>14&&!S.person)S.person='partner';if(n===15&&S.person==='me')S.person='partner';if(n>15&&S.person!=='me'&&!S.pname){S.pname='Jordan';S.pdob={m:'6',d:'3',y:'1993'}}
+  if(n>16&&S.remSaved===null)S.remSaved=true;if(n>20&&!S.email)S.email='maya.r@gmail.com';if(n>21&&!S.paid)S.paid='weekly'}
+const OK={3:()=>!!S.intentOther.trim(),5:()=>!!(S.dob.m&&S.dob.d&&S.dob.y),7:()=>!!(S.time||S.timeUnknown),8:()=>!!S.place,10:()=>!!S.offOther.trim(),12:()=>S.styles.length>0};
+function ACT(a,v,b){switch(a){
+  case 'person2':if(!S.pname.trim()||dobErr(S.pdob,false)){S.err='Add their name and birthday';render()}else next();return true;
+  case 'skipperson':S.pname='';S.pdob={m:'',d:'',y:''};S.err='';go(16);return true;
+  case 'rem':S.rem[v]=!S.rem[v];b.classList.toggle('on',S.rem[v]);b.setAttribute('aria-checked',S.rem[v]);return true;
+  case 'remtime':{const o=['7:00 PM','8:00 PM','9:00 PM','10:00 PM'];S.remTime=o[(o.indexOf(S.remTime)+1)%o.length];render();return true}
+  case 'remsave':S.remSaved=true;toast('Saved — applied when you open the app');next();return true;
+  case 'remno':S.remSaved=false;next();return true;
+  case 'done':S.done=!S.done;render();return true}
+  return false}
+function INPUT(f,e){if(f.startsWith('dob.')){const m=document.getElementById('dobm');if(m&&S.dob.m&&S.dob.d&&S.dob.y&&!dobErr(S.dob,false))m.innerHTML=phaseIcon(bAge(),64)}
+  if(f==='time'){const z=document.getElementById('zb');if(z&&S.time)z.outerHTML=zband(birthMs())}
+  if(f.startsWith('pdob.')){const c=document.getElementById('pcres');if(c)c.innerHTML=pcres()}}
+/* hook art: the painted moon in hook-window.jpg (center 318.5,289 · r 73 in a 480x720 image) is scaled and placed
+   concentric with, and smaller than, the 3D hero moon, so only one moon shows (its halo is painted over in sky blue); the image still covers the full width */
+const hookSize=()=>Math.max(184,Math.min(224,Math.round(((phone&&phone.clientWidth)||390)*.5)));
+function placeHook(v){const sk=v&&v.querySelector('.sky.hook'),mh=v&&v.querySelector('.moonh');if(!sk||!mh)return;const a=sk.getBoundingClientRect(),b=mh.getBoundingClientRect();if(!a.width||!b.width)return;
+  const k=(a.width/sk.offsetWidth)||1,W=a.width/k,cx=(b.left+b.width/2-a.left)/k,cy=(b.top+b.height/2-a.top)/k,H=a.height/k,s=Math.max(cx/318.5,(W-cx)/161.5,W/480,Math.min((b.width/2/k-4)/73,(H*.92-cy)/431));
+  sk.style.setProperty('--hs',(480*s).toFixed(1)+'px');sk.style.setProperty('--hx',(cx-318.5*s).toFixed(1)+'px');sk.style.setProperty('--hy',(cy-289*s).toFixed(1)+'px');sk.style.setProperty('--hb',(cy+431*s).toFixed(1)+'px');sk.style.setProperty('--mx',cx.toFixed(1)+'px');sk.style.setProperty('--my',cy.toFixed(1)+'px');sk.style.setProperty('--mr',(86*s).toFixed(1)+'px')}
+addEventListener('resize',()=>{try{if(S&&S.i===1)placeHook(cur())}catch(e){}});
+function AFTER(n,v){if(n===1)placeHook(v);if(n===17){const m=v.querySelector('.moonh');runLoading(6800,f=>{if(m&&m._m)m._m.fill(f)},()=>{if(m&&m._m){m._m.fill(1);m._m.settle=performance.now()}later(()=>go(18),1200)})}}
+function DATA(){return [['Full moon',S.feel?FEEL[S.feel][0]:''],['Intention',S.intent?(S.intent==='other'?S.intentOther||'Other':INTENT[S.intent][0]):''],['Name',S.name],['Born',S.dob.m?fmtDate(S.dob):''],
+  ['Birth phase',S.dob.m?`${bPhase()} (${Math.round(illumAt(bAge())*100)}% lit)`:''],['Time',S.timeUnknown?'Unknown':S.time],['Place',S.place],['Moon sign',S.dob.m&&(S.time||S.timeUnknown)&&S.place?msign():''],
+  ['Tonight',`${tPhase}, ${tIll}% lit, Moon in ${tSign}`],['Throws you off',S.off?(S.off==='other'?S.offOther||'Other':OFF[S.off][0]):''],['Ritual time',S.mins?MINS[S.mins][0]:''],['Styles',S.styles.map(k=>k==='other'?(S.stylesOther||'Other'):STYLE[k][0]).join(', ')],
+  ['Person',hasP()?`${S.pname} (${PERS[S.person][0]}) · Moon in ${pSign()}`:S.person==='me'?'Just me':''],['Reminders',S.remSaved===null?'':S.remSaved?[S.rem.nw&&'New',S.rem.fu&&'Full',S.rem.daily&&'Daily'].filter(Boolean).join(' + ')+' · '+S.remTime:'Not now'],
+  ['Email',S.email?S.email+(S.optin?' (opted in)':' (no marketing)'):''],['Plan',S.paid?(S.paid==='offer'?'Last-chance offer':{weekly:'Weekly',quarter:'3-Month',annual:'Annual'}[S.paid])+' (demo)':S.i>=21?'None':'']]}
+boot();
+</script>
+</body>
+</html>

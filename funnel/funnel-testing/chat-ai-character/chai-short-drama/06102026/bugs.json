@@ -1,0 +1,126 @@
+[
+  {
+    "screen": "Intro 1 (hook)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2 (age_gate)",
+    "title": "[UI/UX][Intro 2] Link Terms of Service / Privacy Policy có tap target nhỏ",
+    "severity": "High",
+    "actual": "- Màn Intro 2 (age_gate): link \"Terms of Service\" (93×14px) và \"Privacy Policy\" (76×14px) có vùng bấm cao 14px (auto-check). Lặp lại ở Intro 11 (save_progress: \"Terms\" 34×14, \"Privacy\" 40×14), Paywall 1 (paywall: \"Terms of Use\", \"Privacy Policy\", \"support@chatchi.co\" 110×14), Paywall 2–5 (sale_m1/m3/y12/lifetime), Upsale 1 (upsell_lifetime) và last_chance_offer.",
+    "expected": "- Tap target tối thiểu 44pt theo Apple HIG – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/02-age_gate-small.png, screens/11-save_progress-small.png, screens/12-paywall-small-p6.png, screens/19-upsell_lifetime-small.png"
+  },
+  {
+    "screen": "Intro 3 (series_pick)",
+    "title": "[UI][Intro 3] Lead \"NORA · a detective\" nhưng poster Night Shift là nhân vật nam",
+    "severity": "Low",
+    "actual": "- Màn Intro 3 (series_pick): card Night Shift ghi lead \"NORA · a detective\" nhưng ảnh poster (và frame giữa ở Intro 1) là một người đàn ông mặc trench coat, khiến tên lead và hình không khớp.",
+    "expected": "- Spec chưa định nghĩa giới tính/ngoại hình của Nora – cần PM/Designer confirm poster khớp với lead.",
+    "attachment": "Screenshot/Video: screens/03-series_pick-small.png, screens/01-hook-small.png"
+  },
+  {
+    "screen": "Intro 4 (your_name)",
+    "title": "[UI][Intro 4] Header ghi \"Your series\" trên màn nhập tên",
+    "severity": "Low",
+    "actual": "- Màn Intro 4 (your_name): top bar vẫn hiển thị title \"Your series\" (giống Intro 3) trong khi nội dung là \"What should they call you?\".",
+    "expected": "- Spec chưa định nghĩa title top bar cho màn này – cần PM/Designer confirm (title cần khớp nội dung màn).",
+    "attachment": "Screenshot/Video: screens/04-your_name-small.png, screens/04-your_name-large.png"
+  },
+  {
+    "screen": "Intro 4 (your_name)",
+    "title": "[UI][Intro 4] Avatar của lead là emoji áo khoác placeholder thay vì portrait",
+    "severity": "Medium",
+    "actual": "- Màn Intro 4 (your_name): vòng tròn avatar hiển thị emoji 🧥 trên nền tối thay vì portrait của Leo. Cùng avatar emoji này lặp lại ở Intro 7 (cliffhanger, \"Leo is typing…\"), Intro 8–9 (header chat), Paywall 1 (tease quote) và last_chance_offer.",
+    "expected": "- Brief #4: \"the lead's portrait blurred behind\"; Brief #7: \"the lead portrait sliding out of it\".",
+    "attachment": "Screenshot/Video: screens/04-your_name-small.png, screens/07-cliffhanger-small.png, screens/08-chat_turn_1-small.png, screens/12-paywall-small-p1.png"
+  },
+  {
+    "screen": "Intro 5 (episode_1)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6 (episode_2)",
+    "title": "[UI][Intro 6] Episode 2 dùng lại đúng artwork của Episode 1",
+    "severity": "Low",
+    "actual": "- Màn Intro 6 (episode_2): slide hiển thị cùng một ảnh terrace/bàn nến như Episode 1 (Intro 5), không thấy khác biệt về grade; chỉ caption thay đổi.",
+    "expected": "- Brief #6: \"Same story frame, 3 slides, darker grade\" – cần Designer confirm artwork/grade riêng cho Episode 2.",
+    "attachment": "Screenshot/Video: screens/06-episode_2-small.png, screens/05-episode_1-small.png"
+  },
+  {
+    "screen": "Intro 7 (cliffhanger)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8 (chat_turn_1)",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9 (chat_turn_2)",
+    "title": "[Logic][Intro 9] Counter vẫn \"2 messages left\" sau khi user đã gửi 1 message",
+    "severity": "Low",
+    "actual": "- Màn Intro 9 (chat_turn_2): thread đã có 1 message của user (\"Ask about the key\") và reply của Leo, nhưng composer vẫn hiển thị \"Free preview · 2 messages left\". (Chụp qua deep-jump có seed data – cần verify lại trên walk thật.) (Cần verify trên luồng đi thật: ảnh chụp bằng deep-jump với seed data, có thể không phản ánh luồng thật.)",
+    "expected": "- Brief #9: \"Counter drops 2 to 0 over the two turns\"; sau message thứ nhất counter cần là 1 message left.",
+    "attachment": "Screenshot/Video: screens/09-chat_turn_2-small.png, screens/09-chat_turn_2-large.png"
+  },
+  {
+    "screen": "Intro 9 (chat_turn_2)",
+    "title": "[UI][Responsive][Intro 9] Reply chip \"Walk away\" bị cắt ngoài mép phải ở màn nhỏ",
+    "severity": "Low",
+    "actual": "- Màn Intro 9 (chat_turn_2) ở 375×667: 3 reply chip xếp thành 1 hàng ngang, chip \"🚪 Walk away\" bị cắt ngoài mép phải (chỉ thấy \"Wa\"), không có dấu hiệu cuộn ngang. Ở 430×932 3 chip xếp dọc và hiển thị đầy đủ.",
+    "expected": "- Reply chip cần hiển thị đủ hoặc có affordance cuộn rõ ràng, nhất quán giữa các viewport – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/09-chat_turn_2-small.png, screens/09-chat_turn_2-large.png"
+  },
+  {
+    "screen": "Intro 10 (episode_3_locked)",
+    "title": "[UI][Intro 10] Toast \"Leo remembers…\" che headline \"Episode 3 is locked.\" và logo màn email",
+    "severity": "Low",
+    "actual": "- Khi vào Intro 10 (episode_3_locked), toast \"Leo remembers: the navy suit, the brass key\" vẫn hiển thị ở đầu màn và che gần hết headline \"Episode 3 is locked.\" ở cả 375 và 430. Ở Intro 11 (save_progress) toast này tiếp tục đè lên logo ChatChi. (Cần verify trên luồng đi thật: tool chụp deep-jump liên tiếp từng màn nên toast của màn 9 có thể còn sót sang màn 10/11.)",
+    "expected": "- Toast của màn chat không được che headline/logo của màn sau; headline Brief #10 \"Episode 3 is locked.\" cần đọc được ngay khi vào màn.",
+    "attachment": "Screenshot/Video: screens/10-episode_3_locked-small.png, screens/10-episode_3_locked-large.png, screens/11-save_progress-small.png"
+  },
+  {
+    "screen": "Intro 11 (save_progress)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1 (paywall)",
+    "title": "[UI][Paywall 1] Dòng plan/giá của sticky bottom CTA không có nền, chồng lên nội dung trang",
+    "severity": "Medium",
+    "actual": "- Màn Paywall 1 (paywall): khi sticky bottom bar hiện, dòng \"12 months … $119.99 today\" phía trên button \"Unlock Episode 3\" nằm trực tiếp trên nội dung và chồng chữ với eyebrow \"CHOOSE YOUR PLAN\", text step 3 \"Episode 3 and Leo are waiting, with Plus already on\", card FAQ \"Is it explicit?\" và tiles \"Why go Plus\". Thấy ở 375, 430 và cả walk thật.",
+    "expected": "- Brief #12 (11): sticky bottom CTA \"{{plan}} · {{price}} today\" + \"Unlock Episode 3\" không được che/chồng nội dung – cần Designer confirm nền cho cả cụm sticky bar.",
+    "attachment": "Screenshot/Video: screens/12-paywall-small-p1.png, screens/12-paywall-small-p3.png, screens/12-paywall-small-p4.png, screens/12-paywall-large-p3.png, screens/walk-end-paywall (paywall).png"
+  },
+  {
+    "screen": "Paywall 2 (sale) (sale_m1)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 3 (sale) (sale_m3)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 4 (sale) (sale_y12)",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 5 (sale) (sale_lifetime)",
+    "no_bug": true
+  },
+  {
+    "screen": "Upsale 1 (upsell_lifetime)",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App (get_app)",
+    "no_bug": true
+  },
+  {
+    "screen": "Last chance offer (last_chance_offer) – màn đã tắt (cần confirm loại màn)",
+    "title": "[Logic][Last chance offer] Màn Series pass đã retire vẫn mở được qua deep-jump và hiển thị raw token",
+    "severity": "Low",
+    "actual": "- Deep-jump tới last_chance_offer (99): màn \"Just want this series?\" / \"Series pass\" vẫn render, price row và fine print hiển thị raw token {{offer_price}}. Không xuất hiện trong walk thật.",
+    "expected": "- Brief #16: \"The old one-time series pass offer is retired (CONFIG.offer.enabled: false)\"; màn không nên mở được, hoặc không được hiển thị token chưa thay thế.",
+    "attachment": "Screenshot/Video: screens/99-last_chance_offer-small-p1.png, screens/99-last_chance_offer-large.png"
+  }
+]

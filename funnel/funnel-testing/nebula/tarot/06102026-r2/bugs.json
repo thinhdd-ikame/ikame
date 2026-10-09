@@ -1,0 +1,115 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "title": "[UI][Intro 7] Select ngày sinh không có chevron, không đồng nhất với các funnel Starlyn khác",
+    "severity": "Low",
+    "actual": "- Ba ô Month / Day / Year ở Intro 7 (id: birth_date) chỉ hiển thị giá trị (\"May\", \"14\", \"1994\"), không có icon chevron báo đây là dropdown; sau đợt fix các funnel Starlyn khác (vd. aura-tarot) đã có chevron trên cùng loại select.",
+    "expected": "- Spec: \"Three selects in a glass row\" – select cần có chevron đồng nhất với các funnel Starlyn khác; cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/07-birth_date-small.png, screens/07-birth_date-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI/UX][Responsive][Paywall 1] Màn small không thấy CTA nào ở first view",
+    "severity": "High",
+    "actual": "- Trên 375x667, first view Paywall 1 chỉ có brand bar (chưa có mini CTA), hero, 4 fact chips và đầu plan card \"1 week, then monthly\"; dòng \"Due today\", button \"Get my reading\" và sticky bottom CTA đều không hiển thị, user phải cuộn mới thấy CTA. Trên 430x932 CTA hiển thị ngay first view. Lỗi đã có từ lượt 1 nhưng chưa được log; các funnel Starlyn khác (vd. astrocartography) đã được fix đưa CTA vào first view.",
+    "expected": "- Có ít nhất một CTA (button trong plan block, mini CTA trên brand bar hoặc sticky bottom CTA) hiển thị ở first view trên màn small, đồng nhất với fix \"a CTA in the first view at 375x667\" ở các funnel Starlyn khác.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p1.png, screens/18-paywall-large-p1.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Dòng \"Due today\" lặp chữ \"today\" (\"$13.67 today\")",
+    "severity": "Low",
+    "actual": "- Trong cả 2 plan block, dòng tổng hiển thị \"Due today ... $13.67 today\" (chữ \"today\" lặp 2 lần trên cùng một dòng); các funnel Starlyn khác sau đợt fix chỉ hiển thị giá (\"Due today $13.67\").",
+    "expected": "- \"Due today\" chỉ hiển thị giá ($13.67), đồng nhất với các funnel Starlyn khác; cần PM/Designer confirm copy.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p4.png, screens/18-paywall-large-p1.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Nội dung cuộn vẫn lộ mờ phía sau sticky header",
+    "severity": "Low",
+    "actual": "- Khi cuộn Paywall 1, nội dung phía sau vẫn hiện mờ xuyên qua sticky header (vd. hàng payment badges \"Apple Pay / G Pay / VISA / Mastercard\", dòng \"Download Starlyn: Daily Astrology...\" / \"Get the app\"), chồng nhẹ dưới logo \"Starlyn\". Mức mờ thấp, chỉ thấy rõ khi nhìn kỹ; độ tin cậy trung bình.",
+    "expected": "- Sticky header che hoàn toàn nội dung phía sau (đồng nhất với fix \"opaque sticky paywall bars\"); cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p2.png, screens/18-paywall-large-p3.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Upsale 1",
+    "title": "[UI][Responsive][Upsale 1] Microcopy dưới report card bị ẩn ở first view trên màn small",
+    "severity": "Low",
+    "actual": "- Trên 375x667 (id: report_upsell), dòng \"Paid once through secure checkout. No subscription.\" dưới report card không hiển thị ở first view (CTA \"Add for $19.99\" nằm ngay dưới card), chỉ thấy khi cuộn (p2). Trên large dòng này hiển thị ngay dưới card. Card không bị cắt nên chọn Low.",
+    "expected": "- Microcopy hiển thị dưới card ngay first view như large (brief #19: \"Under the card: Paid once through secure checkout. No subscription.\").",
+    "attachment": "Screenshot/Video: screens/19-report_upsell-small-p1.png, screens/19-report_upsell-small-p2.png, screens/19-report_upsell-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Download App",
+    "no_bug": true
+  }
+]

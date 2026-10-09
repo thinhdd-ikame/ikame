@@ -1,0 +1,97 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity",
+    "severity": "High",
+    "actual": "- Footer Paywall 1 chỉ có link Terms of Use / Privacy Policy / Subscription terms và dòng disclaimer, không có tên entity. [Lượt 2: Vẫn chưa có tên entity ở footer (chỉ có Terms of Use / Privacy Policy / Subscription terms + disclaimer). Đúng như dev ghi \"Cần PM\", chờ PM cung cấp tên pháp nhân.]",
+    "expected": "- Theo brief (màn 18, mục 9): \"Footer: legal links, entity, entertainment disclaimer\".",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p4.png, screens/18-paywall-large-p4.png",
+    "retest": "Cần PM"
+  },
+  {
+    "screen": "Upsale 1",
+    "title": "[UI][Upsale 1] Label \"STARLYN REPORT\" và tên report đè lên nửa dưới medallion trong cover card",
+    "severity": "Low",
+    "actual": "- Sau khi fix crop, medallion trong cover card \"Karmic Lessons Report\" được thu nhỏ đặt giữa card, nên label \"STARLYN REPORT\" và tên \"Karmic Lessons Report\" nằm đè lên nửa dưới vòng era, che 2 chấm era dưới cùng (small và large).",
+    "expected": "- Cần đối chiếu Figma: brief chỉ ghi ảnh dưới dark fade kèm label và tên report; chủ thể ảnh và text cần bố trí để không chồng lên nhau.",
+    "attachment": "Screenshot/Video: screens/19-report_upsell-small-p1.png, screens/19-report_upsell-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Download App",
+    "title": "[UI][Download App] Icon trên badge Google Play là outline trắng đơn sắc, không phải logo chính thức",
+    "severity": "Low",
+    "actual": "- Badge \"GET IT ON Google Play\" dùng icon tam giác Play dạng outline trắng đơn sắc, trong khi badge App Store đã đổi sang logo Apple chính thức ở lượt fix này; lượt 1 không log điểm này nên có thể đã tồn tại từ trước.",
+    "expected": "- Cần đối chiếu Figma: badge store cần dùng đúng asset badge chính thức của Google Play (logo Play nhiều màu).",
+    "attachment": "Screenshot/Video: screens/20-get_app-small.png, screens/20-get_app-large.png",
+    "retest": "New"
+  }
+]

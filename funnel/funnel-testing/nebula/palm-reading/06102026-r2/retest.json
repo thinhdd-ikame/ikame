@@ -1,0 +1,78 @@
+[
+  {
+    "prev": 1,
+    "title": "[UI/UX][Intro 1] Link \"Terms of Use\" / \"Privacy Policy\" có tap target quá nhỏ",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "- Auto-check trong capture.json không còn báo tap target nhỏ cho \"Terms of Use\"/\"Privacy Policy\" ở Hook và Email (cả 2 viewport); hiển thị text vẫn bình thường.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png, screens/20-email-small.png, screens/20-email-large.png"
+  },
+  {
+    "prev": 2,
+    "title": "[UI/UX][Intro 6] 3 ô Month / Day / Year không có icon dropdown để nhận biết là select",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- 3 ô \"May\" / \"14\" / \"1994\" đã có chevron dropdown bên phải.",
+    "attachment": "Screenshot/Video: screens/06-dob-small.png, screens/06-dob-large.png"
+  },
+  {
+    "prev": 3,
+    "title": "[UI][Intro 8] Hình minh họa bàn tay không hiển thị đủ 5 đường chỉ tay theo legend",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- Hình bàn tay hiển thị đủ 5 đường đúng màu legend: Heart (hồng), Head (xanh dương), Life (xanh lá), Fate & money (vàng), Marriage (tím) ở cả small và large.",
+    "attachment": "Screenshot/Video: screens/08-palm_intro-small.png, screens/08-palm_intro-large.png"
+  },
+  {
+    "prev": 4,
+    "title": "[UI][Intro 18] Chấm vàng đầu ngón tay và đường chỉ tay không khớp vị trí bàn tay trên ảnh",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Line trace: label \"Analyzing Thumb\" có chấm vàng nằm đúng đầu ngón cái. Report teaser và hero Paywall 1: chấm nằm trên đầu cả 5 ngón, Life line (xanh lá) cong quanh gò ngón cái, các đường nằm trong lòng bàn tay. Lưu ý: ảnh line_trace chỉ chụp được frame đầu (Thumb, ~10% progress), các frame ngón/đường sau không verify trực tiếp trên màn này; ảnh walk-end dùng ảnh tay test của driver, overlay nằm trong lòng bàn tay.",
+    "attachment": "Screenshot/Video: screens/18-line_trace-small.png, screens/18-line_trace-large.png, screens/19-report_teaser-small-p1.png, screens/19-report_teaser-large.png, screens/21-paywall-small-p1.png, screens/walk-end-paywall (paywall).png"
+  },
+  {
+    "prev": 5,
+    "title": "[UI][Intro 20] Màn Email thiếu header (nút Back + logo Starlyn), title sát mép trên",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- Màn Email vẫn không có header (Back + logo) nhưng title \"Where should we send your reading?\" đã có khoảng cách top tương đương vị trí title ở các màn quiz, không còn sát mép trên.",
+    "attachment": "Screenshot/Video: screens/20-email-small.png, screens/20-email-large.png, screens/14-main_line-small.png"
+  },
+  {
+    "prev": 6,
+    "title": "[UI][Paywall 1] Thiếu section Rating + reviews và tên entity ở footer so với spec",
+    "severity": "High",
+    "status": "Cần PM",
+    "note": "- Vẫn như lượt 1: sau \"How it works\" là FAQ \"Good to know\", không có section Rating + reviews; footer chỉ có \"Terms of Use · Privacy Policy · Subscription terms\", \"Support: support@starlyn.co\", \"For entertainment purposes only.\", không có tên pháp nhân. Spec (funnel-content.md đã update) vẫn ghi mục 5 \"Rating + reviews\" và mục 9 \"Footer with legal links and entity\" – cần PM chốt bỏ khỏi spec hay bổ sung. Khớp status dev báo.",
+    "attachment": "Screenshot/Video: screens/21-paywall-large-p2.png, screens/21-paywall-large-p3.png, screens/21-paywall-large-p4.png, screens/21-paywall-small-p4.png"
+  },
+  {
+    "prev": 7,
+    "title": "[UI][Download App] Badge \"Download on the App Store\" dùng icon không phải logo Apple",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Badge \"Download on the App Store\" đã dùng logo Apple chính thức. (Badge Google Play vẫn là icon play outline đơn sắc – bug cũ của palm không yêu cầu phần này.)",
+    "attachment": "Screenshot/Video: screens/23-get_app-small.png, screens/23-get_app-large.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Paywall 1",
+    "title": "[UI/UX][Responsive][Paywall 1] Màn nhỏ không thấy CTA nào ở first view",
+    "severity": "High",
+    "actual": "- Trên 375x667, first view chỉ có brand bar (chưa có mini CTA), hero ảnh tay + 4 fact chip và đầu plan card \"1 week, then monthly – $13.67\"; \"Due today\", button \"Get my reading\" và sticky bottom CTA đều không hiển thị vì plan block đang lộ một phần. Trên 430x932 CTA trong plan block thấy ngay first view. Có thể đã tồn tại từ lượt 1 nhưng chưa log; moon-reading đã fix cùng lỗi (#11) bằng cách hiện sticky bar ở first view.",
+    "expected": "- Spec: sticky bottom CTA hiển thị khi không có plan block nào trên màn; cần CTA thấy được ở first view màn nhỏ, đồng nhất với cách xử lý đã fix ở moon-reading – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/21-paywall-small-p1.png, screens/21-paywall-large-p1.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Sticky bottom bar và brand bar nền trong suốt, nội dung phía sau lộ ra",
+    "severity": "Medium",
+    "actual": "- Khi cuộn tới FAQ trên 375x667, đường divider của FAQ chạy xuyên qua dòng \"1 week, then monthly – $13.67 today\" của sticky bottom bar, câu \"Will I be charged again?\" dính sát ngay trên bar không có viền/nền tách biệt. Brand bar phía trên cũng lộ mờ chip \"PayPal\" và heading phía sau. Cùng lỗi moon-reading #12 lượt 1 (đã fix ở moon).",
+    "expected": "- Sticky bar và brand bar cần nền đặc che hết nội dung phía sau, đồng nhất với moon-reading – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/21-paywall-small-p3.png, screens/21-paywall-small-p2.png, screens/21-paywall-large-p3.png"
+  }
+]

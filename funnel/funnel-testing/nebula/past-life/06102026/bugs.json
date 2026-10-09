@@ -1,0 +1,166 @@
+[
+  {
+    "screen": "Intro 1",
+    "title": "[UI][Intro 1] Silhouette trong hero nằm đè lên vòng era, che chấm era phía dưới",
+    "severity": "Low",
+    "actual": "- Ở màn Hook (id: hook), hình silhouette màu đen nằm phía trước vòng tròn era, tràn ra ngoài vòng trong và che một phần chấm era ở góc dưới trái; cùng hình này lặp lại ở Intro 16, Paywall 1 và Upsale 1.",
+    "expected": "- Theo brief (Visual màn 1): silhouette \"fading in behind\" – nằm phía sau vòng era, không che các chấm era.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png"
+  },
+  {
+    "screen": "Intro 1",
+    "title": "[UI/UX][Intro 1] Text \"Terms of Use\" và \"Privacy Policy\" không hiển thị dạng link",
+    "severity": "High",
+    "actual": "- Ở Intro 1 (id: hook) và Intro 17 (id: email), \"Terms of Use\" và \"Privacy Policy\" trong dòng legal cùng màu, không gạch chân, không khác gì text thường, trong khi footer Paywall 1 hiển thị các link này có gạch chân.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm. Đề xuất hiển thị link đồng nhất với footer Paywall 1 để user nhận ra có thể bấm.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/17-email-small.png, screens/18-paywall-small-p4.png"
+  },
+  {
+    "screen": "Intro 2",
+    "title": "[UI][Intro 2] Option selected có một vệt viền sáng mảnh ở mép phải",
+    "severity": "Low",
+    "actual": "- Option đang selected (nền gold gradient) hiện một đường sáng mảnh dọc mép phải, không có ở mép trái; lặp lại trên mọi màn chọn option (Intro 2, 4, 5, 6, 7, 8, 9, 11, 12).",
+    "expected": "- Cần đối chiếu Figma: viền option selected cần đồng đều cả 4 cạnh.",
+    "attachment": "Screenshot/Video: screens/02-era-small.png, screens/02-era-large.png, screens/04-deja_vu-small.png"
+  },
+  {
+    "screen": "Intro 2",
+    "title": "[UI][Intro 2] Không có vòng era ở background sáng lên theo era đã chọn",
+    "severity": "Low",
+    "actual": "- Màn \"Which era feels like home?\" (id: era) chỉ có 5 option trên nền sao, không có vòng era nào ở background.",
+    "expected": "- Theo brief (Visual màn 2): \"The ring in the background lights the picked era.\"",
+    "attachment": "Screenshot/Video: screens/02-era-small.png, screens/02-era-large.png"
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "title": "[UI][Intro 7] Statement không hiển thị dạng statement card lớn",
+    "severity": "Low",
+    "actual": "- Ở Intro 7, 8, 9 (id: statement_friends, statement_old_things, statement_fears), câu statement chỉ hiển thị như headline thường, phía dưới là 3 option, không có card.",
+    "expected": "- Theo brief (Visual màn 7–9): \"Large statement card, three pill options\".",
+    "attachment": "Screenshot/Video: screens/07-statement_friends-small.png, screens/08-statement_old_things-small.png, screens/09-statement_fears-small.png"
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "title": "[UI/UX][Intro 14] Ô Month/Day/Year không có icon dropdown",
+    "severity": "Low",
+    "actual": "- 3 ô chọn ngày sinh (id: birth_date) hiển thị giống text field, không có icon mũi tên/chevron báo đây là ô chọn.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/14-birth_date-small.png, screens/14-birth_date-large.png"
+  },
+  {
+    "screen": "Intro 15",
+    "title": "[UI][Intro 15] Icon era trên cùng của vòng era bị cắt mất nửa trên",
+    "severity": "Medium",
+    "actual": "- Ở màn loader (id: loader), icon era trên cùng (Ancient) bị cắt ngang phần trên, sát dưới headline \"Finding your past life\", trên cả small và large.",
+    "expected": "- Icon era cần hiển thị đầy đủ, không bị cắt (các icon era khác trên vòng và vòng ở Intro 10 đều hiển thị đủ).",
+    "attachment": "Screenshot/Video: screens/15-loader-small.png, screens/15-loader-large.png"
+  },
+  {
+    "screen": "Intro 15",
+    "title": "[UI][Intro 15] Loader hiển thị số phần trăm \"15%\" trong progress ring",
+    "severity": "Low",
+    "actual": "- Progress ring của loader hiển thị số phần trăm (\"15%\") ở giữa.",
+    "expected": "- Brief màn 15 ghi \"a short progress ring\" và \"No percentage claims\" – cần PM/Designer confirm có hiển thị số % hay không.",
+    "attachment": "Screenshot/Video: screens/15-loader-small.png, screens/15-loader-large.png"
+  },
+  {
+    "screen": "Intro 16",
+    "title": "[UI][Intro 16] Role chip hiển thị màu xanh lá, không đồng bộ với era chip",
+    "severity": "Low",
+    "actual": "- Ở teaser (id: past_life_teaser), era chip \"Medieval\" màu gold còn role chip \"village herbalist\" màu xanh lá, chiều cao 2 chip cũng không bằng nhau.",
+    "expected": "- Theo brief (Visual màn 16): \"an era chip and a role chip in gold\".",
+    "attachment": "Screenshot/Video: screens/16-past_life_teaser-small-p1.png, screens/16-past_life_teaser-large.png"
+  },
+  {
+    "screen": "Intro 16",
+    "title": "[UI][Intro 16] Hero không phải medallion tròn, ảnh chữ nhật lộ cạnh trên",
+    "severity": "Low",
+    "actual": "- Hero của teaser là ảnh chữ nhật full width, có một dải nền khác màu rõ rệt ở cạnh trên ngay dưới header, không có dạng medallion tròn.",
+    "expected": "- Theo brief (Visual màn 16): \"A round medallion\" chứa vòng era và silhouette.",
+    "attachment": "Screenshot/Video: screens/16-past_life_teaser-small-p1.png, screens/16-past_life_teaser-large.png"
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Ảnh hero bị cắt phần trên vòng era ngay dưới khối headline",
+    "severity": "Medium",
+    "actual": "- Ảnh hero ở Paywall 1 (id: paywall) bị cắt ngang mép trên: phần trên vòng era và chấm era trên cùng bị mất, tạo cạnh thẳng ngay dưới dòng \"Where you lived, your story, your lesson.\".",
+    "expected": "- Ảnh hero (medallion) cần hiển thị đầy đủ, không bị cắt mép theo brief (Visual màn 18, mục Hero).",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p1.png, screens/18-paywall-large-p1.png"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Nội dung cuộn hiện xuyên qua sticky header",
+    "severity": "Low",
+    "actual": "- Khi cuộn Paywall 1, text phía sau (vd. headline \"From your answers to your story\", payment badges, câu FAQ) vẫn nhìn thấy mờ xuyên qua sticky header, chồng lên vùng logo \"Starlyn\".",
+    "expected": "- Cần đối chiếu Figma: sticky header cần che nội dung phía sau để không bị chồng chữ.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p3.png, screens/18-paywall-large-p2.png, screens/18-paywall-large-p4.png"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity",
+    "severity": "High",
+    "actual": "- Footer Paywall 1 chỉ có link Terms of Use / Privacy Policy / Subscription terms và dòng disclaimer, không có tên entity.",
+    "expected": "- Theo brief (màn 18, mục 9): \"Footer: legal links, entity, entertainment disclaimer\".",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p4.png, screens/18-paywall-large-p4.png"
+  },
+  {
+    "screen": "Upsale 1",
+    "title": "[UI][Upsale 1] Ảnh cover report bị cắt phần trên vòng era",
+    "severity": "Medium",
+    "actual": "- Ở màn add-on (id: report_upsell), ảnh trong cover card \"Karmic Lessons Report\" bị cắt ở mép trên card: phần trên vòng era và các chấm era trên cùng bị mất.",
+    "expected": "- Cần đối chiếu Figma: ảnh cover cần được căn/crop để chủ thể không bị cắt.",
+    "attachment": "Screenshot/Video: screens/19-report_upsell-small-p1.png, screens/19-report_upsell-large.png"
+  },
+  {
+    "screen": "Download App",
+    "title": "[UI][Download App] Icon trên badge App Store không giống logo Apple",
+    "severity": "Medium",
+    "actual": "- Badge \"Download on the App Store\" dùng icon hình quả táo không có cuống/lá, nhìn giống hình răng, không phải logo Apple.",
+    "expected": "- Cần đối chiếu Figma: badge store cần dùng đúng asset badge chính thức của App Store.",
+    "attachment": "Screenshot/Video: screens/20-get_app-small.png, screens/20-get_app-large.png"
+  }
+]

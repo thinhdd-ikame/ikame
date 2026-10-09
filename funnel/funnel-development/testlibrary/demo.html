@@ -1,0 +1,894 @@
+<title>TestLibrary-style Funnel Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* page (control panel) tokens */
+:root{
+  color-scheme:light;
+  --page:#ECEFF4;--pt1:#15233F;--pt2:#4B5875;--pt3:#77829A;
+  --psurf:#FFFFFF;--psurf2:#E1E6EE;--pborder:#D2D9E3;--pacc:#A8650A;--pacc-ink:#FFFFFF;
+  --k:1;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+    --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+  --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--pt1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+code{font-size:.92em;overflow-wrap:anywhere}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:32px 16px 48px}
+.phonebox{width:calc(390px * var(--k));height:calc(812px * var(--k));flex:none}
+
+/* phone: app brand tokens, fixed in both page themes */
+.phone{
+  --bg:#FFFFFF;--paper:#F6F7F9;--ink:#15233F;--ink-2:#243557;--t2:#4B5875;--t3:#838DA3;
+  --line:#DCE1E9;--line2:#EDF0F4;--acc:#E39B2D;--acc-dim:#E39B2D1F;--acc-ink:#9A5F0C;--err:#C23B22;--ok:#2F7D5B;
+  color-scheme:light;
+  width:390px;height:812px;border-radius:52px;overflow:hidden;position:relative;isolation:isolate;
+  transform:scale(var(--k));transform-origin:0 0;
+  background:#fff linear-gradient(#F1F4F8 1px,transparent 1px) 0 18px/100% 32px;
+  color:var(--ink);border:1px solid #C9D0DB;
+  box-shadow:0 0 0 10px #1A2230,0 0 0 11px #3A4456,0 40px 80px -24px #0A1020aa;
+}
+.phone button:focus-visible,.phone input:focus-visible,.phone summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--ink)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--ink)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--ink);border-radius:1px}
+
+/* simple screen change: fade + small slide */
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+.view.in.b{animation-name:vinb}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes vinb{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--line2)}
+.navspacer{width:36px;flex:none}
+.navlabel{flex:1;text-align:center;font:600 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.segs{flex:1;display:flex;gap:4px}
+.segs span{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.segs span i{display:block;height:100%;background:var(--ink);transition:width .3s ease}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:16px;position:relative}
+.scr.center{justify-content:center}
+.scr>*{flex-shrink:0}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;background:linear-gradient(to top,#fff 70%,#ffffff00)}
+.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+
+.display{font:700 29px/1.14 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
+.display.sm{font-size:25px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.ph{font:500 .82em/1.3 ui-monospace,"Cascadia Mono",Consolas,monospace;border:1px dashed #C98A2A;color:#94600F;background:#FFF7EA;border-radius:6px;padding:0 5px;white-space:nowrap;letter-spacing:0;text-transform:none}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--ink);color:#fff;font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;flex:none}
+.btn:hover{background:var(--ink-2)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:#E4E8EF;color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:4px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.link:hover{color:var(--ink)}
+
+.wm{display:flex;align-items:center;gap:8px;font:700 17px/1 var(--sans);color:var(--ink);letter-spacing:-.01em}
+.wm i{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 11px/1 var(--sans);font-style:normal}
+.hero1{position:relative;height:172px;border-radius:20px;overflow:hidden;background:#F6F4EF;border:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.hero1>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:18% 45%}
+.hero1 .bell3d{margin:0;z-index:1}
+.banner{display:block;width:100%;height:150px;object-fit:cover;border-radius:18px;background:#F6F4EF;border:1px solid var(--line)}
+.banner.pw{height:118px;object-position:50% 52%}
+.tpop{transform-box:fill-box;transform-origin:center;animation:tpop .4s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes tpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+
+.pills{display:flex;flex-direction:column;gap:8px}
+.pill{height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;border-radius:14px;border:1.5px solid var(--ink);background:#fff;text-align:left;width:100%;font-weight:600;font-size:16px;color:var(--ink);transition:background .15s,color .15s}
+.pill:hover{background:var(--paper)}
+.pill.on{background:var(--ink);color:#fff}
+.pill .em{width:24px;text-align:center;font-size:18px}
+.disc{font-size:15px;color:var(--t2);text-align:center;margin:0}
+.disc b{color:var(--ink);font-weight:600}
+.flinks{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:11.5px;color:var(--t3)}
+.flinks span{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+.err{font-size:13px;color:var(--err)}
+.hint{font-size:13px;color:var(--t3)}
+
+.rows{display:flex;flex-direction:column}
+.irow{display:flex;gap:14px;align-items:center;padding:14px 2px;border-top:1px solid var(--line2);font-size:16px;font-weight:500}
+.irow:first-child{border-top:none}
+.irow .em{width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:19px;flex:none}
+.rule{height:1px;background:var(--line)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--t2)}
+.secchip{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font:600 12px/1 var(--sans);color:var(--t2)}
+.box{min-width:0;height:52px;border-radius:14px;background:#fff;border:1.5px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--ink)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--ink);font:400 16px var(--sans)}
+.box.bad{border-color:var(--err)}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:500 13px/1 var(--sans);color:var(--t2)}
+
+/* test */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 1px 0 var(--line),0 10px 24px -18px #15233F66;min-height:120px}
+.seq{font:700 28px/1.2 var(--serif);letter-spacing:.02em;color:var(--ink);text-align:center}
+.seq .gap{display:inline-block;min-width:44px;border-bottom:3px solid var(--acc);color:transparent}
+.wq{font:600 21px/1.35 var(--serif);text-align:center;color:var(--ink);text-wrap:balance}
+.wq b{color:var(--ink);text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:3px;text-underline-offset:4px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.tile{position:relative;border-radius:14px;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;padding:0;transition:border-color .15s,background .15s}
+.tiles.img .tile{height:84px}
+.tiles.txt .tile{height:60px}
+.tile:hover{border-color:#AEB8C9}
+.tile.on{border:2px solid var(--ink);background:#EEF1F6}
+.tile .tl{position:absolute;left:7px;top:6px;font:600 10px/1 var(--sans);color:var(--t3)}
+.tile .tv{font:600 19px/1 var(--sans);color:var(--ink)}
+.cpring{display:grid;place-items:center;position:relative;margin:4px auto 0}
+.cpring .mid{position:absolute;inset:0;display:grid;place-items:center;color:var(--acc)}
+.cpring .mid span{width:64px;height:64px;border-radius:50%;background:var(--acc-dim);display:grid;place-items:center}
+.minitype{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+.minitype .t{font-size:13px;color:var(--t2)}
+.minitype b{display:block;font-size:14px;color:var(--ink)}
+.tip{padding:12px 14px;border-radius:14px;border-left:3px solid var(--acc);background:#FFF9EF;font-size:14px;color:var(--ink)}
+
+/* trust */
+.bignum{font:700 44px/1 var(--serif);text-align:center;color:var(--ink)}
+.bignum .ph{font-size:24px}
+.stars{display:flex;gap:3px;justify-content:center;color:var(--acc)}
+.quote{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px -20px #15233F80}
+.quote q{font:600 17px/1.4 var(--serif);quotes:none;color:var(--ink)}
+.quote .by{font-size:12px;color:var(--t3)}
+.quote.dash{border-style:dashed;background:var(--paper);box-shadow:none}
+.quote.dash q{color:var(--t3);font-weight:500;font-size:15px}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--ink)}
+.step.done .pct{color:var(--ok)}
+.bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ink);width:0}
+.qrot{min-height:92px}
+.qrot .quote{animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fadein{animation:fi .35s ease}
+
+/* 3D hero: the bell-curve result card */
+.bell3d{position:relative;perspective:820px;perspective-origin:50% 30%;flex:none;margin:26px auto 6px;touch-action:pan-y}
+.bscene{position:absolute;left:0;top:0;transform-style:preserve-3d;will-change:transform}
+.bscene>*{position:absolute;left:0;top:0}
+.bcard{inset:0;width:100%;height:100%;border-radius:12px;background:#fff linear-gradient(#EEF2F7 1px,transparent 1px) 0 6px/100% 14px;border:1px solid #D2D9E3;box-shadow:0 14px 26px -14px #15233F55}
+.bcard svg{display:block}
+.bedge{width:100%;height:100%;border-radius:12px;background:#CBD3DF;transform:translateZ(-4px)}
+.bfloor{left:-6%!important;top:6%!important;width:112%;height:100%;border-radius:40%;background:radial-gradient(ellipse at center,#15233F38,transparent 66%);filter:blur(8px);transform:translateZ(-30px)}
+.blay{pointer-events:none;overflow:visible}
+.bcurve path.draw{stroke-dasharray:1 1;stroke-dashoffset:1;stroke-linecap:butt;animation:cdraw 2.4s ease .2s forwards}
+@keyframes cdraw{to{stroke-dashoffset:0}}
+.bstalk{width:2px;margin-left:-1px;transform-origin:50% 100%;background:linear-gradient(to top,#E39B2D,#E39B2D66)}
+.bglow{width:12px;height:12px;border-radius:50%;background:#E39B2D;box-shadow:0 0 0 4px #E39B2D33,0 0 14px 4px #E39B2D88}
+.bpin{white-space:nowrap}
+.bpin span{display:block;background:var(--ink);color:#fff;font:700 13px/1 var(--sans);padding:6px 10px;border-radius:9px;box-shadow:0 0 0 3px #E39B2D66,0 8px 16px -6px #15233F80;font-variant-numeric:tabular-nums}
+
+/* gate */
+.sum{padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t2)}
+.sum .r{display:flex;justify-content:space-between;gap:10px}
+.sum .r b{color:var(--ink);font-weight:600}
+.blurv{filter:blur(6px);user-select:none}
+.soc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.soc .btn{height:48px;font-size:14px}
+.orline{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t3)}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+.certo{position:relative;border:1.5px dashed #C6CEDA;border-radius:14px;padding:22px 18px 18px;text-align:center;background:#FBFCFD}
+.certo .cl{font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.certo .nl{margin:14px auto 6px;min-height:34px;font:700 24px/1.3 var(--serif);color:var(--ink);border-bottom:2px solid var(--acc);max-width:230px;background:var(--acc-dim);border-radius:6px 6px 0 0}
+.certo .nl.empty{color:#C6CEDA}
+.certo .ls{height:8px;border-radius:4px;background:#E9EDF2;margin:8px auto 0;width:60%}
+
+/* preview + result */
+.pv{padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.pv h4{margin:0;font-size:13px;font-weight:600;color:var(--t2);display:flex;justify-content:space-between;align-items:center}
+.flatbell{position:relative}
+.flatbell .lbl{position:absolute;right:6px;top:4px;font:700 18px/1 var(--serif);color:var(--ink)}
+.sbars{display:flex;flex-direction:column;gap:9px}
+.sbar{display:grid;grid-template-columns:74px 1fr 34px;gap:10px;align-items:center;font-size:13px;color:var(--t2);background:none;border:none;padding:2px 0;text-align:left;width:100%}
+.sbar .trk{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}
+.sbar .trk i{display:block;height:100%;border-radius:4px;background:#8E9AB2}
+.sbar.top{color:var(--ink);font-weight:600}
+.sbar.top .trk i{background:var(--acc)}
+.sbar .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.sbar .tag{font-size:10px;color:var(--acc-ink)}
+.sbar.blur .trk,.sbar .val.blur{filter:blur(3px)}
+.bens{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)}
+.bens div{display:flex;gap:10px;align-items:center}
+.minicert{display:flex;gap:12px;align-items:center}
+.minicert .mc{width:92px;height:64px;border-radius:6px;border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:-5px;display:grid;place-items:center;text-align:center;font:700 10px/1.2 var(--serif);color:var(--ink);background:#fff;flex:none;padding:6px}
+.band{align-self:flex-start;display:inline-flex;gap:6px;align-items:center;padding:6px 11px;border-radius:999px;font:600 13px/1 var(--sans);background:var(--acc-dim);color:var(--acc-ink)}
+.band.b{background:#E9EDF3;color:var(--t2)}
+.method{font-size:12.5px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.stip{font-size:13px;color:var(--ink);background:#FFF9EF;border-radius:10px;padding:8px 10px;min-height:34px}
+.goaltips{padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.goaltips h4{margin:0 0 8px;font-size:14px}
+.goaltips ul{margin:0;padding-left:18px;color:var(--t2);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* paywall + checkout */
+.closex{position:absolute;top:56px;right:16px;z-index:3;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--t2)}
+.pstrip{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--paper);border:1px solid var(--line);margin-right:40px}
+.pstrip b{display:block;font-size:14px}
+.plan{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:16px;border:1.5px solid var(--line);background:#fff;text-align:left;width:100%}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid #AEB8C9;display:grid;place-items:center;flex:none;margin-top:1px}
+.plan.on{border:2px solid var(--ink);padding:12.5px 13.5px}
+.plan.on .radio{border:6.5px solid var(--ink)}
+.plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--ink)}
+.plan .pl{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.plan .pl span:nth-child(odd){color:var(--t3)}
+.plan .pd{font-size:12.5px;color:var(--t2);margin-top:5px}
+.badge{font:700 10px/1 var(--sans);letter-spacing:.05em;background:var(--acc);color:#2A1A02;padding:4px 7px;border-radius:6px}
+.stack{display:flex;flex-direction:column;gap:9px}
+.today{font-size:13.5px;color:var(--ink);text-align:center;text-wrap:balance;font-variant-numeric:tabular-nums}
+.pays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pays span{font:600 11px/1 var(--sans);color:var(--t2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff}
+.checks{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.checks div{display:flex;gap:9px;align-items:flex-start}
+.checks svg{color:var(--ok);flex:none;margin-top:2px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:12px 2px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--t3);font-weight:500}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:0 2px 12px;font-size:13.5px;color:var(--t2)}
+.small{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance;margin:0}
+.ordr{padding:4px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.ordr .r{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line2);font-size:15px;font-variant-numeric:tabular-nums}
+.ordr .r:first-child{border-top:none}
+.ordr .r span{color:var(--t2)}
+.ordr .r b{font-weight:600}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--ink);cursor:pointer;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:#fff}
+.consent.bad{border-color:var(--err)}
+.consent input{width:22px;height:22px;margin:0;flex:none;accent-color:#15233F}
+.pmeth{display:flex;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:3px}
+.pmeth button{flex:1;border:none;background:none;border-radius:9px;padding:9px 0;font-size:13px;font-weight:600;color:var(--t2)}
+.pmeth button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #15233F26}
+.cardrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* certificate */
+.cert{position:relative;padding:22px 18px 16px;border-radius:8px;background:#fff;border:3px double var(--ink);box-shadow:0 18px 30px -20px #15233F80;text-align:center;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.cert::before{content:"";position:absolute;inset:6px;border:1px solid #C6CEDA;border-radius:4px;pointer-events:none}
+.cert .ct{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--t3)}
+.cert .cn{font:700 28px/1.2 var(--serif);color:var(--ink);margin-top:6px}
+.cert .cs{font:700 40px/1 var(--serif);color:var(--ink)}
+.cert .cs small{display:block;font:500 11px/1.4 var(--sans);color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.cert .cb{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;font-size:11px;color:var(--t2);text-align:left}
+.seal{width:52px;height:52px;border-radius:50%;border:2px solid var(--acc);display:grid;place-items:center;font:700 13px/1 var(--serif);color:var(--acc-ink);background:#FFF9EF;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #E39B2D66}
+.cert .cf{font-size:10.5px;color:var(--t3);margin-top:6px}
+.share{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.share button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--t2)}
+.share button:hover{border-color:var(--ink)}
+.sharetxt{font-size:13px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px dashed var(--line)}
+
+/* next tests */
+.lib{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:2px 20px 8px;scroll-snap-type:x mandatory}
+.lcard{flex:none;width:170px;scroll-snap-align:start;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;text-align:left}
+.lcard .ei{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;font-size:20px}
+.lcard .lt{display:block;width:100%;height:96px;object-fit:cover;border-radius:12px;background:#F6F4EF}
+.lcard b{font-size:15px}
+.lcard span{font-size:12px;color:var(--t3)}
+
+.wbar{display:flex;align-items:center;justify-content:space-between;padding:2px 0 4px;margin-right:44px}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:20px;border:2px solid var(--ink);background:#fff;box-shadow:0 0 0 5px var(--acc-dim),0 22px 36px -24px #15233F66}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 11px;border-radius:999px;background:var(--acc);color:#2A1A02;font:700 10.5px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{display:block;font:700 18px/1.2 var(--serif);color:var(--ink)}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:14px;background:var(--paper);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:700 28px/1 var(--serif);color:var(--ink)}.oprice span{color:var(--t2);font-size:13px}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc-ink);font-variant-numeric:tabular-nums}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:9;background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.6s ease forwards;pointer-events:none}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* side panel */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:700 30px/1.1 var(--serif);margin:0 0 8px}
+.panel .intro{color:var(--pt2);margin:0;font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--pborder);border-radius:999px;padding:3px;background:var(--psurf)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--pt2);font-weight:500}
+.seg button.on{background:var(--pt1);color:var(--page)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--pborder);background:none;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--pt2)}
+.ctrls .restart:hover{color:var(--pt1)}
+.panel button:focus-visible{outline:2px solid var(--pacc);outline-offset:2px}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pt3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12px;color:var(--pacc);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--pt2);font-size:13px;width:100%}
+.flow button:hover{background:var(--psurf);color:var(--pt1)}
+.flow button.on{background:var(--psurf2);color:var(--pt1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--pt3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--pt3);border:1px solid var(--pborder);border-radius:4px;padding:1px 5px;flex:none}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--pt3)}
+.data dd{margin:0;color:var(--pt1);overflow-wrap:anywhere}
+.callout{font-size:13px;color:var(--pt2);border:1px solid var(--pborder);background:var(--psurf);border-radius:12px;padding:10px 12px;margin:0}
+.callout b{color:var(--pt1)}
+.foot-note{font-size:12px;color:var(--pt3);margin:0;display:flex;flex-direction:column;gap:6px}
+.foot-note p{margin:0}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:36px;padding-block:24px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+</style>
+<div class="wrap">
+  <div class="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>IQ test funnel</h1>
+      <p class="intro">An ikame prototype modeled on testlibrary.com: the 15-screen IQ-test funnel in <code>testlibrary/funnel-content.md</code>, in the brief's light "exam paper" look. Tap through it in the phone, or jump to any screen below.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant">
+        <button id="vA" class="on" aria-pressed="true">Copy A</button><button id="vB" aria-pressed="false">Copy B</button>
+      </div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <p class="callout"><b>Short test.</b> The real test is 38 items in 4 sections with 3 checkpoints. This demo plays 8 original items (2 per section) so the flow stays quick. Counters read "of 8".</p>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <div class="foot-note">
+      <p><b>Faked:</b> the 8 test items are written for the demo. The score is a fixed lookup from right answers (0–8 right → 68–125) placed on a mean-100 / SD-15 curve. There are no real norms and no age adjustment. The loading steps, Google/Apple sign-in, checkout, PDF download and share buttons are simulated, and no charge is made.</p>
+      <p><b>Real:</b> prices are the brief's (testlibrary.com/pricing, 2026-09-28). The app name, domain, review quote and review platform are placeholders, so the phone never shows the real brand or its Trustpilot data. The brief's sample quote is from the real site and is not used here.</p>
+      <p><b>Placeholders</b> (dashed in the phone): tests taken, review rating, reviewer name, minutes, norm group, refund window and library question counts. Fill these from real data only.</p>
+      <p><b>Images</b> (<code>img/</code>) are AI-generated still lifes: lander, screen 2, paywall header and the next-test cards. The test items stay as SVG.</p>
+      <p>Test order is Patterns → Numbers → Shapes → Words, following the checkpoint tips. Screen 2 lists the chips in the brief's order.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-dasharray="2 2"/>',
+  hash:'<path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/>',
+  shape:'<path d="M12 3l4.5 7.5h-9z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/>',
+  words:'<path d="M3 19 7.5 5h1L13 19M4.6 14.5h6.8"/><circle cx="17.5" cy="15.5" r="3"/><path d="M20.5 12v7"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  chat:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  story:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const starRow=(n=5,s=18)=>`<div class="stars" aria-label="${n} stars">${Array.from({length:n},()=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${IC.star}</svg>`).join('')}</div>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ph=s=>`<span class="ph">{{${s}}}</span>`;
+
+/* ---------- the short test: 8 original items, 2 per section ---------- */
+const INK='#15233F',FILL={w:'#FFFFFF',g:'#B7C0D1',n:INK};
+function shp(k,x,y,r,f='w'){const st=`fill="${FILL[f]}" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"`;
+  if(k==='c')return `<circle cx="${x}" cy="${y}" r="${r}" ${st}/>`;
+  if(k==='s')return `<rect x="${x-r*.86}" y="${y-r*.86}" width="${r*1.72}" height="${r*1.72}" rx="1.5" ${st}/>`;
+  return `<polygon points="${x},${y-r} ${x+r*.97},${y+r*.72} ${x-r*.97},${y+r*.72}" ${st}/>`}
+const XS={1:[25],2:[16,34],3:[10.5,25,39.5],4:[8.5,19.5,30.5,41.5]};
+const cnt=(k,n,f)=>XS[n].map(x=>shp(k,x,25,n>3?4.6:6.2,f)).join('');
+function matrix(cell,{pop=false,size=160}={}){
+  let g='';
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++){const i=r*3+c,inner=cell(r,c);
+    g+=`<g transform="translate(${4+c*54} ${4+r*54})"><g class="${pop?'tpop':''}" style="animation-delay:${.1+i*.13}s">${inner===null
+      ?`<rect x=".75" y=".75" width="48.5" height="48.5" rx="8" fill="#FFF7EA" stroke="#E39B2D" stroke-width="1.5" stroke-dasharray="4 3"/><text x="25" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#C9831F" font-family="Inter,system-ui,sans-serif">?</text>`
+      :`<rect x=".5" y=".5" width="49" height="49" rx="8" fill="#F6F7F9" stroke="#DCE1E9"/>${inner}`}</g></g>`}
+  return `<svg viewBox="0 0 166 166" width="${size}" height="${size}" role="img" aria-label="3 by 3 pattern with the last tile missing">${g}</svg>`}
+const FP=[[1,0],[2,0],[0,1],[1,1],[1,2]],PP=[[.5,0],[1.5,0],[.5,1],[1.5,1],[.5,2]];
+function pento(cells,rot=0,mir=false,u=11){const o=25-1.5*u;
+  return `<g transform="rotate(${rot} 25 25)${mir?' translate(50 0) scale(-1 1)':''}" fill="${INK}" stroke="#fff" stroke-width="1">${cells.map(([x,y])=>`<rect x="${o+x*u}" y="${o+y*u}" width="${u}" height="${u}" rx="1"/>`).join('')}</g>`}
+const arrow=d=>`<g transform="rotate(${d} 25 25)"><path d="M25 11v28M15 21l10-10 10 10" stroke="${INK}" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+const seq=s=>`<div class="seq">${s.replace('__','<span class="gap">__</span>')}</div>`;
+const SECS=[{n:'Patterns',ic:'grid'},{n:'Numbers',ic:'hash'},{n:'Shapes',ic:'shape'},{n:'Words',ic:'words'}];
+const TR=['c','s','t'];
+const ITEMS=[
+ {s:0,h:'Which tile completes the pattern?',hb:'Find the missing piece',img:1,ans:2,
+  stim:()=>matrix((r,c)=>r===2&&c===2?null:cnt(TR[r],c+1)),
+  opts:[cnt('t',2),cnt('s',3),cnt('t',3),cnt('c',3),cnt('t',1),cnt('t',4)]},
+ {s:0,h:'Which tile completes the pattern?',hb:'Find the missing piece',img:1,ans:4,
+  stim:()=>matrix((r,c)=>r===2&&c===2?null:shp(TR[(r+c)%3],25,25,13,'wgn'[c])),
+  opts:[shp('s',25,25,13,'w'),shp('c',25,25,13,'n'),shp('t',25,25,13,'n'),shp('s',25,25,13,'g'),shp('s',25,25,13,'n'),shp('c',25,25,13,'g')]},
+ {s:1,h:'Which number fills the gap?',ans:3,stim:()=>seq('8, 12, __, 20, 24'),opts:['14','15','18','16','17','22']},
+ {s:1,h:'Which number comes next?',ans:0,stim:()=>seq('3, 6, 12, 24, __'),opts:['48','30','36','42','27','64']},
+ {s:2,h:'Which is the same shape, only turned?',img:1,ans:1,
+  stim:()=>`<svg viewBox="0 0 50 50" width="116" height="116" role="img" aria-label="Shape to match">${pento(FP)}</svg>`,
+  opts:[pento(FP,0,true),pento(FP,90),pento(FP,90,true),pento(FP,180,true),pento(PP),pento(FP,270,true)]},
+ {s:2,h:'Which arrow comes next?',img:1,ans:3,
+  stim:()=>`<svg viewBox="0 0 216 54" width="260" height="65" role="img" aria-label="Arrows pointing up, right, down, then a missing one">${[0,90,180].map((d,i)=>`<g transform="translate(${2+i*54} 2)"><rect x=".5" y=".5" width="49" height="49" rx="8" fill="#F6F7F9" stroke="#DCE1E9"/>${arrow(d)}</g>`).join('')}<g transform="translate(164 2)"><rect x=".75" y=".75" width="48.5" height="48.5" rx="8" fill="#FFF7EA" stroke="#E39B2D" stroke-width="1.5" stroke-dasharray="4 3"/><text x="25" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#C9831F" font-family="Inter,system-ui,sans-serif">?</text></g></svg>`,
+  opts:[arrow(0),arrow(180),arrow(45),arrow(270),arrow(90),arrow(225)]},
+ {s:3,h:'Pick the best match',ans:2,stim:()=>`<div class="wq">Car is to <b>wheel</b> as bird is to…</div>`,opts:['nest','sky','wing','egg','feather','song']},
+ {s:3,h:'Pick the best match',ans:4,stim:()=>`<div class="wq">Hot is to <b>cold</b> as tall is to…</div>`,opts:['high','wide','long','big','short','warm']}
+];
+const N=ITEMS.length;
+const PRE=[2,4,3,0,0,3,2,0]; /* panel-jump prefill: 6 of 8 right */
+const TIPS=['Tip: skip nothing — a guess beats a blank.','Tip: rotate shapes in your head, not the phone.','Tip: last section is words — read each option.'];
+const SEC_TIP=['Spotting the rule across rows and columns.','Finding the step between numbers.','Turning shapes in your head.','Seeing how two words relate.'];
+
+/* ---------- scoring: deterministic, from right answers only ---------- */
+const TABLE=[68,74,80,87,94,100,107,116,125];
+const right=()=>ITEMS.reduce((k,it,i)=>k+(S.ans[i]===it.ans?1:0),0);
+const answered=()=>S.ans.filter(a=>a!==null).length;
+const score=()=>TABLE[right()];
+const erf=x=>{const s=Math.sign(x);x=Math.abs(x);const t=1/(1+.3275911*x);return s*(1-((((1.061405429*t-1.453152027)*t+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x))};
+const pctile=s=>Math.max(1,Math.min(99,Math.round(50*(1+erf((s-100)/15/Math.SQRT2)))));
+const band=s=>s<85?'Below average':s<=115?'Average':'Above average';
+const BANDLINE={'Below average':'A starting point, not a ceiling — it’s trainable.','Average':'Right where most people land — and it’s trainable.','Above average':'Quick with patterns — keep stretching it.'};
+const secRight=j=>ITEMS.reduce((k,it,i)=>k+(it.s===j&&S.ans[i]===it.ans?1:0),0);
+const strongest=()=>{let b=0;for(let j=1;j<4;j++)if(secRight(j)>secRight(b))b=j;return SECS[b].n};
+const fmtDur=ms=>{const s=Math.max(1,Math.round(ms/1000));return `${Math.floor(s/60)}m ${String(s%60).padStart(2,'0')}s`};
+const dstr=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return dstr(d)};
+const renewal=p=>addDays(p==='t28'?28:7);
+
+const AGES=[['18-24','🌱'],['25-34','🚀'],['35-44','🧭'],['45-59','🌿'],['60+','🦉']];
+const GOALS=[['curious','🤔','Pure curiosity'],['prep','🎓','School or job prep'],['sharp','🧠','Keep my mind sharp'],['friends','👥','Compare with friends'],['other','✏️','Other']];
+const goalLabel=()=>{const g=GOALS.find(x=>x[0]===S.goal);return S.goal==='other'?(S.goalOther.trim()||'Other'):g?g[2]:'Pure curiosity'};
+const GTIPS={curious:['Puzzles you enjoy already count as practice.','Pair this with a personality test next.'],prep:['Time yourself on a few number sequences.','Do one short set of analogies a day.'],sharp:['Mix a new kind of puzzle in each week.','Read something outside your usual field.'],friends:['Share your card and compare sections.','Take it together under the same rules.']};
+const LIB={prep:[['💼','Career Test','career','Paper blocks rising like stairs to a small flag'],['💪','Strengths Finder','strengths','Block arch with an amber keystone'],['🧩','DISC','disc','A disc split into four quadrants']],curious:[['🌊','Big Five','bigfive','Five spheres of growing size'],['🔤','16 Personalities','16p','A four by four grid of tiles'],['🔷','Enneagram','enneagram','Nine tokens in a circle joined by thread']],sharp:[['💛','EQ Test','eq','Two overlapping discs, amber and navy'],['🕰️','Mental Age','mentalage','An hourglass with amber sand']],friends:[['💞','Love Style','lovestyle','Two paper hearts leaning together'],['🔗','Attachment Style','attachment','Two interlocked rings'],['🦊','Spirit Animal','spiritanimal','An origami fox']]};
+const PLANS={
+  one:{n:'One-time report',today:'$57.00',then:'Nothing renews',d:'This test’s full report. No subscription.'},
+  t7:{n:'7-day Full Access',today:'$1.95',then:'$39.95 every 4 weeks',badge:'ALL 27 TESTS'},
+  t28:{n:'28-day Full Access',today:'$39.95',then:'$39.95 every 4 weeks',d:'Renews at $39.95 every 4 weeks.'}
+};
+const CONFIG={
+  funnel:'testlibrary',
+  /* Last-chance offer shown ONCE per session when the paywall is closed without paying (fallback / "upsell on decline").
+     Default: THIS report only, no subscription (the brief's "Just want this report?" path, now its own screen 12).
+     Real terms only: price/renewal must be what checkout charges. compareAt = the plan it undercuts; its real configured price is struck.
+     compareAt:'one' is only honest if {{offer_price}} is a real lower single-report price. If the offer is the one-time report at its
+     listed $57.00 (no markdown), set price:'$57.00' and compareAt:null so nothing is struck. Never strike a price nobody pays.
+     renews: null = one payment, nothing renews. For a trial offer instead, set renews:'{{offer_renews}}' (consent box then applies).
+     expiresMin: null = no timer (the brief promises no timers). A number = a real deadline; when it ends the offer is withdrawn. */
+  offer:{enabled:true,name:'This IQ report only',price:'{{offer_price}}',renews:null,compareAt:'one',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+const tok=v=>esc(v).replace(/\{\{(\w+)\}\}/g,(_,k)=>ph(k));
+PLANS.offer={n:esc(CONFIG.offer.name),today:tok(CONFIG.offer.price),then:CONFIG.offer.renews?tok(CONFIG.offer.renews):'Nothing renews',later:CONFIG.offer.renews?tok(CONFIG.offer.renews):''};
+const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
+
+const INIT=()=>({v:'A',i:1,hist:[],age:'',under:false,goal:'',goalOther:'',q:0,ans:Array(N).fill(null),cp:1,t0:null,dur:null,email:'',name:'',plan:'t7',offerSeen:false,offerEnd:null,consent:false,pay:'card',cardNo:'',cardExp:'',cardCvc:'',paid:false,paidPlan:null,upsell:false,err:'',errKind:''});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name||'Maya');
+
+const FLOW=[
+ ['A. Hook',[[1,'Lander — start the test'],[2,'How it works']]],
+ ['B. Investment',[[3,'Why are you testing?'],[4,'Test question','×38 · demo 8'],[5,'Section checkpoint','×3']]],
+ ['C. Trust',[[6,'Social proof']]],
+ ['D. Anticipation',[[7,'Scoring','auto']]],
+ ['E. Gate',[[8,'Email gate'],[9,'Name for certificate']]],
+ ['D. Anticipation (tease)',[[10,'Report preview']]],
+ ['F. Monetization',[[11,'Paywall'],[12,'Last-chance offer','once'],[13,'Order summary + consent','consent']]],
+ ['G. Payoff',[[14,'Your IQ result'],[15,'Certificate + share','verify'],[16,'Your next test','2nd layer']]]
+];
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timer=null,timer2=null,pend=null;
+function clearTimers(){clearInterval(timer);clearTimeout(timer);clearInterval(timer2);clearTimeout(pend);timer=timer2=pend=null}
+
+function go(n,push=true){clearTimers();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.errKind='';render(dir)}
+let backing=false;
+function back(){clearTimers();const p=S.hist.pop();if(p){S.i=p;S.err='';S.errKind='';backing=true;try{render('b')}finally{backing=false}}}
+const EVENTS=window.__ikfEvents=[];
+function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p)}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+function startTest(){if(S.t0===null)S.t0=Date.now();if(S.ans.every(a=>a===null))S.q=0;go(4)}
+
+function fillTo(n){
+  if(n>1&&!S.age)S.age='25-34';
+  if(n>3&&!S.goal)S.goal='curious';
+  if(n===4){if(S.t0===null)S.t0=Date.now();if(S.ans.every(a=>a!==null))S.q=0}
+  if(n===5){const cp=S.ans.every(a=>a!==null)?1:Math.max(1,Math.min(3,S.cp||1));S.cp=cp;for(let i=0;i<cp*2;i++)if(S.ans[i]===null)S.ans[i]=PRE[i];S.q=cp*2-1;if(S.t0===null)S.t0=Date.now()}
+  if(n>5){S.ans=S.ans.map((a,i)=>a===null?PRE[i]:a);S.q=N-1;if(S.dur===null)S.dur=185000}
+  if(n>8&&!S.email)S.email='maya@example.com';
+  if(n>9&&!S.name)S.name='Maya';
+  if(n>13&&!S.paid){S.paid=true;S.paidPlan=S.plan}
+}
+
+/* ---------- nav bar per screen ---------- */
+function segs(){return `<div class="segs" aria-label="Test progress">${SECS.map((_,j)=>{const idx=ITEMS.map((it,i)=>it.s===j?i:-1).filter(i=>i>=0);const a=idx.filter(i=>S.ans[i]!==null&&(S.i!==4||i<S.q||(i===S.q&&S.ans[i]!==null))).length;return `<span><i style="width:${a/idx.length*100}%"></i></span>`}).join('')}</div>`}
+function nav(){
+  const b=`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`,sp='<div class="navspacer"></div>';
+  switch(S.i){
+    case 2:case 9:case 10:case 13:return `<div class="nav">${b}<div style="flex:1"></div>${sp}</div>`;
+    case 3:return `<div class="nav">${b}<div class="navlabel">Warm-up</div>${sp}</div>`;
+    case 4:{const first=S.q%2===0;return `<div class="nav">${S.q===0||!first?`<button class="iconbtn" data-a="tback" aria-label="Back">${ic('back',22)}</button>`:sp}${segs()}${sp}</div>`}
+    case 5:return `<div class="nav">${sp}${segs()}${sp}</div>`;
+  }
+  return '';
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+
+/* ---------- bell curve geometry (viewBox 280 x 150) ---------- */
+const BX=iq=>20+(iq-55)/90*240;
+const BY=iq=>128-100*Math.exp(-(((iq-100)/15)**2)/2);
+const curveD=(()=>{let d='';for(let iq=55;iq<=145.01;iq+=2.5)d+=(d?'L':'M')+BX(iq).toFixed(1)+' '+BY(iq).toFixed(1);return d})();
+const areaD=curveD+'L260 128L20 128Z';
+const axisSVG=`<line x1="20" y1="128" x2="260" y2="128" stroke="#15233F" stroke-width="1.2"/>${[70,85,100,115,130].map(v=>`<line x1="${BX(v)}" y1="128" x2="${BX(v)}" y2="132" stroke="#15233F"/><text x="${BX(v)}" y="143" text-anchor="middle" font-size="9" fill="#838DA3" font-family="Inter,system-ui,sans-serif">${v}</text>`).join('')}<line x1="${BX(85)}" y1="34" x2="${BX(85)}" y2="128" stroke="#C6CEDA" stroke-dasharray="3 3"/><line x1="${BX(115)}" y1="34" x2="${BX(115)}" y2="128" stroke="#C6CEDA" stroke-dasharray="3 3"/>`;
+function bellFlat(w,{s=null,blur=true}={}){const h=Math.round(w*150/280);
+  const mx=s?BX(s):BX(100);
+  return `<div class="flatbell"><svg viewBox="0 0 280 150" width="${w}" height="${h}" aria-hidden="true">${axisSVG}<path d="${areaD}" fill="#15233F" fill-opacity=".07"/><path d="${curveD}" fill="none" stroke="#15233F" stroke-width="2.5"/><g style="${blur?'filter:blur(5px)':''}"><line x1="${mx}" y1="28" x2="${mx}" y2="128" stroke="#E39B2D" stroke-width="2.5"/><circle cx="${mx}" cy="128" r="6" fill="#E39B2D"/></g></svg><span class="lbl">IQ <span class="blurv" style="display:inline-block">··</span></span></div>`}
+
+/* ---------- 3D hero: the bell-curve result card ---------- */
+let bellSeq=0;const BELLS=new Set();const ease=x=>1-Math.pow(1-x,3);
+const bell3d=(mode,w,s='')=>`<div class="bell3d" data-mode="${mode}" data-w="${w}" data-score="${s}"></div>`;
+function mountBell(el){
+  if(el._b)return;
+  const w=+el.dataset.w,f=w/280,h=Math.round(150*f),mode=el.dataset.mode,sc=+el.dataset.score||100,id='bc'+(++bellSeq);
+  const L=Math.round(34*f+18),baseY=128*f;
+  el.style.width=w+'px';el.style.height=h+'px';
+  el.innerHTML=`<div class="bscene" style="width:${w}px;height:${h}px">
+    <div class="bfloor"></div><div class="bedge"></div>
+    <div class="bcard"><svg viewBox="0 0 280 150" width="${w}" height="${h}" aria-hidden="true">${axisSVG}</svg></div>
+    <svg class="blay" viewBox="0 0 280 150" width="${w}" height="${h}" style="transform:translateZ(${Math.round(9*f+3)}px)" aria-hidden="true"><defs><clipPath id="${id}"><rect class="clr" x="0" y="0" width="0" height="150"/></clipPath></defs><path d="${areaD}" fill="#15233F" fill-opacity=".08"/><path d="${areaD}" fill="#E39B2D" fill-opacity=".42" clip-path="url(#${id})"/></svg>
+    <svg class="blay bcurve" viewBox="0 0 280 150" width="${w}" height="${h}" style="transform:translateZ(${Math.round(18*f+5)}px)" aria-hidden="true"><path class="${mode==='float'?'':'draw'}" d="${curveD}" pathLength="1" fill="none" stroke="#15233F" stroke-width="3" stroke-linecap="round"/></svg>
+    <div class="bglow"></div>
+    <div class="bstalk" style="height:${L}px;top:${baseY-L}px"></div>
+    <div class="bpin"><span>${mode==='float'?'?':'…'}</span></div>
+  </div>`;
+  el.setAttribute('role','img');el.setAttribute('aria-label',mode==='land'?`Bell curve with your score of ${sc} marked`:'Bell curve of IQ scores');
+  const b={el,mode,sc,f,L,baseY,scene:el.firstElementChild,clr:el.querySelector('.clr'),stalk:el.querySelector('.bstalk'),glow:el.querySelector('.bglow'),pin:el.querySelector('.bpin'),lab:el.querySelector('.bpin span'),t0:performance.now(),px:0,py:0,tx:0,ty:0,flatT:null,last:''};
+  el._b=b;BELLS.add(b);
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();b.tx=(e.clientX-r.left)/r.width-.5;b.ty=(e.clientY-r.top)/r.height-.5});
+  el.addEventListener('pointerleave',()=>{b.tx=0;b.ty=0});
+  if(RM)drawBell(b,b.t0+60000);
+  else if(!BELLS.loop){BELLS.loop=true;requestAnimationFrame(bellFrame)}
+}
+function drawBell(b,now){
+  const t=(now-b.t0)/1000;let tilt,yaw=0,rz=0,sc=1,mx=100,label='?',pinOp=1,shade=0;
+  b.px+=(b.tx-b.px)*.08;b.py+=(b.ty-b.py)*.08;
+  if(b.mode==='float'){tilt=36+Math.sin(t*.6)*5;yaw=Math.sin(t*.45)*11;rz=Math.sin(t*.35)*2}
+  else if(b.mode==='spin'){
+    tilt=54;yaw=Math.sin(t*.9)*16;mx=100+Math.sin(t*1.3)*24;label='…';pinOp=.55+.35*Math.sin(t*3);
+    if(b.flatT!==null){const k=ease(Math.min(1,(now-b.flatT)/1100));tilt=54-32*k;yaw*=1-k}
+    if(RM){tilt=24;yaw=0;mx=100}
+  }else{ /* land: rotates in from flat, marker glides to the score */
+    const k=ease(Math.min(1,t/1.6));tilt=82-(82-(28+Math.sin(t*.5)*3))*k;sc=.72+.28*k;yaw=-22*(1-k)+Math.sin(t*.4)*4*k;
+    b.el.style.opacity=Math.min(1,t/.4);
+    const m=ease(Math.min(1,Math.max(0,(t-1)/1.9)));mx=55+(b.sc-55)*m;label='IQ '+Math.round(mx);shade=1;
+  }
+  tilt+=b.py*-22;yaw+=b.px*30;
+  b.scene.style.transform=`scale(${sc}) rotateX(${tilt}deg) rotateY(${yaw}deg) rotateZ(${rz}deg)`;
+  const inv=`rotateZ(${-rz}deg) rotateY(${-yaw}deg) rotateX(${-tilt}deg)`;
+  const x=BX(mx)*b.f;
+  b.stalk.style.transform=`translate3d(${x}px,0,0) rotateX(-90deg)`;
+  b.glow.style.transform=`translate(-50%,-50%) translate3d(${x}px,${b.baseY}px,1px)`;
+  b.pin.style.transform=`translate(-50%,-50%) translate3d(${x}px,${b.baseY}px,${b.L+14}px) ${inv}`;
+  b.pin.style.opacity=pinOp;
+  if(shade)b.clr.setAttribute('width',BX(mx).toFixed(1));
+  if(label!==b.last){b.lab.textContent=label;b.last=label}
+}
+function bellFrame(now){
+  for(const b of BELLS){if(!b.el.isConnected){BELLS.delete(b);continue}drawBell(b,now)}
+  if(BELLS.size)requestAnimationFrame(bellFrame);else BELLS.loop=false;
+}
+
+/* ---------- screens ---------- */
+function cpRing(done,nextIdx){
+  const R=42,pt=a=>{const r=Math.PI*(a-90)/180;return [(50+R*Math.cos(r)).toFixed(2),(50+R*Math.sin(r)).toFixed(2)]};
+  const arcs=[0,1,2,3].map(i=>{const [x0,y0]=pt(i*90+5),[x1,y1]=pt(i*90+85);return `<path d="M${x0} ${y0}A${R} ${R} 0 0 1 ${x1} ${y1}" fill="none" stroke="${i<done?INK:i===nextIdx?'#F0C47F':'#DCE1E9'}" stroke-width="${i<done?9:7}" stroke-linecap="round"/>`}).join('');
+  return `<div class="cpring" style="width:160px;height:160px"><svg viewBox="0 0 100 100" width="160" height="160" aria-hidden="true">${arcs}</svg><div class="mid"><span>${ic(SECS[nextIdx].ic,30,'currentColor',1.9)}</span></div></div>`}
+const MINI=[null,
+  ['Number sequences',seq('2, 4, 6, __').replace('class="seq"','class="seq" style="font-size:17px"')],
+  ['Turn shapes in your head',`<svg viewBox="0 0 50 50" width="40" height="40" aria-hidden="true">${pento(FP,90)}</svg>`],
+  ['Word analogies',`<div class="wq" style="font-size:15px">A is to <b>B</b> as…</div>`]];
+function sbars({blur=false}={}){const top=strongest();
+  return `<div class="sbars">${SECS.map((sc,j)=>{const k=secRight(j),pct=Math.round(k/2*100),isTop=sc.n===top;
+    return `<button class="sbar ${isTop?'top':''} ${blur&&!isTop?'blur':''}" ${blur?'tabindex="-1"':`data-a="stip" data-v="${j}"`}><span>${sc.n}${isTop?'<br><span class="tag">Strongest</span>':''}</span><span class="trk"><i style="width:${Math.max(4,pct)}%"></i></span><span class="val ${blur?'blur':''}">${k}/2</span></button>`}).join('')}</div>`}
+const reviewCard=()=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${ph('review_quote')}”</q><span class="by">— ${ph('first_name')}, ${ph('country')} · ${ph('review_platform')}</span></div>`;
+const dashQuote=()=>`<div class="quote dash"><q>“Real, current review goes here.”</q><span class="by">— fill from real review data only</span></div>`;
+
+const V={
+1:()=>`<div class="scr" style="gap:14px">
+  <div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>${ph('app_name')}</div>
+  <div class="hero1"><img src="img/hero.jpg" alt="Navy and amber tangram pieces and a pencil on a sheet of paper" width="720" height="480" fetchpriority="high">${bell3d('float',176)}</div>
+  <h1 class="display">${t('Discover your IQ score','How sharp is your mind?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('38 reasoning puzzles, compared with people your age.','Patterns, numbers, words and shapes — pick your age to start.')}</p>
+  <div class="pills" role="group" aria-label="Your age">${AGES.map(([a,e])=>`<button class="pill ${S.age===a?'on':''}" data-a="age" data-v="${a}" aria-pressed="${S.age===a}"><span class="em">${e}</span>${a}</button>`).join('')}</div>
+  <p class="disc"><b>Free to take · Full report is a paid unlock</b></p>
+  ${S.under?`<div class="err" style="text-align:center">You must be 18 or older to take this test.</div>`:`<button class="link" data-a="under" style="font-size:13px">I’m under 18</button>`}
+  <div class="flinks"><span>Cancel subscription</span><span>Subscription policy</span><span>FAQ</span><span>Terms</span><span>Privacy</span></div></div>`,
+2:()=>`<div class="scr"><img class="banner" src="img/howto.jpg" alt="Puzzle pieces laid out in a row: a tile grid, counters, a paper curve and shapes" width="720" height="480" loading="lazy"><h1 class="display">${t('Before you begin','Here’s how it works')}</h1>
+  <p class="lead">${t('One correct answer per question, no trick questions.','Find a quiet spot — your progress saves as you go.')}</p>
+  <div class="rows">
+    <div class="irow"><span class="em">🧩</span>38 questions · 4 sections</div>
+    <div class="irow"><span class="em">⏱</span><span>About ${ph('est_minutes')} minutes</span></div>
+    <div class="irow"><span class="em">✅</span>One correct answer each</div></div>
+  <div class="rule"></div>
+  <div class="chips">${['grid','hash','words','shape'].map((k,i)=>`<span class="chip">${ic(k,15)} ${['Patterns','Numbers','Words','Shapes'][i]}</span>`).join('')}</div></div>
+  <div class="foot">${cta('Start the test')}<div class="note">Free to take · Full report is a paid unlock</div></div>`,
+3:()=>`<div class="scr"><h1 class="display">${t('What brings you here?','Why test your IQ today?')}</h1>
+  <p class="lead">${t('We’ll tailor your report’s tips to this.','Pick the one that fits best.')}</p>
+  <div class="pills" role="group" aria-label="Reason for testing">${GOALS.map(([k,e,l])=>`<button class="pill ${S.goal===k?'on':''}" data-a="goal" data-v="${k}" aria-pressed="${S.goal===k}"><span class="em">${e}</span>${l}</button>`).join('')}</div>
+  ${S.goal==='other'?`<div class="box fadein"><input id="go" data-f="goalOther" maxlength="40" placeholder="Tell us in a few words" value="${esc(S.goalOther)}" aria-label="Other reason"></div>`:''}</div>
+  <div class="foot">${S.goal==='other'?cta('Continue',!!S.goalOther.trim(),'goalnext'):'<div class="note">Tap one to continue</div>'}</div>`,
+4:()=>{const it=ITEMS[S.q],sec=SECS[it.s],sel=S.ans[S.q];
+  return `<div class="scr" style="gap:13px"><span class="secchip">${ic(sec.ic,14)} ${sec.n} · ${it.s+1}/4</span>
+  <h1 class="display sm">${it.s===0?t(it.h,it.hb):it.h}</h1>
+  <p class="lead" style="margin-top:-4px">${t(`Question ${S.q+1} of ${N} · ${sec.n}`,'Take your time and trust your first instinct.')}</p>
+  <div class="pcard">${it.stim()}</div>
+  <div class="tiles ${it.img?'img':'txt'}" role="group" aria-label="Answers">${it.opts.map((o,i)=>`<button class="tile ${sel===i?'on':''}" data-a="ans" data-v="${i}" aria-pressed="${sel===i}" aria-label="Answer ${'ABCDEF'[i]}${it.img?'':': '+o}"><span class="tl">${'ABCDEF'[i]}</span>${it.img?`<svg viewBox="0 0 50 50" width="54" height="54" aria-hidden="true">${o}</svg>`:`<span class="tv">${o}</span>`}</button>`).join('')}</div></div>
+  <div class="foot"><div class="note">Tap an answer to continue</div></div>`},
+5:()=>{const cp=S.cp,nx=SECS[cp];
+  return `<div class="scr center" style="align-items:stretch">${cpRing(cp,cp)}
+  <h1 class="display" style="text-align:center">${t(`Section ${cp} complete`,'Nice work, keep going')}</h1>
+  <p class="lead" style="text-align:center">${t(`${answered()} of ${N} answered — next up: ${nx.n}.`,'Take a breather — your answers are saved.')}</p>
+  <div class="minitype"><span style="flex:none;display:grid;place-items:center;width:64px">${MINI[cp][1]}</span><span><span class="t">Next · ${nx.n} · ${cp+1}/4</span><b>${MINI[cp][0]}</b></span></div>
+  <div class="tip">${TIPS[cp-1]}</div></div>
+  <div class="foot">${cta('Next section',true,'nextsec')}</div>`},
+6:()=>`<div class="scr center">${S.v==='B'?`<div class="bignum">${ph('tests_taken')}</div>`:''}${starRow(5,22)}
+  <h1 class="display" style="text-align:center">${t(`<span class="bignum" style="display:block;margin-bottom:6px">${ph('tests_taken')}</span>tests taken`,`Rated ${ph('review_rating')} by test-takers`)}</h1>
+  <p class="lead" style="text-align:center">${t(`People use ${ph('app_name')} to understand how they think.`,'Real reviews from people who took this test.')}</p>
+  ${reviewCard()}</div>
+  <div class="foot">${cta('See my results')}</div>`,
+7:()=>{const rows=[`Checking your ${N} answers…`,'Comparing with your age group…','Mapping strengths by section…','Preparing your certificate, almost ready…'];
+  return `<div class="scr" style="gap:14px"><h1 class="display" style="text-align:center;margin-top:6px">${t('Scoring your answers…','Building your IQ report…')}</h1>
+  <p class="lead" style="text-align:center;margin-top:-8px">Scored from your answers only.</p>
+  ${bell3d('spin',290)}
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
+  <div class="qrot" id="qrot">${reviewCard()}</div></div>
+  <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
+8:()=>`<div class="scr"><h1 class="display">${t('Your results are ready','Where should we save them?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Enter your email to save your report.','Your report lives in your account, anytime.')}</p>
+  <div class="sum"><div class="r"><span>Completed in</span><b>${fmtDur(S.dur||0)}</b></div><div class="r"><span>Answered</span><b>${answered()}/${N}</b></div><div class="r"><span>Strongest section</span><b>${strongest()}</b></div><div class="r"><span>Estimated IQ</span><b class="blurv">IQ 000 · 00%</b></div></div>
+  <div class="soc"><button class="btn ghost" data-a="sso" data-v="Google">${ic('google',17)} Google</button><button class="btn ghost" data-a="sso" data-v="Apple">${ic('apple',17)} Apple</button></div>
+  <div class="orline">or</div>
+  <div class="field"><label for="em">Email</label><div class="box ${S.err?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" data-f="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Save my results',true,'email')}<div class="note">No spam. We never sell your email. · Terms · Privacy</div></div>`,
+9:()=>`<div class="scr"><h1 class="display">${t('What’s your first name?','Whose name goes on it?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('It appears on your report and certificate.','Printed exactly as you type it.')}</p>
+  <div class="field"><label for="nm">First name</label><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <div class="certo" aria-hidden="true"><div class="cl">${ph('app_name')} · IQ Test</div><div class="nl ${S.name.trim()?'':'empty'}" id="certname">${S.name.trim()?esc(S.name.trim()):'Your name'}</div><div class="ls"></div><div class="ls" style="width:40%"></div></div></div>
+  <div class="foot">${cta('Continue',true,'name')}</div>`,
+10:()=>`<div class="scr"><h1 class="display sm">${t(`${nm()}, your report is ready`,`Here’s what’s inside, ${nm()}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your score, rank and strengths — one tap away.','Everything below unlocks with your full report.')}</p>
+  <div class="pv"><h4>Your IQ on the curve ${ic('lock',15)}</h4>${bellFlat(318)}</div>
+  <div class="pv"><h4>Strengths by section ${ic('lock',15)}</h4>${sbars({blur:true})}</div>
+  <div class="pv"><div class="minicert"><div class="mc">${nm()}<br><span style="font:500 8px var(--sans);color:var(--t3)">${dstr(new Date())}</span><br><span class="blurv" style="display:inline-block">IQ 000</span></div><div><b style="display:block;font-size:14px">Your named certificate</b><span class="hint">${nm()} · ${dstr(new Date())} · score locked</span></div></div></div>
+  <div class="bens"><div>📈 Your estimated IQ score</div><div>👥 How you compare by age</div><div>🧩 Strengths in 4 sections</div><div>📜 Named certificate (PDF)</div><div>💡 Tips for ${esc(goalLabel().toLowerCase())}</div></div></div>
+  <div class="foot">${cta('Unlock my report')}</div>`,
+11:()=>{const hb=S.goal==='prep'?'Your prep report is ready':S.goal==='friends'?'Get your shareable certificate':`${nm()}, see your score`;const p=S.plan,rd=renewal(p);
+  return `<button class="closex" data-a="exit" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:6px">
+  <img class="banner pw" src="img/report.jpg" alt="A sealed report folder with an amber seal" width="720" height="480" loading="lazy">
+  <div class="pstrip" style="margin-right:0"><svg viewBox="0 0 280 150" width="64" height="34" aria-hidden="true"><path d="${areaD}" fill="#15233F" fill-opacity=".08"/><path d="${curveD}" fill="none" stroke="#15233F" stroke-width="6"/></svg><div><b>${nm()}’s IQ report</b><span class="hint">IQ <span class="blurv" style="display:inline-block">000</span> · 4 sections · certificate</span></div></div>
+  <h1 class="display sm">${t('Unlock your full report',hb)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('One report, or every test in the library.','Choose one report or full library access.')}</p>
+  <div class="stack" role="radiogroup" aria-label="Plans">${['one','t7','t28'].map(k=>{const P=PLANS[k];return `<button class="plan ${p===k?'on':''}" data-a="plan" data-v="${k}" role="radio" aria-checked="${p===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${P.n}${P.badge?`<span class="badge">${P.badge}</span>`:''}</span><span class="pl"><span>Today</span><b style="font-weight:600">${P.today}</b><span>Then</span><b style="font-weight:600">${P.then}</b></span>${P.d?`<span class="pd" style="display:block">${P.d}</span>`:''}</span></button>`}).join('')}</div>
+  <p class="small">We’ll email you 2 days before your trial ends. <span class="ph">verify it’s sent</span></p>
+  <div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>
+  <div><div class="eyebrow" style="margin-bottom:10px">What’s included</div><div class="checks">${['Your estimated IQ score','How you compare with your age group','Strengths in 4 sections','Named certificate (PDF)',`Tips for ${esc(goalLabel().toLowerCase())}`,'Full Access plans: all 27 tests in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
+  ${reviewCard()}
+  <div class="faq">${[['How is my score calculated?',`From your correct answers only, compared with ${ph('norm_group')}. It’s an estimate, not a clinical IQ.`],['What does the trial include?','7 days of Full Access to all 27 tests, including this report, for $1.95.'],['When will I be charged?',`7-day plan: $1.95 today, then $39.95 on ${addDays(7)} and every 4 weeks until you cancel. One-time: $57.00 once.`],['How do I cancel?',`In your account, or in 2 clicks at ${ph('app_domain')}/cancel-sub.`]].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div>
+  <p class="small">Secure checkout · Cancel anytime in your account · 2-click cancel at ${ph('app_domain')}/cancel-sub</p>
+  <p class="small">For self-discovery only. Not a clinical or diagnostic assessment.</p></div>
+  <div class="foot"><div class="today">${p==='one'?'One payment of $57.00. Nothing renews.':`Today: ${PLANS[p].today}. On ${rd}: $39.95, then every 4 weeks until you cancel.`}</div>${cta('Continue to checkout',true,'checkout')}</div>`},
+12:()=>{const o=CONFIG.offer,base=o.compareAt?PLANS[o.compareAt]:null,was=base&&base.today!==PLANS.offer.today?base.today:'';
+  return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
+  <div class="wbar"><div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>${ph('app_name')}</div></div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display sm">${nm()}, just want your IQ report?</h1>
+   <p class="lead" style="margin:0">All ${N} answers are scored and <b>${esc(strongest())}</b> is your strongest section. Get this one report, with no subscription.</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow"><div class="minicert"><div class="mc">${nm()}<br><span style="font:500 8px var(--sans);color:var(--t3)">${dstr(new Date())}</span><br><span class="blurv" style="display:inline-block">IQ 000</span></div></div><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">${o.renews?'Full report + library trial':'This test’s full report · no subscription'}</span></div></div>
+   <div class="oprice">${was?`<s>${was}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
+   <div class="checks">${['Your estimated IQ score and age-group comparison','Strengths in 4 sections','Named certificate (PDF)'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>
+   <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
+  <p class="small">For self-discovery only. Not a clinical or diagnostic assessment.</p>
+  <button class="link" data-a="offerno" style="margin-bottom:24px">No thanks, back to my free preview</button></div>`},
+13:()=>{const p=S.plan,P=PLANS[p],rec=recurring(p),rd=renewal(p);
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t('Review your order','Confirm your plan')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Here’s exactly what you pay, today and later.','Check the details before you pay.')}</p>
+  <div class="ordr"><div class="r"><span>Plan</span><b>${P.n}</b></div><div class="r"><span>Today</span><b>${P.today}</b></div>
+  ${rec?`<div class="r"><span>${rd}</span><b>${P.later||'$39.95, then every 4 weeks'}</b></div><div class="r" style="font-size:13px"><span>Cancel anytime before ${rd} to pay nothing more.</span></div>`:`<div class="r"><span>Later</span><b>Nothing renews</b></div>`}</div>
+  ${rec?`<label class="consent ${S.errKind==='consent'?'bad':''}"><input type="checkbox" id="consent" data-f="consent" ${S.consent?'checked':''}><span>I understand my plan renews at ${P.later||'$39.95 every 4 weeks'} until I cancel.</span></label>${S.errKind==='consent'?`<div class="err" style="margin-top:-6px">${S.err}</div>`:''}`:''}
+  <div class="pmeth" role="group" aria-label="Payment method">${[['card','Card'],['apple','Apple Pay'],['google','Google Pay']].map(([k,l])=>`<button class="${S.pay===k?'on':''}" data-a="pay" data-v="${k}" aria-pressed="${S.pay===k}">${l}</button>`).join('')}</div>
+  ${S.pay==='card'?`<div class="box"><input data-f="cardNo" inputmode="numeric" placeholder="Card number" aria-label="Card number" value="${esc(S.cardNo)}"></div><div class="cardrow"><div class="box"><input data-f="cardExp" placeholder="MM / YY" aria-label="Expiry" value="${esc(S.cardExp)}"></div><div class="box"><input data-f="cardCvc" inputmode="numeric" placeholder="CVC" aria-label="CVC" value="${esc(S.cardCvc)}"></div></div>`:`<p class="hint" style="margin:0;text-align:center">${S.pay==='apple'?'Apple Pay':'Google Pay'} sheet opens on pay.</p>`}
+  ${S.errKind==='card'?`<div class="err">${S.err}</div>`:''}
+  <p class="small">Receipt with cancel link sent to ${esc(S.email||'your email')}.</p>
+  <p class="small">Fees are generally non-refundable once access starts. Refund window: ${ph('refund_window')}</p>
+  <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
+  <div class="foot">${cta('Pay and see score',true,'paynow')}</div>`},
+14:()=>{const s=score(),pc=pctile(s),bd=band(s);
+  return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t(`Your estimated IQ: ${s}`,`${nm()}, you scored ${s}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t(`Higher than ${pc}% of people your age.`,'Here’s how you compare, and where you shine.')}</p>
+  ${bell3d('land',300,s)}
+  <div class="row2"><span class="band ${bd==='Below average'?'b':''}">${bd}</span><span class="chip">Age ${esc(S.age||'25-34')}</span></div>
+  <p class="lead" style="margin-top:-4px;font-size:14px">${BANDLINE[bd]}</p>
+  <div class="pv"><h4>Your sections <span class="hint" style="font-weight:400">Tap a bar</span></h4>${sbars()}<div class="stip" id="stip">${SECS.find(x=>x.n===strongest())?SEC_TIP[SECS.findIndex(x=>x.n===strongest())]:''}</div></div>
+  <div class="method">Estimated from ${N} reasoning items, compared with ${ph('norm_group')}. Not a clinical IQ assessment.</div>
+  <div class="goaltips"><h4>💡 Tips for ${esc(goalLabel().toLowerCase())}</h4><ul>${(GTIPS[S.goal]||GTIPS.curious).map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+  <div class="foot">${cta('Get my certificate')}</div>`},
+15:()=>{const s=score();
+  return `<div class="scr" style="gap:14px"><h1 class="display sm" style="margin-top:4px">${t('Your certificate is ready',`Share your score, ${nm()}`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Download a PDF or share a card with friends.','Proudly yours — download it or share it.')}</p>
+  <div class="cert"><div class="ct">${ph('app_name')} · IQ Test</div><div class="cn">${nm()}</div><div class="cs"><small>Estimated IQ score</small>${s}</div>
+  <div class="cb"><span>${dstr(new Date())}<br>IQ Test · ${N} items</span><span class="seal">${ic('star',20,'currentColor',1.8)}</span></div>
+  <div class="cf">For personal use. Not an official or clinical certification.</div></div>
+  <div class="share"><button data-a="share" data-v="WhatsApp">${ic('chat',20)}WhatsApp</button><button data-a="share" data-v="Instagram story">${ic('story',20)}Story card</button><button data-a="share" data-v="copy">${ic('link',20)}Copy link</button></div>
+  <div class="sharetxt">“I scored ${s} on the {{app_name}} IQ test. Your turn?”</div></div>
+  <div class="foot">${cta(`${ic('dl',18,'currentColor',2)} Download PDF`,true,'pdf')}</div>`},
+16:()=>{const one=!recurring(S.paidPlan||S.plan),list=LIB[S.goal]||LIB.curious,rd=renewal(S.paidPlan||S.plan);
+  return `<div class="scr"><h1 class="display" style="margin-top:4px">${t(`What’s next, ${nm()}?`,'Your mind, from new angles')}</h1>
+  <p class="lead" style="margin-top:-6px">${one&&S.v==='A'?'Pair your IQ with how you feel and relate.':t('Your plan includes every test below — start any.','Pair your IQ with how you feel and relate.')}</p>
+  <div class="lib">${list.map(([e,n,f,al])=>`<div class="lcard"><img class="lt" src="img/lib-${f}.jpg" alt="${al}" width="400" height="267" loading="lazy"><b>${n}</b><span>${ph('questions')} Qs · ${ph('minutes')} min</span></div>`).join('')}</div>
+  ${one?`<div class="tip">Unlock all tests — $1.95 for 7 days, then $39.95 every 4 weeks.</div>`:`<div class="sum"><div class="r"><span>Included until ${rd}</span><b style="text-decoration:underline;text-underline-offset:3px">Manage plan</b></div></div>`}
+  <p class="small">Log in anytime with ${esc(S.email||'your email')}. Your report stays in your dashboard.</p></div>
+  <div class="foot">${cta('Start next test',true,'nexttest')}</div>`}
+};
+
+function runLoading(){
+  let row=0,pct=0;
+  timer=setInterval(()=>{
+    pct+=3;const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    el.querySelector('.bar span').style.width=Math.min(pct,100)+'%';
+    el.querySelector('.pct span').textContent=Math.min(pct,100)+'%';
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.5)}<span>100%</span>`;row++;pct=0;
+      if(row>3){clearInterval(timer);const b=cur().querySelector('.bell3d');if(b&&b._b)b._b.flatT=performance.now();timer=setTimeout(()=>go(8,false),1300)}}
+  },45);
+  let qi=0;const Q=[reviewCard,dashQuote,dashQuote];
+  timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi=(qi+1)%Q.length;q.innerHTML=Q[qi]()},2300);
+}
+
+function render(dir){
+  const n=S.i,html=nav()+V[n](),old=cur();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in'+(dir==='b'?' b':'');nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);
+    setTimeout(()=>nv.classList.remove('in','b'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{if(dir)old.scrollTop=0;old.innerHTML=html}
+  const v=cur();
+  v.querySelectorAll('.bell3d').forEach(mountBell);
+  if(n===7)runLoading();
+  if(n===12&&dir&&!backing)runOffer();
+  const f=v.querySelector('#em,#nm,#go');
+  if(f&&dir!==undefined){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  renderPanel();
+}
+
+function renderPanel(){
+  document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag])=>`<button class="${S.i===n?'on':''}" data-j="${n}" ${S.i===n?'aria-current="step"':''}><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const done=S.ans.every(a=>a!==null),s=score();
+  const d=[
+    ['Copy',`Variant ${S.v}`],
+    ['Age',S.age||'—'],
+    ['Reason',S.goal?goalLabel():'—'],
+    ['Test',`${answered()}/${N} answered${S.i===4?` · on Q${S.q+1}`:''}`],
+    ['Right',answered()?`${right()}/${N} (hidden from user)`:'—'],
+    ['Time',S.dur!==null?fmtDur(S.dur):'—'],
+    ['Score',done?`${s} · ${band(s)} · ${pctile(s)}th pct`:'—'],
+    ['Strongest',done?strongest():'—'],
+    ['Email',S.email||'—'],
+    ['Name',S.name||'—'],
+    ['Plan',S.i>=11?PLANS[S.plan].n:'—'],
+    ['Consent',!recurring(S.plan)?'n/a (one-time)':S.consent?'Ticked':'Not ticked'],
+    ['Paid',S.paid?`${PLANS[S.paidPlan||S.plan].n} (demo, no charge)`:'—']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':go(S.i+1);break;
+    case 'back':if(S.i===11)exitPaywall();else back();break;
+    case 'age':S.age=v;S.under=false;b.parentElement.querySelectorAll('.pill').forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===1)go(2)},280);break;
+    case 'under':S.under=true;render();break;
+    case 'goal':S.goal=v;if(v==='other'){render();setTimeout(()=>document.getElementById('go')?.focus(),30)}else{b.parentElement.querySelectorAll('.pill').forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===3)startTest()},280)}break;
+    case 'goalnext':if(S.goalOther.trim())startTest();break;
+    case 'ans':{const q=S.q,i=+v;S.ans[q]=i;cur().querySelectorAll('.tile').forEach((el,k)=>{el.classList.toggle('on',k===i);el.setAttribute('aria-pressed',k===i)});renderPanel();
+      clearTimeout(pend);pend=setTimeout(()=>{if(S.i!==4||S.q!==q)return;const it=ITEMS[q];
+        if(q===N-1){S.dur=Date.now()-(S.t0||Date.now());go(6,false)}
+        else if(ITEMS[q+1].s!==it.s){S.cp=it.s+1;go(5,false)}
+        else{S.q++;render('f')}},400);break}
+    case 'tback':clearTimeout(pend);if(S.q===0)back();else if(S.q%2===1){S.q--;render('b')}break;
+    case 'nextsec':S.q=S.cp*2;go(4,false);break;
+    case 'sso':S.email=`${v} account (demo)`;toast(`Signed in with ${v} (demo)`);go(9);break;
+    case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;go(9)}break}
+    case 'name':{const x=S.name.trim();if(!x||!/^[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ \-]*$/.test(x)){S.err='Please enter your first name.';render();document.getElementById('nm')?.focus()}else{S.name=x;go(10)}break}
+    case 'plan':S.plan=v;S.consent=false;render();break;
+    case 'checkout':emit('checkout_click',{plan:S.plan});go(13);break;
+    case 'exit':exitPaywall();break;
+    case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email&&S.email.includes('@'))x.searchParams.set('email',S.email);new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      else{S.plan='offer';S.consent=false;go(13)}break}
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
+    case 'pay':S.pay=v;render();break;
+    case 'decline':S.err='Card declined. Try another card or PayPal.';S.errKind='card';render();break;
+    case 'paynow':if(recurring(S.plan)&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
+      S.paid=true;S.paidPlan=S.plan;toast('Demo only — no charge made');{const dest=S.upsell?16:14;S.upsell=false;go(dest)}break;
+    case 'stip':{const j=+v;const el=document.getElementById('stip');if(el){el.textContent=`${SECS[j].n}: ${SEC_TIP[j]}`}break}
+    case 'share':toast(v==='copy'?'Link copied (demo)':`${v} share sheet would open (demo)`);break;
+    case 'pdf':toast('PDF download would start (demo)');clearTimeout(pend);pend=setTimeout(()=>{if(S.i===15)go(16)},1100);break;
+    case 'nexttest':if(!recurring(S.paidPlan||S.plan)){S.plan='t7';S.consent=false;S.upsell=true;go(13)}else toast(`${(LIB[S.goal]||LIB.curious)[0][1]} would open (demo)`);break;
+  }
+});
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  clearInterval(window.__oiv);
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==12)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');toast('This offer has ended');go(10);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* Every exit from the paywall (close X, nav back) goes to the offer first, once; after that, back to the free preview. */
+function exitPaywall(){emit('paywall_close');if(offerOpen())go(12);else back()}
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f||e.target.type==='checkbox')return;
+  S[f]=e.target.value;
+  if(f==='goalOther'){const btn=cur().querySelector('.foot .btn');if(btn)btn.disabled=!S.goalOther.trim()}
+  if(f==='name'){const c=document.getElementById('certname');if(c){const x=S.name.trim();c.textContent=x||'Your name';c.classList.toggle('empty',!x)}}
+  if((f==='email'||f==='name')&&S.err){S.err='';const box=e.target.closest('.box');box.classList.remove('bad');box.parentElement.querySelector('.err')?.remove()}
+  renderPanel();
+});
+phone.addEventListener('change',e=>{if(e.target.dataset.f==='consent'){S.consent=e.target.checked;if(S.consent&&S.errKind==='consent'){S.err='';S.errKind='';render()}else renderPanel()}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){const b=cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);go(n)});
+const setV=v=>{S.v=v;['A','B'].forEach(x=>{const el=document.getElementById('v'+x);el.classList.toggle('on',v===x);el.setAttribute('aria-pressed',v===x)});if(S.i!==7)render();else renderPanel()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{clearTimers();const v=S.v;S=INIT();S.v=v;render('b')};
+
+function fit(){const k=Math.min(1,(document.documentElement.clientWidth-32-24)/390);document.documentElement.style.setProperty('--k',k.toFixed(4))}
+fit();addEventListener('resize',fit);
+
+{const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){const n=+m[1];fillTo(n);S.i=n}
+ const vb=location.hash.match(/v=?([AB])/);if(vb){S.v=vb[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
+render();
+</script>

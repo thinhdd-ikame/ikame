@@ -1,0 +1,109 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "title": "[UI/UX][Intro 18] Câu \"you feel through the people around you\" bị lặp 3 lần",
+    "severity": "Low",
+    "actual": "- [Retest lượt 2: Partly fixed] Đã bỏ subtitle lặp trong card và lỗi chữ thường đầu câu; card giờ là \"Moon in Libra\" + 3 dòng Feel/Soothe/Drain. Nhưng câu dưới card \"Moon in Libra — you feel through the people around you.\" vẫn lặp nguyên dòng Feel \"through the people around you\" (3 lần còn 2). Spec có cả card 3 dòng lẫn câu mẫu nên phần còn lại là copy – cần PM/Designer confirm có chấp nhận lặp hay đổi câu mẫu. Hạ Severity từ Medium xuống Low. Khớp với status Partly fixed dev báo.",
+    "expected": "- Spec (Visual): card gồm glyph và 3 dòng ngắn (feel / soothe / drain) cùng một câu mẫu; không định nghĩa subtitle lặp trong card – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/18-18-small.png, screens/18-18-large.png",
+    "retest": "Partly fixed"
+  },
+  {
+    "screen": "Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 20",
+    "title": "[UI][Intro 20] Dòng legal bị giãn khoảng: dấu \".\" tách rời khỏi \"Privacy Policy\", khoảng trắng quanh \"&\" rộng bất thường",
+    "severity": "Low",
+    "actual": "- Sau khi nới vùng bấm link, dòng \"By continuing, you agree to our Terms & Privacy Policy.\" hiển thị khoảng trắng rộng trước/sau \"Terms\", quanh \"&\" và dấu chấm cuối câu đứng tách riêng (\"Privacy Policy .\"), underline của \"Privacy Policy\" bị ngắt ở giữa; ở Intro 1 (không có dấu chấm) khoảng quanh \"&\" cũng rộng hơn khoảng chữ thường. Lặp ở cả 2 viewport.",
+    "expected": "- Giữ vùng bấm lớn nhưng khoảng cách chữ trong câu legal bình thường, dấu chấm liền sau \"Privacy Policy\" – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/20-20-small.png, screens/20-20-large.png, screens/01-1-small.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Paywall 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App",
+    "title": "[UI][Download App] Badge \"Download on the App Store\" dùng icon không phải logo Apple",
+    "severity": "Low",
+    "actual": "- [Retest lượt 2: Partly fixed] Badge App Store đã dùng logo Apple chính thức. Badge Google Play vẫn là icon tam giác play outline trắng (đơn sắc), không phải logo Google Play nhiều màu như badge chính thức – bug cũ có nêu cả phần này. Dev báo Fixed, QA đánh Partly fixed (độ tin cậy trung bình, cần Designer confirm có chấp nhận badge đơn sắc). Hạ Severity xuống Low.",
+    "expected": "- Spec (Visual): App Store và Google Play badges – nên dùng badge/logo chính thức của store – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/23-23-small.png, screens/23-23-large.png",
+    "retest": "Partly fixed"
+  }
+]

@@ -1,0 +1,117 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Thiếu section Rating + reviews và tên entity ở footer so với spec",
+    "severity": "High",
+    "actual": "- [Retest lượt 2: Cần PM] Vẫn như lượt 1: sau \"How it works\" là FAQ \"Good to know\", không có section Rating + reviews; footer chỉ có \"Terms of Use · Privacy Policy · Subscription terms\", \"Support: support@starlyn.co\", \"For entertainment purposes only.\", không có tên pháp nhân. Spec (funnel-content.md đã update) vẫn ghi mục 5 \"Rating + reviews\" và mục 9 \"Footer with legal links and entity\" – cần PM chốt bỏ khỏi spec hay bổ sung. Khớp status dev báo.",
+    "expected": "- Theo spec thứ tự section: \"5. Rating + reviews (from CONFIG, placeholders until real)\" và \"9. Footer with legal links and entity\". Nếu cố ý ẩn reviews khi chưa có data thật thì cần PM confirm.",
+    "attachment": "Screenshot/Video: screens/21-paywall-large-p2.png, screens/21-paywall-large-p3.png, screens/21-paywall-large-p4.png, screens/21-paywall-small-p4.png",
+    "retest": "Cần PM"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI/UX][Responsive][Paywall 1] Màn nhỏ không thấy CTA nào ở first view",
+    "severity": "High",
+    "actual": "- Trên 375x667, first view chỉ có brand bar (chưa có mini CTA), hero ảnh tay + 4 fact chip và đầu plan card \"1 week, then monthly – $13.67\"; \"Due today\", button \"Get my reading\" và sticky bottom CTA đều không hiển thị vì plan block đang lộ một phần. Trên 430x932 CTA trong plan block thấy ngay first view. Có thể đã tồn tại từ lượt 1 nhưng chưa log; moon-reading đã fix cùng lỗi (#11) bằng cách hiện sticky bar ở first view.",
+    "expected": "- Spec: sticky bottom CTA hiển thị khi không có plan block nào trên màn; cần CTA thấy được ở first view màn nhỏ, đồng nhất với cách xử lý đã fix ở moon-reading – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/21-paywall-small-p1.png, screens/21-paywall-large-p1.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Sticky bottom bar và brand bar nền trong suốt, nội dung phía sau lộ ra",
+    "severity": "Medium",
+    "actual": "- Khi cuộn tới FAQ trên 375x667, đường divider của FAQ chạy xuyên qua dòng \"1 week, then monthly – $13.67 today\" của sticky bottom bar, câu \"Will I be charged again?\" dính sát ngay trên bar không có viền/nền tách biệt. Brand bar phía trên cũng lộ mờ chip \"PayPal\" và heading phía sau. Cùng lỗi moon-reading #12 lượt 1 (đã fix ở moon).",
+    "expected": "- Sticky bar và brand bar cần nền đặc che hết nội dung phía sau, đồng nhất với moon-reading – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/21-paywall-small-p3.png, screens/21-paywall-small-p2.png, screens/21-paywall-large-p3.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App",
+    "no_bug": true
+  }
+]

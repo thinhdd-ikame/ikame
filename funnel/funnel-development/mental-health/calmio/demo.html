@@ -1,0 +1,1093 @@
+<title>Calmio-style Funnel Demo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap">
+<style>
+/* ---------- page (control panel) tokens ---------- */
+:root{
+  color-scheme:light;
+  --ground:#EEEBE4;--ground-2:#E5E1D7;--tx:#26302B;--tx2:#56615A;--tx3:#7E8780;--ln:#D6D1C5;--card:#F8F6F1;--card-2:#EFECE4;
+  --acc:#557A60;--acc-tx:#FFFFFF;--acc-soft:#DCE7DE;--lav:#6E5FA3;
+  --sans:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --k:1;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#131614;--ground-2:#1A1E1B;--tx:#E5EAE6;--tx2:#AFB8B1;--tx3:#7F8982;--ln:#2E3531;--card:#1B201D;--card-2:#232925;
+    --acc:#8DB399;--acc-tx:#0F1611;--acc-soft:#24322A;--lav:#B7ABDF;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#131614;--ground-2:#1A1E1B;--tx:#E5EAE6;--tx2:#AFB8B1;--tx3:#7F8982;--ln:#2E3531;--card:#1B201D;--card-2:#232925;
+  --acc:#8DB399;--acc-tx:#0F1611;--acc-soft:#24322A;--lav:#B7ABDF;
+}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--ground);color:var(--tx);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:20px 16px 48px}
+.pbox{width:calc(390px * var(--k));height:calc(812px * var(--k));margin:11px;flex:none;position:relative}
+
+/* ---------- phone: brand colours, same in light and dark page modes ---------- */
+.phone{
+  --c-bg:#F7F4EE;--c-card:#FFFFFF;--c-ink:#2D3832;--c-ink2:#5D6962;--c-ink3:#8B948D;--c-line:#E5E0D5;
+  --c-sage:#5B7F66;--c-sage-2:#7FA38A;--c-sage-soft:#E2EBE3;--c-lav:#A898D2;--c-lav-soft:#EEEAF7;--c-warm:#F2DDAE;--c-blue:#CFDBEA;
+  color-scheme:light;color:var(--c-ink);
+  position:absolute;left:0;top:0;width:390px;height:812px;transform:scale(var(--k));transform-origin:0 0;
+  border-radius:52px;background:var(--c-bg);overflow:hidden;isolation:isolate;
+  box-shadow:0 0 0 10px #1F2421,0 0 0 11px #3B433D,0 40px 70px -24px rgba(20,30,24,.45);
+}
+.amb{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.amb i{position:absolute;border-radius:50%;filter:blur(40px);opacity:.55}
+.amb .b1{width:300px;height:300px;left:-90px;top:-60px;background:#DCE8DC;animation:drift1 34s ease-in-out infinite alternate}
+.amb .b2{width:280px;height:280px;right:-110px;top:260px;background:#E7E1F4;animation:drift2 40s ease-in-out infinite alternate}
+.amb .b3{width:240px;height:240px;left:40px;bottom:-120px;background:#F6E9CF;animation:drift1 46s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(60px,50px)}}
+@keyframes drift2{to{transform:translate(-50px,-60px)}}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .34s ease both}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:700;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--c-ink)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--c-ink)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--c-ink);border-radius:1px}
+.help{position:absolute;top:57px;right:14px;z-index:30;height:30px;display:inline-flex;align-items:center;gap:6px;padding:0 11px;border-radius:999px;border:1px solid #DCD5EC;background:#F3F0FAee;color:#4F437E;font:700 12.5px/1 var(--sans)}
+.help:hover{background:#ECE7F8}
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:10px;padding:0 14px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--c-ink2);flex:none}
+.iconbtn:hover{background:#0000000a}
+.navspacer{width:36px;flex:none}
+.helpspace{width:134px;flex:none}
+.prog{flex:1;height:4px;border-radius:2px;background:var(--c-line);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--c-sage-2);border-radius:2px;transition:width .4s ease}
+.restore{border:none;background:none;color:var(--c-ink3);font:600 12px var(--sans);padding:4px}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 22px 12px;display:flex;flex-direction:column;gap:18px;position:relative;z-index:1;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr.center{justify-content:center}
+.foot{flex:none;padding:10px 22px 30px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2}
+.note{font-size:12.5px;color:var(--c-ink3);text-align:center;text-wrap:balance}
+.display{font:800 28px/1.18 var(--sans);letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--c-ink)}
+.lead{color:var(--c-ink2);margin:0;font-size:15.5px;text-wrap:pretty}
+.hint{font-size:13px;color:var(--c-ink3)}
+.err{font-size:13.5px;color:#9A5B4B}
+.eyebrow{font:800 11.5px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--c-sage)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:var(--c-sage-soft);color:var(--c-sage);font:700 12.5px/1 var(--sans);align-self:flex-start}
+.chip.lav{background:var(--c-lav-soft);color:#5E5192}
+
+.btn{height:54px;border-radius:999px;border:none;background:var(--c-sage);color:#fff;font:800 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;text-decoration:none;flex:none}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:#E3DFD6;color:#A39E93;cursor:not-allowed}
+.btn.ghost{background:var(--c-card);color:var(--c-ink);border:1px solid var(--c-line)}
+.btn.white{background:#fff;color:var(--c-ink);border:1px solid #D9D4C9;box-shadow:0 2px 6px #0000000d}
+.btn:not([disabled]):not(.ghost):not(.white){box-shadow:0 10px 24px -12px #5B7F66aa;position:relative;overflow:hidden}
+.btn:not([disabled]):not(.ghost):not(.white)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff40,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 6s ease-in-out 1.6s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}30%,100%{transform:translateX(330%) skewX(-20deg)}}
+.link{background:none;border:none;color:var(--c-ink2);font:600 14px var(--sans);padding:6px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#CFC9BD}
+
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:52px;border-radius:999px;background:var(--c-card);border:1px solid var(--c-line);text-align:left;width:100%;transition:background .2s,border-color .2s,color .2s;color:var(--c-ink)}
+.opt:hover{border-color:#CFC8BA}
+.opt .em{font-size:20px;width:26px;text-align:center;flex:none;line-height:1}
+.opt .lbl{flex:1;font-weight:700;font-size:16px}
+.opt .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid #D5CFC3;display:grid;place-items:center;flex:none}
+.opt.on{background:var(--c-sage);border-color:var(--c-sage);color:#fff}
+.opt.on .chk{background:#fff;border-color:#fff;color:var(--c-sage)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.gchip{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px;border-radius:20px;background:var(--c-card);border:1.5px solid var(--c-line);text-align:left;position:relative;min-height:88px;color:var(--c-ink)}
+.gchip .em{font-size:22px;line-height:1}
+.gchip .lbl{font-weight:700;font-size:15px;line-height:1.2}
+.gchip .chk{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--c-sage);color:#fff;opacity:0;transition:opacity .2s}
+.gchip.on{border-color:var(--c-sage);background:#FBFDFB}
+.gchip.on .chk{opacity:1}
+.box{height:54px;border-radius:16px;background:var(--c-card);border:1px solid var(--c-line);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--c-ink3)}
+.box:focus-within{border-color:var(--c-sage-2)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--c-ink);font:500 16px var(--sans)}
+.box input::placeholder{color:#AAA59B}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:700 13px/1 var(--sans);color:var(--c-ink2)}
+.card{border-radius:24px;background:var(--c-card);border:1px solid var(--c-line);padding:16px}
+.iconwell{width:64px;height:64px;border-radius:50%;background:var(--c-sage-soft);color:var(--c-sage);display:grid;place-items:center;align-self:center;flex:none}
+.fadein{animation:fi .5s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* year wheel */
+.yw{position:relative;border-radius:24px;background:var(--c-card);border:1px solid var(--c-line);overflow:hidden}
+.yw .band{position:absolute;left:12px;right:12px;top:88px;height:44px;border-radius:14px;background:var(--c-sage-soft);pointer-events:none}
+.yw .list{position:relative;height:220px;overflow-y:auto;scroll-snap-type:y mandatory;padding:88px 0;scrollbar-width:none;-webkit-mask-image:linear-gradient(#0000,#000 30%,#000 70%,#0000);mask-image:linear-gradient(#0000,#000 30%,#000 70%,#0000)}
+.yw .list::-webkit-scrollbar{display:none}
+.yw .list button{display:block;width:100%;height:44px;border:none;background:none;scroll-snap-align:center;font:700 20px var(--sans);color:var(--c-ink3);font-variant-numeric:tabular-nums}
+.yw .list button.on{color:var(--c-sage);font-size:22px}
+
+/* safety rows */
+.rows{display:flex;flex-direction:column}
+.rowi{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--c-line)}
+.rowi:first-child{border-top:none}
+.rowi .w{width:38px;height:38px;border-radius:50%;background:var(--c-sage-soft);color:var(--c-sage);display:grid;place-items:center;flex:none}
+.rowi span{padding-top:8px;font-size:15px}
+.rowi.warn .w{background:#F6EBD6;color:#8A6A2F}
+
+/* faces */
+.faces{display:flex;justify-content:space-between;gap:6px;margin-top:10px}
+.face{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;border:none;background:none;padding:0;color:var(--c-ink2)}
+.face .fc{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:30px;background:var(--c-card);border:1px solid var(--c-line);transition:transform .25s,box-shadow .25s,background .25s}
+.face span{font-size:12.5px;font-weight:700}
+.face.on .fc{transform:scale(1.1);box-shadow:0 0 0 8px var(--wash)}
+.face.on{color:var(--c-ink)}
+
+/* tone cards */
+.tcard{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:20px;background:var(--c-card);border:1.5px solid var(--c-line);text-align:left;width:100%;color:var(--c-ink)}
+.tcard b{font-size:16px;font-weight:800}
+.tcard small{font-size:13px;color:var(--c-ink3);font-style:italic}
+.tcard.on{border-color:var(--c-sage);background:#FBFDFB}
+
+/* chat */
+.bubble{padding:11px 14px;border-radius:20px;max-width:84%;font-size:15px;line-height:1.4}
+.bubble.ai{align-self:flex-start;background:var(--c-card);border:1px solid var(--c-line);border-bottom-left-radius:6px}
+.bubble.me{align-self:flex-end;background:var(--c-sage-soft);color:#2F4A37;border-bottom-right-radius:6px}
+.typing{display:inline-flex;gap:4px;padding:3px 0}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--c-ink3);animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.3}}
+.thread{display:flex;flex-direction:column;gap:10px}
+.seq>*{opacity:0;animation:fi .6s ease forwards}
+.aibanner{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:16px;background:var(--c-lav-soft);color:#4F437E;font-size:13px;font-weight:600;line-height:1.35}
+.sugg{display:flex;flex-direction:column;gap:7px}
+.sugg button{padding:10px 14px;border-radius:16px;background:var(--c-card);border:1px solid var(--c-line);font-size:14.5px;text-align:left;font-weight:600;color:var(--c-ink)}
+.sugg button:hover{border-color:var(--c-sage-2)}
+.composer{display:flex;gap:8px;align-items:center}
+.composer .box{flex:1;height:48px;border-radius:999px}
+.send{width:48px;height:48px;border-radius:50%;border:none;background:var(--c-sage);color:#fff;display:grid;place-items:center;flex:none}
+
+/* sheets */
+.dim{position:absolute;inset:0;background:#2D383266;z-index:40;animation:fi .3s ease}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;background:var(--c-bg);border-radius:30px 30px 0 0;padding:10px 22px 30px;display:flex;flex-direction:column;gap:14px;animation:up .4s cubic-bezier(.2,.8,.2,1);box-shadow:0 -10px 40px #0000001a;max-height:88%;overflow-y:auto}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:#D8D2C6;align-self:center}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.vdim{position:absolute;inset:0;background:#2D383255;z-index:4}
+.vsheet{z-index:5}
+.helprow{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:20px;background:var(--c-card);border:1px solid var(--c-line);user-select:text;-webkit-user-select:text;cursor:text}
+.helprow.pri{background:var(--c-sage);border-color:var(--c-sage);color:#fff}
+.helprow .w{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--c-sage-soft);color:var(--c-sage);flex:none}
+.helprow.pri .w{background:#ffffff26;color:#fff}
+.helprow b{display:block;font-size:16px;font-weight:800}
+.helprow small{display:block;font-size:12.5px;opacity:.8}
+.push{display:flex;gap:10px;padding:12px;border-radius:18px;background:#ffffffd9;border:1px solid var(--c-line);box-shadow:0 6px 18px #0000000f}
+.push .app{width:34px;height:34px;border-radius:9px;background:var(--c-sage-soft);display:grid;place-items:center;flex:none;font-size:18px}
+.push small{color:var(--c-ink3);display:block;font-size:11.5px;font-weight:700;letter-spacing:.03em}
+.timein{height:44px;border-radius:14px;border:1px solid var(--c-line);background:var(--c-card);padding:0 12px;font:700 16px var(--sans);color:var(--c-ink)}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:14px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14.5px;color:var(--c-ink3);margin-bottom:7px;gap:10px;font-weight:600}
+.step .pct{font-variant-numeric:tabular-nums;display:flex;gap:5px;align-items:center}
+.step.done .top{color:var(--c-ink)}
+.step.done .pct{color:var(--c-sage)}
+.bar{height:4px;border-radius:2px;background:var(--c-line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--c-sage-2);width:0}
+.floaters{position:absolute;left:0;right:0;top:40px;height:230px;pointer-events:none;z-index:2}
+.floaters span{position:absolute;padding:6px 11px;border-radius:999px;background:#fffffff0;border:1px solid var(--c-line);font-size:12.5px;font-weight:700;color:var(--c-ink2);opacity:0;animation:floatup 3.6s ease-in-out forwards}
+@keyframes floatup{0%{opacity:0;transform:translateY(24px)}25%,65%{opacity:1}100%{opacity:0;transform:translateY(-50px)}}
+
+/* ratings */
+.stars{display:flex;gap:4px;justify-content:center;color:var(--c-sage-2)}
+.token{display:inline-block;padding:0 8px;border-radius:8px;border:1.5px dashed #B9B1D6;color:#5E5192;background:var(--c-lav-soft);font-size:.8em;vertical-align:middle}
+.ph{border:1.5px dashed #CFC8BA;background:#FFFFFF99;border-radius:20px;padding:14px 16px;color:var(--c-ink2);font-size:14px}
+
+/* programme */
+.weeks{display:flex;flex-direction:column;gap:10px;position:relative;padding-left:44px}
+.weeks::before{content:"";position:absolute;left:17px;top:18px;bottom:18px;width:2px;background:repeating-linear-gradient(var(--c-sage-2) 0 5px,transparent 5px 10px);opacity:.5}
+.wk{position:relative;padding:14px 16px;border-radius:20px;background:var(--c-card);border:1px solid var(--c-line)}
+.wk .fi{position:absolute;left:-44px;top:10px;width:36px;height:36px;border-radius:50%;background:var(--c-bg);display:grid;place-items:center}
+.wk h4{margin:0;font-size:15.5px;font-weight:800}
+.wk .sub{font-size:12px;color:var(--c-ink3);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.wk ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;font-size:14px;color:var(--c-ink2)}
+.wk li{display:flex;gap:8px;align-items:center}
+.wk li i{width:6px;height:6px;border-radius:50%;background:var(--c-sage-2);flex:none}
+.wk.dim{opacity:.55}
+.moodstrip{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:var(--c-card);border:1px solid var(--c-line);font-size:13px;color:var(--c-ink3);font-weight:700}
+.moodstrip .d{width:22px;height:22px;border-radius:50%;border:1.5px dashed #D6D0C4}
+.moodstrip .m{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:16px}
+
+/* paywall */
+.benefits{display:flex;flex-direction:column;gap:5px}
+.benefits div{display:flex;gap:11px;align-items:center;font-size:15px;font-weight:600}
+.benefits .w{width:27px;height:27px;border-radius:50%;background:var(--c-sage-soft);color:var(--c-sage);display:grid;place-items:center;flex:none}
+.plan{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:20px;border:1.5px solid var(--c-line);background:var(--c-card);text-align:left;width:100%;color:var(--c-ink)}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid #D5CFC3;display:grid;place-items:center;flex:none;color:#fff}
+.plan.on{border-color:var(--c-sage);background:#FBFDFB}
+.plan.on .radio{background:var(--c-sage);border-color:var(--c-sage)}
+.plan .pn{font-weight:800;display:flex;gap:8px;align-items:center;font-size:16px}
+.plan .pp{font-size:14px;color:var(--c-ink2);font-variant-numeric:tabular-nums}
+.plan .pw{margin-left:auto;font-size:12.5px;color:var(--c-ink3);font-weight:700;white-space:nowrap}
+.save{font:800 11px/1 var(--sans);background:var(--c-sage);color:#fff;padding:4px 7px;border-radius:6px}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;position:relative;padding-top:4px}
+.tl::before{content:"";position:absolute;left:16%;right:16%;top:11px;height:2px;background:var(--c-line)}
+.tl div{text-align:center;position:relative;font-size:12.5px;color:var(--c-ink2);line-height:1.3}
+.tl i{display:block;width:14px;height:14px;border-radius:50%;background:var(--c-card);border:2px solid var(--c-sage-2);margin:0 auto 6px}
+.tl div:first-child i{background:var(--c-sage-2)}
+.tl b{display:block;color:var(--c-ink);font-size:13px}
+.toggle{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:var(--c-card);border:1px solid var(--c-line);width:100%;text-align:left;color:var(--c-ink)}
+.toggle .sw{margin-left:auto;width:44px;height:26px;border-radius:13px;background:#DAD5CB;position:relative;flex:none;transition:background .2s}
+.toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle.on .sw{background:var(--c-sage)}
+.toggle.on .sw::after{transform:translateX(18px)}
+.renew{font-size:15px;color:var(--c-ink);text-align:center;margin:0;text-wrap:balance}
+.renew2{font-size:13.5px;color:var(--c-ink2);text-align:center;margin:0}
+/* one-time offer (#22) */
+.obrand{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;font:800 15px/1 var(--sans);color:var(--c-sage)}
+.ocard{position:relative;padding:18px 16px 16px;border-radius:26px;border:1.5px solid var(--c-sage-2);background:radial-gradient(ellipse at 50% 0%,#E2EBE3,#FFFFFF 70%);box-shadow:0 0 0 5px #E2EBE366,0 24px 44px -28px #2D383255;display:flex;flex-direction:column;gap:12px}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--c-sage);color:#fff;font:800 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow .th{width:58px;height:72px;border-radius:14px;overflow:hidden;flex:none;background:var(--c-sage-soft)}
+.orow .th img{width:100%;height:100%;object-fit:cover;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:16px;background:#FBFDFB;border:1px solid var(--c-line)}
+.oprice s{color:var(--c-ink3);font-size:14px}.oprice b{font:800 26px var(--sans);color:var(--c-sage)}.oprice span{color:var(--c-ink2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:7px}
+.ochecks div{display:flex;gap:9px;align-items:flex-start;font-size:14.5px;font-weight:600}
+.ochecks svg{flex:none;margin-top:2px;color:var(--c-sage)}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--c-card);border:1px solid var(--c-line);font-size:13px;color:var(--c-ink2)}
+.otimer b{color:var(--c-sage);font-variant-numeric:tabular-nums}
+
+/* garden */
+.garden{display:flex;justify-content:space-around;align-items:flex-end;padding:12px 10px 8px;border-radius:22px;background:linear-gradient(180deg,#FFFFFF,#F4F1EA);border:1px solid var(--c-line);position:relative}
+.garden::after{content:"";position:absolute;left:14px;right:14px;bottom:10px;height:6px;border-radius:3px;background:#E6DDCB}
+.garden>*{position:relative;z-index:1}
+.lesson{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:20px;background:var(--c-card);border:1px solid var(--c-line);width:100%;text-align:left;color:var(--c-ink)}
+.lesson .w{width:42px;height:42px;border-radius:14px;background:var(--c-lav-soft);color:#5E5192;display:grid;place-items:center;flex:none}
+.lesson b{display:block;font-size:15px}
+.unlock{display:flex;gap:10px;align-items:center;justify-content:center;border:none;background:none;color:var(--c-ink2);font:700 14px var(--sans);padding:4px}
+.tabbar{flex:none;height:76px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--c-line);background:#FFFFFFcc;padding-bottom:16px;position:relative;z-index:2}
+.tabbar button{background:none;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;color:var(--c-ink3)}
+.tabbar button.on{color:var(--c-sage)}
+
+/* 2D flowers (non-hero) */
+.f2 .pet{transform-box:view-box;transform-origin:20px 16px}
+.f2.bloom .pet{animation:petopen 1.6s cubic-bezier(.3,.9,.4,1) both}
+@keyframes petopen{from{transform:scale(.25)}to{transform:scale(1)}}
+.seed .sd{animation:seeddrop 1s cubic-bezier(.5,0,.7,1) both}
+@keyframes seeddrop{from{transform:translateY(-70px);opacity:0}25%{opacity:1}to{transform:none}}
+.seed .shoot{stroke-dasharray:60;stroke-dashoffset:60;animation:grow 1.2s ease 1.05s forwards}
+@keyframes grow{to{stroke-dashoffset:0}}
+.seed .lv{transform-box:fill-box;transform-origin:50% 100%;transform:scale(0);animation:leafin .6s ease forwards}
+@keyframes leafin{to{transform:scale(1)}}
+.seedwrap{animation:breathe 8s ease-in-out 2.4s infinite}
+@keyframes breathe{50%{transform:scale(1.03)}}
+
+/* ---------- 3D hero flower ---------- */
+.fl{position:relative;margin:0 auto;flex:none;touch-action:pan-y}
+.fscene{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.fscene>i{position:absolute;left:50%;top:50%;display:block}
+.fscene .pt,.fscene .sp,.fscene .lf{transform-origin:50% 100%;border-radius:50% 50% 46% 46% / 62% 62% 38% 38%}
+.fscene .pt{box-shadow:inset 0 -8px 14px #6F5AA622}
+.fscene .sp,.fscene .lf{background:linear-gradient(to top,#56795F,#8DB095)}
+.fscene .lf{border-radius:0 100% 0 100%}
+.fscene .stem{width:5px;margin-left:-2.5px;transform-origin:50% 0;background:linear-gradient(90deg,#5F8467,#86A98D,#5F8467);border-radius:3px}
+.fscene .fc{border-radius:50%;background:radial-gradient(circle at 40% 35%,#FBE9B9,#E8C77F 70%,#D5AE64)}
+.fscene .fc2{border-radius:50%;background:radial-gradient(circle at 40% 35%,#F7DFA0,#D9B266)}
+.flsh{position:absolute;left:50%;bottom:2%;border-radius:50%;background:radial-gradient(closest-side,#4B5E5033,transparent);transform:translateX(-50%);pointer-events:none}
+
+/* photo slots (AI-generated stand-ins, img/) */
+.bgph{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgph.top{bottom:auto;height:62%}
+.bgph img{width:100%;height:100%;object-fit:cover;display:block}
+.bgph::after{content:"";position:absolute;inset:0;background:var(--scrim)}
+.cimg{display:block;width:calc(100% + 36px);margin:-18px -18px 0;height:132px;object-fit:cover;border-radius:23px 23px 0 0;background:var(--c-sage-soft)}
+.card.c3 .cimg{margin:-18px -16px 0;width:calc(100% + 32px)}
+.opt .em.th{width:34px;height:34px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1.5px #fff}
+.opt .em.th img{width:100%;height:100%;object-fit:cover;display:block}
+.hdrimg{display:block;width:100%;height:118px;object-fit:cover;border-radius:22px;flex:none;background:var(--c-sage-soft)}
+
+/* toast */
+.toast{position:absolute;left:50%;top:100px;transform:translateX(-50%);z-index:60;background:var(--c-ink);color:#fff;font-size:13px;font-weight:700;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.8s ease forwards}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,82%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* ---------- side panel ---------- */
+.panel{width:360px;max-width:100%;display:flex;flex-direction:column;gap:22px;padding-top:10px}
+.panel h1{font:800 28px/1.1 var(--sans);margin:0 0 8px}
+.panel .intro{color:var(--tx2);margin:0;font-size:14px}
+.panel code{font-size:12.5px;background:var(--card-2);padding:1px 5px;border-radius:5px}
+.seg{display:inline-flex;border:1px solid var(--ln);border-radius:999px;padding:3px;background:var(--card)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--tx2);font-weight:700}
+.seg button.on{background:var(--acc);color:var(--acc-tx)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pbtn{border:1px solid var(--ln);background:var(--card);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--tx2);font-weight:700}
+.pbtn:hover{color:var(--tx)}
+.psel{border:1px solid var(--ln);background:var(--card);border-radius:999px;padding:7px 12px;font:700 13px var(--sans);color:var(--tx)}
+.pchk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--tx2)}
+.plabel{font:800 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:12px}
+.flow .grp{display:flex;flex-direction:column;gap:1px}
+.flow .gname{font-size:12px;color:var(--acc);margin-bottom:3px;font-weight:800}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--tx2);font-size:13px;width:100%}
+.flow button:hover{background:var(--card);color:var(--tx)}
+.flow button.on{background:var(--acc-soft);color:var(--tx)}
+.flow .n{font-variant-numeric:tabular-nums;color:var(--tx3);width:22px;flex:none;text-align:right}
+.flow .tag{margin-left:auto;font-size:10px;color:var(--tx3);border:1px solid var(--ln);border-radius:4px;padding:1px 5px;flex:none;white-space:nowrap}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--tx3)}
+.data dd{margin:0;color:var(--tx);overflow-wrap:anywhere}
+.foot-note{font-size:12px;color:var(--tx3);margin:0;line-height:1.5}
+.tip{font-size:12.5px;color:var(--tx2);background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px 12px;margin:0}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:28px}
+  .panel{width:412px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="pbox" id="pbox"><div class="phone" id="phone"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>Calmio-style onboarding</h1>
+      <p class="intro">An ikame prototype modeled on Calmio: a clickable version of the 23-screen funnel in <code>funnel-content.md</code>, in the brief's soft light theme (off-white, sage, lavender). Tap through it in the phone, or jump to any screen below. Deep link: <code>demo.html#s17</code>.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant"><button id="vA" class="on">Copy A</button><button id="vB">Copy B</button></div>
+      <button class="pbtn" id="restart">Restart</button>
+      <select class="psel" id="topic" aria-label="Topic for jumps">
+        <option value="grief">Topic: Grief</option><option value="breakup">Topic: Breakup</option><option value="drinking">Topic: Alcohol reset</option><option value="smoking">Topic: Quit smoking</option><option value="stress">Topic: Calm mind</option><option value="lonely">Topic: Connection</option>
+      </select>
+    </div>
+    <label class="pchk"><input type="checkbox" id="trialarm"> Show #21 optional trial arm (off by default, needs store config)</label>
+    <p class="tip">Safety checks: "Need help now?" is on every screen. Tap "Really low" on #9. Type a crisis phrase (e.g. "end it all") in any "Other" field or in the #18 chat. After any of these, closing the paywall skips the #22 offer.</p>
+    <p class="tip">One-time offer: closing #21 (× or "Not now") shows #22 once per browser session (sessionStorage <code>ikf_offer_calmio</code>); the second close goes straight to #23. Add <code>?debug=1</code> to log events to the console.</p>
+    <div><div class="plabel">Flow</div><div class="flow" id="flow"></div></div>
+    <div><div class="plabel">Collected so far</div><dl class="data" id="data"></dl></div>
+    <p class="foot-note"><b>Faked in this demo:</b> the programme and all lesson titles (the brief only gives Grief and Alcohol week titles; the rest are placeholders), the companion's replies (a scripted 2-exchange chat seeded from topic and tone), reply ideas outside Grief, the loading steps, sign-in, reminders and purchases (toasts only, no charge made). Crisis detection is a simple keyword list, not a classifier. Helpline numbers are shown as text; in the app they open the dialer or browser. <b>Not faked:</b> prices are the brief's US App Store list (2026-09-28). Inside the phone the app name is the placeholder {{app_name}} (SKUs: {{app_name}} Grief etc.), and rating, rating count and review cards stay placeholders. The brief's figures (Calmio: App Store 4.7 from 1.1K, Trustpilot 4.6 from 451, as of 2026-09-28) are the reference app's, not this app's. "Other" on #5 falls back to the Calm mind path, which the brief doesn't define. Demo email errors: <code>taken@example.com</code>, <code>fail@example.com</code>. Photos (<code>img/</code>) are AI-generated mood stand-ins with no people or faces; they are never used as reviews or social proof.</p>
+  </aside>
+</div>
+
+<script>
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  life:'<circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/><circle cx="12" cy="12" r="4"/>',
+  msg:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  eyeoff:'<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/>',
+  trash:'<path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  sprout:'<path d="M7 20h10M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8zM14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>',
+  flower:'<circle cx="12" cy="12" r="3"/><path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5"/><path d="M12 7.5V9M7.5 12H9M16.5 12H15M12 16.5V15"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
+  alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.8)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NOWY=new Date().getFullYear();
+const AN='<span class="token">{{app_name}}</span>';
+const brand=h=>h.replace(/{{app_name}}/g,AN);
+
+/* ---------- content from the brief ---------- */
+const PATHS={
+  grief:{e:'🕊️',l:'Losing someone',label:'Grief',sku:'{{app_name}} Grief',
+    shows:[['waves','🌊','Waves of sadness'],['sleep','🌙','Trouble sleeping'],['numb','😶','Feeling numb'],['guilt','💭','Guilt or regret']],
+    weeks:['Naming the loss','Riding the waves','Anniversaries and memories','Carrying love forward'],briefWeeks:true,
+    replies:['I miss them a lot','I don’t know where to start','Some days are okay'],
+    open:'Grief often comes in waves. How has today been?'},
+  breakup:{e:'💔',l:'Breakup or divorce',label:'Breakup',sku:'{{app_name}} Divorce',
+    shows:[['replay','🔁','Replaying the past'],['socials','📱','Checking their socials'],['self','🧩','Lost sense of self'],['anger','😤','Anger or hurt']],
+    weeks:['Letting the dust settle','Quieting the replay','Finding you again','Your next chapter'],
+    replies:['I keep replaying it','I miss who I was','Some days are okay'],
+    open:'Endings can shake everything loose. How are you holding up?'},
+  drinking:{e:'🍷',l:'Drinking less',label:'Alcohol reset',sku:'{{app_name}} Alcohol',
+    shows:[['evening','🌆','Evening habit'],['cope','😣','Drinking to cope'],['social','🥂','Social pressure'],['stop','🍷','Hard to stop']],
+    weeks:['Knowing your cues','Evenings, rewritten','Cravings, explained','Your new normal'],briefWeeks:true,
+    replies:['Evenings are hardest','I want to cut back','Some days are okay'],
+    open:'Changing a habit takes honesty. How have your evenings been?'},
+  smoking:{e:'🚭',l:'Quitting smoking',label:'Quit smoking',sku:'{{app_name}} Smoking',
+    shows:[['routine','☕','Routine triggers'],['stress','😣','Stress cravings'],['social','👥','Social smoking'],['past','🔁','Past quit attempts']],
+    weeks:['Mapping your triggers','Riding out cravings','New daily rituals','Staying smoke-free'],
+    replies:['Mornings are hardest','Stress makes me crave','I’ve tried before'],
+    open:'Quitting is real work. When do cravings hit most?'},
+  stress:{e:'🌧️',l:'Stress and worry',label:'Calm mind',sku:null,
+    shows:[['racing','🌀','Racing thoughts'],['sleep','🌙','Trouble sleeping'],['work','💼','Work pressure'],['tense','😮‍💨','Tense body']],
+    weeks:['Noticing the loop','Softening the body','Worry, in its place','Your calm toolkit'],
+    replies:['I can’t switch off','Work is a lot','I just feel tense'],
+    open:'A busy mind is tiring. What has been looping most?'},
+  lonely:{e:'🫂',l:'Feeling lonely',label:'Connection',sku:null,
+    shows:[['evenings','🏠','Evenings alone'],['nobody','🗣️','Nobody to tell'],['newplace','🌍','New place'],['crowds','👥','Lonely in crowds']],
+    weeks:['Naming the ache','Small moments of contact','Reaching out, gently','Building your circle'],
+    replies:['Evenings are quiet','I have no one to tell','I feel unseen'],
+    open:'Loneliness is more common than it feels. How has today been?'}
+};
+/* one gentle, non-literal photo per topic (img/topic-*.jpg) */
+const TIMG={grief:['topic-grief','A single wildflower in a small glass bottle on a sunny windowsill'],
+  breakup:['topic-breakup','An open road leading toward a soft sunrise'],
+  drinking:['topic-drinking','A glass of sparkling water with lemon and mint'],
+  smoking:['topic-smoking','A green hilltop under a wide open morning sky'],
+  stress:['topic-stress','A still, misty lake at early morning'],
+  lonely:['topic-lonely','Two mugs side by side on a sunny table']};
+const bgph=(name,alt,scrim,eager,cls='')=>`<div class="bgph ${cls}" style="--scrim:${scrim}"><img src="img/${name}.jpg" alt="${alt}" ${eager?'fetchpriority="high"':'loading="lazy"'}></div>`;
+const PATH_ORDER=['grief','breakup','drinking','smoking','stress','lonely'];
+/* week-1 lesson per #8 pick (demo placeholders) */
+const LESSON={waves:'When the waves come',sleep:'Winding down at night',numb:'When you feel nothing',guilt:'Loosening guilt',
+  replay:'Pausing the replay',socials:'Stepping back online',self:'Who you are now',anger:'Making room for hurt',
+  evening:'Your evening cues',cope:'Other ways to cope',social:'Saying no, kindly',stop:'The pause before the pour',
+  routine:'Rewiring routines',stress:'Stress without smoking',past:'Learning from past tries',
+  racing:'Slowing racing thoughts',work:'Work worry, contained',tense:'Letting the body soften',
+  evenings:'Kinder evenings alone',nobody:'Saying it out loud',newplace:'Settling somewhere new',crowds:'Feeling seen'};
+const LONG=[['u1','🌱','Under a month',19],['1-6','🌿','1-6 months',21],['6-12','🌳','6-12 months',23],['1y','🏔️','Over a year',25],['ns','🤷','Not sure',20]];
+const MOODS=[['rlow','😣','Really low','#CFDBEA'],['low','😔','Low','#D6E1EA'],['okay','😐','Okay','#DCE8DE'],['good','🙂','Good','#E6ECD2'],['great','😊','Great','#F4E3B8']];
+const HELP=[['talk','💬','Someone to talk to'],['understand','🧠','Understand my feelings'],['tools','🧰','Practical coping tools'],['routine','📅','A daily routine'],['journal','📓','Space to journal']];
+const TONES=[['gentle','🤍','Gentle listener','“That sounds really hard.”'],['practical','🧭','Practical guide','“Let’s try one small step.”'],['curious','❓','Curious questions','“What feels heaviest right now?”'],['mix','🌗','A bit of each','“That’s hard. Want to try something?”']];
+const QUIET=[['morning','🌅','Morning','08:00','linear-gradient(90deg,#FCE6D2,#FBF1E4)'],['midday','☀️','Midday','12:30','linear-gradient(90deg,#E4EEF6,#F3F7FA)'],['evening','🌆','Evening','19:00','linear-gradient(90deg,#F4DCD2,#E9E2F3)'],['bed','🌙','Before bed','22:00','linear-gradient(90deg,#DCD8EF,#CFCBE8)']];
+const TONE_OPEN={gentle:'I’m really glad you’re here.',practical:'Glad you’re here. Let’s take it step by step.',curious:'Glad you’re here. I’d love to understand.',mix:'I’m really glad you’re here.'};
+const TONE_R1={gentle:n=>`That makes sense, ${n}. Thank you for telling me. What helps, even a little, on hard days?`,
+  practical:n=>`Thanks, ${n}. Let’s keep it simple. What’s one thing that helped before?`,
+  curious:n=>`I hear you, ${n}. What do you notice most when that happens?`,
+  mix:n=>`That sounds hard, ${n}. What helps, even a little?`};
+const R2=['Talking helps','Being outside','I’m not sure yet'];
+const CRISIS=['suicid','kill myself','killing myself','end my life','end it all','take my life','want to die','wanna die','don\'t want to live','dont want to live','self harm','self-harm','selfharm','hurt myself','harm myself','cut myself','overdose','better off dead','no reason to live','don\'t want to be here','dont want to be here','can\'t go on','cant go on','not worth living'];
+const isCrisis=s=>{const x=String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ');return CRISIS.some(k=>x.includes(k))};
+
+/* ---------- state ---------- */
+const INIT=()=>({v:'A',i:1,hist:[],year:null,minor:false,path:'',pathOther:'',pOther:false,long:'',shows:[],showsOther:'',sOther:false,mood:'',name:'',help:[],helpOther:'',hOther:false,tone:'',quiet:'',qtime:'',
+  chat:[],chatStep:0,chatPaused:false,crisisChat:false,notif:null,account:null,emailMode:false,email:'',pw:'',plan:'q3',trial:false,premium:null,err:'',safety:[],jumpPath:'grief'});
+let S=INIT();
+let trialArm=false;
+
+/* ---------- config ---------- */
+const CONFIG={funnel:'calmio',
+  /* Store list prices (US App Store, 2026-09-28). Used here only for the offer's struck "usual" price. */
+  plans:{q3:{name:'3 Months',price:'$132.99'},m1:{name:'1 Month',price:'$70.99'}},
+  checkoutUrl:'',   /* '' = demo toast only */
+  /* Gentle one-time offer shown ONCE when the paywall (#21) is closed without paying (fallback / "upsell on decline").
+     User direction 2026-09-30 overrides the brief's old "no discount-on-close" rule. Kept gentle for a mental-health audience:
+     a trial / lighter tier at a price the store actually lists, no countdown, no pressure wording.
+     Real terms only: price and renewal must be what checkout charges. compareAt = the regular plan it undercuts (its real price is struck).
+     expiresMin stays null on purpose: no timer in this category (a countdown contradicts "Breathe"). A number would be a real deadline that withdraws the offer.
+     Never shown after a safety event (crisis sheet, crisis chat, "Really low" mood support sheet, help link). */
+  offer:{enabled:true,name:'7-day trial',price:'{{offer_price}}',renews:'{{offer_renews}}',compareAt:'q3',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+const DEBUG=/[?&]debug=1\b/.test(location.search);
+const EVENTS=window.ikEvents=[];
+function emit(name,data={}){EVENTS.push({event:name,...data,t:Date.now()});if(DEBUG)console.info('[calmio]',name,data);if(typeof renderPanel==='function'&&document.getElementById('data'))renderPanel()}
+const tok=x=>esc(x).replace(/{{(?!app_name)(\w+)}}/g,'<span class="token">{{$1}}</span>');
+
+/* ---------- one-time offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const safetyHit=()=>S.crisisChat||S.chatPaused||S.mood==='rlow'||S.safety.length>0;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen||safetyHit())return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==22)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;S.premium=false;emit('offer_expired');go(23);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+function offerCheckout(){const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+  if(!u)return false;
+  try{const x=new URL(u,location.href);x.searchParams.set('plan','offer');if(S.email)x.searchParams.set('email',S.email);
+    new URLSearchParams(location.search).forEach((v,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,v)});
+    try{window.top.location.href=x.toString()}catch(e){location.href=x.toString()}return true}catch(e){return false}}
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name||'Maya');
+const pk=()=>S.path==='other'||!S.path?(S.path==='other'?'stress':'grief'):S.path;
+const P=()=>PATHS[pk()];
+const fmt=hm=>{if(!hm)return '7:00 PM';let[h,m]=hm.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return `${h}:${String(m).padStart(2,'0')} ${ap}`};
+const qt=()=>fmt(S.qtime||'19:00');
+const moodOf=k=>MOODS.find(m=>m[0]===k);
+
+const FLOW=[
+ ['A · Hook',[[1,'Breathe'],[2,'Talk it through'],[3,'Small daily steps']]],
+ ['B · Investment',[[4,'Age check','18+ gate'],['4b','Under-18 block','if under 18'],[5,'What you’re carrying','branch'],[6,'What the app is (and isn’t)','safety'],[7,'How long'],[8,'How it shows up','per topic'],[9,'First mood check-in','support sheet'],[10,'Name'],[11,'Your first seed','bridge'],[12,'What would help'],[13,'How the companion should talk'],[14,'Your quiet moment']]],
+ ['C · Trust',[[15,'Real people, real ratings']]],
+ ['D · Anticipation',[[16,'Shaping the programme','loading'],[17,'Your programme'],[18,'First conversation','AI chat'],[19,'Daily reminder','sheet']]],
+ ['E · Gate',[[20,'Save your programme']]],
+ ['F · Monetization',[[21,'Paywall','dismissible'],[22,'One-time offer','once, on close']]],
+ ['G · Payoff',[[23,'Your first flower']]]
+];
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="amb" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div><div class="stage" id="stage"></div>
+<div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>
+<button class="help" data-a="help">${ic('life',15)} Need help now?</button><div id="ov"></div>`;
+const stage=document.getElementById('stage');
+const ovEl=document.getElementById('ov');
+const cur=()=>stage.querySelector('.view.cur');
+let timer=null,chatT=[];
+
+function clearTimers(){clearInterval(timer);clearTimeout(timer);timer=null;chatT.forEach(clearTimeout);chatT=[]}
+function go(n,push=true){clearTimers();closeOv(false);const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';render(dir)}
+function next(){go(S.i+1)}
+function back(){clearTimers();const p=S.hist.pop();if(p){S.i=p;S.err='';render('b')}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
+const later=(fn,ms)=>{const id=setTimeout(fn,ms);chatT.push(id);return id};
+
+/* ---------- safety overlays (phone-level, never gated) ---------- */
+let ovNext=null;
+function openOv(kind,ctx,after){S.ov={kind,ctx};ovNext=after||null;S.safety.push(kind==='support'?'Support sheet (#'+S.i+')':ctx==='link'?'Help link (#'+S.i+')':'Crisis language (#'+S.i+')');drawOv();renderPanel()}
+function closeOv(run){const f=ovNext;ovNext=null;if(S.ov){S.ov=null;drawOv()}if(run&&f)f()}
+const helpRows=(first)=>`${first}
+  <div class="helprow"><span class="w">${ic('globe',18)}</span><div><b>Outside the US: findahelpline.com</b><small>Free, confidential helplines by country</small></div></div>
+  <div class="helprow"><span class="w">${ic('alert',18)}</span><div><b>In danger now?</b><small>Call your local emergency number.</small></div></div>`;
+function drawOv(){
+  if(!S.ov){ovEl.innerHTML='';return}
+  const {kind,ctx}=S.ov;let body='';
+  if(kind==='support'){
+    body=`<h2 class="display" style="font-size:25px">You deserve support right now</h2><p class="lead">Talking to a person can help. It’s free, anytime.</p>
+    <div class="helprow pri"><span class="w">${ic('phone',18)}</span><div><b>Call or text 988 (US)</b><small>In the app this opens your dialer</small></div></div>
+    <div class="helprow"><span class="w">${ic('globe',18)}</span><div><b>Find a local helpline</b><small>findahelpline.com</small></div></div>
+    <button class="btn ghost" data-a="ovcont">Continue with {{app_name}}</button>`;
+  }else if(ctx==='link'){
+    body=`<h2 class="display" style="font-size:25px">Need help now?</h2>
+    ${helpRows(`<div class="helprow pri"><span class="w">${ic('phone',18)}</span><div><b>Call or text 988 (US)</b><small>In the app this opens your dialer</small></div></div>`)}
+    <p class="hint" style="text-align:center;margin:0">No sign-in, no paywall. Always free.</p>
+    <button class="btn ghost" data-a="ovclose">Back to {{app_name}}</button>`;
+  }else{
+    body=`${helpRows(`<div class="helprow pri"><span class="w">${ic('phone',18)}</span><div><b>Talk to a person now</b><small>Call or text 988 (US) · opens your dialer in the app</small></div></div>`)}
+    <button class="btn ghost" data-a="ovcont">Continue with {{app_name}}</button>`;
+  }
+  body=brand(body);ovEl.innerHTML=`<div class="dim" ${kind==='crisis'&&ctx==='link'?'data-a="ovclose"':''}></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Support"><span class="grab"></span>${body}</div>`;
+}
+function crisisCheck(text,cont){if(text&&isCrisis(text))openOv('crisis','text',cont);else cont()}
+
+/* ---------- prefill for panel jumps ---------- */
+function prefillChat(){
+  const p=P(),n=nm();
+  S.chat=[{w:'ai',h:opener()},{w:'me',h:esc(p.replies[0])},{w:'ai',h:TONE_R1[S.tone||'gentle'](n)},{w:'me',h:esc(R2[0])},{w:'ai',h:closing(R2[0])}];
+  S.chatStep=2;S.chatPaused=false;S.crisisChat=false;
+}
+function fillTo(n){
+  if(n>4&&!S.year)S.year=1992;
+  if(n>5&&!S.path)S.path=S.jumpPath;
+  if(n>7&&!S.long)S.long='1-6';
+  if(n>8&&!S.shows.length&&!S.sOther)S.shows=P().shows.slice(0,2).map(x=>x[0]);
+  if(n>9&&!S.mood)S.mood='okay';
+  if(n>10&&!S.name)S.name='Maya';
+  if(n>12&&!S.help.length&&!S.hOther)S.help=['talk','routine'];
+  if(n>13&&!S.tone)S.tone='gentle';
+  if(n>14&&!S.quiet){S.quiet='evening';S.qtime='19:00'}
+  if(n>18&&(S.chatStep<2||S.crisisChat))prefillChat();
+  if(n>19&&S.notif===null)S.notif=true;
+  if(n>20&&!S.account)S.account='Apple';
+}
+
+/* ---------- helpers ---------- */
+function nav(){
+  const inv=[4,5,6,7,8,9,10,11,12,13,14];const n=S.i;const idx=inv.indexOf(n);
+  const showBack=n>1&&![16,19,21,22,23].includes(n)&&!(n===4&&S.minor);
+  if(n===22)return `<div class="nav"><button class="iconbtn" data-a="offerno" aria-label="No thanks" style="background:#fff;border:1px solid var(--c-line)">${ic('x',18)}</button><div class="obrand">${ic('flower',17)} {{app_name}}</div><span class="helpspace"></span></div>`;
+  let left=showBack?`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`:'<span class="navspacer"></span>';
+  if(n===21)left=`<button class="iconbtn" data-a="close" aria-label="Close" style="background:#fff;border:1px solid var(--c-line)">${ic('x',18)}</button>`;
+  const p=Math.round((idx+1)/inv.length*100);
+  const mid=idx>=0&&!S.minor?`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></div>`:'<div style="flex:1"></div>';
+  const right='';if(n===21)left+='<button class="restore" data-a="restore">Restore purchase</button>';
+  return `<div class="nav">${left}${mid}${right}<span class="helpspace"></span></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const opt=(a,v,e,l,on,multi,st='')=>`<button class="opt ${on?'on':''}" data-a="${a}" data-v="${v}" aria-pressed="${on}" style="${st}"><span class="em">${e}</span><span class="lbl">${l}</span>${multi||on?`<span class="chk">${on?ic('check',13,'currentColor',3):''}</span>`:''}</button>`;
+const otherIn=(f,val,ph='Tell us in a few words')=>`<div class="box fadein"><input id="oth" data-f="${f}" maxlength="60" placeholder="${ph}" value="${esc(val)}"></div>`;
+const flower=(mode,size,p=0.1)=>`<div class="fl" data-mode="${mode}" data-size="${size}" data-p="${p}" style="width:${size}px;height:${size}px" aria-hidden="true"></div>`;
+function f2(open,s=34,delay=0){
+  const stem=`<path d="M20 40V${open?20:22}" stroke="#7FA38A" stroke-width="2.2" stroke-linecap="round"/><path d="M20 33c-4-1-6-3-7-6 4 0 6 2 7 6z" fill="#8DB095"/>`;
+  if(!open)return `<svg class="f2" width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true">${stem}<path d="M20 7c4.5 4 6 8 6 11a6 6 0 0 1-12 0c0-3 1.5-7 6-11z" fill="#CFC4EA"/><path d="M20 10c2.5 3 3.5 6 3.5 8a3.5 3.5 0 0 1-7 0c0-2 1-5 3.5-8z" fill="#B3A5DA"/><path d="M14.5 20c1.5 3 3.5 4 5.5 4s4-1 5.5-4c-1 4-3 5.5-5.5 5.5S15.5 24 14.5 20z" fill="#7FA38A"/></svg>`;
+  let pet='';for(let k=0;k<5;k++)pet+=`<ellipse cx="20" cy="9" rx="5.2" ry="7" fill="${k%2?'#C9BEE8':'#D8CFF0'}" transform="rotate(${k*72} 20 16)"/>`;
+  return `<svg class="f2 bloom" width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true">${stem}<g class="pet" style="animation-delay:${delay}s">${pet}<circle cx="20" cy="16" r="3.6" fill="#EFCF86"/></g></svg>`;
+}
+const opener=()=>`Hi ${nm()}. ${TONE_OPEN[S.tone||'gentle']} ${P().open}`;
+const closing=r2=>`“${esc(r2)}” sounds like a good place to start. Thank you for sharing that. Let’s take Week 1 together at ${qt()}.`;
+function week1(){
+  const ls=S.shows.filter(k=>LESSON[k]).map(k=>LESSON[k]);
+  const fill=['Your first check-in','A breathing space','Noticing what helps'];
+  let i=0;while(ls.length<3)ls.push(fill[i++]);return ls.slice(0,3);
+}
+
+/* ---------- screens ---------- */
+const V={
+1:()=>`${bgph('hook-window','Soft morning light on a windowsill with a small green plant','linear-gradient(180deg,#F7F4EE14 0%,#F7F4EE26 42%,#F7F4EEb3 62%,#F7F4EEeb 84%)',true)}<div class="scr center" style="align-items:center;text-align:center;gap:14px">
+  ${flower('breathe',190)}
+  <div class="bubble ai fadein" style="align-self:center;animation-delay:.6s">I’m here. What’s on your mind?</div>
+  <h1 class="display" style="font-size:31px;margin-top:8px">${t('Breathe. You’re not alone.','Heavy day? Let’s talk.')}</h1>
+  <p class="lead">${t('A calm companion to talk things through, anytime.','Share what’s on your mind, at your own pace.')}</p></div>
+  <div class="foot">${cta('Get started')}<div class="note">18+ · {{app_name}} is AI and not a substitute for professional care</div></div>`,
+2:()=>`<div class="scr center">
+  <div class="card" style="display:flex;flex-direction:column;gap:12px;padding:18px"><img class="cimg" src="img/hook-mug.jpg" alt="Hands holding a warm mug of tea by a window" loading="lazy"><span class="chip lav">${ic('msg',13)} AI companion</span>
+  <div class="thread seq"><div class="bubble me" style="animation-delay:.3s">I can’t switch my head off.</div>
+  <div class="bubble ai" style="animation-delay:1.3s">That sounds exhausting. What’s looping most?</div>
+  <div class="bubble me" style="animation-delay:2.3s"><span class="typing"><i></i><i></i><i></i></span></div></div></div>
+  <h1 class="display">${t('Talk it through, anytime.','No judgment. Just listening.')}</h1>
+  <p class="lead">${t('{{app_name}} listens, asks gentle questions, and helps you reflect.','A private space to say what’s hard to say.')}</p></div>
+  <div class="foot">${cta('Continue')}</div>`,
+3:()=>`<div class="scr center">
+  <div class="card c3" style="padding:18px 16px 12px;display:flex;flex-direction:column;gap:12px"><img class="cimg" src="img/hook-meadow.jpg" alt="A meadow path through wildflowers at dawn" loading="lazy">
+   <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Your garden</span><span class="chip">${ic('clock',13)} 15 min</span></div>
+   <div class="garden" style="border:none;background:none;padding:4px 0 10px">${f2(true,52,.5)}${f2(true,52,1.7)}${f2(false,52)}${f2(false,52)}${f2(false,52)}</div></div>
+  <h1 class="display">${t('Fifteen minutes a day.','Small steps, every day.')}</h1>
+  <p class="lead">${t('Short chats and lessons. Watch your garden bloom.','Each lesson you finish grows a new flower.')}</p></div>
+  <div class="foot">${cta('Continue')}</div>`,
+4:()=>{
+  if(S.minor)return `<div class="scr center" style="text-align:center;align-items:center"><div class="iconwell">${ic('life',30)}</div>
+  <h1 class="display">{{app_name}} is for adults only</h1><p class="lead">Free support for young people is available now.</p>
+  <div style="display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;margin-top:6px">
+  <div class="helprow pri"><span class="w">${ic('phone',18)}</span><div><b>Call or text 988 (US)</b><small>In the app this opens your dialer</small></div></div>
+  <div class="helprow"><span class="w">${ic('globe',18)}</span><div><b>Find a helpline near you</b><small>findahelpline.com</small></div></div></div></div>
+  <div class="foot"><div class="note">There’s no way back into sign-up from here.</div></div>`;
+  const ys=[];for(let y=NOWY-12;y>=NOWY-100;y--)ys.push(y);
+  return `<div class="scr"><div class="iconwell" style="width:52px;height:52px;align-self:flex-start">${ic('sprout',24)}</div>
+  <h1 class="display">${t('First, a quick age check','What year were you born?')}</h1>
+  <p class="lead">${t('{{app_name}} is for adults 18 and over.','We ask everyone. It keeps {{app_name}} safe.')}</p>
+  <div class="yw"><div class="band"></div><div class="list" id="yw" role="listbox" aria-label="Birth year">${ys.map(y=>`<button role="option" data-a="year" data-v="${y}" class="${S.year===y?'on':''}" aria-selected="${S.year===y}">${y}</button>`).join('')}</div></div>
+  <p class="hint" style="text-align:center;margin:-6px 0 0" id="yhint">${S.year?'':'Scroll and tap your year'}</p></div>
+  <div class="foot">${cta('Continue',!!S.year,'age')}</div>`},
+5:()=>`<div class="scr"><div style="margin:-6px auto -14px">${flower('float',86,0.04)}</div>
+  <h1 class="display">${t('What are you carrying right now?','What brings you to {{app_name}}?')}</h1>
+  <p class="lead">${t('Pick the one that weighs most today.','This shapes your daily programme.')}</p>
+  <div class="opts">${PATH_ORDER.map(k=>opt('path',k,`<img src="img/${TIMG[k][0]}.jpg" alt="" loading="lazy">`,PATHS[k].l,S.path===k&&!S.pOther).replace('class="em"','class="em th"')).join('')}
+  ${opt('path','other','✏️','Other',S.pOther).replace('class="em"','class="em" style="width:34px"')}${S.pOther?otherIn('pathOther',S.pathOther):''}</div></div>
+  <div class="foot">${S.pOther?cta('Continue',!!S.pathOther.trim(),'pathother'):'<div class="note">Tap one to continue</div>'}</div>`,
+6:()=>`<div class="scr center">
+  <h1 class="display">${t('A companion, not a therapist','Before we begin, one promise')}</h1>
+  <p class="lead">${t('{{app_name}} helps you reflect. It doesn’t diagnose or treat.','For crisis or medical care, please reach real people.')}</p>
+  <div class="card" style="padding:4px 16px"><div class="rows">
+   <div class="rowi"><span class="w">${ic('msg',18)}</span><span>{{app_name}} is AI, and always says so</span></div>
+   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
+   <div class="rowi"><span class="w">${ic('life',18)}</span><span>In crisis? Call or text 988 (US) or visit findahelpline.com</span></div>
+   ${pk()==='drinking'&&S.path==='drinking'?`<div class="rowi warn"><span class="w">${ic('alert',18)}</span><span>Stopping heavy drinking suddenly can be risky. Check with a doctor first.</span></div>`:''}
+  </div></div>
+  <p class="hint" style="text-align:center;margin:0">{{app_name}} does not provide medical advice, diagnosis or treatment.</p></div>
+  <div class="foot">${cta('I understand')}</div>`,
+7:()=>`<div class="scr"><h1 class="display">${t('How long have you carried this?','When did this begin?')}</h1>
+  <p class="lead">${t('Helps us pace your programme gently.','There’s no right or wrong answer.')}</p>
+  <div class="opts">${LONG.map(([k,e,l,fs])=>opt('long',k,`<span style="font-size:${fs}px">${e}</span>`,l,S.long===k)).join('')}</div></div>
+  <div class="foot"><div class="note">Tap one to continue</div></div>`,
+8:()=>{const p=P();const ok=S.shows.length||(S.sOther&&S.showsOther.trim());
+  return `<div class="scr"><h1 class="display">${t('How does it show up?','What’s been hardest lately?')}</h1>
+  <p class="lead">${t('Pick all that fit. We’ll start there.','Choose any. Nothing here is judged.')}</p>
+  <div class="grid2">${p.shows.map(([k,e,l])=>`<button class="gchip ${S.shows.includes(k)?'on':''}" data-a="shows" data-v="${k}" aria-pressed="${S.shows.includes(k)}"><span class="em">${e}</span><span class="lbl">${l}</span><span class="chk">${ic('check',12,'currentColor',3)}</span></button>`).join('')}
+  <button class="gchip ${S.sOther?'on':''}" data-a="shows" data-v="other" aria-pressed="${S.sOther}" style="grid-column:span 2;min-height:0;flex-direction:row;align-items:center"><span class="em">✏️</span><span class="lbl">Other</span><span class="chk">${ic('check',12,'currentColor',3)}</span></button></div>
+  ${S.sOther?otherIn('showsOther',S.showsOther):''}</div>
+  <div class="foot">${ok?'':'<div class="note">Pick at least one</div>'}${cta('Continue',ok,'showsgo')}</div>`},
+9:()=>`<div class="scr center"><h1 class="display">${t('How are you feeling today?','Quick check-in: how’s today?')}</h1>
+  <p class="lead">${t('Your first check-in. You’ll do this daily.','Be honest. Only you see this.')}</p>
+  <div class="faces">${MOODS.map(([k,e,l,c])=>`<button class="face ${S.mood===k?'on':''}" data-a="mood" data-v="${k}" style="--wash:${c}" aria-pressed="${S.mood===k}"><span class="fc" style="${S.mood===k?`background:${c}`:''}">${e}</span><span>${l}</span></button>`).join('')}</div></div>
+  <div class="foot"><div class="note">Tap one to continue</div></div>`,
+10:()=>`<div class="scr"><div style="align-self:flex-start">${f2(false,46)}</div>
+  <h1 class="display">${t('What should {{app_name}} call you?','What’s your first name?')}</h1>
+  <p class="lead">${t('A nickname is fine. Change it anytime.','So your conversations feel like yours.')}</p>
+  <div class="field"><div class="box"><input id="nm" data-f="name" maxlength="20" autocomplete="given-name" placeholder="Your name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Continue',true,'name')}</div>`,
+11:()=>`<div class="scr center" style="align-items:center;text-align:center">
+  <div class="seedwrap"><svg class="seed" width="170" height="170" viewBox="0 0 120 120" aria-hidden="true">
+   <ellipse cx="60" cy="112" rx="34" ry="4" fill="#4B5E5022"/>
+   <path class="shoot" d="M60 80C60 68 60 60 60 48" stroke="#6F9A7A" stroke-width="3" stroke-linecap="round" fill="none"/>
+   <path class="lv" d="M60 58c-9-1-14-6-15-13 8 0 13 5 15 13z" fill="#8DB095" style="animation-delay:1.8s"/>
+   <path class="lv" d="M60 52c8-2 12-7 12-14-7 1-11 6-12 14z" fill="#7FA38A" style="animation-delay:2.1s"/>
+   <ellipse class="sd" cx="60" cy="79" rx="4" ry="5.5" fill="#9C7A5C"/>
+   <path d="M30 80h60l-7 30H37z" fill="#E6CFB3"/><rect x="27" y="74" width="66" height="10" rx="4" fill="#D9BC9A"/><ellipse cx="60" cy="76" rx="29" ry="3" fill="#8C6F5A"/>
+  </svg></div>
+  <h1 class="display">${t('Your first seed is planted',`Thank you, ${nm()}.`)}</h1>
+  <p class="lead">${t('Every answer shapes a programme made for you.','Three quick questions, then your plan.')}</p>
+  <span class="chip">3 questions left</span></div>
+  <div class="foot">${cta('Continue')}</div>`,
+12:()=>{const ok=S.help.length||(S.hOther&&S.helpOther.trim());
+  return `<div class="scr"><h1 class="display">${t(`What would help most, ${nm()}?`,'What do you need right now?')}</h1>
+  <p class="lead">${t('Pick all that apply.','Choose any. We’ll weave them in.')}</p>
+  <div class="opts">${HELP.map(([k,e,l])=>opt('helpopt',k,e,l,S.help.includes(k),true)).join('')}${opt('helpopt','other','✏️','Other',S.hOther,true)}
+  ${S.hOther?otherIn('helpOther',S.helpOther):''}</div></div>
+  <div class="foot">${ok?'':'<div class="note">Pick at least one</div>'}${cta('Continue',ok,'helpgo')}</div>`},
+13:()=>`<div class="scr"><h1 class="display">${t('How should {{app_name}} talk?','What kind of support fits you?')}</h1>
+  <p class="lead">${t('This sets the tone of your conversations.','Change it anytime in settings.')}</p>
+  <div class="opts">${TONES.map(([k,e,l,s])=>`<button class="tcard ${S.tone===k?'on':''}" data-a="tone" data-v="${k}" aria-pressed="${S.tone===k}"><b>${e} ${l}</b><small>${s}</small></button>`).join('')}</div></div>
+  <div class="foot">${cta('Continue',!!S.tone)}</div>`,
+14:()=>`<div class="scr"><h1 class="display">${t('When’s your quiet moment?','When can you give 15 minutes?')}</h1>
+  <p class="lead">${t('We’ll save your daily session for then.','Pick a time you usually have to yourself.')}</p>
+  <div class="opts">${QUIET.map(([k,e,l,tm,bg])=>opt('quiet',k,e,`${l} <span style="font-weight:600;opacity:.7;font-size:13px">· ${fmt(tm)}</span>`,S.quiet===k,false,S.quiet===k?'':`background:${bg}`)).join('')}</div>
+  <span class="chip" style="align-self:center">Last question</span></div>
+  <div class="foot">${cta('Continue',!!S.quiet)}</div>`,
+15:()=>S.v==='A'?`<div class="scr center" style="text-align:center">
+  <div class="stars">${[0,1,2,3,4].map(()=>ic('star',26,'currentColor',1.6).replace('fill="none"','fill="#A9C5B0"')).join('')}</div>
+  <h1 class="display"><span class="token">{{app_rating}}</span>★ from real people</h1>
+  <p class="lead"><span class="token">{{rating_count}}</span> ratings from people who’ve been there.</p>
+  <p class="hint" style="margin:-6px 0 0">Placeholder · fill live from this app’s own store listing</p>
+  <div class="ph" style="text-align:left">“Real App Store review, quoted as shown, goes here.”<div class="hint" style="margin-top:6px">Path-matched: a ${esc(P().label)} review for the ${esc(P().label)} path · real store data only</div></div></div>
+  <div class="foot">${cta('Continue')}</div>`
+  :`<div class="scr center"><div class="iconwell">${ic('lock',28)}</div>
+  <h1 class="display" style="text-align:center">Private. Judgment-free. Yours.</h1>
+  <p class="lead" style="text-align:center">Your chats stay private. Nothing is ever public.</p>
+  <div class="card" style="padding:4px 16px"><div class="rows">
+   <div class="rowi"><span class="w">${ic('lock',18)}</span><span>Your chats stay private</span></div>
+   <div class="rowi"><span class="w">${ic('eyeoff',18)}</span><span>Nothing is ever public</span></div>
+   <div class="rowi"><span class="w">${ic('trash',18)}</span><span>Delete your chats anytime <span class="hint">(ships only if in-app deletion exists)</span></span></div></div></div></div>
+  <div class="foot">${cta('Continue')}</div>`,
+16:()=>{const rows=['Listening back to your answers…','Choosing your first gentle lessons…','Tuning how {{app_name}} talks to you…','Almost ready — your first bud awaits…'];
+  const chips=[...S.shows.map(k=>(P().shows.find(x=>x[0]===k)||[])[2]).filter(Boolean),S.sOther&&S.showsOther.trim()?S.showsOther.trim():'',(TONES.find(x=>x[0]===S.tone)||[])[2],(QUIET.find(x=>x[0]===S.quiet)||[])[2]].filter(Boolean).slice(0,5);
+  const pos=[[18,150],[228,120],[36,40],[214,20],[120,0]];
+  return `<div class="scr" style="gap:14px"><div class="floaters">${chips.map((c,i)=>`<span style="left:${pos[i][0]}px;top:${pos[i][1]}px;animation-delay:${.6+i*1.1}s">${esc(c)}</span>`).join('')}</div>
+  <div style="margin-top:-4px">${flower('bloom',230)}</div>
+  <h1 class="display" style="text-align:center">${t(`Shaping ${nm()}’s programme…`,`Planting ${nm()}’s garden…`)}</h1>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
+  <div class="ph" style="font-size:13px;padding:10px 14px">“Real path-matched store review goes here — never invented.”</div></div>
+  <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
+17:()=>{const p=P();const w1=week1();const md=moodOf(S.mood)||MOODS[2];
+  const ti=TIMG[pk()];
+  return `<div class="scr" style="gap:14px"><img class="hdrimg" src="img/${ti[0]}.jpg" alt="${ti[1]}" loading="lazy"><h1 class="display">${t(`${nm()}’s ${esc(p.label)} programme`,'Your first four weeks')}</h1>
+  <p class="lead" style="margin-top:-6px">${t(`Built from your answers. Starts ${qt()}.`,'Fifteen minutes a day, at your own pace.')}</p>
+  <div class="moodstrip"><span>Mood</span><span class="m" style="background:${md[3]}">${md[1]}</span><span style="color:var(--c-ink)">Day 1</span><span style="flex:1"></span>${'<span class="d"></span>'.repeat(5)}</div>
+  <div class="weeks">
+   <div class="wk"><span class="fi">${f2(true,32,.2)}</span><div class="sub">Week 1 · open</div><h4>${esc(p.weeks[0])}</h4><ul>${w1.map(l=>`<li><i></i>${esc(l)}</li>`).join('')}</ul></div>
+   ${p.weeks.slice(1).map((w,i)=>`<div class="wk dim"><span class="fi">${f2(false,30)}</span><div class="sub">Week ${i+2}</div><h4>${esc(w)}</h4></div>`).join('')}
+  </div>
+  <p class="hint" style="text-align:center;margin:0">Not a diagnosis. A starting point you can change.</p></div>
+  <div class="foot">${cta('Meet {{app_name}}')}</div>`},
+18:()=>chatHTML(false),
+19:()=>chatHTML(true)+`<div class="vdim"></div><div class="sheet vsheet" role="dialog" aria-label="Daily reminder"><span class="grab"></span>
+  <div class="push"><span class="app">🌸</span><div><small>{{app_name}} · ${qt()}</small><span style="font-size:14px">🌸 Your 15 minutes are ready when you are.</span></div></div>
+  <h2 class="display" style="font-size:25px">${t('Keep your quiet moment','A gentle nudge, once a day')}</h2>
+  <p class="lead">${t(`One reminder at ${qt()}. Turn it off anytime.`,'Never more than once a day. Promise.')}</p>
+  <label style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;color:var(--c-ink2)">${ic('clock',18)} Reminder time <input class="timein" type="time" data-f="qtime" value="${esc(S.qtime||'19:00')}"></label>
+  <button class="btn" data-a="remind">Turn on reminders</button><button class="link" data-a="noremind">Not now</button></div>`,
+20:()=>`<div class="scr center" style="align-items:center;text-align:center">${flower('float',120,0.42)}
+  <h1 class="display">${t('Save your programme','Keep your garden growing')}</h1>
+  <p class="lead">${t('Create an account so your progress stays yours.','Your chats and progress, saved securely.')}</p>
+  ${S.emailMode?`<div style="display:flex;flex-direction:column;gap:10px;width:100%;text-align:left" class="fadein">
+   <div class="box">${ic('mail',18)}<input id="em" type="email" data-f="email" placeholder="Email" value="${esc(S.email)}" autocomplete="email"></div>
+   <div class="box">${ic('lock',18)}<input id="pw" type="password" data-f="pw" placeholder="Password (8+ characters)" value="${esc(S.pw)}" autocomplete="new-password"></div>
+   ${S.err?`<div class="err">${S.err}</div>`:''}</div>`:''}</div>
+  <div class="foot">${S.emailMode?cta('Continue',true,'emailgo')+'<button class="link" data-a="emailoff">Use Apple or Google instead</button>':
+   `<button class="btn white" data-a="acct" data-v="Apple">${ic('apple',18)} Continue with Apple</button><button class="btn ghost" data-a="acct" data-v="Google">${ic('google',18)} Continue with Google</button><button class="btn ghost" data-a="emailon">${ic('mail',18)} Use email</button>`}
+   ${S.err&&!S.emailMode?`<div class="err" style="text-align:center">${S.err}</div>`:''}
+   <div class="note">By continuing you agree to the Terms and Privacy Policy.</div></div>`,
+21:()=>{const p=P();const q3=S.plan==='q3';const trialOn=trialArm&&q3&&S.trial;
+  return `<div class="scr" style="gap:11px;padding-top:0">
+  <span class="eyebrow">${p.sku?esc(p.sku):'Programme SKU to confirm (no store SKU for this path yet)'}</span>
+  <h1 class="display" style="margin-top:-6px">${t(`${nm()}, your programme is ready`,`Start your ${esc(p.label)} programme`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Daily chats, lessons and check-ins, made for you.','Price shown upfront. We remind you before renewing.')}</p>
+  <div class="benefits">${[['msg','Daily conversations with {{app_name}}'],['flower','Short lessons that grow your garden'],['pen','Guided journaling prompts'],['smile','Daily mood check-ins']].map(([i,l])=>`<div><span class="w">${ic(i,16)}</span>${l}</div>`).join('')}</div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+   <button class="plan ${q3?'on':''}" data-a="plan" data-v="q3" aria-pressed="${q3}"><span class="radio">${q3?ic('check',13,'currentColor',3):''}</span><span><span class="pn">3 Months <span class="save">Save 37%</span></span><span class="pp">$132.99 every 3 months</span></span><span class="pw">≈ $10.23/week</span></button>
+   <button class="plan ${!q3?'on':''}" data-a="plan" data-v="m1" aria-pressed="${!q3}"><span class="radio">${!q3?ic('check',13,'currentColor',3):''}</span><span><span class="pn">1 Month</span><span class="pp">$70.99 / month</span></span><span class="pw">≈ $16.38/week</span></button>
+  </div>
+  ${trialArm&&q3?`<button class="toggle ${S.trial?'on':''}" data-a="trial" aria-pressed="${S.trial}"><span><b style="display:block;font-size:15px">7-day free trial</b><span class="hint">Optional. Off unless you turn it on.</span></span><span class="sw"></span></button>`:''}
+  <div class="tl">${trialOn?`<div><i></i><b>Today</b>free</div><div><i></i><b>Day 5</b>reminder</div><div><i></i><b>Day 7</b>$132.99, then every 3 months</div>`
+   :`<div><i></i><b>Today</b>Programme starts</div><div><i></i><b>3 days before</b>We remind you</div><div><i></i><b>Renews</b>${q3?'$132.99':'$70.99'}</div>`}</div></div>
+  <div class="foot" style="padding-top:8px;gap:8px">${cta('Start my programme',true,'buy')}
+   <p class="renew">${q3?'Renews at $132.99 every 3 months until you cancel. Cancel anytime in App Store settings.':'Renews at $70.99 every month until you cancel. Cancel anytime in App Store settings.'}</p>
+   <p class="renew2">We’ll notify and email you 3 days before each renewal.</p>
+   <p class="renew2" style="color:var(--c-sage);font-weight:700">Crisis resources are always free.</p>
+   <button class="link" data-a="notnow" style="padding:2px">Not now</button></div>`},
+22:()=>{const p=P(),o=CONFIG.offer,base=CONFIG.plans[o.compareAt],was=base?base.price:'',im=TIMG[pk()];
+  return `<div class="scr" style="gap:14px;padding-top:4px">
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display" style="font-size:27px">${t(`Start gently, ${nm()}`,`Try your ${esc(p.label)} programme first`)}</h1>
+   <p class="lead">${t(`Your ${esc(p.label)} programme is saved. If three months feels like a big step, you can try it first for less.`,'No rush. Here is a smaller first step, if it helps.')}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard" style="margin-top:${o.badge?10:0}px">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow"><div class="th"><img src="img/${im[0]}.jpg" alt="${esc(im[1])}" onerror="this.remove()"></div><div style="flex:1;min-width:0"><b style="font:800 18px var(--sans)">${esc(o.name)}</b><div class="hint">${esc(p.label)} programme · Week 1: ${esc(week1()[0])}</div></div></div>
+   <div class="oprice">${was?`<s>${esc(was)}</s>`:''}<b>${tok(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${[`Your 4-week ${esc(p.label)} programme, from lesson one`,'Daily conversations with {{app_name}}','A reminder 3 days before it renews'].map(x=>`<div>${ic('check',16,'currentColor',2.6)}<span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <p class="renew" style="font-size:14px">${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in App Store settings.</p>
+   <p class="renew2">We’ll notify and email you 3 days before it renews.</p></div>
+  <p class="renew2" style="color:var(--c-sage);font-weight:700">Crisis resources are always free.</p>
+  <button class="link" data-a="offerno" style="margin-bottom:8px">No thanks, keep lesson one and daily check-ins free</button></div>`},
+23:()=>{const free=S.premium===false||S.premium===null;
+  return `${bgph('payoff-sea','A calm sea at sunrise','linear-gradient(180deg,#F7F4EE00 0%,#F7F4EE00 38%,#F7F4EEa6 62%,#F7F4EE 94%)',false,'top')}<div class="scr" style="align-items:center;text-align:center;gap:12px;padding-top:0">${flower('reveal',168)}
+  <h1 class="display">${t('Your first flower bloomed',`Welcome in, ${nm()}.`)}</h1>
+  <p class="lead" style="margin-top:-6px">${t(`Week one opens at ${qt()}. Or start now.`,'Come back anytime. {{app_name}} is here.')}</p>
+  <div class="garden" style="width:100%">${f2(true,46,.3)}${f2(false,42)}${f2(false,42)}${f2(false,42)}${f2(false,42)}</div>
+  <button class="lesson" data-a="lesson"><span class="w">${ic('book',20)}</span><span style="flex:1"><b>Lesson 1 · 5 min</b><span class="hint">${esc(week1()[0])}</span></span>${ic('back',18).replace('m15 18-6-6 6-6','m9 18 6-6-6-6')}</button>
+  ${free?`<button class="unlock" data-a="unlock">${ic('lock',15)} Unlock your programme</button>`:'<span class="chip">Full Week 1 unlocked</span>'}</div>
+  <div class="foot" style="padding-bottom:12px">${cta('Start lesson one',true,'lesson')}</div>
+  <nav class="tabbar">${[['Garden','flower'],['Chat','msg'],['Check-in','smile'],['Me','user']].map(([l,i],k)=>`<button class="${k===0?'on':''}" data-a="soon">${ic(i,22)}<span>${l}</span></button>`).join('')}</nav>`}
+};
+
+function chatHTML(behind){
+  const p=P();
+  const sugg=S.chatPaused||S.crisisChat||S.chatStep>=2||behind||(S.chat.length&&S.chat[S.chat.length-1].typing)?[]:(S.chatStep===0?p.replies:R2);
+  return `<div class="scr" style="gap:12px;padding-top:0" ${behind?'aria-hidden="true"':''}>
+  <div style="display:flex;align-items:center;gap:10px"><span style="width:38px;height:38px;border-radius:50%;background:var(--c-lav-soft);display:grid;place-items:center;flex:none">${f2(true,30)}</span><div><h1 class="display" style="font-size:20px">${t('{{app_name}}','{{app_name}} · your first chat')}</h1><div class="hint" style="margin-top:-2px">${t('Tap a reply or write your own.','Say as much or as little as you like.')}</div></div></div>
+  <div class="aibanner">${ic('msg',16)}<span>{{app_name}} is an AI companion, not a therapist. In crisis? Call or text 988.</span></div>
+  <div class="thread" id="thread">${S.chat.map(m=>`<div class="bubble ${m.w} fadein">${m.typing?'<span class="typing"><i></i><i></i><i></i></span>':m.h}</div>`).join('')}</div>
+  <div style="flex:1"></div>
+  ${sugg.length?`<div class="sugg">${sugg.map(s=>`<button data-a="reply" data-v="${esc(s)}">${esc(s)}</button>`).join('')}<button data-a="typeown">✏️ Type your own</button></div>`:''}
+  </div>
+  <div class="foot" style="padding-top:6px;padding-bottom:26px"><div class="composer"><div class="box"><input id="msg" data-f="msg" maxlength="240" placeholder="Write a message…" ${behind||S.chatStep>=2&&!S.crisisChat?'disabled':''}></div><button class="send" data-a="send" aria-label="Send">${ic('send',18)}</button></div></div>`;
+}
+function scrollThread(){const s=cur()?.querySelector('.scr');if(s)s.scrollTop=s.scrollHeight}
+function sendReply(text){
+  if(S.chatStep>=2&&!S.crisisChat)return;
+  if(S.chat.length&&S.chat[S.chat.length-1].typing)return;
+  S.chat.push({w:'me',h:esc(text)});
+  if(isCrisis(text)){
+    S.chatPaused=true;render();scrollThread();
+    openOv('crisis','chat',()=>{S.chatPaused=false;S.crisisChat=true;S.chat.push({w:'ai',h:`I’m really glad you told me, ${nm()}. You deserve support from a person right now. You can call or text 988 anytime, and I’m here too.`});if(S.i===18){render();scrollThread()}});
+    return;
+  }
+  if(S.crisisChat){const m={w:'ai',typing:true};S.chat.push(m);render();scrollThread();
+    later(()=>{m.typing=false;m.h='I’m here with you. If things feel unsafe, please call or text 988 now.';if(S.i===18){render();scrollThread()}},1300);return}
+  const step=S.chatStep;const m={w:'ai',typing:true};S.chat.push(m);render();scrollThread();
+  later(()=>{
+    m.typing=false;
+    if(step===0){m.h=TONE_R1[S.tone||'gentle'](nm());S.chatStep=1}
+    else{m.h=closing(text);S.chatStep=2;later(()=>{if(S.i===18&&!S.chatPaused&&!S.crisisChat)go(19)},2600)}
+    if(S.i===18){render();scrollThread()}
+  },1400);
+}
+
+/* ---------- loading ---------- */
+function runLoading(){
+  let row=0,pct=0;
+  timer=setInterval(()=>{
+    pct+=2;const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    el.querySelector('.bar span').style.width=Math.min(pct,100)+'%';
+    el.querySelector('.pct span').textContent=Math.min(pct,100)+'%';
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.6)}<span>100%</span>`;row++;pct=0;
+      if(row>3){clearInterval(timer);timer=setTimeout(()=>go(17),1100)}}
+  },32);
+}
+
+/* ---------- render ---------- */
+function render(dir){
+  const n=S.i;
+  if(n===18&&!S.chat.length){S.chat=[{w:'ai',h:opener()}]}
+  const html=brand(nav()+V[n]());
+  const old=cur();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),260);setTimeout(()=>nv.classList.remove('in'),400);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{old.innerHTML=html}
+  const v=cur();
+  v.querySelectorAll('.fl').forEach(mountFlower);
+  if(n===16)runLoading();
+  if(n===22)runOffer();
+  if(n===4&&!S.minor)setupWheel();
+  if(n===18)scrollThread();
+  const f=v.querySelector('#nm,#oth');
+  if(f&&(n===10||document.activeElement?.id==='oth'||S._focusOther)){S._focusOther=false;setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?320:0)}
+  document.getElementById('ov')&&drawOv();
+  renderPanel();
+}
+
+/* year wheel */
+function setupWheel(){
+  const w=document.getElementById('yw');if(!w)return;
+  const btns=[...w.querySelectorAll('button')];
+  const idx=S.year?btns.findIndex(b=>+b.dataset.v===S.year):btns.findIndex(b=>+b.dataset.v===1995);
+  w._ign=performance.now()+400;w.scrollTop=Math.max(0,idx)*44;
+  let tm=null;
+  w.addEventListener('scroll',()=>{if(performance.now()<w._ign)return;clearTimeout(tm);tm=setTimeout(()=>{const i=Math.round(w.scrollTop/44);const b=btns[i];if(b)selectYear(+b.dataset.v,false)},160)},{passive:true});
+}
+function selectYear(y,scroll){
+  S.year=y;const w=document.getElementById('yw');if(!w)return;
+  const btns=[...w.querySelectorAll('button')];
+  btns.forEach(b=>{const on=+b.dataset.v===y;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+  if(scroll){const i=btns.findIndex(b=>+b.dataset.v===y);w._ign=performance.now()+700;w.scrollTo({top:i*44,behavior:RM?'auto':'smooth'})}
+  const c=cur().querySelector('[data-a="age"]');if(c)c.disabled=false;
+  const h=document.getElementById('yhint');if(h)h.textContent='';
+  renderPanel();
+}
+
+/* ---------- 3D hero flower: layered CSS-3D petals that bloom ---------- */
+const FLS=new Set();
+const RINGS=[
+  {cls:'sp',n:5,w:.10,h:.15,r0:.035,c:-72,o:-6,d:0,a0:36,z:-2,sx:[.9,1]},
+  {cls:'pt',n:8,w:.25,h:.38,r0:.045,c:-93,o:-13,d:0,a0:0,z:0,sx:[.5,1],hue:262,L:[60,80,95]},
+  {cls:'pt',n:6,w:.22,h:.31,r0:.03,c:-97,o:-38,d:.16,a0:30,z:1.5,sx:[.5,1],hue:264,L:[56,76,94]},
+  {cls:'pt',n:5,w:.16,h:.23,r0:.015,c:-101,o:-64,d:.32,a0:12,z:3,sx:[.55,.95],hue:268,L:[62,82,97]}
+];
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eio=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+const eout=x=>1-Math.pow(1-x,3);
+function mountFlower(el){
+  if(el._f)return;
+  const Z=+el.dataset.size||180,mode=el.dataset.mode||'float',p0=+el.dataset.p||0.1;
+  const px=v=>Math.round(v*Z*10)/10;
+  let h='';const L=px(.52);
+  h+=`<i class="stem" style="height:${L}px;transform:rotateX(-90deg)"></i><i class="stem" style="height:${L}px;transform:rotateZ(90deg) rotateX(-90deg)"></i>`;
+  [[90,.24,-40],[-90,.34,-32]].forEach(([a,zz,ang])=>{const w=px(.12),hh=px(.22);h+=`<i class="lf" style="width:${w}px;height:${hh}px;margin:-${hh}px 0 0 -${w/2}px;transform:translateZ(${-px(zz)}px) rotateZ(${a}deg) rotateX(${ang}deg)"></i>`});
+  const meta=[];
+  RINGS.forEach((r,ri)=>{for(let k=0;k<r.n;k++){const a=r.a0+k*360/r.n;const w=px(r.w),hh=px(r.h);
+    let bg='';if(r.hue){const s=Math.cos((a-180)*Math.PI/180)*4;bg=`background:linear-gradient(to top,hsl(${r.hue} 30% ${r.L[0]+s}%),hsl(${r.hue} 44% ${r.L[1]+s}%) 55%,hsl(${r.hue} 60% ${Math.min(99,r.L[2]+s/2)}%))`}
+    h+=`<i class="${r.cls}" style="width:${w}px;height:${hh}px;margin:-${hh}px 0 0 -${w/2}px;${bg}"></i>`;meta.push([ri,a])}});
+  const c1=px(.15),c2=px(.08);
+  h+=`<i class="fc" style="width:${c1}px;height:${c1}px;margin:-${c1/2}px 0 0 -${c1/2}px;transform:translateZ(2px)"></i><i class="fc2" style="width:${c2}px;height:${c2}px;margin:-${c2/2}px 0 0 -${c2/2}px;transform:translateZ(5px)"></i>`;
+  el.innerHTML=`<div class="fscene">${h}</div><div class="flsh" style="width:${px(.5)}px;height:${px(.09)}px"></div>`;
+  const scene=el.firstElementChild;
+  const parts=[...scene.querySelectorAll('.sp,.pt')].map((e,i)=>({e,r:RINGS[meta[i][0]],a:meta[i][1]}));
+  const o={el,mode,scene,parts,Z,p0,t0:performance.now(),spin:0,px:0,py:0,tx:0,ty:0,lastP:-1,sh:el.querySelector('.flsh')};
+  el._f=o;FLS.add(o);
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();o.tx=(e.clientX-r.left)/r.width-.5;o.ty=(e.clientY-r.top)/r.height-.5});
+  el.addEventListener('pointerleave',()=>{o.tx=0;o.ty=0});
+  if(RM){o.t0=performance.now()-60000;drawFlower(o,performance.now(),0)}
+  else if(!FLS.loop){FLS.loop=true;FLS.last=performance.now();requestAnimationFrame(flFrame)}
+}
+function setPetals(o,p){
+  if(Math.abs(p-o.lastP)<.0005)return;o.lastP=p;
+  for(const q of o.parts){const r=q.r;const e=eio(clamp((p-r.d)/(1-r.d)));
+    const ang=r.c+(r.o-r.c)*e,sx=r.sx[0]+(r.sx[1]-r.sx[0])*e;
+    q.e.style.transform=`rotateZ(${q.a}deg) translateY(${-r.r0*o.Z}px) translateZ(${r.z}px) rotateX(${ang}deg) scaleX(${sx})`}
+}
+function drawFlower(o,now,dt){
+  const t=(now-o.t0)/1000;let p=o.p0,tilt=60,yaw=0,sc=1,bob=0;
+  o.px+=(o.tx-o.px)*.06;o.py+=(o.ty-o.py)*.06;
+  if(o.mode==='breathe'){const b=(1-Math.cos(2*Math.PI*t/8))/2;p=.05+.09*b;sc=.97+.06*b;tilt=64+Math.sin(t*.45)*3;yaw=Math.sin(t*.3)*9}
+  else if(o.mode==='bloom'){const k=clamp(t/6.6);p=.03+.55*eio(k);sc=.72+.28*eout(clamp(t/2.2));tilt=70-14*eio(k);yaw=Math.sin(t*.5)*10;o.spin+=9*dt/1000}
+  else if(o.mode==='reveal'){const k=eout(clamp(t/3.4));p=.4+.6*k;tilt=84-(84-40)*k+Math.sin(t*.5)*2*k;sc=.6+.4*k;yaw=Math.sin(t*.35)*8*k;o.spin+=26*(1-k)*dt/1000;o.el.style.opacity=clamp(t/.7)}
+  else{tilt=60+Math.sin(t*.55)*4;yaw=Math.sin(t*.4)*10;bob=Math.sin(t*1.05)*4}
+  tilt+=o.py*-22;yaw+=o.px*32;
+  const off=-(tilt-40)/30*.1*o.Z;
+  setPetals(o,p);
+  o.scene.style.transform=`translateY(${off+bob}px) scale(${sc}) rotateX(${tilt}deg) rotateY(${yaw}deg) rotateZ(${o.spin}deg)`;
+  if(o.sh)o.sh.style.transform=`translateX(-50%) scale(${1-bob/40})`;
+}
+function flFrame(now){
+  const dt=Math.min(50,now-(FLS.last||now));FLS.last=now;
+  for(const o of FLS){if(!o.el.isConnected){FLS.delete(o);continue}drawFlower(o,now,dt)}
+  if(FLS.size)requestAnimationFrame(flFrame);else FLS.loop=false;
+}
+function ensureLoop(){if(!RM&&!FLS.loop&&FLS.size){FLS.loop=true;FLS.last=performance.now();requestAnimationFrame(flFrame)}}
+
+/* ---------- panel ---------- */
+function renderPanel(){
+  document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag])=>{const on=n==='4b'?(S.i===4&&S.minor):(S.i===n&&!(n===4&&S.minor));return `<button class="${on?'on':''}" data-j="${n}"><span class="n">${n==='4b'?'4·':n}</span><span>${l}</span>${tag?`<span class="tag">${tag}</span>`:''}</button>`}).join('')}</div>`).join('');
+  const p=S.path?P():null;
+  const shows=[...S.shows.map(k=>(P().shows.find(x=>x[0]===k)||[])[2]),S.sOther&&S.showsOther.trim()?S.showsOther.trim():''].filter(Boolean);
+  const help=[...S.help.map(k=>(HELP.find(x=>x[0]===k)||[])[2]),S.hOther&&S.helpOther.trim()?S.helpOther.trim():''].filter(Boolean);
+  const d=[
+    ['Born',S.year?`${S.year}${S.minor?' (under 18, blocked)':''}`:'—'],
+    ['Carrying',S.path?(S.path==='other'?`Other: “${S.pathOther}” → Calm mind`:PATHS[S.path].l):'—'],
+    ['{{path_label}}',p?p.label:'—'],
+    ['How long',(LONG.find(x=>x[0]===S.long)||[])[2]||'—'],
+    ['Shows up',shows.join(', ')||'—'],
+    ['Mood (day 1)',(moodOf(S.mood)||[])[2]||'—'],
+    ['{{name}}',S.name||'—'],
+    ['Would help',help.join(', ')||'—'],
+    ['Tone',(TONES.find(x=>x[0]===S.tone)||[])[2]||'—'],
+    ['{{quiet_time}}',S.qtime?fmt(S.qtime):'—'],
+    ['Chat',S.crisisChat?'Paused: crisis path (no gate or paywall)':S.chatStep>=2?'2 exchanges done':S.chat.length?`${S.chatStep} of 2 exchanges`:'—'],
+    ['Reminder',S.notif===null?'—':S.notif?`On, ${qt()}`:'Not now'],
+    ['Account',S.account||'—'],
+    ['Plan',S.premium===true&&S.plan==='offer'?CONFIG.offer.name+' (one-time offer, demo)':S.premium===true?(S.plan==='q3'?'3 Months'+(S.trial?' + trial':''):'1 Month')+' (demo)':S.premium===false?'Free mode':'—'],
+    ['Safety events',S.safety.length?S.safety.join(' · '):'—'],
+    ['Offer #22',(()=>{let seen=false;try{seen=!!sessionStorage.getItem(OKEY)}catch(e){}return (S.offerSeen||seen?'Shown this session':safetyHit()?'Suppressed (safety event)':'Not shown yet')+(EVENTS.length?' · events: '+EVENTS.map(e=>e.event).join(', '):'')})()]
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+}
+
+/* ---------- events ---------- */
+const auto=(n)=>setTimeout(()=>{if(S.i===n&&!S.ov)next()},340);
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':next();break;
+    case 'back':back();break;
+    case 'help':openOv('crisis','link');break;
+    case 'ovclose':closeOv(false);break;
+    case 'ovcont':closeOv(true);break;
+    case 'soon':toast('Not part of this funnel demo');break;
+    case 'year':selectYear(+v,true);break;
+    case 'age':if(!S.year)return;if(NOWY-S.year<18){S.minor=true;render('f')}else next();break;
+    case 'path':if(v==='other'){S.pOther=true;S._focusOther=true;render()}else{S.path=v;S.pOther=false;S.shows=[];render();auto(5)}break;
+    case 'pathother':{const tx=S.pathOther.trim();if(!tx)return;S.path='other';S.shows=[];crisisCheck(tx,()=>next());break}
+    case 'long':S.long=v;render();auto(7);break;
+    case 'shows':if(v==='other'){S.sOther=!S.sOther;S._focusOther=S.sOther}else S.shows=S.shows.includes(v)?S.shows.filter(x=>x!==v):[...S.shows,v];render();break;
+    case 'showsgo':crisisCheck(S.sOther?S.showsOther.trim():'',()=>next());break;
+    case 'mood':S.mood=v;render();if(v==='rlow')setTimeout(()=>{if(S.i===9)openOv('support','mood',()=>next())},260);else auto(9);break;
+    case 'name':if(!S.name.trim()){S.err='Add a name so {{app_name}} knows what to call you';render()}else{S.name=S.name.trim();next()}break;
+    case 'helpopt':if(v==='other'){S.hOther=!S.hOther;S._focusOther=S.hOther}else S.help=S.help.includes(v)?S.help.filter(x=>x!==v):[...S.help,v];render();break;
+    case 'helpgo':crisisCheck(S.hOther?S.helpOther.trim():'',()=>next());break;
+    case 'tone':S.tone=v;render();break;
+    case 'quiet':S.quiet=v;S.qtime=QUIET.find(x=>x[0]===v)[3];render();break;
+    case 'reply':sendReply(v);break;
+    case 'typeown':document.getElementById('msg')?.focus();break;
+    case 'send':{const m=document.getElementById('msg');if(m&&m.value.trim()){const x=m.value.trim();m.value='';sendReply(x)}else m?.focus();break}
+    case 'remind':S.notif=true;toast('Demo only — no permission prompt shown');go(20);break;
+    case 'noremind':S.notif=false;go(20);break;
+    case 'acct':S.account=v;toast('Demo only — not signed in');go(21);break;
+    case 'emailon':S.emailMode=true;S.err='';render();setTimeout(()=>document.getElementById('em')?.focus(),50);break;
+    case 'emailoff':S.emailMode=false;S.err='';render();break;
+    case 'emailgo':{const em=S.email.trim().toLowerCase();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em))S.err='Enter a valid email address';
+      else if(S.pw.length<8)S.err='Password needs at least 8 characters';
+      else if(em==='taken@example.com')S.err='That email has an account — sign in instead?';
+      else if(em==='fail@example.com')S.err='Sign-in didn’t finish. Try again?';
+      else{S.account='Email';toast('Demo only — no account created');go(21);break}
+      render();break}
+    case 'plan':S.plan=v;if(v!=='q3')S.trial=false;render();break;
+    case 'trial':S.trial=!S.trial;render();break;
+    case 'buy':S.premium=true;emit('checkout_click',{plan:S.plan,url:CONFIG.checkoutUrl});toast('Demo only — no charge made');go(23);break;
+    case 'close':case 'notnow':S.premium=false;emit('paywall_close',{via:a});go(offerOpen()?22:23);break;
+    case 'offerbuy':S.offerSeen=true;clearInterval(window.__oiv);if(!offerCheckout()){S.premium=true;S.plan='offer';toast('Demo only — no charge made');go(23)}break;
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);S.premium=false;emit('offer_decline');go(23);break;
+    case 'restore':toast('Demo only — nothing to restore');break;
+    case 'lesson':toast('Lesson one would start here (demo)');break;
+    case 'unlock':go(21);break;
+  }
+});
+
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f)return;
+  S[f]=e.target.value;
+  const c=cur();
+  if(f==='pathOther'){const b=c.querySelector('[data-a="pathother"]');if(b)b.disabled=!S.pathOther.trim()}
+  if(f==='showsOther'){const b=c.querySelector('[data-a="showsgo"]');if(b)b.disabled=!(S.shows.length||S.showsOther.trim())}
+  if(f==='helpOther'){const b=c.querySelector('[data-a="helpgo"]');if(b)b.disabled=!(S.help.length||S.helpOther.trim())}
+  if(f==='qtime'){const pc=c.querySelector('.push small');if(pc)pc.innerHTML=brand('{{app_name}} · '+qt())}
+  if(f==='msg')return;
+  renderPanel();
+});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();const b=e.target.id==='msg'?cur().querySelector('[data-a="send"]'):cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;jump(b.dataset.j)});
+function jump(j){
+  clearTimers();closeOv(false);
+  if(j==='4b'){S.minor=true;S.year=NOWY-15;S.i=4;S.hist=[];render('f');return}
+  const n=+j;S.minor=false;if(n>4&&S.year&&NOWY-S.year<18)S.year=null;
+  fillTo(n);if(n===18&&S.chatStep>=2&&!S.crisisChat){S.chat=[];S.chatStep=0}
+  go(n);ensureLoop();
+}
+document.getElementById('topic').addEventListener('change',e=>{
+  S.jumpPath=e.target.value;S.path=e.target.value;S.pOther=false;S.shows=[];S.chat=[];S.chatStep=0;S.crisisChat=false;S.chatPaused=false;
+  fillTo(S.i);clearTimers();render();ensureLoop();
+});
+document.getElementById('trialarm').addEventListener('change',e=>{trialArm=e.target.checked;if(!trialArm)S.trial=false;if(S.i===21)render()});
+const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');if(S.i!==16){render();ensureLoop()}};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{clearTimers();closeOv(false);const v=S.v,jp=S.jumpPath;S=INIT();S.v=v;S.jumpPath=jp;render('b');ensureLoop()};
+
+/* fit the 390×812 phone on narrow screens */
+function fit(){const vw=document.documentElement.clientWidth;const k=Math.min(1,Math.max(.5,(vw-32-22)/390));document.documentElement.style.setProperty('--k',k.toFixed(4))}
+fit();addEventListener('resize',fit);
+
+/* deep link: #s14 (artifact-safe) or #s=14, plus #s4b */
+function fromHash(){const m=location.hash.match(/^#s=?([0-9]+b?)$/);if(!m)return false;const j=m[1];if(j==='4b'){S.minor=true;S.year=NOWY-15;S.i=4;return true}const n=+j;if(!V[n])return false;fillTo(n);S.i=n;return true}
+fromHash();
+addEventListener('hashchange',()=>{const m=location.hash.match(/^#s=?([0-9]+b?)$/);if(m)jump(m[1])});
+render();
+</script>

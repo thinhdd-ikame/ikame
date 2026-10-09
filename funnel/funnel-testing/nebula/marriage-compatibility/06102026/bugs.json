@@ -1,0 +1,150 @@
+[
+  {
+    "screen": "Intro 1",
+    "title": "[UI/UX][Intro 1] \"Terms of Use\" và \"Privacy Policy\" trong microcopy hiển thị dạng text thường, không phải link",
+    "severity": "High",
+    "actual": "- Ở microcopy dưới CTA \"Start reading\" (id: hook) và dưới CTA \"Continue\" của màn email (Intro 21, id: email), cụm \"Terms of Use\" và \"Privacy Policy\" hiển thị cùng màu/kiểu với phần text còn lại, không gạch chân, không có affordance bấm được; trong khi footer Paywall 1 có link \"Terms of Use\" / \"Privacy Policy\" gạch chân.",
+    "expected": "- \"Terms of Use\" và \"Privacy Policy\" ở màn hook và màn email cần là link mở đúng trang tương ứng, style đồng nhất với link ở footer Paywall 1. Spec chưa định nghĩa rõ dạng link – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png, screens/21-email-small.png, screens/21-email-large.png"
+  },
+  {
+    "screen": "Intro 1",
+    "title": "[UI][Intro 1] Hero art chưa đúng visual spec: thiếu 2 nhẫn vàng (Intro 1) và vòm sáng (Intro 20)",
+    "severity": "Medium",
+    "actual": "- Hero màn hook chỉ có 2 wheel chồng nhau, không có \"two small gold rings\" ở giữa; hero màn window_teaser (Intro 20) cũng là cùng ảnh 2 wheel, không có \"soft arch of light\". Ảnh này cũng dùng lại ở hero Paywall 1 và cover Upsale 1, giống hệt ảnh của funnel ex-compatibility.",
+    "expected": "- Theo spec #1 Visual: wheels \"with two small gold rings between them\" (`img/hook-rings.jpg`); #20: \"Wheels over a soft arch of light\" (`img/result-window.jpg`). Spec Notes ghi ảnh hiện tại là placeholder – cần PM/Designer confirm thời điểm thay ảnh thật.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/20-window_teaser-small-p1.png, screens/22-paywall-small-p1.png"
+  },
+  {
+    "screen": "Intro 2",
+    "title": "[UI][Intro 2] Header các màn câu hỏi chỉ có counter \"n/14\", không hiển thị progress bar",
+    "severity": "Low",
+    "actual": "- Trên header các màn câu hỏi (Intro 2, 3, 5–14, 16, 17) chỉ thấy nút back, logo \"Starlyn\" và counter \"n/14\"; không có thanh progress bar nào hiển thị dưới header ở cả viewport small và large.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm header có cần progress bar (trên header đang có sẵn vùng dành cho progress bar nhưng không hiển thị) hay chỉ dùng counter \"n/14\".",
+    "attachment": "Screenshot/Video: screens/02-status-small.png, screens/02-status-large.png, screens/12-home-small.png"
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "title": "[UI][Intro 6] Thiếu line-art minh hoạ theo spec ở các màn nhập giờ/nơi/ngày sinh (clock-face, globe, wheel thứ hai)",
+    "severity": "Low",
+    "actual": "- Màn birth_time (Intro 6) chỉ có select Hour/Min/AM, không có clock-face; màn birth_place (Intro 7) chỉ có input \"City, country\", không có globe + pin; màn partner_birth_date (Intro 9) không hiển thị wheel thứ hai mờ; phần giữa màn để trống.",
+    "expected": "- Theo spec: #6 \"Clock-face line art with tiny zodiac glyphs on the rim\"; #7 \"Light line-art globe with a gold pin, one input under it\"; #9 \"a second wheel appears faintly beside the first\".",
+    "attachment": "Screenshot/Video: screens/06-birth_time-small.png, screens/07-birth_place-small.png, screens/09-partner_birth_date-small.png"
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "title": "[Logic][Intro 8] Step counter nhảy cóc một bước và tính cả màn bị skip theo branch",
+    "severity": "High",
+    "actual": "- Counter cố định theo màn: partner_wish hiển thị \"6/14\", partner_birth_date \"7/14\", name \"8/14\". Theo walk thực tế (branch Single: birth_place → partner_wish → name) user thấy 5/14 → 6/14 → 8/14; branch Dating/Engaged sẽ thấy 5/14 → 7/14. Tổng chỉ 13 câu hỏi nhưng màn timeline vẫn hiển thị \"14/14\".",
+    "expected": "- Spec #8/#9: mỗi user chỉ thấy một trong hai màn (Single → #8, Dating/Engaged → #9), nên counter cần đếm liên tục không nhảy số và tổng đúng số câu của branch. Cách hiển thị cụ thể – cần PM/Designer confirm.",
+    "attachment": "Screenshot/Video: screens/07-birth_place-small.png, screens/08-partner_wish-small.png, screens/09-partner_birth_date-small.png, screens/10-name-small.png, screens/17-timeline-small.png"
+  },
+  {
+    "screen": "Intro 9",
+    "title": "[UI][Intro 9] Chip Sun sign của người kia dùng icon mặt trăng, khác icon mặt trời của chip Sun sign người dùng",
+    "severity": "Low",
+    "actual": "- Sau khi chọn ngày sinh (Oct 3 1992) ở màn partner_birth_date, chip \"Libra\" hiển thị icon mặt trăng màu xanh; trong khi chip Sun sign của người dùng ở màn birth_date (\"Taurus\") dùng icon mặt trời màu vàng. Icon mặt trăng dễ bị hiểu là Moon sign.",
+    "expected": "- Cần đối chiếu Figma: icon của chip Sun sign người kia. Spec chưa định nghĩa – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/09-partner_birth_date-small.png, screens/05-birth_date-small.png"
+  },
+  {
+    "screen": "Intro 10",
+    "title": "[UI][Intro 10] Input \"First name\" hiển thị nền tối, khác \"light input\" theo spec",
+    "severity": "Low",
+    "actual": "- Ô nhập tên ở màn name dùng nền tối cùng tông với nền màn (text \"test\" màu trắng); trong khi ô email ở Intro 21 dùng nền sáng.",
+    "expected": "- Theo spec #10 Visual: \"Single light input on the navy field, gold caret\". Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/10-name-small.png, screens/10-name-large.png, screens/21-email-small.png"
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 19",
+    "title": "[UI][Intro 19] Title loader \"Finding your marriage window\" nằm sát mép trên, nội dung dồn lên trên và để trống lớn phía dưới trên large",
+    "severity": "Low",
+    "actual": "- Màn loader (id: loader) không có header; title \"Finding your marriage window\" nằm sát mép trên màn hình (cao hơn vị trí title của các màn khác có header), toàn bộ wheel + progress ring + 4 task row dồn lên nửa trên; trên large (430×932) khoảng trống phía dưới chiếm gần một nửa màn. Màn bridge (charts_meet) cùng loại lại căn giữa theo chiều dọc.",
+    "expected": "- Cần đối chiếu Figma: top padding của title và vertical alignment của màn loader nên đồng nhất với màn bridge (charts_meet) / các màn có header. Spec chưa định nghĩa – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/19-loader-small.png, screens/19-loader-large.png"
+  },
+  {
+    "screen": "Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 21",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu tên pháp nhân (entity) theo spec",
+    "severity": "High",
+    "actual": "- Footer cuối Paywall 1 chỉ hiển thị 3 link \"Terms of Use\" · \"Privacy Policy\" · \"Subscription terms\" và dòng \"For entertainment purposes only.\"; không có dòng tên pháp nhân/công ty.",
+    "expected": "- Theo spec mục 22 – section 9 \"Footer: legal links, entity, entertainment disclaimer\": footer cần hiển thị tên pháp nhân bên cạnh legal links và disclaimer.",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p4.png, screens/22-paywall-large-p4.png"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Dòng \"Due today\" lặp chữ \"today\" ở giá trị \"$13.67 today\"",
+    "severity": "Low",
+    "actual": "- Trong plan block (cả block đầu và block cuối trang), dòng tổng hiển thị label \"Due today\" và giá trị \"$13.67 today\", chữ \"today\" bị lặp trên cùng một dòng.",
+    "expected": "- Spec chưa định nghĩa – cần PM/Designer confirm copy dòng \"Due today\" (vd. giá trị chỉ hiển thị \"$13.67\").",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p4.png, screens/22-paywall-large-p1.png"
+  },
+  {
+    "screen": "Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App",
+    "title": "[UI][Download App] Badge App Store / Google Play dùng icon outline tự vẽ, không phải badge chính thức",
+    "severity": "Medium",
+    "actual": "- Hai badge dưới CTA \"Open the app\" dùng icon outline (hình quả táo không lá, tam giác play) với text \"Download on the App Store\" / \"Get it on Google Play\", không phải artwork badge chính thức của Apple/Google.",
+    "expected": "- Spec mục 24 yêu cầu \"App Store and Google Play badges\"; cần dùng badge chính thức theo brand guideline của Apple/Google – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/24-get_app-small.png, screens/24-get_app-large.png"
+  }
+]

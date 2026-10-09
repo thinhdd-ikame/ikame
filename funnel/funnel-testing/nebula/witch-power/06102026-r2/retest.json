@@ -1,0 +1,116 @@
+[
+  {
+    "prev": 1,
+    "title": "[UI][Intro 1] Ảnh hero không full-bleed, dải nền ở mép trên cắt mất đỉnh trăng",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Hero đổi sang hình trăng khuyết + chart wheel vẽ trên nền sao, không còn khung ảnh/dải nền ở mép trên, đỉnh trăng hiển thị đủ (small và large).",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png"
+  },
+  {
+    "prev": 2,
+    "title": "[UI][Intro 1] Ảnh minh họa trăng/chart wheel bị răng cưa và lộ khung chữ nhật của ảnh",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Hình trăng/chart wheel sắc nét, hòa vào nền, không còn mép chữ nhật ở Intro 1, Intro 18, Intro 19 và Paywall 1.",
+    "attachment": "Screenshot/Video: screens/01-hook-large.png, screens/18-loader-small.png, screens/19-big_three-small-p1.png, screens/22-paywall-small-p1.png"
+  },
+  {
+    "prev": 3,
+    "title": "[UI][Responsive][Intro 1] Viewport large: khoảng trống lớn giữa nội dung và CTA ghim đáy",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Trên large, nội dung Intro 1, Intro 20, Intro 21, Upsale 1, Download App được căn giữa theo chiều dọc (khoảng trống chia đều trên/dưới). Độ tin cậy trung bình: vẫn còn khoảng trống, mức chấp nhận cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/01-hook-large.png, screens/20-email-large.png, screens/21-power_teaser-large.png, screens/23-report_upsell-large.png, screens/24-get_app-large.png"
+  },
+  {
+    "prev": 4,
+    "title": "[UI][Intro 19] Dòng mô tả Sun viết thường chữ đầu, không đồng nhất với Moon/Rising",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Mô tả Sun hiển thị \"Your steady root: how you shine.\", viết hoa chữ đầu như Moon/Rising.",
+    "attachment": "Screenshot/Video: screens/19-big_three-small-p1.png, screens/19-big_three-large.png"
+  },
+  {
+    "prev": 5,
+    "title": "[UI][Intro 21] Disc glyph power bị lệch trái và quầng glow bị cắt phẳng ở mép trên",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Disc 👁️ căn giữa cùng headline/chips, glow tròn đầy đủ, không bị cắt (small p1 và large). Ở small p2 disc trượt dưới header là do cuộn.",
+    "attachment": "Screenshot/Video: screens/21-power_teaser-small-p1.png, screens/21-power_teaser-large.png"
+  },
+  {
+    "prev": 6,
+    "title": "[UI][Paywall 1] Hero hiển thị trăng khuyết thay vì glyph power trên chart wheel",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Hero paywall hiển thị glyph 👁️ (Seer) ở giữa chart wheel, kèm 4 fact chips (Your power, Sun, Moon, Rising).",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p1.png, screens/22-paywall-large-p1.png"
+  },
+  {
+    "prev": 7,
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity",
+    "severity": "High",
+    "status": "Cần PM",
+    "note": "Footer vẫn chỉ có \"Terms of Use · Privacy Policy · Subscription terms\" và \"For entertainment purposes only.\", chưa có tên pháp nhân/địa chỉ. Khớp trạng thái dev báo (chờ PM cung cấp thông tin entity).",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p4.png, screens/22-paywall-large-p4.png"
+  },
+  {
+    "prev": 8,
+    "title": "[UI][Download App] Badge App Store / Google Play dùng icon generic, không phải logo chính thức",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Badge dùng logo Apple và Google Play chính thức.",
+    "attachment": "Screenshot/Video: screens/24-get_app-small.png, screens/24-get_app-large.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Intro 15",
+    "title": "[UI][Intro 15] Select ngày sinh và giờ sinh không có chevron, không đồng nhất với các funnel Starlyn khác",
+    "severity": "Low",
+    "actual": "- Ba ô Month / Day / Year ở Intro 15 (id: birth_date) và ba ô giờ / phút / AM-PM ở Intro 16 (id: birth_time) chỉ hiển thị giá trị, không có chevron báo đây là dropdown; sau đợt fix các funnel Starlyn khác (vd. aura-tarot) đã có chevron trên cùng loại select.",
+    "expected": "- Spec: \"Month / Day / Year selects\" và \"Hour / minute / AM-PM selects\" – select cần có chevron đồng nhất với các funnel Starlyn khác; cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/15-birth_date-small.png, screens/16-birth_time-small.png, screens/16-birth_time-large.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Paywall 1",
+    "title": "[UI/UX][Responsive][Paywall 1] Màn small không thấy CTA nào ở first view",
+    "severity": "High",
+    "actual": "- Trên 375x667, first view Paywall 1 chỉ có brand bar (chưa có mini CTA), hero, 4 fact chips và đầu plan card \"1 week, then monthly\"; dòng \"Due today\", button \"Get my reading\" và sticky bottom CTA đều không hiển thị, user phải cuộn mới thấy CTA. Trên 430x932 CTA hiển thị ngay first view. Lỗi đã có từ lượt 1 nhưng chưa được log; các funnel Starlyn khác (vd. astrocartography) đã được fix đưa CTA vào first view.",
+    "expected": "- Có ít nhất một CTA (button trong plan block, mini CTA trên brand bar hoặc sticky bottom CTA) hiển thị ở first view trên màn small, đồng nhất với fix \"a CTA in the first view at 375x667\" ở các funnel Starlyn khác.",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p1.png, screens/22-paywall-large-p1.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Dòng \"Due today\" lặp chữ \"today\" (\"$13.67 today\")",
+    "severity": "Low",
+    "actual": "- Trong cả 2 plan block, dòng tổng hiển thị \"Due today ... $13.67 today\" (chữ \"today\" lặp 2 lần trên cùng một dòng); các funnel Starlyn khác sau đợt fix chỉ hiển thị giá (\"Due today $13.67\").",
+    "expected": "- \"Due today\" chỉ hiển thị giá ($13.67), đồng nhất với các funnel Starlyn khác; cần PM/Designer confirm copy.",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p4.png, screens/22-paywall-large-p1.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Nội dung cuộn vẫn lộ mờ phía sau sticky header",
+    "severity": "Low",
+    "actual": "- Khi cuộn Paywall 1, nội dung phía sau vẫn hiện mờ xuyên qua sticky header (vd. hàng payment badges \"Apple Pay / G Pay / VISA / Mastercard\", dòng \"Download Starlyn: Daily Astrology...\" / \"Get the app\"), chồng nhẹ dưới logo \"Starlyn\". Mức mờ thấp, chỉ thấy rõ khi nhìn kỹ; độ tin cậy trung bình.",
+    "expected": "- Sticky header che hoàn toàn nội dung phía sau (đồng nhất với fix \"opaque sticky paywall bars\"); cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p2.png, screens/22-paywall-small-p3.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Upsale 1",
+    "title": "[UI][Responsive][Upsale 1] Report card bị vùng CTA cắt mép dưới, microcopy bị ẩn trên màn small",
+    "severity": "Medium",
+    "actual": "- Trên 375x667 (id: report_upsell), mép dưới report card (ngay dưới dòng \"$19.99 · Paid once · no subscription\") bị vùng CTA \"Add for $19.99\" cắt ngang, mất viền và góc bo dưới của card; dòng \"One-time payment at a secure checkout. No subscription.\" chỉ thấy khi cuộn (p2). Trên large card và microcopy hiển thị đầy đủ.",
+    "expected": "- Card hiển thị đầy đủ, microcopy dưới card hiển thị như large (brief #23).",
+    "attachment": "Screenshot/Video: screens/23-report_upsell-small-p1.png, screens/23-report_upsell-small-p2.png, screens/23-report_upsell-large.png"
+  }
+]

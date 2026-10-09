@@ -1,0 +1,39 @@
+# Starlyn – tarot – Retest (06/10/2026, lượt 2)
+
+Giả định: retest bản local `funnel-development/nebula/tarot/funnel.html` sau commit fix 47087fd, qua screenshot deep-jump 375×667 / 430×932 + walk tự động (capture.json: walk tới paywall, không lỗi, không auto-issue); spec = `funnel-content.md` (đã cập nhật trong commit fix) + product rule Starlyn (không có Figma). Animation (flip bài, count-up loader) có thể đang dở trong ảnh tĩnh và không tính là lỗi.
+
+**Tổng kết:** 9 bug cũ – Fixed: 9. Bug mới: 5 (High: 1, Medium: 0, Low: 4).
+
+| # cũ | Title | Severity | Status lượt 2 | Ghi chú | Attachment |
+|---|---|---|---|---|---|
+| 1 | [UI][Intro 1] Ảnh hero không full-bleed, lộ dải nền ở mép trên | Low | Fixed | Ảnh hero phủ sát mép trên trên cả small và large, không còn dải nền navy. | Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png |
+| 2 | [UI][Intro 1] Chip thứ 3 hiển thị "You pull" thay vì "You pull the cards" | Low | Fixed | Chip hiển thị đúng "2-min · Your question · You pull the cards". | Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png |
+| 3 | [UI][Responsive][Intro 1] Viewport large: khoảng trống lớn giữa nội dung và CTA ghim đáy | Low | Fixed | Intro 1 large: ảnh hero cao hơn, nội dung lấp đầy màn. Intro 17, Upsale 1, Download App large: nội dung được căn giữa theo chiều dọc (khoảng trống chia đều trên/dưới thay vì dồn ở giữa). Độ tin cậy trung bình: vẫn còn khoảng trống ở 3 màn sau, mức chấp nhận cần Designer confirm. | Screenshot/Video: screens/01-hook-large.png, screens/17-teaser-large.png, screens/19-report_upsell-large.png, screens/20-get_app-large.png |
+| 4 | [UI][Responsive][Intro 6] Ảnh card-back bị cắt mép trên trên màn small | Medium | Fixed | Small p1: lá card-back hiển thị đủ 4 góc bo dưới header. Ở p2 lá bài trượt dưới header là do cuộn, không phải lỗi. | Screenshot/Video: screens/06-bridge-small-p1.png, screens/06-bridge-large.png |
+| 5 | [UI/UX][Intro 12] Màn Shuffle và Pull không có header (nút Back + logo Starlyn) | Low | Fixed | Intro 12 và Intro 13 đã có header với nút Back và logo "✦ Starlyn" trên cả small và large. | Screenshot/Video: screens/12-shuffle_cut-small.png, screens/13-pull-small.png |
+| 6 | [UI][Responsive][Intro 13] Quạt 22 lá bài sát và bị cắt ở mép trái/phải trên màn small | Medium | Fixed | Quạt bài trên small nằm gọn trong màn, có lề hai bên như large. | Screenshot/Video: screens/13-pull-small.png, screens/13-pull-large.png |
+| 7 | [UI][Intro 15] Nội dung push mock khác copy trong spec | Low | Fixed | Push mock hiển thị "Today's card: The Star. Rest and trust." đúng spec. | Screenshot/Video: screens/15-daily_card-small.png, screens/15-daily_card-large.png |
+| 8 | [UI/UX][Paywall 1] Eyebrow "YOUR READING IS READY" lặp nguyên văn headline ngay bên dưới | Low | Fixed | Eyebrow đổi thành "YOUR LOVE READING" (theo topic), không còn lặp với headline "Your reading is ready". | Screenshot/Video: screens/18-paywall-small-p1.png, screens/18-paywall-large-p1.png |
+| 9 | [UI][Download App] Badge App Store / Google Play dùng icon generic, không phải logo chính thức | Medium | Fixed | Badge dùng logo Apple và Google Play chính thức, nền đen, chữ "Download on the App Store" / "GET IT ON Google Play". | Screenshot/Video: screens/20-get_app-small.png, screens/20-get_app-large.png |
+
+## Bug mới
+
+Ghi chú: Terms of Use / Privacy Policy ở Intro 1 (hook) và màn Email hiện đã là link gạch chân trên cả small và large (tarot lượt 1 là text thường, chưa log) – không còn lỗi. Tap target 44px không đo được từ screenshot.
+
+### Intro 7 (birth_date)
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| N1 | [UI][Intro 7] Select ngày sinh không có chevron, không đồng nhất với các funnel Starlyn khác | Low | - Ba ô Month / Day / Year ở Intro 7 (id: birth_date) chỉ hiển thị giá trị ("May", "14", "1994"), không có icon chevron báo đây là dropdown; sau đợt fix các funnel Starlyn khác (vd. aura-tarot) đã có chevron trên cùng loại select. | - Spec: "Three selects in a glass row" – select cần có chevron đồng nhất với các funnel Starlyn khác; cần Designer confirm. | Screenshot/Video: screens/07-birth_date-small.png, screens/07-birth_date-large.png |
+
+### Paywall 1 (paywall)
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| N2 | [UI/UX][Responsive][Paywall 1] Màn small không thấy CTA nào ở first view | High | - Trên 375x667, first view Paywall 1 chỉ có brand bar (chưa có mini CTA), hero, 4 fact chips và đầu plan card "1 week, then monthly"; dòng "Due today", button "Get my reading" và sticky bottom CTA đều không hiển thị, user phải cuộn mới thấy CTA. Trên 430x932 CTA hiển thị ngay first view. Lỗi đã có từ lượt 1 nhưng chưa được log; các funnel Starlyn khác (vd. astrocartography) đã được fix đưa CTA vào first view. | - Có ít nhất một CTA (button trong plan block, mini CTA trên brand bar hoặc sticky bottom CTA) hiển thị ở first view trên màn small, đồng nhất với fix "a CTA in the first view at 375x667" ở các funnel Starlyn khác. | Screenshot/Video: screens/18-paywall-small-p1.png, screens/18-paywall-large-p1.png |
+| N3 | [UI][Paywall 1] Dòng "Due today" lặp chữ "today" ("$13.67 today") | Low | - Trong cả 2 plan block, dòng tổng hiển thị "Due today ... $13.67 today" (chữ "today" lặp 2 lần trên cùng một dòng); các funnel Starlyn khác sau đợt fix chỉ hiển thị giá ("Due today $13.67"). | - "Due today" chỉ hiển thị giá ($13.67), đồng nhất với các funnel Starlyn khác; cần PM/Designer confirm copy. | Screenshot/Video: screens/18-paywall-small-p4.png, screens/18-paywall-large-p1.png |
+| N4 | [UI][Paywall 1] Nội dung cuộn vẫn lộ mờ phía sau sticky header | Low | - Khi cuộn Paywall 1, nội dung phía sau vẫn hiện mờ xuyên qua sticky header (vd. hàng payment badges "Apple Pay / G Pay / VISA / Mastercard", dòng "Download Starlyn: Daily Astrology..." / "Get the app"), chồng nhẹ dưới logo "Starlyn". Mức mờ thấp, chỉ thấy rõ khi nhìn kỹ; độ tin cậy trung bình. | - Sticky header che hoàn toàn nội dung phía sau (đồng nhất với fix "opaque sticky paywall bars"); cần đối chiếu Figma. | Screenshot/Video: screens/18-paywall-small-p2.png, screens/18-paywall-large-p3.png |
+
+### Upsale 1 (report_upsell)
+| # | Title | Severity | Actual Result | Expected Result | Attachment |
+|---|---|---|---|---|---|
+| N5 | [UI][Responsive][Upsale 1] Microcopy dưới report card bị ẩn ở first view trên màn small | Low | - Trên 375x667 (id: report_upsell), dòng "Paid once through secure checkout. No subscription." dưới report card không hiển thị ở first view (CTA "Add for $19.99" nằm ngay dưới card), chỉ thấy khi cuộn (p2). Trên large dòng này hiển thị ngay dưới card. Card không bị cắt nên chọn Low. | - Microcopy hiển thị dưới card ngay first view như large (brief #19: "Under the card: Paid once through secure checkout. No subscription."). | Screenshot/Video: screens/19-report_upsell-small-p1.png, screens/19-report_upsell-small-p2.png, screens/19-report_upsell-large.png |
+

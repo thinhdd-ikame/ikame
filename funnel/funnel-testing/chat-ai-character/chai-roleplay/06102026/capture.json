@@ -1,0 +1,604 @@
+{
+  "file": "/Users/daothinh/ikame/funnel/funnel-development/chat-ai-character/chai-roleplay/funnel.html",
+  "screens": [
+    {
+      "n": 1,
+      "id": "hook",
+      "viewport": "small",
+      "landedOn": 1,
+      "files": [
+        "01-hook-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 2,
+      "id": "age_gate",
+      "viewport": "small",
+      "landedOn": 2,
+      "files": [
+        "02-age_gate-small.png"
+      ],
+      "issues": [
+        "small tap target 93x14: \"Terms of Service\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 3,
+      "id": "genre",
+      "viewport": "small",
+      "landedOn": 3,
+      "files": [
+        "03-genre-small-p1.png",
+        "03-genre-small-p2.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 4,
+      "id": "role",
+      "viewport": "small",
+      "landedOn": 4,
+      "files": [
+        "04-role-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 5,
+      "id": "setting",
+      "viewport": "small",
+      "landedOn": 5,
+      "files": [
+        "05-setting-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 6,
+      "id": "companion",
+      "viewport": "small",
+      "landedOn": 6,
+      "files": [
+        "06-companion-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 7,
+      "id": "tone",
+      "viewport": "small",
+      "landedOn": 7,
+      "files": [
+        "07-tone-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 8,
+      "id": "character_name",
+      "viewport": "small",
+      "landedOn": 8,
+      "files": [
+        "08-character_name-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 9,
+      "id": "trust",
+      "viewport": "small",
+      "landedOn": 9,
+      "files": [
+        "09-trust-small.png"
+      ],
+      "issues": [
+        "small tap target 34x14: \"Terms\"",
+        "small tap target 40x14: \"Privacy\""
+      ]
+    },
+    {
+      "n": 10,
+      "id": "loader",
+      "viewport": "small",
+      "landedOn": 10,
+      "files": [
+        "10-loader-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 11,
+      "id": "story_reveal",
+      "viewport": "small",
+      "landedOn": 11,
+      "files": [
+        "11-story_reveal-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 12,
+      "id": "scene_turn_1",
+      "viewport": "small",
+      "landedOn": 12,
+      "files": [
+        "12-scene_turn_1-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 13,
+      "id": "scene_turn_2",
+      "viewport": "small",
+      "landedOn": 13,
+      "files": [
+        "13-scene_turn_2-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 15,
+      "id": "cliffhanger",
+      "viewport": "small",
+      "landedOn": 15,
+      "files": [
+        "15-cliffhanger-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 16,
+      "id": "save_story",
+      "viewport": "small",
+      "landedOn": 16,
+      "files": [
+        "16-save_story-small.png"
+      ],
+      "issues": [
+        "small tap target 34x14: \"Terms\"",
+        "small tap target 40x14: \"Privacy\""
+      ]
+    },
+    {
+      "n": 17,
+      "id": "paywall",
+      "viewport": "small",
+      "landedOn": 17,
+      "files": [
+        "17-paywall-small-p1.png",
+        "17-paywall-small-p2.png",
+        "17-paywall-small-p3.png",
+        "17-paywall-small-p4.png",
+        "17-paywall-small-p5.png",
+        "17-paywall-small-p6.png",
+        "17-paywall-small-p7.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\"",
+        "small tap target 110x14: \"support@chatchi.co\""
+      ]
+    },
+    {
+      "n": 19,
+      "id": "back_in_scene",
+      "viewport": "small",
+      "landedOn": 17,
+      "files": [
+        "19-back_in_scene-small-p1.png",
+        "19-back_in_scene-small-p2.png",
+        "19-back_in_scene-small-p3.png",
+        "19-back_in_scene-small-p4.png",
+        "19-back_in_scene-small-p5.png",
+        "19-back_in_scene-small-p6.png",
+        "19-back_in_scene-small-p7.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\"",
+        "small tap target 110x14: \"support@chatchi.co\""
+      ]
+    },
+    {
+      "n": 20,
+      "id": "sale_m1",
+      "viewport": "small",
+      "landedOn": 20,
+      "files": [
+        "20-sale_m1-small-p1.png",
+        "20-sale_m1-small-p2.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 21,
+      "id": "sale_m3",
+      "viewport": "small",
+      "landedOn": 21,
+      "files": [
+        "21-sale_m3-small-p1.png",
+        "21-sale_m3-small-p2.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 22,
+      "id": "sale_y12",
+      "viewport": "small",
+      "landedOn": 22,
+      "files": [
+        "22-sale_y12-small-p1.png",
+        "22-sale_y12-small-p2.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 23,
+      "id": "sale_lifetime",
+      "viewport": "small",
+      "landedOn": 23,
+      "files": [
+        "23-sale_lifetime-small-p1.png",
+        "23-sale_lifetime-small-p2.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 24,
+      "id": "upsell_lifetime",
+      "viewport": "small",
+      "landedOn": 24,
+      "files": [
+        "24-upsell_lifetime-small-p1.png",
+        "24-upsell_lifetime-small-p2.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 25,
+      "id": "get_app",
+      "viewport": "small",
+      "landedOn": 25,
+      "files": [
+        "25-get_app-small.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 1,
+      "id": "hook",
+      "viewport": "large",
+      "landedOn": 1,
+      "files": [
+        "01-hook-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 2,
+      "id": "age_gate",
+      "viewport": "large",
+      "landedOn": 2,
+      "files": [
+        "02-age_gate-large.png"
+      ],
+      "issues": [
+        "small tap target 93x14: \"Terms of Service\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 3,
+      "id": "genre",
+      "viewport": "large",
+      "landedOn": 3,
+      "files": [
+        "03-genre-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 4,
+      "id": "role",
+      "viewport": "large",
+      "landedOn": 4,
+      "files": [
+        "04-role-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 5,
+      "id": "setting",
+      "viewport": "large",
+      "landedOn": 5,
+      "files": [
+        "05-setting-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 6,
+      "id": "companion",
+      "viewport": "large",
+      "landedOn": 6,
+      "files": [
+        "06-companion-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 7,
+      "id": "tone",
+      "viewport": "large",
+      "landedOn": 7,
+      "files": [
+        "07-tone-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 8,
+      "id": "character_name",
+      "viewport": "large",
+      "landedOn": 8,
+      "files": [
+        "08-character_name-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 9,
+      "id": "trust",
+      "viewport": "large",
+      "landedOn": 9,
+      "files": [
+        "09-trust-large.png"
+      ],
+      "issues": [
+        "small tap target 34x14: \"Terms\"",
+        "small tap target 40x14: \"Privacy\""
+      ]
+    },
+    {
+      "n": 10,
+      "id": "loader",
+      "viewport": "large",
+      "landedOn": 10,
+      "files": [
+        "10-loader-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 11,
+      "id": "story_reveal",
+      "viewport": "large",
+      "landedOn": 11,
+      "files": [
+        "11-story_reveal-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 12,
+      "id": "scene_turn_1",
+      "viewport": "large",
+      "landedOn": 12,
+      "files": [
+        "12-scene_turn_1-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 13,
+      "id": "scene_turn_2",
+      "viewport": "large",
+      "landedOn": 13,
+      "files": [
+        "13-scene_turn_2-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 15,
+      "id": "cliffhanger",
+      "viewport": "large",
+      "landedOn": 15,
+      "files": [
+        "15-cliffhanger-large.png"
+      ],
+      "issues": []
+    },
+    {
+      "n": 16,
+      "id": "save_story",
+      "viewport": "large",
+      "landedOn": 16,
+      "files": [
+        "16-save_story-large.png"
+      ],
+      "issues": [
+        "small tap target 34x14: \"Terms\"",
+        "small tap target 40x14: \"Privacy\""
+      ]
+    },
+    {
+      "n": 17,
+      "id": "paywall",
+      "viewport": "large",
+      "landedOn": 17,
+      "files": [
+        "17-paywall-large-p1.png",
+        "17-paywall-large-p2.png",
+        "17-paywall-large-p3.png",
+        "17-paywall-large-p4.png",
+        "17-paywall-large-p5.png",
+        "17-paywall-large-p6.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\"",
+        "small tap target 110x14: \"support@chatchi.co\""
+      ]
+    },
+    {
+      "n": 19,
+      "id": "back_in_scene",
+      "viewport": "large",
+      "landedOn": 17,
+      "files": [
+        "19-back_in_scene-large-p1.png",
+        "19-back_in_scene-large-p2.png",
+        "19-back_in_scene-large-p3.png",
+        "19-back_in_scene-large-p4.png",
+        "19-back_in_scene-large-p5.png",
+        "19-back_in_scene-large-p6.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\"",
+        "small tap target 110x14: \"support@chatchi.co\""
+      ]
+    },
+    {
+      "n": 20,
+      "id": "sale_m1",
+      "viewport": "large",
+      "landedOn": 20,
+      "files": [
+        "20-sale_m1-large.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 21,
+      "id": "sale_m3",
+      "viewport": "large",
+      "landedOn": 21,
+      "files": [
+        "21-sale_m3-large.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 22,
+      "id": "sale_y12",
+      "viewport": "large",
+      "landedOn": 22,
+      "files": [
+        "22-sale_y12-large.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 23,
+      "id": "sale_lifetime",
+      "viewport": "large",
+      "landedOn": 23,
+      "files": [
+        "23-sale_lifetime-large.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 24,
+      "id": "upsell_lifetime",
+      "viewport": "large",
+      "landedOn": 24,
+      "files": [
+        "24-upsell_lifetime-large.png"
+      ],
+      "issues": [
+        "small tap target 73x14: \"Terms of Use\"",
+        "small tap target 76x14: \"Privacy Policy\""
+      ]
+    },
+    {
+      "n": 25,
+      "id": "get_app",
+      "viewport": "large",
+      "landedOn": 25,
+      "files": [
+        "25-get_app-large.png"
+      ],
+      "issues": []
+    }
+  ],
+  "walk": {
+    "path": [
+      "hook",
+      "age_gate",
+      "genre",
+      "role",
+      "setting",
+      "companion",
+      "tone",
+      "character_name",
+      "trust",
+      "loader",
+      "story_reveal",
+      "scene_turn_1",
+      "scene_turn_2",
+      "save_story",
+      "paywall (paywall)"
+    ],
+    "reachedPaywall": true,
+    "stuckAt": null,
+    "errors": [],
+    "log": [
+      "hook: cta:Start my story",
+      "age_gate: cta:Continue",
+      "genre: pick",
+      "role: pick",
+      "setting: pick",
+      "companion: pick",
+      "tone: pick",
+      "character_name: cta:Choose one for me",
+      "trust: cta:Write my story",
+      "loader: null",
+      "loader: opt:iq",
+      "loader: null",
+      "loader: null",
+      "story_reveal: cta:Begin the scene",
+      "scene_turn_1: opt:say",
+      "scene_turn_1: any:send",
+      "scene_turn_1: send",
+      "scene_turn_2: send",
+      "scene_turn_2: any:send",
+      "scene_turn_2: send",
+      "scene_turn_2: cta:Save my story",
+      "save_story: cta:Save my story"
+    ]
+  },
+  "errors": []
+}

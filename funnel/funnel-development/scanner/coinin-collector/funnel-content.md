@@ -1,0 +1,351 @@
+---
+niche: coinin-collector
+display_name: CoinIdentify Collector (Persona Web Funnel, Core Coin)
+archetype: scanner-identifier
+subject: coin
+input: name, 4 quick collector answers, 2 guess-the-value games, 2 photos of one coin (or a sample coin)
+output: free coin ID card plus a collector level badge; value range by grade, error check and collection tracker behind the hard paywall, opened in the CoinIdentify app
+screens: 20
+monetization: hard web paywall after a mandatory email gate; 3 plans 1w $12.99→$39.99/4w, 4w $14.99→$39.99/4w (pre-selected), 12w $39.99→$59.99/12w; no offer on decline; post-purchase one-time add-on (price pending) → get_app
+offer: none
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  game: 9
+  scan: 14
+  reveal: 15
+motion: >
+  a tipped glass jar spilling worn coins while a gold ring locks onto one
+  coin, which flips front to back as an ID card slides up beside the guide
+---
+
+# Funnel Content — CoinIdentify Collector (Persona Web Funnel, Core Coin)
+
+Rebranded 2026-10-07 from CoinIn to **CoinIdentify: Coin Scanner**, with Starlyn-shape monetization: mandatory email, hard paywall, post-purchase add-on, then get the app.
+
+A web2app funnel for the CoinIdentify coin identifier, led by a persona host: **Edward**, a friendly illustrated guide who talks the user through the whole flow. **Edward is clearly labeled "Illustrative guide, not a real person" on the hook and meet screens and in the footnote.** He has no credentials, no years-of-experience claim and gives no appraisals. He is a voice, not an expert. The user answers four quick questions, plays two honest "which is worth more" games, **scans one real coin (front and back, or taps "Use a sample coin" when no coin or camera is at hand)** and gets a **free ID card plus a collector level badge** before any paywall. The hard paywall then sells what is still locked on that coin: value range by grade, condition grade, error check and a collection tracker. Archetype: `scanner-identifier`, web variant (20 screens, plan in the file). **Reference funnel:** CoinIn (competitor), `funnel.coininapp.com` (AdSpyLab capture, 20 screens, Sep 2026) plus the "Wisest Collector" persona pages (~25 variants, research §3 of `coursiv-coinin.md`). Unverified in this brief: the persona pages' exact copy (taken only as a pattern: persona hook, then a coin-origin question) and the in-app value data source. **Deliberate differences from the reference:** a personalized result (ID card and badge) before the paywall, where the original gives none; a persona labeled as illustrative instead of a fake expert; games with real answers and no dollar figures; no "become rich" framing; no countdown, no struck anchor prices, no dollar testimonials, no live user counter. **Palette** follows `scanner/coinin`: charcoal ground, antique gold, serif display for coin names. **Reuse plan:** the niche data (host label, Q1 to Q4 options, sample items, games, level names) sits in one `COLLECT` block in the demo, so the card, antique, banknote/stamp/gem and plant funnels can keep the 20-screen flow and swap that block. The object word ("coin"), the host name ("Edward") and the "CoinIdentify" brand are still hardcoded in screen copy and need a search-and-replace. Every value is an **estimate**, never "your coin is worth $X".
+
+---
+
+## A. Hook (persona + expectation)
+
+### 1. Hook — Grandpa's coin jar
+**Purpose:** Name the everyday "before" state (an inherited jar, a drawer of unknown coins) in the host's voice and promise one clear answer.
+**Headline A:** Grandpa's coin jar?
+**Headline B:** Meet Edward, your coin guide
+**Body A:** Edward helps you find out what's inside.
+**Body B:** Scan one coin and get its ID card.
+**Visual:** Charcoal ground. Top: macro photo of a tipped glass jar spilling worn coins (`img/jar.jpg`), fading into the ground. Over it, Edward's illustrated avatar (white hair, round glasses, flat cap, warm smile) in a speech bubble: "Let's see what you've got." Small chip under the avatar: "Illustrative guide, not a real person". Gold CTA pinned bottom.
+**Microcopy:** Under CTA: "By continuing you agree to our Terms and Privacy Policy. Values are estimates only."
+**CTA:** Let's look
+
+### 2. Meet Edward — how this works
+**Purpose:** Set the honest frame: what the guide is, the three steps, and that results are estimates.
+**Headline A:** Here's how it works
+**Headline B:** Three steps, one coin
+**Body A:** Quick questions, one coin scan, your free ID card.
+**Body B:** Edward walks you through each step.
+**Visual:** Edward avatar left with bubble "I'm an illustrated guide. I can't appraise coins, but the scan can identify them." Right or below: three numbered rows with line icons: "1 Answer a few questions", "2 Scan one coin", "3 Get its ID card". Honest-estimate chip: "Values are estimates, not appraisals".
+**Microcopy:** Avatar label: "Edward · illustrative guide". Persona rule for all later screens: Edward speaks in one short bubble per screen, never claims experience or credentials.
+**CTA:** Continue
+
+---
+
+## B. Investment
+
+### 3. Name
+**Purpose:** Capture a first name so Edward can use it. Optional, with a fallback, so nobody stalls.
+**Headline A:** What should Edward call you?
+**Headline B:** First, your name
+**Body A:** Just a first name or nickname.
+**Body B:** It makes your coin card personal.
+**Field:** Text input, max 20 characters, placeholder "Your first name". Skip link below. Empty or skipped: later screens say "you" / "friend".
+**Visual:** Edward bubble: "Nice to meet you!" Name field on a dark card, gold underline when focused.
+**Skip link:** "Skip, call me friend"
+**CTA:** Continue
+
+### 4. Q1 — Where the coins came from
+**Purpose:** Cheap first tap. It segments the motive (heir, change hunter, collector) and sets Edward's tone on the bridge and result screens.
+**Headline A:** Where did they come from?
+**Headline B:** How did you get them?
+**Body A:** Edward will pick examples to match.
+**Body B:** Every collection starts somewhere.
+**Options:**
+- 🧓 Inherited
+- 🫙 Found in change
+- 🗂️ I collect
+- 🎁 Gift or purchase
+- ✏️ Other
+**Field:** Single select, auto-advance on tap (Other opens a one-line input; CTA "Continue" disabled until text is typed).
+**Visual:** Progress bar 1/4 in gold, full-width dark pills with a gold border, selected pill fills gold.
+**Error state:** Other chosen, field empty: CTA disabled, hint "Type a few words to continue."
+**CTA:** (auto-advances on select; Continue for Other)
+
+### 5. Q2 — How many coins
+**Purpose:** Sizes the collection, which later drives the badge and the "track your collection" paywall line.
+**Headline A:** How many coins is that?
+**Headline B:** How big is the pile?
+**Body A:** A rough guess is fine.
+**Body B:** No counting needed.
+**Options:**
+- 🪙 Under 20
+- 🫙 20 to 100
+- 📦 100 to 500
+- 🧰 500 or more
+**Field:** Single select, auto-advance.
+**Visual:** As screen 4, progress 2/4. Each pill has a small stack-of-coins icon that grows with the number.
+**CTA:** (auto-advances on select)
+
+### 6. Q3 — Which coins
+**Purpose:** Picks the sample coin and game examples, and flags silver and foreign holders for the paywall copy.
+**Headline A:** Which coins do you have?
+**Headline B:** What's in the pile?
+**Body A:** Pick all that apply.
+**Body B:** Mixed is fine.
+**Options:**
+- 🟤 US cents
+- 🪙 Quarters and dimes
+- 🌍 Foreign coins
+- 🥈 Silver coins
+- ✏️ Other
+**Field:** Multi-select, CTA disabled until at least one pick. If Other is picked its input must be non-empty.
+**Visual:** Same pill list, check circle right, small real-coin thumbnails where available (`img/obv.jpg`, `img/world.jpg`, `img/bullion.jpg`), progress 3/4.
+**Error state:** Other picked, field empty: CTA disabled, hint "Type a few words to continue."
+**CTA:** Continue
+
+### 7. Q4 — What they want to know
+**Purpose:** Multi-select intent. It reorders the paywall "what's inside" list and picks the paywall hero line.
+**Headline A:** What do you want to know?
+**Headline B:** What matters most?
+**Body A:** Pick all that apply.
+**Body B:** Choose as many as you like.
+**Options:**
+- 💰 Value estimate
+- 🔍 Rare errors
+- 📜 History
+- 🗂️ Track my collection
+- ✏️ Other
+**Field:** Multi-select, CTA disabled until at least one pick; Other needs text.
+**Visual:** Same pill list, progress 4/4.
+**CTA:** Continue
+
+### 8. Edward's bridge — condition matters
+**Purpose:** Reassurance and one real teaching beat before the games. It shifts expectation from "jackpot" to "condition and details decide".
+**Headline A:** Condition beats age
+**Headline B:** Details decide everything
+**Body A:** Worn and common is normal. Edward will show you why.
+**Body B:** Two quick guesses, then your scan.
+**Visual:** Edward bubble, personalized by Q1: inherited "Family coins carry stories, {{name}}." · found "Pocket change can surprise you." · collect "You already know the hobby." Below, one coin shown worn on the left and sharp on the right, with the label "Same coin, different condition".
+**Microcopy:** Line under the coins: "Most coins you find are common. That's normal."
+**CTA:** Let's play
+
+---
+
+## C. Games (anticipation with real answers)
+
+### 9. Game 1 — Which 1943 cent is rare?
+**Purpose:** A short interactive teaching beat with a real answer: tiny details change what a coin is. It is the honest replacement for the reference funnel's dollar-figure true/false screens.
+**Headline A:** Which 1943 cent is rare?
+**Headline B:** Guess the rare one
+**Body A:** Both say 1943. Only one is unusual.
+**Body B:** Tap the coin you think is worth more.
+**Options:**
+- ⚪ Silver-gray coin
+- 🟤 Copper coin
+**Field:** Two tappable coin pictures side by side. Either tap reveals the answer; no wrong-answer penalty. Score counts for the badge.
+**Visual:** Two 1943 cents on charcoal, a magnifier loupe over the date. After the tap the copper coin gets a gold ring and the other dims.
+**Microcopy:** Reveal: "Copper. 1943 cents were made of steel, so a copper one is a rare error." · "A scan checks details like this for you." No dollar figure on this screen.
+**CTA:** Next
+
+### 10. Game 2 — Which quarter has silver?
+**Purpose:** A second real-answer guess that rewards looking at the edge and the date, and plants the "silver" reason to scan.
+**Headline A:** Which quarter has silver?
+**Headline B:** Which is worth more?
+**Body A:** One is 1964, one is 1965.
+**Body B:** Look closely at the edge and the date.
+**Options:**
+- 🅰️ The 1964 quarter
+- 🅱️ The 1965 quarter
+**Field:** Two tappable quarter pictures; tap reveals. Score counts for the badge.
+**Visual:** Two quarters edge-on and face-up. After the tap the 1964 edge shows a solid silver line and the 1965 edge a copper stripe.
+**Microcopy:** Reveal: "1964. Quarters made through 1964 are 90% silver. From 1965 they are copper-nickel." · "Silver coins are worth more than face value as metal, and a scan can tell them apart."
+**CTA:** Scan my coin
+
+---
+
+## D. Scan (asset input + anticipation)
+
+### 11. Camera primer
+**Purpose:** Pre-permission screen with a reason, four capture rules and the sample-coin escape so users without a coin or camera never drop.
+**Headline A:** Grab one coin
+**Headline B:** Let's scan your first coin
+**Body A:** Any coin works, even one from your pocket.
+**Body B:** Edward needs a clear look.
+**Visual:** Edward bubble: "Plain surface, good light." Hand placing a coin on dark cloth (`img/cloth.jpg`), four tip chips in a row with line icons.
+**Microcopy:** Tip chips: "One coin · Good light · Flat surface · Fill the frame". Privacy line: "Your photos are used to identify this coin only." Skip link: "No coin handy? Use a sample coin".
+**Skip link:** "Use a sample coin" runs the same flow with a sample matched to the Q3 pick.
+**CTA:** Continue
+
+### 12. Scan the front
+**Purpose:** The core input. It takes a gallery upload or a camera shot with plain error messages, plus the sample-coin fallback.
+**Headline A:** Front side first
+**Headline B:** Show us the face
+**Body A:** Center the coin and hold steady.
+**Body B:** Lay it flat on a plain surface.
+**Field:** Upload from gallery, Take a photo now (device camera), drag-and-drop. Preview with "Use this photo" and "Choose another". Link "Use a sample coin" always visible.
+**Value line:** "Step 1 of 2 · Two sides give a sharper match"
+**Visual:** Dashed gold circle drop zone with a coin outline. After upload the photo shows inside a round mask with a gold ring.
+**Error states:**
+- "That file isn't a photo. Try a JPG or PNG."
+- "That photo is over 15 MB. Try a smaller one."
+- "We couldn't open that photo. Try another."
+- "It looks dark. Coins read best in bright light." (warning, can continue)
+**Skip link:** "Use a sample coin"
+**CTA:** Use this photo
+
+### 13. Scan the back
+**Purpose:** The second side confirms the variety and the mint details. It is the last input before the payoff.
+**Headline A:** Now flip it over
+**Headline B:** One more side
+**Body A:** The back confirms the exact variety.
+**Body B:** Two sides make the match sharper.
+**Field:** Same upload block. A thumbnail of the captured front sits in a corner. Link "Use a sample coin" and a small grey "Skip, front only".
+**Value line:** "Step 2 of 2"
+**Visual:** As screen 12, with a corner thumbnail flip when the screen opens.
+**Error states:** Same as screen 12.
+**Skip link:** "Skip, front only" (the card shows lower match confidence)
+**CTA:** Identify coin
+
+### 14. Identifying
+**Purpose:** Manufacture the wait around the user's own coin (best ad-creative screen). Advance only when the result is back, minimum ~5 seconds.
+**Headline A:** Identifying your coin…
+**Headline B:** Checking the coin database…
+**Steps:**
+1. Reading the design and lettering… (0 to 100%, check)
+2. Matching the year and mint mark… (0 to 100%, check)
+3. Checking known errors and varieties… (0 to 100%, check)
+4. Edward is preparing your card… (0 to 100%, check)
+**Visual:** The user's front photo (or the sample coin) fills a round frame, tilts slowly in 3D (the only 3D in the funnel) with a gold scanning ring sweeping its rim. Four rows beneath: label, percent, check, gold bar.
+**Microcopy:** Under headline: "Two sides scanned". Demo-only disclosure (prototype, not production copy): on screen 15 and the paywall hero show "Demo only: this prototype can't identify real photos, so it shows a sample result", and label the seeded coin name and metal "Sample data" on screen 15 and the paywall hero.
+**CTA:** (auto-advances when the result returns, minimum ~5 seconds)
+
+### 15. Your coin — free ID card
+**Purpose:** Deliver real value free: what the coin is. Proves the scanner works and makes the locked part feel one tap away. Locked rows tease the category, never a number.
+**Headline A:** It's a {{coin_name}}
+**Headline B:** We found your coin
+**Body A:** {{country}}, {{year}}, {{metal}}.
+**Body B:** Value and grade are one tap away.
+**Visual:** Coin card with the captured photos side by side, coin name in serif, fact rows (country, year, mint, metal, denomination). Below, three locked rows with a gold lock: "Estimated value range", "Condition grade", "Errors and varieties check". Neutral grey blur, no fake "$$$" shapes. Edward bubble: "Here's your coin, {{name}}."
+**Microcopy:** Demo chip (all paths): "Sample data: this demo can't identify real photos". "Match confidence: {{confidence}}" with link "Not right? Try another photo." Beginner tooltip on "mint": "Where the coin was made, shown as a tiny letter." No-match state: headline "We couldn't match this one yet" · body "Try brighter light and a plain background." · buttons "Retake photos" / "Use a sample coin".
+**CTA:** See my badge
+
+### 16. Collector level badge
+**Purpose:** A personalized free reward built only from the user's own answers and game score, so the paywall hero can speak to them. It is a fun label, never an appraisal.
+**Headline A:** You're a {{level}}
+**Headline B:** Your collector level
+**Body A:** Based on your answers and your two guesses.
+**Body B:** A fun badge, not an appraisal.
+**Visual:** A gold badge medallion with the level name and four small stars showing level (1 to 4), the user's name under it, Edward bubble with one line tied to the level. The coin card thumbnail sits beside it. Level names: Curious Finder, Jar Sorter, Keen Collector, Seasoned Hunter.
+**Microcopy:** Level rule (shown in the panel footnote): points from collection size (Q2), types (Q3) and the two game answers; no outcome is promised for the level. Share row: "Share my badge" (image of the badge only, no values).
+**CTA:** Save my card
+
+---
+
+## E. Gate
+
+### 17. Email gate
+**Purpose:** Capture the email before the value reveal, framed as saving the card and collection.
+**Headline A:** Where should Edward send it?
+**Headline B:** Save your coin card
+**Body A:** Get your card and keep your scans safe.
+**Body B:** One email, no spam.
+**Field:** Email input (email keyboard), optional marketing consent checkbox (off).
+**Visual:** The coin card from screen 15 shrinks into the first slot of an empty collection grid (other slots dashed), email field beneath.
+**Error state:** "Enter a valid email address."
+**Microcopy:** "By continuing you agree to our Terms and Privacy Policy." · "We never sell your email."
+**CTA:** Continue
+
+---
+
+## F. Monetization
+
+### 18. Paywall
+**Purpose:** Long web sales page selling what is still locked on their coin (value range by grade, grade, error check, collection value), then the ongoing tools. Hard paywall: the only way on is to buy.
+**Headline A:** See what it's worth
+**Headline B:** Unlock your {{coin_name}}
+**Body A:** Value range, grade and error check, for every scan.
+**Body B:** Scan unlimited coins and track your collection.
+**Plans:** Three plans, prices final, Paddle price IDs pending:
+- `1w` "1 week": **$12.99** for the first week, then **$39.99 every 4 weeks** (not weekly). Sub-line "Intro week". Never called free.
+- `4w` "4 weeks": **pre-selected**, badge "Recommended", **$14.99** for the first 4 weeks, then **$39.99 every 4 weeks**.
+- `12w` "12 weeks": **$39.99** for the first 12 weeks, then **$59.99 every 12 weeks**. Sub-line "Lowest per week".
+- Each card shows its renewal next to the price: "then $39.99 / 4 weeks", "then $39.99 / 4 weeks", "then $59.99 / 12 weeks".
+- The add-on (screen 19) is a hidden one-time plan and never shows here. No struck prices, no discount badges, no timer.
+**Visual:** Sticky brand bar ("CoinIdentify", mini "Unlock my coin" CTA after scrolling) with **no close X**. Hero: the user's coin card (photo, name, badge level) with three locked rows glowing gold. Plan block. "What's inside" list (ordered by Q4 picks). "How it works" (3 steps). Proof block (rating and reviews, hidden while tokens are unset). Guarantee seal (hidden while the refund-days token is unset). FAQ. Plan block repeated. Footer. A sticky bottom bar (plan name, "$14.99 today", CTA) shows whenever no plan-block CTA is on screen, including the first view, so a CTA and the price are always visible.
+**Microcopy:**
+- Renewal line under the CTA, per selected plan: 1w "$12.99 today for your first week, then $39.99 every 4 weeks until you cancel." · 4w "$14.99 today for your first 4 weeks, then $39.99 every 4 weeks until you cancel." · 12w "$39.99 today for your first 12 weeks, then $59.99 every 12 weeks until you cancel."
+- What's inside: "Value range by grade" · "Condition grade estimate" · "Error and variety check" · "Unlimited coin scans" · "Collection tracker" · "Coin history and facts".
+- How it works: "Checkout" (Secure payment, takes a few seconds.) → "Get the app" (Download CoinIdentify: Coin Scanner from the App Store or Google Play.) → "Open your report" (Log in with your email. Your scan is saved there.)
+- Edward line near the hero: "Edward is an illustrated guide, not an appraiser."
+- Value disclaimer: "Values are estimates, not appraisals or purchase offers."
+- FAQ: What's included? · How is value estimated? · When do I get my report? ("Right after checkout, in the CoinIdentify app. Log in with {{email}}.") · How do I cancel? (account settings; the support email `{{support_email}}` is added once the owner sends it) · Will I be charged again? ("Yes, unless you cancel. After your first period the plan renews: $39.99 every 4 weeks on the 1-week and 4-week plans, $59.99 every 12 weeks on the 12-week plan.") · Is Edward a real person? ("No. Edward is an illustrated guide.")
+- Footer: Terms of Use (https://squad-xteam.com/termofuse.html) · Privacy Policy (https://squad-xteam.com/policy.html) · Subscription terms. Legal entity hidden until `{{legal_entity}}` is set.
+- No close X, no "continue free" or "maybe later". Browser Back returns to the previous funnel screen, never to a free result.
+**CTA:** Unlock my coin
+
+### 19. Add-on upsell — Error & Variety Deep Check
+**Purpose:** Offer one coin-specific add-on while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Check it for rare errors
+**Headline B:** Is your coin an error?
+**Body A:** A closer look at date, mint mark and lettering.
+**Body B:** Known errors and varieties for your coin.
+**Plans:** One add-on, paid once: "Error & Variety Deep Check" at `{{addon_price}}` (price pending from the owner; shown as a token until then). No subscription, no struck price, no countdown, no bundle. The CTA opens its own one-time checkout: a hidden plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`) opened with `checkout('addon')`. Paying runs `completePurchase('addon')` and lands on screen 20 with the "added" line. Closing the checkout without paying goes to screen 20 without it (`CONFIG.declineFlow = {addon:'get_app'}`). The demo shows a stand-in sheet (Pay / Close without paying) while no checkout URL is set.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (the user's coin front in a gold ring, "CoinIdentify report" label, the add-on name), three gold checks, price row "{{addon_price}} · Paid once · no subscription". No back button, no close X.
+**Microcopy:**
+- Checks: "Date, mint mark and lettering checked for doubling" · "Known errors and varieties for this coin and year" · "Saved with your coin card in the app".
+- Under the card: "One-time payment at a secure checkout. No subscription."
+- Skip link: "No thanks, take me to the app".
+- Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `upsell_decline`, `purchase_complete` with plan `addon`, `checkout_decline` with plan `addon`.
+**CTA:** Add to my plan
+
+---
+
+## G. Payoff
+
+### 20. Get the app
+**Purpose:** Hand a paying user straight to the CoinIdentify app, where the full report and further scans live.
+**Headline A:** You're in, {{name}}
+**Headline B:** You're in
+**Body A:** Your full report is waiting in the CoinIdentify app.
+**Body B:** Download the app and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download CoinIdentify: Coin Scanner · Log in with {{email}} · Open your report), "Open the app" button, and black App Store and Google Play badges under it. If they bought the add-on, a green line "Error & Variety Deep Check added. It opens in the app." sits above the steps.
+**Microcopy:** "Values are estimates, not appraisals. Cancel anytime in your account." Without a name the headline reads "You're in". App links are pending: until they are set, the button and badges show "App link coming soon". Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
+
+---
+
+## Notes
+
+**Reference.** CoinIn (competitor), `funnel.coininapp.com` (AdSpyLab capture, Sep 2026, 20 screens: attitude quiz, 3 dollar-figure guess screens, email gate, long paywall, no result before paying) and the ~25 "Wisest Collector" persona pages (research §3). The persona pages' exact copy is **unverified**; only the pattern (a persona host, then a coin-origin question) is taken.
+
+**Persona risk and rule.** The host is a drawn guide with no credentials. Labels: hook chip, meet-screen bubble, paywall FAQ ("Is Edward a real person?"), and the demo footnote. No "40 years collecting", no "expert", no appraisals. The original brief's "Edward, 40 years collecting" was changed for this reason.
+
+**Reuse for the 4 later collectibles funnels (cards, antique, notes/stamps/gems, plant).** Keep screens 1 to 20 and swap the data: object word, host name and avatar, Q1 to Q4 options, 2 games with real answers, sample item, level names, ID-card fact rows. In the demo, swap the `COLLECT` object, then search-and-replace the object word ("coin"), the host name ("Edward") and the "CoinIdentify" brand in the screen copy; those are not driven by `COLLECT`. Plant needs a safety line on any "edible/toxic" claim; gems and stamps need their own licensed reference photos.
+
+**Blocks deliberately skipped.** Social proof screen (no verified numbers for this listing; proof lives in the paywall behind tokens), notification opt-in, wheel or scratch card (casino feel next to money), last-chance offer and free result screen (CoinIdentify policy 2026-10-07: no sale, no offer on decline, hard paywall).
+
+**Dark patterns not copied.** The reference countdown, strike-through anchor prices, "payment period" fine print, live user counter, dollar testimonials, "become rich" framing, and an email gate that claims no storage.
+
+**Drop-off risk.** Screens 12 to 13 (upload). The sample-coin link, camera or gallery choice and "front only" skip exist for this. Screen 17 (email) is mandatory in the web variant (one validated field, no skip, guest, Google or Apple) (the in-app `scanner/coinin` brief keeps it skippable for App Store 5.1.1).
+
+**Monetization.** Hard web paywall after a mandatory email gate, three plans (1w $12.99 then $39.99 every 4 weeks; 4w $14.99 then $39.99 every 4 weeks, pre-selected; 12w $39.99 then $59.99 every 12 weeks), no offer on decline, then a one-time add-on (Error & Variety Deep Check) and get_app. Measure separately: first-scan success, email capture rate, subscription conversion by plan (`purchase_complete` by plan / `paywall_view`), add-on attach rate (`purchase_complete` with plan `addon` / `upsell_view`), app handoff rate and refund rate.
+
+**Pending from the owner.** Add-on price (`{{addon_price}}`; name chosen here: Error & Variety Deep Check, owner to confirm), Paddle price IDs for the 3 plans and the add-on, support email (`{{support_email}}`), App Store and Google Play links, legal entity, real images (Edward and game art; `gen_images.py` not run).
+
+**First A/B test.** Persona host (this brief) vs. no host (same flow, plain copy). **Second:** badge screen before vs. after the email gate.
+
+**Verify before build.** Paddle price IDs; refund terms; rating and reviews; one database figure; licensed photos for games 1 and 2; the real identify API.
+
+**Demo notes.** The demo cannot identify real photos: any upload (or the sample link) shows the same seeded sample result, and the footnote says so. Images are reused from `scanner/coinin/img` (jar, 1955 cent front and back) plus drawn art; `gen_images.py` is ready for Edward and the other pictures.
+
+**Demo (Artifact, private):** https://claude.ai/artifact/6KFCPFAKXQFsTdAsqLV8qb

@@ -1,0 +1,1193 @@
+<title>Coursiv Claude Cert Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<style>
+/* ---------- page (control panel) tokens ---------- */
+:root{
+  color-scheme:light;
+  --pg-bg:#EEF0F6;--pg-surface:#FFFFFF;--pg-surface-2:#E6E8F2;--pg-line:#D9DCE8;
+  --pg-t1:#151833;--pg-t2:#4E546F;--pg-t3:#80869F;
+  --pg-acc:#3B30C4;--pg-acc-ink:#FFFFFF;--pg-acc-soft:#E7E6FB;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --head:"Plus Jakarta Sans","Inter",system-ui,sans-serif;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --pg-bg:#0E0F1D;--pg-surface:#171930;--pg-surface-2:#22254A;--pg-line:#2C3053;
+    --pg-t1:#ECEDF7;--pg-t2:#A7ABC6;--pg-t3:#767B99;
+    --pg-acc:#958EFF;--pg-acc-ink:#0E0F1D;--pg-acc-soft:#26254D;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --pg-bg:#0E0F1D;--pg-surface:#171930;--pg-surface-2:#22254A;--pg-line:#2C3053;
+  --pg-t1:#ECEDF7;--pg-t2:#A7ABC6;--pg-t3:#767B99;
+  --pg-acc:#958EFF;--pg-acc-ink:#0E0F1D;--pg-acc-soft:#26254D;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--pg-bg);color:var(--pg-t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid #3B30C4;outline-offset:2px}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding-block:32px 48px;padding-inline:16px}
+
+/* ---------- phone: app brand tokens, identical in light & dark page mode ---------- */
+.phonebox{--k:1;width:calc(412px*var(--k));height:calc(834px*var(--k));position:relative;flex:none}
+.phone{
+  --bg:#FFFFFF;--soft:#F5F6FB;--surface:#FFFFFF;--line:#E3E5EF;--line-2:#CDD1E1;
+  --t1:#141733;--t2:#4B516C;--t3:#878DA6;
+  --pri:#3B30C4;--pri-ink:#FFFFFF;--pri-soft:#EEEDFD;--pri-deep:#2A2296;
+  --ok:#16A34A;--ok-soft:#E7F6EC;--ok-ink:#0F7A36;--err:#D23B3B;--calm:#EEF4FC;
+  color-scheme:light;color:var(--t1);
+  position:absolute;left:calc(11px*var(--k));top:calc(11px*var(--k));width:390px;height:812px;transform:scale(var(--k));transform-origin:0 0;
+  border-radius:52px;background:var(--bg);border:1px solid #D5D8E6;
+  box-shadow:0 0 0 10px #1B1D33,0 0 0 11px #2E3152,0 40px 80px -24px #0B0D2280;overflow:hidden;isolation:isolate
+}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column;background:var(--bg)}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--t1)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--t1)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--t1);border-radius:1px}
+
+/* simple screen change: fade + small slide only */
+.view.out{animation:vout .22s ease forwards;pointer-events:none;z-index:0}
+.view.in{animation:vin .32s ease both;z-index:1}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.nav{height:46px;flex:none;display:flex;align-items:center;gap:10px;padding:0 14px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2);flex:none}
+.iconbtn:hover{background:var(--soft)}
+.prog{flex:1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--pri);border-radius:3px;transition:width .35s ease}
+.pcount{font:600 12px/1 var(--sans);color:var(--t3);font-variant-numeric:tabular-nums;min-width:36px;text-align:right}
+.navspacer{width:36px;flex:none}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative}
+.scr.center{justify-content:center}
+.scr::-webkit-scrollbar{width:0}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;background:var(--bg)}
+.foot .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+
+.display{font:800 29px/1.14 var(--head);letter-spacing:-.02em;margin:0;text-wrap:balance;color:var(--t1)}
+.display.xl{font-size:33px}
+.display.sm{font-size:25px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:700 11px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--pri)}
+.pill{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--pri-soft);color:var(--pri);font:600 12.5px/1 var(--sans)}
+.hint{font-size:13px;color:var(--t3)}
+.err{font-size:13px;color:var(--err);font-weight:500}
+.err button{background:none;border:none;padding:0;color:var(--pri);text-decoration:underline;font-weight:600}
+.ph{display:inline-block;border:1.5px dashed #9A93E8;background:#F4F3FF;color:var(--pri-deep);border-radius:6px;padding:0 5px;font-weight:600;white-space:nowrap}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--pri);color:var(--pri-ink);font:700 16px/1 var(--head);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;box-shadow:0 10px 24px -12px #3B30C4aa;position:relative;overflow:hidden}
+.btn:hover{background:var(--pri-deep)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:#E4E6F0;color:#9CA1B8;cursor:not-allowed;box-shadow:none}
+.btn:not([disabled])::after{content:"";position:absolute;top:0;bottom:0;width:36%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 5s ease-in-out 1.4s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}26%,100%{transform:translateX(330%) skewX(-20deg)}}
+.btn.dark{background:#0E0F1A;box-shadow:none}
+.btn.line{background:var(--surface);color:var(--t1);border:1.5px solid var(--line-2);box-shadow:none}
+.btn.line::after,.btn.dark::after{display:none}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-2)}
+.link:hover{color:var(--t1)}
+
+/* options */
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);text-align:left;width:100%;transition:border-color .15s,background .15s,color .15s;min-height:54px}
+.opt:hover{border-color:var(--line-2)}
+.opt .em{font-size:20px;width:26px;text-align:center;flex:none;line-height:1}
+.opt .lbl{flex:1;font-weight:600;font-size:15.5px}
+.opt .chk{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);display:grid;place-items:center;flex:none;color:#fff}
+.opt.on{border-color:var(--pri);background:var(--pri-soft)}
+.opt.on .chk{background:var(--pri);border-color:var(--pri)}
+.opts.fill .opt.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.opts.fill .opt.on .chk{background:#fff;border-color:#fff;color:var(--pri)}
+.opts.muted .opt .em{filter:grayscale(1);opacity:.55;transition:filter .2s,opacity .2s}
+.opts.muted .opt.on .em{filter:none;opacity:1}
+.opts.calm .opt{background:var(--calm);border-color:#DCE7F7}
+.opts.calm .opt.on{border-color:var(--pri);background:#E4EEFC}
+.sig{display:flex;gap:3px;align-items:flex-end;height:18px;flex:none}
+.sig i{width:4px;border-radius:1px;background:var(--line-2)}
+.sig i.f{background:var(--pri)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);text-align:left;min-height:72px;position:relative}
+.tile .em{font-size:20px;line-height:1}
+.tile .lbl{font-weight:600;font-size:14px;line-height:1.2}
+.tile.on{border-color:var(--pri);background:var(--pri-soft)}
+.tile .badge{position:absolute;top:9px;right:9px;width:20px;height:20px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center}
+.utile{min-height:118px;justify-content:space-between;background:linear-gradient(160deg,#F7F8FD,#EFF1FA)}
+.utile .tools{display:flex;gap:4px;flex-wrap:wrap}
+.otherin{margin-top:-2px}
+
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:600 13px/1 var(--sans);color:var(--t2)}
+.box{height:54px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line-2);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3);transition:border-color .15s,box-shadow .15s}
+.box:focus-within{border-color:var(--pri);box-shadow:0 0 0 4px #3B30C422}
+.box.bad{border-color:var(--err)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+.box input::placeholder{color:#A3A8BE}
+.cbx{display:flex;gap:10px;align-items:flex-start;background:none;border:none;padding:0;text-align:left;font-size:13.5px;color:var(--t2)}
+.cbx .sq{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--line-2);display:grid;place-items:center;flex:none;color:#fff;margin-top:1px;background:#fff}
+.cbx.on .sq{background:var(--pri);border-color:var(--pri)}
+.cbx a,.tlink{color:var(--pri);text-decoration:underline;font-weight:500;background:none;border:none;padding:0;font-size:inherit}
+
+/* tool chips (lettered stand-ins for real logos) */
+.tool{display:inline-flex;align-items:center;gap:5px;padding:4px 9px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--line);font:600 12px/1 var(--sans);color:var(--t1)}
+.tool i{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 10px/1 var(--sans);font-style:normal}
+.tool.mini{padding:3px;gap:0}
+.toolrow{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+
+/* screen 1 */
+.wcards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wcard{display:flex;flex-direction:column;border-radius:20px;border:2px solid var(--line);background:var(--surface);overflow:hidden;padding:0;text-align:left;transition:border-color .15s,transform .15s}
+.wcard:hover{border-color:var(--line-2)}
+.wcard.on{border-color:var(--pri)}
+.wcard .art{height:240px;display:grid;place-items:center;position:relative;overflow:hidden}
+.wcard .art .big{font-size:64px;line-height:1;position:relative;z-index:1}
+.wcard .art .desk{position:absolute;left:14%;right:14%;bottom:30px;height:8px;border-radius:4px;background:#00000014}
+.wcard .art .win{position:absolute;top:18px;width:46px;height:56px;border-radius:6px;background:#ffffff99;border:2px solid #ffffffcc}
+.wcard .cap{padding:12px 12px 14px;font:700 15px/1.25 var(--head);display:flex;gap:6px;align-items:flex-start}
+.legalline{font-size:11.5px;color:var(--t3);text-align:center;text-wrap:balance}
+.legalline button{display:inline;background:none;border:none;padding:0;color:var(--t2);text-decoration:underline;font-size:inherit}
+
+/* screen 2 */
+.bignum{font:800 64px/1 var(--head);color:var(--pri);letter-spacing:-.03em;text-align:center}
+.bignum .ph{font-size:52px;padding:0 10px;border-radius:12px}
+.strip{display:flex;justify-content:center;margin-top:auto;padding-top:8px}
+.face{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:28px;border:3px solid #fff;margin-left:-12px;box-shadow:0 6px 14px -8px #0003}
+.face:first-child{margin-left:0}
+
+/* screen 7 staircase */
+.stairs{position:relative;height:210px;display:flex;align-items:flex-end;gap:8px;padding:0 6px}
+.stairs .st{flex:1;border-radius:10px 10px 4px 4px;background:#EEF0F7;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:600 11px/1.15 var(--sans);color:var(--t3);text-align:center;position:relative}
+.stairs .st.me{background:var(--pri);color:#fff}
+.stairs .st.me::before{content:"You";position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:var(--t1);color:#fff;font:700 11px/1 var(--sans);padding:6px 9px;border-radius:999px}
+.floatchip{position:absolute;display:inline-flex;gap:6px;align-items:center;padding:7px 11px;border-radius:999px;background:var(--ok-soft);color:var(--ok-ink);font:600 12px/1 var(--sans);box-shadow:0 8px 18px -12px #16A34A88;animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+
+/* screen 11 quote */
+.quote{padding:24px 22px 20px;border-radius:22px;background:linear-gradient(180deg,#F6F5FF,#FFFFFF);border:1.5px solid #E1DEFA;position:relative}
+.quote .mk{font:800 72px/.6 var(--serif);color:var(--pri);opacity:.25;position:absolute;top:22px;left:16px}
+.quote p{margin:18px 0 16px;font:600 20px/1.35 var(--serif);color:var(--t1);text-wrap:pretty}
+.quote u{text-decoration:none;background:linear-gradient(var(--pri),var(--pri)) left bottom/0 3px no-repeat;animation:uline 1.2s ease .6s forwards;padding-bottom:1px}
+@keyframes uline{to{background-size:100% 3px}}
+.quote .who{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--t2)}
+.quote .who .av{width:38px;height:38px;border-radius:50%;background:#E4E6F0;display:grid;place-items:center;font:700 14px var(--head);color:var(--t2)}
+.quote .who b{display:block;color:var(--t1);font-size:14px}
+
+/* screen 13 */
+.pace{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);text-align:left;width:100%}
+.pace.on{border-color:var(--pri);background:var(--pri-soft)}
+.pace .lbl{flex:1;font:700 17px/1.2 var(--head)}
+.pace .lbl small{display:block;font:500 12.5px var(--sans);color:var(--t3);margin-top:3px}
+.tag{font:700 10.5px/1 var(--sans);letter-spacing:.05em;background:var(--ok);color:#fff;padding:5px 7px;border-radius:6px;text-transform:uppercase}
+
+/* screen 15 lesson */
+.pbub{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:18px 18px 18px 6px;background:var(--soft);border:1.5px solid var(--line);text-align:left;width:100%;font-size:15px;transition:transform .2s ease,border-color .15s}
+.pbub:hover{border-color:var(--pri)}
+.pbub .em{font-size:20px;line-height:1.1}
+.squash .pbub{transform:scaleX(0)}
+.reveal{display:grid;grid-template-columns:1fr 1fr;gap:9px;animation:unsq .32s ease both}
+@keyframes unsq{from{transform:scaleX(0)}to{transform:none}}
+.rcol{border-radius:16px;border:1.5px solid var(--line);background:var(--surface);padding:11px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;position:relative}
+.rcol.good{border-color:var(--ok);background:#FAFEFB}
+.rcol .pr{color:var(--t2);font-size:12px;line-height:1.35}
+.rcol .pr mark{background:#CFF1DA;color:var(--ok-ink);border-radius:3px;padding:0 2px}
+.rcol .out{background:var(--soft);border-radius:10px;padding:8px;line-height:1.4;color:var(--t1)}
+.rcol .out b{font:700 10px/1 var(--sans);letter-spacing:.06em;color:var(--t3);display:block;margin-bottom:5px}
+.rcol .yp{position:absolute;top:-9px;right:10px;background:var(--t1);color:#fff;font:700 10px/1 var(--sans);padding:4px 7px;border-radius:999px}
+.why{display:inline-flex;align-items:center;gap:6px;background:var(--ok-soft);color:var(--ok-ink);border-radius:999px;padding:8px 12px;font:600 13px/1.2 var(--sans);align-self:flex-start}
+.close{font:700 16px/1.2 var(--head);color:var(--t1)}
+
+/* proof */
+.stars{display:flex;gap:3px;justify-content:center;color:#F4B400;font-size:22px}
+.rv{padding:14px;border-radius:16px;border:1.5px dashed var(--line-2);background:var(--soft);display:flex;flex-direction:column;gap:8px}
+.rv .rh{display:flex;gap:10px;align-items:center}
+.rv .av{width:34px;height:34px;border-radius:50%;background:#E1E4EE;display:grid;place-items:center;color:var(--t3);font-size:15px;flex:none}
+.rv p{margin:0;color:var(--t2);font-size:13.5px}
+.rv small{color:var(--t3);font-size:11.5px}
+.certmini{height:56px;border-radius:8px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font:600 11px var(--serif);color:var(--t3)}
+
+/* loading */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal span{aspect-ratio:1;border-radius:9px;background:#F1F2F8;border:1px solid var(--line);display:grid;place-items:center;font:700 11px/1 var(--sans);color:transparent;transition:background .25s,border-color .25s,transform .25s}
+.cal span.on{background:#fff;border-color:var(--line-2);transform:scale(1.04)}
+.cal span.on i{opacity:1;transform:scale(1)}
+.cal span i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 10px/1 var(--sans);font-style:normal;opacity:0;transform:scale(.4);transition:opacity .25s,transform .3s cubic-bezier(.3,1.6,.5,1)}
+.cal span.ctile.on{background:var(--ok-soft);border-color:var(--ok)}
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:5px;align-items:center;flex:none}
+.step.done .top{color:var(--t1)}
+.step.done .pct{color:var(--ok)}
+.bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ok);width:0}
+
+/* gate */
+.blurcard{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.blurcard .inner{filter:blur(5px);padding:16px;display:flex;flex-direction:column;gap:8px;user-select:none}
+.blurcard .frost{position:absolute;inset:0;background:#ffffffa6;display:grid;place-items:center;color:var(--pri)}
+.wk{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--soft);border:1px solid var(--line)}
+.wk .n{width:34px;height:34px;border-radius:10px;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center;font:800 12px/1 var(--head);flex:none}
+.wk b{display:block;font-size:14px}
+.wk span{font-size:12px;color:var(--t3)}
+.wk .tl{margin-left:auto;display:flex;gap:3px;flex:none}
+.wk.last .n{background:var(--ok-soft);color:var(--ok)}
+
+/* summary */
+.meter{position:relative;padding-top:34px}
+.meter .track{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.meter .track span{height:10px;border-radius:5px;background:#E6E8F2}
+.meter .track span.on{background:var(--pri)}
+.meter .labels{display:grid;grid-template-columns:1fr 1fr 1fr;font-size:12px;color:var(--t3);margin-top:8px;text-align:center}
+.meter .labels span.on{color:var(--pri);font-weight:700}
+.meter .mk{position:absolute;top:0;transform:translateX(-50%);background:var(--t1);color:#fff;font:700 11px/1 var(--sans);padding:6px 9px;border-radius:999px;white-space:nowrap;transition:left .6s ease}
+.meter .mk::after{content:"";position:absolute;left:50%;bottom:-4px;width:8px;height:8px;background:var(--t1);transform:translateX(-50%) rotate(45deg)}
+.srow{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.srow:first-child{border-top:none}
+.srow .well{width:38px;height:38px;border-radius:12px;background:var(--pri-soft);display:grid;place-items:center;font-size:18px;flex:none}
+.srow small{display:block;color:var(--t3);font-size:12px}
+.srow b{font-size:15px}
+.card{padding:4px 14px;border-radius:18px;border:1px solid var(--line);background:var(--surface)}
+
+/* plan */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ba > div{border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:12.5px}
+.ba h5{margin:0;font:700 12px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+.ba .now{background:#F2F3F7;color:var(--t2)}
+.ba .now h5{color:var(--t3)}
+.ba .with{background:var(--ok-soft);color:var(--ok-ink)}
+.ba .with h5{color:var(--ok)}
+.ba div div{display:flex;gap:6px;align-items:flex-start}
+.fine{font-size:11.5px;color:var(--t3);text-align:center}
+
+/* features */
+.feat{display:flex;gap:10px}
+.feat .rows{flex:1;display:flex;flex-direction:column;gap:10px}
+.feat .r{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;font-weight:500}
+.feat .r .ck{width:20px;height:20px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex:none;margin-top:1px}
+.mock{width:104px;height:196px;border-radius:20px;background:#0E0F1A;padding:5px;flex:none;transform:rotate(6deg);box-shadow:0 18px 30px -16px #0008;margin-top:6px}
+.mock .in{width:100%;height:100%;border-radius:16px;background:#fff;padding:14px 8px 8px;display:flex;flex-direction:column;gap:6px;font-size:8.5px;overflow:hidden}
+.mock .in b{font:800 10px/1.15 var(--head)}
+.mock .bb{height:5px;border-radius:3px;background:var(--line)}
+.mock .bb.p{background:var(--pri);width:40%}
+.mock .ch{padding:5px;border-radius:6px;background:var(--soft);border:1px solid var(--line)}
+.mock .ch.g{border-color:var(--ok);background:var(--ok-soft)}
+
+/* paywall */
+.minip{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#3B30C4,#5A4FE0);color:#fff}
+.minip .ic{width:40px;height:40px;border-radius:12px;background:#ffffff26;display:grid;place-items:center;font-size:20px;flex:none}
+.minip small{display:block;opacity:.8;font-size:11.5px}
+.minip b{font-size:14px}
+.plan{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);text-align:left;width:100%;position:relative}
+.plan.on{border:2px solid var(--pri);padding:13.5px;background:#FAFAFF}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);display:grid;place-items:center;flex:none;color:#fff;margin-top:1px}
+.plan.on .radio{background:var(--pri);border-color:var(--pri)}
+.plan .pn{font:700 15.5px/1.2 var(--head);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.plan .pp{font-size:13.5px;color:var(--t1);margin-top:6px;line-height:1.6}
+.plan .pd{font-size:11.5px;color:var(--t3);margin-top:3px}
+.bdg{font:700 10px/1 var(--sans);letter-spacing:.05em;background:var(--pri);color:#fff;padding:4px 6px;border-radius:5px}
+.bdg.g{background:var(--ok)}
+.trust{font-size:12px;color:var(--t2);text-align:center;line-height:1.7}
+.pays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pays span{font:700 11px/1 var(--sans);padding:6px 8px;border-radius:6px;border:1px solid var(--line);color:var(--t1);background:#fff}
+.payline{font-size:12.5px;color:var(--t1);text-align:center;line-height:1.55;text-wrap:pretty}
+.closex{width:36px;height:36px;border-radius:50%;border:none;background:var(--soft);display:grid;place-items:center;color:var(--t2);flex:none}
+.dim{position:absolute;inset:0;background:#0D0F2266;z-index:4;animation:fi .25s ease}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:#fff;border-radius:26px 26px 0 0;padding:10px 20px 30px;display:flex;flex-direction:column;gap:14px;animation:up .32s cubic-bezier(.2,.8,.2,1)}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line-2);align-self:center}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+
+/* receipt */
+.receipt{border-radius:18px;border:1px solid var(--line);background:var(--soft);padding:16px;display:flex;flex-direction:column;gap:0;position:relative}
+.receipt .rr{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px dashed var(--line-2);font-size:13.5px;line-height:1.5}
+.receipt .rr:first-of-type{border-top:none}
+.receipt .rr span:first-child{color:var(--t2)}
+.receipt .rr span:last-child{text-align:right;font-weight:600}
+.receipt h4{margin:0 0 6px;font:800 16px var(--head)}
+.cardform{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cardform .box{height:48px}
+.cardform .full{grid-column:1/-1}
+.orline{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t3)}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* welcome */
+.okbig{width:76px;height:76px;border-radius:50%;background:var(--ok);display:grid;place-items:center;color:#fff;align-self:center;box-shadow:0 0 0 10px var(--ok-soft);animation:popin .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes popin{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.nsteps{display:flex;flex-direction:column;gap:8px}
+.nsteps div{display:flex;gap:10px;align-items:center;font-size:14px}
+.nsteps b{width:26px;height:26px;border-radius:50%;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center;font:800 12px var(--head);flex:none}
+.stores{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.store{height:48px;border-radius:12px;background:#0E0F1A;color:#fff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;font-size:10px;line-height:1.1;text-align:left}
+.store b{display:block;font:700 14px var(--head)}
+.store .g{font-size:20px}
+.d1{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--pri-soft);border:1px solid #DAD7FA}
+.d1 .ic{width:44px;height:44px;border-radius:12px;background:var(--pri);color:#fff;display:grid;place-items:center;font-size:20px;flex:none}
+.d1 small{color:var(--t3);display:block;font-size:12px}
+
+.toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:9;background:#141733;color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:fade 2.6s ease forwards;box-shadow:0 10px 24px -10px #0006}
+@keyframes fade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.fadein{animation:fi .35s ease both}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- HERO: 3D certificate of completion ---------- */
+.cert{position:relative;perspective:900px;perspective-origin:50% 40%;margin:0 auto;flex:none}
+.cscene{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.cscene>*{position:absolute}
+.cfloor{left:6%;right:6%;top:12%;bottom:-6%;border-radius:20px;background:radial-gradient(ellipse at center,#1B1E4A55,transparent 68%);filter:blur(10px);transform:translateZ(-34px)}
+.cpaper{inset:0;border-radius:12px;background:linear-gradient(115deg,#FFFFFF 0%,#FBFAF5 38%,#FFFFFF 50%,#F6F4EC 64%,#FFFFFF 100%);background-size:260% 100%;border:1px solid #E6E2D2;box-shadow:0 1px 0 #fff inset;transform:translateZ(0)}
+.cedge{inset:0;border-radius:12px;background:#D9D4C0;transform:translateZ(-5px)}
+.cframe{inset:6.5%;border:1.5px solid #3B30C4;border-radius:6px;box-shadow:0 0 0 3px #fff,0 0 0 4px #3B30C455;transform:translateZ(9px)}
+.ctext{left:10%;right:10%;top:11%;display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateZ(16px);color:#141733}
+.ctext .e1{font:700 .72em/1 var(--sans);letter-spacing:.2em;color:#3B30C4}
+.ctext .e2{font:800 1.05em/1.2 var(--head);margin-top:.55em}
+.ctext .e3{font:500 .66em/1 var(--sans);color:#878DA6;margin-top:1.2em;letter-spacing:.06em;text-transform:uppercase}
+.ctext .nm{font:600 2.05em/1.1 var(--serif);margin-top:.18em;min-width:62%;border-bottom:1px solid #CDD1E1;padding-bottom:.12em;min-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ctext .nm.blank{color:transparent}
+.ctext .tr{font:500 .7em/1.3 var(--sans);color:#4B516C;margin-top:.55em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfine{left:9%;right:36%;bottom:9%;text-align:center;font:500 .52em/1 var(--sans);color:#A3A8BE;transform:translateZ(12px)}
+.cribbon{width:15%;height:22%;right:12%;bottom:4%;transform:translateZ(24px)}
+.cribbon::before,.cribbon::after{content:"";position:absolute;top:0;width:44%;height:100%;background:#16A34A;clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%)}
+.cribbon::before{left:0;transform:rotate(12deg);background:#12913F}
+.cribbon::after{right:0;transform:rotate(-12deg)}
+.cseal{width:24%;right:7.5%;bottom:16%;aspect-ratio:1;transform:translateZ(36px)}
+.cseal svg{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 6px #0B0D2233)}
+.cseal .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:sdraw 1.4s ease .5s forwards}
+@keyframes sdraw{to{stroke-dashoffset:0}}
+.cseal .fillin{opacity:0;animation:fi2 .6s ease 1.5s forwards}
+@keyframes fi2{to{opacity:1}}
+.cstamp{left:11%;bottom:17%;padding:.35em .6em;border:2px solid #16A34A;border-radius:.5em;color:#12913F;font:800 .78em/1.15 var(--head);text-align:center;background:#16A34A0d;transform:translateZ(22px) rotate(-9deg)}
+.cstamp small{display:block;font:700 .62em/1 var(--sans);letter-spacing:.14em}
+.cstamp.drop{opacity:0;animation:stamp .5s cubic-bezier(.5,0,.6,1.4) 1.7s forwards}
+@keyframes stamp{0%{opacity:0;transform:translateZ(110px) rotate(-22deg) scale(1.7)}70%{opacity:1}100%{opacity:1;transform:translateZ(22px) rotate(-9deg) scale(1)}}
+.cert.faint{opacity:.42}
+
+/* ---------- control panel ---------- */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px;min-width:0}
+.panel h1{font:800 28px/1.1 var(--head);margin:0 0 8px;letter-spacing:-.02em}
+.panel .intro{color:var(--pg-t2);margin:0;font-size:14px;overflow-wrap:anywhere}
+.panel code{font-size:12.5px;background:var(--pg-surface-2);padding:1px 5px;border-radius:4px}
+.seg{display:inline-flex;border:1px solid var(--pg-line);border-radius:999px;padding:3px;background:var(--pg-surface)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--pg-t2);font-weight:500}
+.seg button.on{background:var(--pg-acc);color:var(--pg-acc-ink)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--pg-line);background:var(--pg-surface);border-radius:999px;padding:8px 14px;font-size:13px;color:var(--pg-t2)}
+.ctrls .restart:hover{color:var(--pg-t1)}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pg-t3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12px;color:var(--pg-acc);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--pg-t2);font-size:13px;width:100%}
+.flow button:hover{background:var(--pg-surface);color:var(--pg-t1)}
+.flow button.on{background:var(--pg-acc-soft);color:var(--pg-t1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--pg-t3);width:18px;flex:none;text-align:right}
+.flow button .tg{margin-left:auto;font-size:10px;color:var(--pg-t3);border:1px solid var(--pg-line);border-radius:4px;padding:1px 5px;flex:none}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--pg-t3)}
+.data dd{margin:0;color:var(--pg-t1);overflow-wrap:anywhere}
+.foot-note{font-size:12px;color:var(--pg-t3);margin:0;line-height:1.55}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:28px;padding-block:20px 40px}
+  .panel{width:412px}
+}
+@media (max-width:443px){.phonebox{--k:.84}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+[hidden]{display:none!important}
+.aff{font-size:11px;color:var(--t3);text-align:center;text-wrap:balance}
+
+/* screen 1 photo strip (CSS stand-in for a laptop photo) */
+.pstrip{margin-top:auto;height:112px;border-radius:20px;background:linear-gradient(170deg,#E5E8FF,#D3F1DE);position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;gap:6px;padding-bottom:10px}
+.pstrip .lap{width:118px;height:62px;border-radius:8px 8px 3px 3px;background:#2A2E4A;position:relative;box-shadow:0 10px 18px -12px #0006}
+.pstrip .lap::after{content:"";position:absolute;left:-12px;right:-12px;bottom:-7px;height:7px;border-radius:0 0 6px 6px;background:#3B3F5E}
+.pstrip .lap i{position:absolute;inset:7px;border-radius:4px;background:linear-gradient(180deg,#fff,#EEF0FA);display:flex;flex-direction:column;gap:4px;padding:6px}
+.pstrip .lap i b{display:block;height:4px;border-radius:2px;background:#CDD1E1}
+.pstrip .who{font-size:54px;line-height:1;margin-bottom:6px}
+.pstrip .mug{font-size:22px;align-self:flex-end;margin-bottom:6px}
+
+/* screen 5 tool tiles + screen 7 skill tiles */
+.tw{position:relative}
+.tw .tile{width:100%}
+.ibtn{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);background:#fff;color:var(--t2);font:700 11px/1 var(--serif);display:grid;place-items:center;z-index:2;padding:0}
+.tw .tile.on~.ibtn{right:34px}
+.tipb{position:absolute;left:6px;right:6px;top:calc(100% - 6px);z-index:6;background:var(--t1);color:#fff;font-size:12px;line-height:1.35;padding:8px 10px;border-radius:10px;box-shadow:0 10px 20px -10px #0008;animation:fi .2s ease}
+.thumb{width:100%;height:40px;border-radius:8px;background:var(--soft);border:1px solid var(--line);position:relative;overflow:hidden}
+.thumb i{position:absolute;display:block;border-radius:2px;background:var(--line-2)}
+.thumb .p{background:var(--pri)}
+.thumb .g{background:var(--ok)}
+.thumb .y{background:#FCE38A}
+
+/* screen 6 merge */
+.merge{position:relative;height:150px;margin-top:26px}
+.cw{position:absolute;top:18px;width:132px;height:104px;border-radius:14px;background:#fff;border:1.5px solid var(--line);box-shadow:0 12px 24px -16px #0004;padding:10px;display:flex;flex-direction:column;gap:6px}
+.cw b{font:700 10px/1 var(--sans);color:var(--t3);letter-spacing:.05em}
+.cw i{display:block;height:9px;border-radius:5px;background:var(--soft);border:1px solid var(--line)}
+.cw i.me{align-self:flex-end;width:60%;background:var(--pri-soft);border-color:#DAD7FA}
+.cw.l{left:calc(50% - 150px);animation:ml 1.3s cubic-bezier(.5,0,.3,1) .5s forwards}
+.cw.r{left:calc(50% + 18px);animation:mr 1.3s cubic-bezier(.5,0,.3,1) .5s forwards}
+.cw.m{left:calc(50% - 76px);width:152px;opacity:0;border-color:var(--pri);animation:mm .5s ease 1.6s forwards}
+@keyframes ml{to{transform:translateX(84px);opacity:0}}
+@keyframes mr{to{transform:translateX(-84px);opacity:0}}
+@keyframes mm{to{opacity:1}}
+.merge .floatchip{opacity:0;animation:rise .5s ease forwards,bob 4s ease-in-out 2.6s infinite}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* screens 11-12 check */
+.qdots{display:flex;gap:5px;align-items:center;min-width:36px;justify-content:flex-end}
+.qdots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.qdots i.f{background:var(--pri)}
+.qdots span{font:600 12px/1 var(--sans);color:var(--t3);margin-left:4px}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .chk{background:var(--ok);border-color:var(--ok)}
+.opt.wrong{border-color:#E7A1A1;background:#FDF3F3}
+.opt[disabled]{cursor:default}
+.fact{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:var(--ok-soft);color:var(--ok-ink);font-size:14px;font-weight:500;animation:fi .35s ease both}
+.fact b{display:block;color:var(--t1);font:700 15px/1.2 var(--head);margin-bottom:3px}
+.lpage{height:76px;display:flex;justify-content:center;align-items:center}
+.lpage .pg{width:58px;height:74px;border-radius:6px;background:#fff;border:1.5px solid var(--line-2);position:relative;padding:8px 7px;display:flex;flex-direction:column;gap:4px;overflow:visible}
+.lpage .pg i{display:block;height:3px;border-radius:2px;background:var(--line-2)}
+.lpage .qb{position:absolute;right:-26px;top:4px;padding:4px 7px;border-radius:9px 9px 9px 2px;background:var(--pri);color:#fff;font:700 11px/1 var(--sans);animation:qdown 2.6s ease-in-out .4s infinite alternate}
+@keyframes qdown{0%,15%{transform:translateY(0)}85%,100%{transform:translateY(50px)}}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.rchip{display:inline-flex;gap:6px;align-items:center;padding:7px 11px;border-radius:999px;font:600 12.5px/1 var(--sans)}
+.rchip.y{background:var(--ok-soft);color:var(--ok-ink)}
+.rchip.n{background:#FDF0F0;color:#B23030}
+.rchip.s{background:var(--soft);color:var(--t3)}
+
+/* screen 14 artifact lesson */
+.req{display:flex;gap:10px;align-items:center;padding:14px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line);text-align:left;width:100%;font-size:15px;font-weight:600;transition:border-color .15s}
+.req:hover{border-color:var(--pri)}
+.req .em{font-size:20px}
+.req .sg{margin-left:auto;font:700 10px/1 var(--sans);letter-spacing:.04em;color:var(--pri);background:var(--pri-soft);padding:4px 6px;border-radius:5px;flex:none}
+.chat{display:flex;flex-direction:column;gap:8px}
+.bub{max-width:84%;padding:10px 12px;font-size:14px;line-height:1.4;border-radius:16px}
+.bub.u{align-self:flex-end;background:var(--pri);color:#fff;border-bottom-right-radius:5px;min-height:38px}
+.bub.a{align-self:flex-start;background:var(--soft);border:1px solid var(--line);border-bottom-left-radius:5px;display:flex;gap:8px}
+.bub.a .av{width:22px;height:22px;border-radius:50%;background:#E4E6F0;color:var(--t2);font:700 9px/22px var(--sans);text-align:center;flex:none}
+.caret::after{content:"";display:inline-block;width:2px;height:1em;background:currentColor;margin-left:2px;vertical-align:-2px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.apanel{border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 -8px 30px -14px #1B1E4A55,0 2px 0 #fff inset;overflow:hidden}
+.apanel.rise{animation:up .5s cubic-bezier(.2,.8,.2,1) both}
+.apanel .ah{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--soft)}
+.apanel .ah b{font:700 13.5px/1.2 var(--head);flex:1}
+.apanel .ah span{font:700 9.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--pri);border:1.5px dashed #9A93E8;border-radius:5px;padding:4px 6px}
+.apanel .ab{padding:12px}
+.cki{display:flex;gap:10px;align-items:center;width:100%;background:none;border:none;padding:7px 2px;text-align:left;font-size:14px;border-bottom:1px dashed var(--line)}
+.cki:last-child{border-bottom:none}
+.cki .sq{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-2);display:grid;place-items:center;color:#fff;flex:none;transition:background .2s,border-color .2s}
+.cki.on .sq{background:var(--ok);border-color:var(--ok)}
+.cki.on span:last-child{color:var(--t3);text-decoration:line-through}
+.ckmeta{font-size:11.5px;color:var(--t3);margin-top:6px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;padding:6px 4px 0;border-bottom:1.5px solid var(--line-2)}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;font:700 11px/1 var(--sans);color:var(--t2)}
+.bars i{display:block;width:100%;border-radius:6px 6px 0 0;background:#B9B4F4;transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+.bars div.top i{background:var(--pri)}
+@keyframes grow{from{transform:scaleY(0)}to{transform:none}}
+.blabels{display:flex;gap:10px;padding:6px 4px 0}
+.blabels span{flex:1;text-align:center;font-size:11px;color:var(--t3)}
+.onep h6{margin:0 0 3px;font:700 10.5px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--pri)}
+.onep h5{margin:0 0 10px;font:800 16px/1.2 var(--head)}
+.onep p{margin:0 0 10px;font-size:13px;line-height:1.45;color:var(--t2)}
+.onep > *{animation:fi .4s ease both}
+
+/* screen 20 mock tweaks */
+.mock .ap{height:36px;border-radius:6px;border:1px solid var(--line);background:#fff;padding:4px;display:flex;flex-direction:column;gap:3px}
+.mock .ap i{display:block;height:4px;border-radius:2px;background:var(--line-2)}
+.mock .ap i.g{background:var(--ok);width:60%}
+
+/* typo suggestion */
+.sugg{font-size:13px;color:var(--t2)}
+.sugg button{background:none;border:none;padding:0;color:var(--pri);font-weight:600;text-decoration:underline;font-size:inherit}
+
+/* cert tweaks for this brief: Coursiv green seal */
+.ctext .e2{font-size:.98em}
+
+/* AI-generated imagery (img/). Each <img> sits over the original CSS/emoji art and removes itself on error, so the art stays as fallback. */
+.pimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;z-index:2}
+.pstrip{height:150px}
+.pstrip .pimg{object-position:50% 24%}
+.pstrip::after{content:"";position:absolute;inset:0;z-index:3;border-radius:inherit;box-shadow:inset 0 0 0 1px #0000000f;pointer-events:none}
+.photoband{height:150px;border-radius:20px;position:relative;overflow:hidden;flex:none;background:linear-gradient(170deg,#E5E8FF,#D3F1DE);display:grid;place-items:center;font-size:54px}
+.photoband .pimg{object-position:50% 26%}
+.rv .av{position:relative;overflow:hidden}
+.faces{display:inline-flex;margin-right:2px}
+.faces span{width:22px;height:22px;border-radius:50%;border:2px solid #fff;margin-left:-7px;position:relative;overflow:hidden;background:#DAD7FA;flex:none}
+.faces span:first-child{margin-left:0}
+.thumb.hasimg{height:58px;background:#F1F0FC}
+.cpaper{background:linear-gradient(115deg,#fff0 34%,#ffffff9e 50%,#fff0 66%) 0 0/260% 100% no-repeat,url(img/cert-paper.jpg) center/cover no-repeat,linear-gradient(115deg,#FFFFFF 0%,#FBFAF5 38%,#FFFFFF 50%,#F6F4EC 64%,#FFFFFF 100%) 0 0/260% 100%}
+/* ---------- last-chance offer (once, on paywall close) ---------- */
+.owrap{gap:16px;padding-top:4px;padding-bottom:26px}
+.obar{display:flex;align-items:center;justify-content:space-between;padding:4px 0 2px}
+.obrand{display:inline-flex;align-items:center;gap:8px;font:800 16px/1 var(--head);color:var(--t1)}
+.obrand i{width:26px;height:26px;border-radius:8px;background:var(--pri);color:#fff;display:grid;place-items:center;font:800 13px/1 var(--head);font-style:normal}
+.ohead{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.ohead .display{font-size:27px}
+.ohead .eyebrow{font:700 11px/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--pri)}
+.otimer{display:inline-flex;gap:8px;padding:8px 14px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pri);font-variant-numeric:tabular-nums}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:22px;border:2px solid var(--pri);background:linear-gradient(180deg,#F7F6FF,#fff 40%);box-shadow:0 0 0 5px var(--pri-soft),0 24px 44px -26px #3B30C466}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--pri);color:#fff;font:700 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.obadge .ph{background:transparent;color:#fff;border-color:#ffffffaa}
+.oname{display:flex;flex-direction:column;gap:3px;text-align:center}
+.oname b{font:800 18px/1.2 var(--head)}.oname span{font-size:13px;color:var(--t2)}
+.oprice{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:14px;border-radius:14px;background:var(--soft);border:1px solid var(--line)}
+.oprice s,.oprice s .ph{color:var(--t3);font-size:14px;text-decoration:line-through;text-decoration-thickness:1.5px}.oprice b{font:800 26px/1 var(--head);color:var(--pri)}.oprice>span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--t1)}
+.ochecks .ck{width:20px;height:20px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex:none;margin-top:1px}
+.ocard .pays span{font:700 10.5px/1 var(--sans);padding:5px 7px;border-radius:6px;border:1px solid var(--line);color:var(--t2);background:#fff}
+.ocard .fine{margin:0}
+</style>
+
+<div class="wrap">
+  <div class="phonebox" id="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>Coursiv · Claude Skills Certificate</h1>
+      <p class="intro">A clickable prototype of the 23-screen web funnel in <code>learning/coursiv-claude-cert/funnel-content.md</code>. It uses the base Coursiv light "career" look (white, deep indigo, green for progress), with no Anthropic branding. Tap through the phone, or jump to any screen below.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant">
+        <button id="vA" class="on">Copy A</button><button id="vB">Copy B</button>
+      </div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <p class="foot-note">Dashed brackets are the brief's own placeholders: learner and certificate counts, ratings, reviews, the "Most picked" tag, the refund window and every price. Fill them from real ikame data only. Faked and seeded from your answers: the Artifact on screen 14 (checklist, chart and one-pager content picked by your field; the request, reply and panel are a pre-rendered simulation), the level, the week titles and all dates (they count from today). The tooltips for "Better prompts", "Research" and "Other" on screen 7 are demo filler; the brief only writes three. Every Claude feature claim (screens 6, 7, 11, 12, 14) and the long-file tip on 12 must be checked against the live product and Anthropic's current prompting guide before launch. Pick "Never tried it" on screen 1 to see the skill-check skip (10 → 13). Type an email containing "taken" for the existing-account error, or "gmial.com" for the typo hint. No payment, login or store link is real.</p>
+  </aside>
+</div>
+
+<script>
+const IC={
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  back:'<path d="m15 18-6-6 6-6"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  award:'<circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+  play:'<path d="m6 3 14 9-14 9V3z"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ph=s=>`<span class="ph">${esc(s)}</span>`;
+/* AI image over fallback art; drops itself if the file fails to load */
+const pimg=(f,pos)=>`<img class="pimg" src="img/${f}.jpg" alt="" decoding="async"${pos?` style="object-position:${pos}"`:''} onerror="this.remove()">`;
+const SKIMG={projects:'il-projects',artifacts:'il-artifacts',files:'il-files',prompts:'il-prompts',research:'il-research'};
+
+const EXP=[['never','🌱','Never tried it',1],['few','🧪','A few times',2],['weekly','🛠️','Every week',3],['daily','🚀','Every day',4]];
+const USE=[['writing','✍️','Writing & email'],['research','📊','Research & analysis'],['docs','📄','Long documents'],['tools','🧰','Small work tools'],['brain','💡','Brainstorming'],['other','✏️','Other']];
+const IND=[['tech','💻','Tech / IT'],['finance','📊','Finance'],['marketing','📣','Marketing / Media'],['health','🩺','Healthcare'],['edu','🏫','Education'],['sales','🤝','Sales / Business'],['ops','⚙️','Operations'],['other','✏️','Other']];
+const TOOLS=[['chatgpt','💬','ChatGPT'],['gemini','✨','Gemini'],['copilot','🪟','Copilot'],['claude','🤖','Claude'],['none','🚫','None yet'],['other','✏️','Other']];
+const SKILLS=[['projects','🗂️','Projects','Keep files and instructions in one place'],['artifacts','🧩','Artifacts','Claude builds docs, charts and mini tools'],['files','📎','Files & PDFs','Ask questions about long documents'],['prompts','🎯','Better prompts','Ask clearly, get better answers first time'],['research','🔎','Research','Find, compare and sum up sources'],['other','✏️','Other','Tell us which skill in a few words']];
+const CUSE=[['linkedin','💼','LinkedIn profile'],['resume','📄','My resume'],['manager','🙋','Showing my manager'],['milestone','🏁','Personal milestone'],['other','✏️','Other']];
+const MIN=[[10,'☕'],[15,'⏱️'],[20,'🔥']];
+const C1=[['shared','🗂️','Keep shared context'],['photos','🖼️','Edit photos'],['meet','📅','Book meetings'],['unsure','🤷','Not sure']];
+const C2=[['file','📄','File first'],['question','❓','Question first'],['any','🔀',"Doesn't matter"],['unsure','🤷','Not sure']];
+const REQ=[['check','🧾','Make my weekly task checklist'],['chart','📊','Chart these numbers for me'],['brief','📝','Draft a one-page brief']];
+const SUGG={writing:'brief',research:'chart',docs:'brief',tools:'check',brain:'brief',other:'check'};
+const lab=(L,k)=>(L.find(x=>x[0]===k)||[])[2];
+
+/* Artifact content, seeded by field (screen 4) */
+const AD={
+ tech:{ck:['Review 3 open pull requests','Update the sprint board','Patch the staging server','Write release notes','Prep Friday demo'],ch:['Tickets closed per week',[['W1',18],['W2',24],['W3',21],['W4',31]]],br:['Move to the new login system','Move every user to the new login by Q4, with zero downtime.','Pilot with 5% of users, then roll out in three waves.','Confirm the test plan with QA by Friday.']},
+ finance:{ck:['Reconcile vendor invoices','Update the cash-flow sheet','Flag late client payments','Draft Q3 variance notes','Send expense approvals'],ch:['Monthly spend ($K)',[['Jul',42],['Aug',38],['Sep',51],['Oct',46]]],br:['Q3 budget review','Explain the Q3 overspend and agree on Q4 limits.','Spend rose 8%, mostly software renewals. Two lines can be cut.','CFO sign-off on the revised Q4 budget by the 15th.']},
+ marketing:{ck:['Draft Tuesday newsletter','Schedule 5 social posts','Brief the designer on the ad',"Check last week's campaign stats",'Reply to partner emails'],ch:['Leads by channel',[['Email',42],['Social',65],['Search',38],['Events',24]]],br:['Spring launch campaign','Get 2,000 sign-ups for the new app in 6 weeks.','Social brings leads, email converts best. Lead with a short video.','Final creative review with the team on Thursday.']},
+ health:{ck:['Review patient follow-ups','Update shift handover notes','Order low-stock supplies','Finish the training module','Confirm Friday appointments'],ch:['Appointments per day',[['Mon',32],['Tue',41],['Wed',37],['Thu',45]]],br:['New patient check-in','Cut check-in waiting time by 10 minutes.','Pre-visit forms by text; one desk for returning patients.','Two-week trial at the front desk from Monday.']},
+ edu:{ck:["Plan Monday's fractions lesson",'Mark Year 5 quizzes','Email parents about the trip','Update the reading log','Prep the science display'],ch:['Quiz average by class (%)',[['5A',72],['5B',81],['5C',68],['5D',77]]],br:['After-school reading club','Get 20 students reading 15 minutes a day this term.','Weekly book picks, a sticker chart, and parent reading notes.','Send the sign-up letter home by Friday.']},
+ sales:{ck:['Follow up on 3 quiet leads','Update the CRM pipeline','Prep the Acme demo','Send two proposals',"Book next week's calls"],ch:['Deals closed',[['Jul',6],['Aug',9],['Sep',7],['Oct',12]]],br:['Acme renewal pitch','Renew Acme for two years with the reporting add-on.','Their usage is up 30%, and they asked twice for better reports.','Send the proposal and book a call for Tuesday.']},
+ ops:{ck:["Check this week's deliveries",'Update the inventory sheet','Chase the late supplier','Review the safety checklist',"Plan next week's rota"],ch:['Orders shipped (hundreds)',[['W1',14],['W2',17],['W3',12],['W4',19]]],br:['Faster order packing','Cut average packing time from 9 to 6 minutes.','Pre-kitted boxes for the top 20 items and a new bench layout.','Test the new layout on Line 2 next week.']},
+ def:{ck:['Answer priority emails',"Prep Monday's meeting",'Finish the weekly report','Update the shared tracker','Plan next week'],ch:['Tasks done per week',[['W1',14],['W2',19],['W3',17],['W4',24]]],br:['Weekly team update','Share progress, blockers and next steps on one page.','Two projects on track; one waiting on budget approval.','Get approval by Wednesday to keep the timeline.']}
+};
+const ad=()=>AD[S.industry]||AD.def;
+const REPLY={check:"Here's your checklist as a small interactive tool. Tick things off as you go.",chart:"Here's a bar chart of your numbers, with the top one highlighted.",brief:"Here's a one-page brief: goal, key points and next steps."};
+const ATITLE={check:'Weekly task checklist',chart:'Your numbers, charted',brief:'One-page brief'};
+
+const PLANS={
+ '1w':{n:'1-week plan',today:'[1-week intro price]',renew:'[regular 1-week price]',per:'week',days:7,badge:''},
+ '4w':{n:'4-week plan',today:'[4-week intro price]',renew:'[regular 4-week price]',per:'4 weeks',days:28,badge:'MOST POPULAR'},
+ '12w':{n:'12-week plan',today:'[12-week intro price]',renew:'[regular 12-week price]',per:'12 weeks',days:84,badge:'BEST VALUE'}
+};
+
+/* Last-chance offer: shown once per session when the paywall is closed without paying (close X or back).
+   Real terms only: price / renews stay placeholders until the growth team sets them, and checkout must charge exactly these.
+   compareAt = the plan it undercuts (that plan's real intro price is struck). period = how often it renews.
+   expiresMin: null = no timer. A number = a real deadline: when it ends the offer is withdrawn for this session. */
+const CONFIG={funnel:'coursiv-claude-cert',offer:{enabled:true,name:'4-week plan',price:'{{offer_price}}',renews:'{{offer_renew_price}}',period:'4 weeks',compareAt:'4w',badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}};
+
+const INIT=()=>({v:'A',i:1,hist:[],exp:'',use:'',useOther:'',industry:'',indOther:'',tools:[],toolOther:'',skills:[],skillOther:'',tip:'',cuse:'',cuseOther:'',minutes:15,name:'',c1:'',c2:'',art:'',lph:0,ticks:[],email:'',tips:false,plan:'4w',agree:false,sheet:null,offerSeen:false,offerEnd:0,offerViewed:false,paid:false,offer:false,err:''});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name.trim()||'Maya');
+const other=(k,txt)=>k==='other'?(txt.trim()||'Other'):null;
+const useL=()=>other(S.use,S.useOther)||lab(USE,S.use)||'Writing & email';
+const indL=()=>other(S.industry,S.indOther)||lab(IND,S.industry)||'Marketing / Media';
+const cuseL=()=>other(S.cuse,S.cuseOther)||lab(CUSE,S.cuse)||'LinkedIn profile';
+const isNone=()=>S.tools.includes('none');
+const toolNames=()=>(S.tools.length?S.tools:['chatgpt']).filter(k=>k!=='none').map(k=>other(k,S.toolOther)||lab(TOOLS,k));
+const toolsL=()=>isNone()?'None yet':toolNames().join(' & ');
+const switching=()=>!isNone()&&toolNames().some(n=>n!=='Claude');
+const skillNames=()=>(S.skills.length?S.skills:['projects','artifacts']).map(k=>other(k,S.skillOther)||lab(SKILLS,k));
+const skillsL=()=>skillNames().join(', ');
+const lc=s=>s.charAt(0).toLowerCase()+s.slice(1);
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
+const DAYS={10:35,15:28,20:21};
+const certDate=()=>addDays(DAYS[S.minutes]||28);
+const renewDate=()=>addDays(PLANS[S.plan].days);
+const skipped=()=>S.exp==='never'&&!S.c1&&!S.c2;
+const score=()=>(S.c1==='shared'?1:0)+(S.c2==='file'?1:0);
+const BANDS=['Beginner','Explorer','Practitioner'];
+const band=()=>{const e=((EXP.find(x=>x[0]===S.exp)||EXP[1])[3])-1;const p=e+score();return p<=1?0:p<=3?1:2};
+const week1=()=>switching()?'Switching to Claude':'Claude basics';
+
+const FLOW=[
+ ['A · Hook',[[1,'Claude experience','hook A'],[2,'Certificate promise','hook B']]],
+ ['B · Investment',[[3,'Main use'],[4,'Work field'],[5,'Current AI tools','multi'],[6,'Your skills carry over','bridge'],[7,'Claude skills to master','max 3'],[8,'What the certificate is for'],[9,'Daily pace'],[10,'Name']]],
+ ['B · Skill check + first taste',[[11,'Check 1 · Projects','skip if new'],[12,'Check 2 · Long files'],[13,'Score','bridge'],[14,'Build your first Artifact','practice']]],
+ ['C · Trust',[[15,'Certificates earned']]],
+ ['D · Anticipation',[[16,'Building the plan','auto']]],
+ ['E · Gate',[[17,'Email gate']]],
+ ['D · Reveal',[[18,'Claude profile'],[19,'Plan + certificate date','hero'],[20,"What's inside"]]],
+ ['F · Monetization',[[21,'Paywall'],[22,'Last-chance offer','once'],[23,'Checkout summary']]],
+ ['G · Payoff',[[24,'Welcome + app handoff']]]
+];
+const QN={3:1,4:2,5:3,6:4,7:5,8:6,9:7,10:8};
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timer=null;const TQ=[];
+const later=(f,ms)=>TQ.push(setTimeout(f,ms));
+const clearT=()=>{clearInterval(timer);clearTimeout(timer);timer=null;TQ.forEach(clearTimeout);TQ.length=0};
+
+function go(n,push=true){clearT();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.sheet=null;S.tip='';render(dir)}
+function next(){if(S.i===10&&S.exp==='never')go(13);else go(S.i+1)}
+function back(){clearT();const p=S.hist.pop();if(p){S.i=p;S.err='';S.sheet=null;S.tip='';render('b')}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+
+function fillTo(n){
+  if(n>1&&!S.exp)S.exp='few';
+  if(n>3&&!S.use)S.use='writing';
+  if(n>4&&!S.industry)S.industry='marketing';
+  if(n>5&&!S.tools.length)S.tools=['chatgpt'];
+  if(n>7&&!S.skills.length)S.skills=['projects','artifacts'];
+  if(n>8&&!S.cuse)S.cuse='linkedin';
+  if(n>10&&!S.name.trim())S.name='Maya';
+  if(n>11&&!S.c1&&S.exp!=='never')S.c1='shared';
+  if(n>12&&!S.c2&&S.exp!=='never')S.c2='question';
+  if(n>14&&!S.art){S.art='check';S.lph=4;S.ticks=[0,1]}
+  if(n>17&&!S.email)S.email='maya@example.com';
+  if(n>21&&!S.agree)S.agree=true;
+}
+
+function nav(){
+  const n=S.i;
+  if(n===1||n===16||n===24||n===OFFER_N)return '';
+  const q=QN[n];
+  let right=q?`<span class="pcount">${q} / 8</span>`:'<div class="navspacer"></div>';
+  if(n===21)right=`<button class="closex" data-a="dismiss" aria-label="Close">${ic('x',18)}</button>`;
+  if(n===11||n===12)right=`<span class="qdots" aria-label="Question ${n-10} of 2"><i class="f"></i><i class="${n===12?'f':''}"></i><span>${n-10} / 2</span></span>`;
+  const mid=q?`<div class="prog" role="progressbar" aria-valuenow="${q}" aria-valuemin="0" aria-valuemax="8"><span style="width:${Math.round(q/8*100)}%"></span></div>`:'<div style="flex:1"></div>';
+  return `<div class="nav"><button class="iconbtn" data-a="${n===21?'dismiss':'back'}" aria-label="Back">${ic('back',22)}</button>${mid}${right}</div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn main" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const opt=(key,val,em,label,on,multi,extra='',cls='',dis=false)=>`<button class="opt ${on?'on':''} ${cls}" data-a="${key}" data-v="${val}" aria-pressed="${on}" ${dis?'disabled':''}><span class="em">${em}</span><span class="lbl">${label}</span>${extra}${multi||on||cls?`<span class="chk">${on||cls==='right'?ic('check',13,'currentColor',3):''}</span>`:''}</button>`;
+const otherBox=(f,val,max=40,ph2='Tell us in a few words')=>`<div class="box otherin fadein"><input id="oth" data-f="${f}" maxlength="${max}" placeholder="${ph2}" value="${esc(val)}"></div>`;
+const qhead=(h,b)=>`<h1 class="display">${h}</h1><p class="lead" style="margin-top:-8px">${b}</p>`;
+const sigbars=lv=>`<span class="sig" aria-hidden="true">${[6,10,14,18].map((h,i)=>`<i class="${i<lv?'f':''}" style="height:${h}px"></i>`).join('')}</span>`;
+
+const OK={
+  3:()=>S.use&&(S.use!=='other'||S.useOther.trim()),
+  4:()=>S.industry==='other'&&S.indOther.trim(),
+  5:()=>S.tools.length>0,
+  7:()=>S.skills.length>0,
+  8:()=>S.cuse&&(S.cuse!=='other'||S.cuseOther.trim()),
+  14:()=>S.lph>=4
+};
+const ok=n=>OK[n]?!!OK[n]():true;
+
+const certEl=(mode,w,{faint=false,stamp=true,blank=false}={})=>`<div class="cert ${faint?'faint':''}" data-mode="${mode}" data-w="${w}" data-stamp="${stamp?1:0}" data-blank="${blank?1:0}"></div>`;
+
+/* tiny neutral UI thumbnails for skill tiles (screen 7) */
+const THUMB={
+ projects:'<i style="left:8px;top:9px;width:30px;height:22px;border-radius:4px" class="p"></i><i style="left:44px;top:10px;width:40%;height:4px"></i><i style="left:44px;top:18px;width:30%;height:4px"></i><i style="left:44px;top:26px;width:35%;height:4px"></i>',
+ artifacts:'<i style="left:6px;top:8px;width:34%;height:4px"></i><i style="left:6px;top:16px;width:26%;height:4px"></i><i style="right:6px;top:5px;width:44%;height:30px;background:#fff;border:1px solid var(--line-2);border-radius:4px"></i><i class="p" style="right:38px;bottom:9px;width:6px;height:10px"></i><i class="p" style="right:28px;bottom:9px;width:6px;height:16px"></i><i class="g" style="right:18px;bottom:9px;width:6px;height:20px"></i>',
+ files:'<i style="left:10px;top:4px;width:28px;height:32px;background:#fff;border:1px solid var(--line-2);border-radius:3px"></i><i class="y" style="left:14px;top:12px;width:20px;height:4px"></i><i style="left:14px;top:20px;width:18px;height:3px"></i><i class="y" style="left:14px;top:26px;width:14px;height:4px"></i><i style="left:46px;top:12px;width:36%;height:4px"></i><i style="left:46px;top:20px;width:28%;height:4px"></i>',
+ prompts:'<i style="left:8px;top:7px;width:60%;height:11px;border-radius:6px"></i><i class="p" style="right:8px;top:22px;width:46%;height:11px;border-radius:6px"></i>',
+ research:'<i style="left:8px;top:8px;width:20px;height:20px;border-radius:50%;background:transparent;border:3px solid var(--pri)"></i><i class="p" style="left:26px;top:26px;width:9px;height:3px;transform:rotate(45deg)"></i><i style="left:44px;top:10px;width:40%;height:4px"></i><i style="left:44px;top:18px;width:30%;height:4px"></i><i style="left:44px;top:26px;width:36%;height:4px"></i>',
+ other:'<i style="left:8px;top:16px;width:70%;height:6px;border-radius:3px"></i>'
+};
+
+/* ---------- screen 14: the Artifact lesson ---------- */
+const reqText=()=>lab(REQ,S.art)||'';
+function artBody(){
+  const D=ad();
+  if(S.art==='check')return `<div>${D.ck.map((x,i)=>{const on=S.ticks.includes(i);return `<button class="cki ${on?'on':''}" data-a="tick" data-v="${i}" aria-pressed="${on}"><span class="sq">${on?ic('check',12,'currentColor',3.2):''}</span><span>${esc(x)}</span></button>`}).join('')}</div><div class="ckmeta" id="ckm">${S.ticks.length} of ${D.ck.length} done · tap a box to tick it</div>`;
+  if(S.art==='chart'){const[ttl,rows]=D.ch;const mx=Math.max(...rows.map(r=>r[1]));
+    return `<div style="font:600 12px var(--sans);color:var(--t2);margin-bottom:4px">${esc(ttl)}</div><div class="bars">${rows.map(([l,v],i)=>`<div class="${v===mx?'top':''}"><span>${v}</span><i style="height:${Math.round(v/mx*86)}px;animation-delay:${.15+i*.14}s"></i></div>`).join('')}</div><div class="blabels">${rows.map(r=>`<span>${esc(r[0])}</span>`).join('')}</div>`}
+  const[h,g,k,nx]=D.br;
+  return `<div class="onep"><h5 style="animation-delay:.1s">${esc(h)}</h5><h6 style="animation-delay:.25s">Goal</h6><p style="animation-delay:.3s">${esc(g)}</p><h6 style="animation-delay:.5s">Key points</h6><p style="animation-delay:.55s">${esc(k)}</p><h6 style="animation-delay:.75s">Next steps</h6><p style="animation-delay:.8s;margin:0">${esc(nx)}</p></div>`;
+}
+const panelHTML=rise=>`<div class="apanel ${rise?'rise':''}" id="apan"><div class="ah"><span>Demo preview</span><b>${ATITLE[S.art]}</b></div><div class="ab">${artBody()}</div></div>`;
+const afterHTML=()=>`<span class="why fadein">${ic('check',15,'currentColor',2.6)} Why it worked: clear task, format, audience</span><p class="lead fadein" style="font-weight:600;color:var(--t1);margin:0">That's Day 1, Lesson 1. 27 days to go.</p>`;
+function lessonInner(){
+  const full=S.lph>=4;
+  return `<div class="chat"><div class="bub u ${full?'':'caret'}" id="ub">${full?`"${esc(reqText())}"`:''}</div>
+    ${full?`<div class="bub a"><span class="av">AI</span><span id="ar">${esc(REPLY[S.art])}</span></div>`:''}</div>
+    ${full?panelHTML(false)+afterHTML():''}`;
+}
+function runLesson(){
+  if(RM){S.lph=4;S.ticks=S.art==='check'?[0,1]:[];const lz=document.getElementById('lz');if(lz)lz.innerHTML=lessonInner();enableCta();renderPanel();return}
+  S.lph=1;S.ticks=[];
+  const lz=document.getElementById('lz');if(!lz)return;
+  lz.innerHTML=lessonInner();
+  const ub=document.getElementById('ub'),txt=`"${reqText()}"`;let k=0;
+  timer=setInterval(()=>{if(S.i!==14){clearInterval(timer);return}k+=2;ub.textContent=txt.slice(0,k);if(k>=txt.length){clearInterval(timer);ub.classList.remove('caret');stream()}},34);
+  function stream(){
+    S.lph=2;const chat=lz.querySelector('.chat');
+    chat.insertAdjacentHTML('beforeend',`<div class="bub a fadein"><span class="av">AI</span><span id="ar" class="caret"></span></div>`);
+    const ar=document.getElementById('ar'),w=REPLY[S.art].split(' ');let j=0;
+    later(function step(){if(S.i!==14)return;j++;ar.textContent=w.slice(0,j).join(' ');if(j<w.length)later(step,55);else{ar.classList.remove('caret');later(showPanel,260)}},300);
+  }
+  function showPanel(){
+    if(S.i!==14)return;S.lph=3;lz.insertAdjacentHTML('beforeend',panelHTML(true));
+    const dly=S.art==='check'?1700:1400;
+    if(S.art==='check'){later(()=>autoTick(0),800);later(()=>autoTick(1),1250)}
+    later(()=>{if(S.i!==14)return;S.lph=4;lz.insertAdjacentHTML('beforeend',afterHTML());enableCta();renderPanel()},dly);
+  }
+}
+function autoTick(i){if(S.i!==14||S.ticks.includes(i))return;S.ticks.push(i);syncTick(i)}
+function syncTick(i){const b=cur().querySelector(`.cki[data-v="${i}"]`);if(!b)return;const on=S.ticks.includes(i);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('.sq').innerHTML=on?ic('check',12,'currentColor',3.2):'';const m=document.getElementById('ckm');if(m)m.textContent=`${S.ticks.length} of ${ad().ck.length} done · tap a box to tick it`}
+function enableCta(){const b=cur()&&cur().querySelector('.foot .btn.main');if(b)b.disabled=!ok(S.i)}
+
+/* skill-check screens 11-12 */
+function checkScr(n){
+  const L=n===11?C1:C2,key=n===11?'c1':'c2',ans=S[key],right=n===11?'shared':'file';
+  const fact=n===11?'Projects keep your files and instructions for every chat.':"Anthropic's prompting tips: put long files first, question last.";
+  const head=n===11?qhead(t("Quick check: what's a Project?",'What do Claude Projects do?'),t('Two quick questions. Guessing is fine.','No pressure. It just sets your level.'))
+    :qhead(t('Asking Claude about a long file?','Where does your question go?'),t('Pick the order that gets better answers.','One small habit makes a big difference.'));
+  const diag=n===12?`<div class="lpage" aria-hidden="true"><div class="pg">${Array.from({length:9},(_,i)=>`<i style="width:${[100,90,96,70,100,84,92,60,40][i]}%"></i>`).join('')}<span class="qb">?</span></div></div>`:'';
+  return `<div class="scr">${head}${diag}
+  <div class="opts">${L.map(([k,e,l])=>{const cls=ans?(k===right?'right':k===ans?'wrong':''):'';return opt(key,k,e,l,false,false,'',cls,!!ans)}).join('')}</div>
+  ${ans?`<div class="fact">${ic('check',18,'currentColor',2.6)}<div><b>${ans===right?'Right!':"Good guess. Here's how it works."}</b>${fact}</div></div>`:''}</div>
+  <div class="foot">${ans?cta(n===11?'Next question':'See my level'):'<div class="note">Tap an answer</div>'}</div>`;
+}
+
+const TYPO={'gmial.com':'gmail.com','gmai.com':'gmail.com','gamil.com':'gmail.com','gnail.com':'gmail.com','gmail.co':'gmail.com','gmal.com':'gmail.com','hotmial.com':'hotmail.com','hotmai.com':'hotmail.com','yaho.com':'yahoo.com','yahooo.com':'yahoo.com','outlok.com':'outlook.com','iclod.com':'icloud.com'};
+const typo=em=>{const m=em.trim().match(/^([^\s@]+)@([^\s@]+)$/);return m&&TYPO[m[2].toLowerCase()]?m[1]+'@'+TYPO[m[2].toLowerCase()]:''};
+const suggHTML=()=>{const s=typo(S.email);return s?`Did you mean <button data-a="sugg">${esc(s)}</button>?`:''};
+
+/* prototype event log: same names the production build emits (window.dataLayer + ikfunnel:* DOM events) */
+function emit(name,detail){const d=Object.assign({event:name,funnel:CONFIG.funnel,screen:S.i},detail||{});(window.dataLayer=window.dataLayer||[]).push(d);try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}}
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const PW_N=21,OFFER_N=22;
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}if(!S.offerViewed){S.offerViewed=true;emit('offer_view')}
+  clearInterval(window.__oiv);if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==OFFER_N)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');offerExit();return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* leaving the offer without buying = the paywall's existing close path: back to the screen before the paywall */
+function offerExit(){clearInterval(window.__oiv);let p=S.hist.pop();while(p>=PW_N&&S.hist.length)p=S.hist.pop();go(p&&p<PW_N?p:PW_N-1,false)}
+function offerCheckout(){const o=CONFIG.offer,url=o.checkoutUrl||'';
+  emit('offer_accept',{price:o.price,renewPrice:o.renews,period:o.period,url});
+  emit('checkout_click',{plan:'offer',price:o.price,renewPrice:o.renews,period:o.period,url});
+  if(!url)return;let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan','offer');if(S.email)u.searchParams.set('email',S.email);
+  new URLSearchParams(location.search).forEach((v,k)=>{if(/^utm_/i.test(k)&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  try{window.top.location.href=u.toString()}catch(e){location.href=u.toString()}}
+
+const V={
+1:()=>`<div class="scr" style="padding-top:12px">
+  <span class="pill">🏅 28-Day Claude Skills Program</span>
+  ${qhead(t('Have you used Claude yet?','Get confident with Claude AI'),t('Your 28-day Claude plan starts with this answer.','15 minutes a day. Pick one to start.'))}
+  <div class="opts">${EXP.map(([k,e,l,lv])=>opt('exp',k,e,l,S.exp===k,false,sigbars(lv))).join('')}</div>
+  <div class="pstrip" aria-hidden="true"><span class="mug">☕</span><span class="who">🧑🏽</span><span class="lap"><i><b style="width:70%"></b><b style="width:90%"></b><b style="width:55%"></b></i></span>${pimg('hook-a')}</div></div>
+  <div class="foot"><div class="aff">Coursiv is not affiliated with or endorsed by Anthropic.</div><div class="legalline">By continuing, you agree to our <button data-a="legal">Terms</button>, <button data-a="legal">Privacy</button> and <button data-a="legal">Subscription Terms</button></div></div>`,
+
+2:()=>`<div class="scr center" style="align-items:center;text-align:center;gap:16px">
+  ${qhead(t('Finish with a certificate','Prove your Claude skills'),t('A Coursiv certificate of completion for your Claude track.','From first chat to Projects and Artifacts, step by step.'))}
+  <div style="padding:8px 0">${certEl('float',300,{stamp:false,blank:true})}</div>
+  <p class="hint" style="margin:0">Issued by Coursiv. Not an official Anthropic certification.</p>
+  <span class="pill" style="align-self:center"><span class="faces" aria-hidden="true">${['av-1','av-2','av-3'].map(f=>`<span>${pimg(f)}</span>`).join('')}</span>${ph('[N]')}+ learners</span></div>
+  <div class="foot">${cta('Build my plan')}</div>`,
+
+3:()=>`<div class="scr">${qhead(t('What do you want Claude for?','Where should Claude help first?'),t('Your first week is built on this.','Pick the one that matters most now.'))}
+  <div class="opts fill">${USE.map(([k,e,l])=>opt('use',k,e,l,S.use===k)).join('')}
+  ${S.use==='other'?otherBox('useOther',S.useOther,40,'What for, in a few words'):''}</div></div>
+  <div class="foot">${cta('Continue',ok(3))}</div>`,
+
+4:()=>`<div class="scr">${qhead(t('What field are you in?','Where do you work?'),t('Lessons use real tasks from your work.',"We'll swap in examples from your field."))}
+  <div class="grid2">${IND.map(([k,e,l])=>`<button class="tile ${S.industry===k?'on':''}" data-a="industry" data-v="${k}" aria-pressed="${S.industry===k}"><span class="em">${e}</span><span class="lbl">${l}</span></button>`).join('')}</div>
+  ${S.industry==='other'?otherBox('indOther',S.indOther,40,'Your field'):''}</div>
+  <div class="foot">${S.industry==='other'?cta('Continue',ok(4)):'<div class="note">Tap one to continue</div>'}</div>`,
+
+5:()=>`<div class="scr">${qhead(t('Which AI tools do you use?','What do you use today?'),t("Pick all that apply. We'll build on them.","Switching tools? We'll map what carries over."))}
+  <div class="grid2">${TOOLS.map(([k,e,l])=>{const on=S.tools.includes(k);return `<button class="tile ${on?'on':''}" data-a="tool" data-v="${k}" aria-pressed="${on}">${on?`<span class="badge">${ic('check',12,'currentColor',3)}</span>`:''}<span class="em">${e}</span><span class="lbl">${l}</span></button>`}).join('')}</div>
+  ${S.tools.includes('other')?otherBox('toolOther',S.toolOther,40,'Which tool?'):''}</div>
+  <div class="foot">${S.tools.length?'':'<div class="note">Pick at least one</div>'}${cta('Continue',ok(5))}</div>`,
+
+6:()=>`<div class="scr center" style="gap:16px">
+  <div class="merge" aria-hidden="true">
+    <span class="floatchip" style="top:-22px;left:8px;animation-delay:2s,2.6s">✓ Projects</span>
+    <span class="floatchip" style="top:-30px;left:calc(50% - 44px);animation-delay:2.2s,3.4s">✓ Artifacts</span>
+    <span class="floatchip" style="top:-22px;right:4px;animation-delay:2.4s,4.2s">✓ Long files</span>
+    <div class="cw l"><b>${esc(isNone()?'FIRST CHAT':(toolNames().find(n=>n!=='Claude')||'YOUR TOOL').toUpperCase())}</b><i class="me"></i><i></i><i style="width:70%"></i></div>
+    <div class="cw r"><b>CLAUDE</b><i class="me"></i><i></i><i style="width:60%"></i></div>
+    <div class="cw m"><b>YOUR HABITS + CLAUDE</b><i class="me"></i><i></i><i style="width:80%"></i><i class="me" style="width:50%"></i></div>
+  </div>
+  <h1 class="display" style="text-align:center">${t('Good news: your skills transfer','Claude feels familiar fast')}</h1>
+  <p class="lead" style="text-align:center;margin-top:-6px">${isNone()?'New to AI? Claude is a friendly place to start.':t('Know ChatGPT? Most of your habits work in Claude.',"We'll show what's different and where Claude shines.")}</p>
+  <p class="hint" style="text-align:center;margin:0;color:var(--pri);font-weight:600">4 / 8 · Your plan is taking shape</p></div>
+  <div class="foot">${cta('Continue')}</div>`,
+
+7:()=>`<div class="scr">${qhead(t('Which Claude skills matter most?','What do you want to master?'),t('Pick up to three. They become your modules.',"Choose up to three. We'll order them for you."))}
+  <div class="grid2">${SKILLS.map(([k,e,l,tip])=>{const on=S.skills.includes(k);return `<div class="tw"><button class="tile ${on?'on':''}" data-a="skill" data-v="${k}" aria-pressed="${on}">${on?`<span class="badge">${ic('check',12,'currentColor',3)}</span>`:''}<span class="thumb ${SKIMG[k]?'hasimg':''}" aria-hidden="true">${THUMB[k]}${SKIMG[k]?pimg(SKIMG[k]):''}</span><span class="lbl">${e} ${l}</span></button><button class="ibtn" data-a="tip" data-v="${k}" aria-label="About ${l}" aria-expanded="${S.tip===k}">i</button>${S.tip===k?`<div class="tipb" role="tooltip">${esc(tip)}</div>`:''}</div>`}).join('')}</div>
+  ${S.skills.includes('other')?otherBox('skillOther',S.skillOther,40,'Which skill?'):''}
+  ${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <div class="foot">${S.skills.length?'':'<div class="note">Pick at least one</div>'}${cta('Continue',ok(7))}</div>`,
+
+8:()=>`<div class="scr"><div style="display:flex;gap:10px;align-items:flex-start"><h1 class="display" style="flex:1">${t("What's your certificate for?",'How will you use it?')}</h1><span style="width:40px;height:40px;border-radius:12px;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none;margin-top:2px">${ic('award',22)}</span></div>
+  <p class="lead" style="margin-top:-8px">${t("We'll shape your final project around it.",'Your last week builds something you can show.')}</p>
+  <div class="opts">${CUSE.map(([k,e,l])=>opt('cuse',k,e,l,S.cuse===k)).join('')}
+  ${S.cuse==='other'?otherBox('cuseOther',S.cuseOther):''}</div>
+  <p class="hint" style="margin:0">Certificate of completion. Employers decide what they recognize.</p></div>
+  <div class="foot">${cta('Continue',ok(8))}</div>`,
+
+9:()=>`<div class="scr">${qhead(t('How much time per day?','Set your daily Claude time'),t('This sets your certificate date. Change it anytime.','Short and daily beats long and rare.'))}
+  <div class="opts">${MIN.map(([m,e])=>{const on=S.minutes===m,c=2*Math.PI*15,f=c*m/60;return `<button class="pace ${on?'on':''}" data-a="minutes" data-v="${m}" aria-pressed="${on}">
+    <svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15" fill="none" stroke="#E4E6F0" stroke-width="5"/><circle cx="20" cy="20" r="15" fill="none" stroke="${on?'#3B30C4':'#9CA1B8'}" stroke-width="5" stroke-dasharray="${f} ${c}" transform="rotate(-90 20 20)" stroke-linecap="round"/></svg>
+    <span class="lbl">${e} ${m} min/day<small>Certificate by ${addDays(DAYS[m])}</small></span>${m===15?ph('[Most picked, if true]'):''}</button>`}).join('')}</div></div>
+  <div class="foot">${cta('Continue')}</div>`,
+
+10:()=>`<div class="scr">${qhead(t('What should we call you?','Whose name goes on it?'),t('Your name goes on your certificate.','First name is enough.'))}
+  <div class="field"><label for="nm">First name</label><div class="box ${S.err?'bad':''}">${ic('user',18)}<input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <div style="margin-top:10px">${certEl('float',300,{faint:true,stamp:false})}</div></div>
+  <div class="foot">${cta('Continue',true,'name')}</div>`,
+
+11:()=>checkScr(11),
+12:()=>checkScr(12),
+
+13:()=>{const b=band(),sc=score(),sk=skipped();
+  const bodyA=sk||sc===0?'Perfect starting point. Week 1 covers exactly this.':sc===1?"Good instincts. We'll fill the gaps first.":'Nice base. Your plan skips what you know.';
+  const chip=(ok,l)=>`<span class="rchip ${ok?'y':'n'}">${ok?'✓':'✗'} ${l}</span>`;
+  return `<div class="scr center" style="gap:18px">
+  <div class="photoband" aria-hidden="true">🧑🏾‍💻${pimg('hook-b')}</div>
+  ${qhead(S.v==='A'?`${nm()}, you got ${sc} of 2`:`Your starting level: ${BANDS[b]}`,S.v==='A'?bodyA:"We'll start you at exactly the right lesson.")}
+  <div class="meter"><span class="mk" style="left:${[16.6,50,83.4][b]}%">You: ${BANDS[b]}</span><div class="track">${BANDS.map((_,i)=>`<span class="${i<=b?'on':''}"></span>`).join('')}</div>
+  <div class="labels">${BANDS.map((x,i)=>`<span class="${i===b?'on':''}">${x}</span>`).join('')}</div></div>
+  <div class="chips">${sk?'<span class="rchip s">Check skipped · beginner start</span>':chip(S.c1==='shared','Projects')+chip(S.c2==='file','Long files')}</div></div>
+  <div class="foot">${cta('Try a real lesson')}</div>`},
+
+14:()=>{const sg=SUGG[S.use]||'check';
+  return `<div class="scr" style="gap:14px">${qhead(S.v==='A'?`${nm()}, build your first Artifact`:'Watch Claude build a tool',t('Tap a request. See it become a tool.','60 seconds, one tap, a real Claude skill.'))}
+  ${!S.art?`<div class="opts">${REQ.map(([k,e,l])=>`<button class="req" data-a="req" data-v="${k}"><span class="em">${e}</span><span>"${l}"</span>${k===sg?'<span class="sg">FOR YOU</span>':''}</button>`).join('')}</div>
+  <p class="hint" style="margin:0">Examples picked for ${esc(indL())}. Pre-rendered demo, not a live AI.</p>`
+  :`<div id="lz" style="display:flex;flex-direction:column;gap:12px">${lessonInner()}</div>`}</div>
+  <div class="foot">${cta('Nice — keep going',ok(14))}</div>`},
+
+15:()=>`<div class="scr" style="gap:16px">
+  <div class="bignum" style="font-size:52px">${S.v==='A'?ph('[N]'):`${ph('[X]')}★`}</div>
+  <h1 class="display" style="text-align:center">${S.v==='A'?`${ph('[N]')} certificates earned`:`Rated ${ph('[X]')}★ by learners`}</h1>
+  <p class="lead" style="text-align:center;margin-top:-6px">${t('Real people finishing, one short lesson a day.','Learners share certificates on LinkedIn every week.')}</p>
+  <div style="text-align:center"><div class="stars">★★★★★</div><div class="hint" style="margin-top:4px">${ph('[store name]')} · as of ${ph('<month year>')}</div></div>
+  <div class="rv"><div class="rh"><span class="av">in${pimg('av-1')}</span><div><b style="font-size:13.5px">Real learner name</b><br><small>LinkedIn post · date</small></div></div><p>Real, attributed LinkedIn post sharing a Coursiv certificate goes here.</p><div class="certmini">[ Coursiv certificate image ]</div></div>
+  <div class="rv"><div class="rh"><span class="av">★${pimg('av-2')}</span><div><b style="font-size:13.5px">Real store reviewer</b><br><small>App Store / Google Play · date</small></div></div><p>"Real, attributed, dated store review that mentions Claude goes here."</p></div></div>
+  <div class="foot">${cta('Continue')}</div>`,
+
+16:()=>{const rows=[`Building on your ${esc(isNone()?'everyday':toolsL())} habits…`,`Ordering ${esc(skillsL())} into weekly modules…`,`Adding ${esc(indL())} tasks you'll recognize…`,'Almost ready — your certificate date awaits…'];
+  const T=[['🗂️','#3B30C4'],['🧩','#16A34A'],['📄','#D9A400']];
+  return `<div class="scr" style="padding-top:18px;gap:16px"><h1 class="display sm" style="text-align:center" id="lh">${t(`Building ${nm()}'s Claude plan...`,'Crafting your 28-day Claude path...')}</h1>
+  <div class="cal" id="cal">${Array.from({length:28},(_,i)=>{if(i===27)return `<span class="ctile"><i style="background:#16A34A">🏅</i></span>`;const[l,c]=T[i%3];return `<span><i style="background:${c}">${l}</i></span>`}).join('')}</div>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
+  <div class="rv" id="rrot" style="margin-top:auto"><p>"Real, attributed, dated ikame review goes here."</p><small>— Reviewer name · source · date (1 of 2)</small></div></div>
+  <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
+
+17:()=>`<div class="scr">${qhead(S.v==='A'?'Where should we send it?':`Save your Claude plan, ${nm()}`,t('Your email becomes your app login.',"We'll email your plan and a login link."))}
+  <div class="field"><label for="em">Email</label><div class="box ${S.err?'bad':''}">${ic('mail',18)}<input id="em" type="email" data-f="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="${esc(S.email)}"></div>
+  <div class="sugg" id="sugg">${suggHTML()}</div>
+  ${S.err==='invalid'?'<div class="err">Enter a valid email address</div>':S.err==='taken'?'<div class="err">This email already has an account — <button data-a="login">log in instead?</button></div>':''}</div>
+  <button class="cbx ${S.tips?'on':''}" data-a="tips" aria-pressed="${S.tips}"><span class="sq">${S.tips?ic('check',12,'currentColor',3.2):''}</span><span>Send me Claude tips and product news</span></button>
+  <div class="hint" style="display:flex;gap:6px;align-items:center">${ic('lock',14)} We never sell your data. <button class="tlink" data-a="legal">Privacy Policy</button></div>
+  <div class="blurcard" aria-hidden="true"><div class="inner"><b style="font-size:15px">${nm()}'s 28-day Claude plan</b>${[1,2,3].map(i=>`<div class="wk"><span class="n">W${i}</span><div><b>Week ${i} module</b><span>7 lessons</span></div></div>`).join('')}</div><div class="frost">${ic('lock',26)}</div></div></div>
+  <div class="foot">${cta('Show my plan',true,'email')}</div>`,
+
+18:()=>{const b=band();
+  return `<div class="scr">${qhead(S.v==='A'?`${nm()}, your Claude starting point`:`Your Claude profile, ${nm()}`,t("Here's what your answers and check tell us.","You're closer than you think. Here's the map."))}
+  <div class="meter"><span class="mk" style="left:${[16.6,50,83.4][b]}%">You: ${BANDS[b]}</span><div class="track">${BANDS.map((_,i)=>`<span class="${i<=b?'on':''}"></span>`).join('')}</div>
+  <div class="labels">${BANDS.map((x,i)=>`<span class="${i===b?'on':''}">${x}</span>`).join('')}</div></div>
+  <p class="hint" style="margin:-6px 0 0;text-align:center">Based on your answers and your 2-question check</p>
+  <div class="card">${[['🎯','Focus',useL()],['🔁','Coming from',toolsL()],['🧩','Modules',skillsL()],['⏱️','Pace',S.minutes+' min/day']].map(([e,k,v])=>`<div class="srow"><span class="well">${e}</span><div><small>${k}</small><b>${esc(v)}</b></div></div>`).join('')}</div></div>
+  <div class="foot">${cta('See my plan')}</div>`},
+
+19:()=>{const sk=skillNames(),s1=sk[0],s2=sk.slice(1).join(' + ')||`${s1} in practice`;
+  const weeks=[[week1(),switching()?`What carries over from ${toolNames().filter(n=>n!=='Claude').join(' & ')}`:'Your first chats, step by step'],[s1,`Focus: ${useL()}`],[s2,`With ${indL()} tasks`],[`Final project: ${cuseL()}`,'Finish and earn your certificate']];
+  return `<div class="scr" style="gap:16px"><div style="padding-top:6px">${certEl('land',290)}</div>
+  <h1 class="display" style="text-align:center">${S.v==='A'?`Certificate by ${certDate()}`:'Your 28-day Claude plan'}</h1>
+  <p class="lead" style="text-align:center;margin-top:-8px">${S.v==='A'?`At ${S.minutes} min a day, you finish ${certDate()}.`:`Week 4 ends with your ${esc(lc(cuseL()))} project.`}</p>
+  <div style="display:flex;flex-direction:column;gap:8px">${weeks.map(([h,s],i)=>`<div class="wk ${i===3?'last':''}"><span class="n">${i===3?'🏅':'W'+(i+1)}</span><div style="min-width:0"><b>Week ${i+1}: ${esc(h)}</b><span>${esc(s)}</span></div></div>`).join('')}</div>
+  <div class="ba"><div class="now"><h5>You now</h5>${['Guessing what Claude can do','Starting every chat from zero','Nothing to show for it'].map(x=>`<div><span>✕</span><span>${x}</span></div>`).join('')}</div>
+  <div class="with"><h5>With the plan</h5>${['Projects set up for your work','Artifacts you can reuse','Certificate of completion'].map(x=>`<div><span>✓</span><span>${x}</span></div>`).join('')}</div></div>
+  <p class="fine" style="margin:0">Estimated date based on your pace.<br>Coursiv certificate of completion. Not an Anthropic certification or accredited credential.</p></div>
+  <div class="foot">${cta("What's included")}</div>`},
+
+20:()=>`<div class="scr">${qhead(t('Everything in your Claude track','More than a Claude course'),t('Lessons, practice, prompts and a certificate to share.','Learn Claude, then ChatGPT and Gemini too.'))}
+  <div class="feat"><div class="rows">${['📚 Daily 15-minute Claude lessons','🧪 Hands-on Projects & Artifacts practice',`🗂️ Ready-made Claude prompts for ${esc(indL())}`,'🏅 Certificate of completion with your name','🧭 Other AI tools included'].map(x=>`<div class="r"><span class="ck" style="border:none;padding:0;width:20px;height:20px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex:none;margin-top:1px">${ic('check',12,'currentColor',3)}</span><span>${x}</span></div>`).join('')}</div>
+  <div class="mock" aria-hidden="true"><div class="in"><span style="color:var(--t3)">Day 1 · Lesson 1</span><b>${esc(week1())}</b><div class="bb"><div class="bb p"></div></div><div class="ch">"Make my weekly checklist"</div><div class="ap"><i class="g"></i><i></i><i style="width:70%"></i></div><div class="bb" style="width:70%"></div><div class="bb" style="width:50%"></div></div></div></div>
+  <p class="hint" style="margin:0">Only features the app ships. Verify this list before launch.</p>
+  <p class="aff" style="margin:0">Coursiv is not affiliated with Anthropic. Claude is a trademark of Anthropic.</p></div>
+  <div class="foot">${cta('Get my plan')}</div>`,
+
+21:()=>{const P=PLANS[S.plan];
+  return `<div class="scr" style="gap:14px">
+  <div class="minip"><span class="ic">🏅</span><div><small>Focus: ${esc(useL())}</small><b>Certificate by ${certDate()}</b></div></div>
+  ${qhead(S.v==='A'?`Start your Claude plan, ${nm()}`:'Your certificate starts today',S.v==='A'?'Pick a plan. Cancel anytime from your account.':`Focus: ${esc(useL())}. Finish date: ${certDate()}.`)}
+  <div style="display:flex;flex-direction:column;gap:9px">${Object.entries(PLANS).map(([k,p])=>{const on=S.plan===k;return `<button class="plan ${on?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${on}"><span class="radio">${on?ic('check',13,'currentColor',3):''}</span><span style="flex:1;min-width:0"><span class="pn">${p.n}${p.badge?`<span class="bdg ${k==='12w'?'g':''}">${p.badge}</span>`:''}</span>
+    <span class="pp" style="display:block">${k==='1w'?`${ph(p.today)} today, then renews at ${ph(p.renew)} every week`:`${ph(p.today)} today, then ${ph(p.renew)} every ${p.per}`}</span>${k==='4w'?'<span class="pd" style="display:block">Covers the full 28-day Claude track</span>':''}${k==='12w'?`<span class="pd" style="display:block">${ph('[per-day price]')} per day · Claude track plus other AI tools</span>`:''}</span></button>`}).join('')}</div>
+  <div class="trust">🔒 Secure payment · Cancel anytime in 2 taps · ${ph('[N]')}-day refund window</div>
+  <div class="pays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span><span>AMEX</span></div>
+  <p class="aff" style="margin:0">Coursiv is not affiliated with or endorsed by Anthropic.</p></div>
+  <div class="foot" style="padding-top:10px;border-top:1px solid var(--line)"><button class="cbx ${S.agree?'on':''}" data-a="agree" aria-pressed="${S.agree}"><span class="sq">${S.agree?ic('check',12,'currentColor',3.2):''}</span><span>I agree to the <span class="tlink">Terms</span>, <span class="tlink">Subscription</span> and <span class="tlink">Refund Policy</span></span></button>
+  <div class="payline">You'll pay ${ph(P.today)} today. It renews at ${ph(P.renew)} every ${P.per} until you cancel. We'll email you before each renewal.</div>
+  ${cta('Get my plan',S.agree,'buy')}</div>`},
+
+22:()=>{const o=CONFIG.offer,base=PLANS[o.compareAt],was=base?base.today:'';
+  return `<div class="scr owrap">
+  <div class="obar"><span class="obrand"><i>C</i>Coursiv</span><button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button></div>
+  <div class="ohead"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display">${`Wait, ${nm()}: keep your certificate date`}</h1>
+   <p class="lead">${`Your Claude plan still finishes ${certDate()}. Start it for a lower first payment.`}</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${ph(o.badge)}</span>`:''}
+   <div class="minip"><span class="ic">🏅</span><div><small>Focus: ${esc(useL())}</small><b>Certificate by ${certDate()}</b></div></div>
+   <div class="oname"><b>${esc(o.name)}</b><span>The same full plan, a lower first payment</span></div>
+   <div class="oprice">${was?`<s>${ph(was)}</s>`:''}<b>${ph(o.price)}</b><span>today</span></div>
+   <div class="ochecks">${['Daily 15-minute Claude lessons','Hands-on Projects & Artifacts practice','Certificate of completion with your name'].map(x=>`<div><span class="ck">${ic('check',12,'currentColor',3)}</span><span>${x}</span></div>`).join('')}</div>
+   ${cta('Claim my offer',true,'offerbuy')}
+   <div class="pays"><span>Apple Pay</span><span>G Pay</span><span>VISA</span><span>Mastercard</span></div>
+   <p class="fine">${ph(o.price)} today, then ${ph(o.renews)} every ${esc(o.period)} until you cancel. Cancel anytime in your account.</p></div>
+  <button class="link" data-a="offerno">No thanks, back to my plan</button></div>`},
+
+23:()=>{const P=PLANS[S.plan];
+  return `<div class="scr" style="gap:14px">${qhead(t('Review your order',"Here's what you'll pay"),t("Today's total and your renewal, spelled out.",'No surprises. Cancel anytime before renewal.'))}
+  <div class="receipt"><h4>${P.n}</h4>
+    <div class="rr"><span>Today</span><span>${ph(P.today+' + tax')}</span></div>
+    <div class="rr"><span>Renews ${renewDate()}</span><span>${ph(P.renew+' + tax')} every ${P.per}</span></div>
+    <div class="rr"><span>Cancel</span><span>Account → Subscription, web or app</span></div></div>
+  <button class="btn dark" data-a="pay" style="height:50px">${ic('apple',18)} Pay</button>
+  <div class="orline">or pay by card</div>
+  <div class="cardform"><div class="box full">${ic('card',18)}<input placeholder="Card number" inputmode="numeric" aria-label="Card number"></div><div class="box"><input placeholder="MM / YY" aria-label="Expiry"></div><div class="box"><input placeholder="CVC" aria-label="CVC"></div></div></div>
+  <div class="foot">${cta('Pay securely',true,'pay')}<div class="note">${ic('lock',12)} Demo form. Nothing you type is sent anywhere.</div></div>`},
+
+24:()=>`<div class="scr" style="gap:16px;padding-top:18px"><span class="okbig">${ic('check',38,'currentColor',3)}</span>
+  <h1 class="display" style="text-align:center">${S.v==='A'?`Welcome aboard, ${nm()}!`:'Day 1 of Claude is ready'}</h1>
+  <p class="lead" style="text-align:center;margin-top:-8px">${S.v==='A'?`Get the app and log in with ${esc(S.email||'your email')}.`:'Your first 15-minute Claude lesson is waiting.'}</p>
+  <div class="d1"><span class="ic">${ic('play',18,'#fff',2.2)}</span><div><small>Up next in the app</small><b>Day 1 · ${esc(week1())}</b></div></div>
+  <div class="nsteps"><div><b>1</b>Install the app</div><div><b>2</b>Tap the login link in your email</div><div><b>3</b>Start Day 1</div></div>
+  <div class="stores"><button class="store" data-a="store">${ic('apple',20,'#fff')}<span>Download on the<b>App Store</b></span></button><button class="store" data-a="store"><span class="g">▶</span><span>Get it on<b>Google Play</b></span></button></div>
+  <p class="hint" style="text-align:center;margin:0">Receipt and cancel link sent to ${esc(S.email||'your email')}</p></div>
+  <div class="foot">${cta('Get the app',true,'store')}</div>`
+};
+
+/* loading: 28 tiles + 4 rows, ~6s, then auto-advance */
+function runLoading(){
+  const t0=performance.now(),D=5600;let rv=0;
+  const tiles=[...document.querySelectorAll('#cal span')];
+  timer=setInterval(()=>{
+    const v=cur();if(!v||S.i!==16){clearInterval(timer);return}
+    const e=performance.now()-t0,k=Math.min(1,e/D);
+    tiles.forEach((s,i)=>s.classList.toggle('on',i<Math.floor(k*28+.001)));
+    for(let r=0;r<4;r++){const el=document.getElementById('st'+r);if(!el)continue;const p=Math.round(Math.max(0,Math.min(1,k*4-r))*100);
+      el.querySelector('.bar span').style.width=p+'%';
+      if(p>=100&&!el.classList.contains('done')){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.6)}<span>100%</span>`}
+      else if(p<100)el.querySelector('.pct span').textContent=p+'%'}
+    const nr=Math.floor(e/2200)%2;if(nr!==rv){rv=nr;const c=document.getElementById('rrot');if(c){c.classList.remove('fadein');void c.offsetWidth;c.classList.add('fadein');c.querySelector('small').textContent=`— Reviewer name · source · date (${nr+1} of 2)`}}
+    if(k>=1){clearInterval(timer);timer=setTimeout(()=>{if(S.i===16)go(17)},700)}
+  },50);
+}
+
+function render(dir){
+  const n=S.i;const html=nav()+V[n]();
+  const old=cur();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);
+    setTimeout(()=>nv.classList.remove('in'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{stage.querySelectorAll('.view:not(.cur)').forEach(x=>x.remove());old.innerHTML=html}
+  const v=cur();
+  v.querySelectorAll('.cert').forEach(mountCert);
+  if(n===16)runLoading();
+  if(n===14&&S.art&&S.lph<4)runLesson();
+  const f=v.querySelector('#nm,#em,#oth');
+  if(f&&(dir||f.id==='oth')&&!('ontouchstart' in window)){setTimeout(()=>{if(cur()!==v||!f.isConnected)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  if(n===OFFER_N)runOffer();
+  renderPanel();
+}
+
+/* ---------- HERO: 3D certificate (the only 3D object in this demo) ---------- */
+const HEROES=new Set();
+const ease=x=>1-Math.pow(1-x,3);
+function mountCert(el){
+  if(el._c)return;
+  const W=+el.dataset.w||280,H=Math.round(W*.68),mode=el.dataset.mode||'float',stamp=el.dataset.stamp==='1',blank=el.dataset.blank==='1';
+  const name=blank?'':S.name.trim();
+  el.style.width=W+'px';el.style.height=H+'px';
+  const seal=`<svg viewBox="0 0 60 60" aria-hidden="true">
+    <path class="fillin" d="${rosette(30,30,28,24,16)}" fill="#16A34A"/>
+    <path class="draw" pathLength="1" d="${rosette(30,30,28,24,16)}" fill="none" stroke="#0F7A36" stroke-width="1.4"/>
+    <circle class="fillin" cx="30" cy="30" r="18" fill="#fff"/>
+    <circle class="draw" pathLength="1" cx="30" cy="30" r="15.5" fill="none" stroke="#16A34A" stroke-width="1.6"/>
+    <path class="draw" pathLength="1" d="M22.5 30.5l5 5 10-11" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  el.innerHTML=`<div class="cscene" style="font-size:${(W/280*10).toFixed(2)}px">
+    <div class="cfloor"></div><div class="cedge"></div><div class="cpaper"></div><div class="cframe"></div>
+    <div class="ctext"><span class="e1">COURSIV CERTIFICATE OF COMPLETION</span><span class="e2">Claude Skills Track · 28 Days</span><span class="e3">Awarded to</span><span class="nm ${name?'':'blank'}">${name?esc(name):'&nbsp;'}</span><span class="tr">${blank?'Focus: your main use':'Focus: '+esc(useL())}</span></div>
+    <div class="cfine">Issued by Coursiv · not an Anthropic certification</div>
+    <div class="cribbon"></div><div class="cseal">${seal}</div>
+    ${stamp?`<div class="cstamp ${mode==='land'?'drop':''}"><small>BY</small>${certDate()}</div>`:''}
+  </div>`;
+  const o={el,mode,scene:el.firstElementChild,paper:el.querySelector('.cpaper'),t0:performance.now(),px:0,py:0,tx:0,ty:0};
+  el._c=o;HEROES.add(o);
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();o.tx=(e.clientX-r.left)/r.width-.5;o.ty=(e.clientY-r.top)/r.height-.5});
+  el.addEventListener('pointerleave',()=>{o.tx=0;o.ty=0});
+  if(RM){drawCert(o,performance.now()+99999);return}
+  if(!HEROES.loop){HEROES.loop=true;requestAnimationFrame(heroFrame)}
+}
+function rosette(cx,cy,R,r,n){let d='';for(let i=0;i<=n*2;i++){const a=Math.PI*i/n-Math.PI/2,rr=i%2?r:R;d+=(i?'L':'M')+(cx+rr*Math.cos(a)).toFixed(2)+' '+(cy+rr*Math.sin(a)).toFixed(2)+' '}return d+'Z'}
+function drawCert(o,now){
+  const t=(now-o.t0)/1000;
+  o.px+=(o.tx-o.px)*.08;o.py+=(o.ty-o.py)*.08;
+  let rx=14+Math.sin(t*.6)*4,ry=Math.sin(t*.45)*15,rz=Math.sin(t*.3)*1.2,s=1;
+  if(RM){rx=12;ry=-14;rz=0}
+  if(o.mode==='land'&&!RM){const k=ease(Math.min(1,t/1.6));rx=80*(1-k)+rx*k;ry=-24*(1-k)+ry*k;rz=-8*(1-k)+rz*k;s=.62+.38*k;o.el.style.opacity=Math.min(1,t/.35)}
+  rx+=o.py*-24;ry+=o.px*32;
+  /* never opacity/filter on .cscene (preserve-3d) — only the outer .cert fades */
+  o.scene.style.transform=`scale(${s}) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)`;
+  o.paper.style.backgroundPosition=`${(50+ry*2.4).toFixed(1)}% 0`;
+}
+function heroFrame(now){
+  for(const o of HEROES){if(!o.el.isConnected){HEROES.delete(o);continue}drawCert(o,now)}
+  if(HEROES.size)requestAnimationFrame(heroFrame);else HEROES.loop=false;
+}
+
+/* ---------- panel ---------- */
+function renderPanel(){
+  document.getElementById('flow').innerHTML=FLOW.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(([n,l,tag])=>`<button class="${S.i===n?'on':''}" data-j="${n}"><span class="n">${n}</span><span>${l}</span>${tag?`<span class="tg">${tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const d=[
+    ['Claude experience',lab(EXP,S.exp)||'—'],
+    ['Main use',S.use?useL():'—'],
+    ['Field',S.industry?indL():'—'],
+    ['AI tools',S.tools.length?toolsL():'—'],
+    ['Week 1',S.tools.length?week1():'—'],
+    ['Skills',S.skills.length?skillsL():'—'],
+    ['Certificate for',S.cuse?cuseL():'—'],
+    ['Pace',S.minutes+' min/day'],
+    ['Name',S.name.trim()||'—'],
+    ['Check 1',S.c1?lab(C1,S.c1)+(S.c1==='shared'?' ✓':' ✗'):S.exp==='never'?'skipped':'—'],
+    ['Check 2',S.c2?lab(C2,S.c2)+(S.c2==='file'?' ✓':' ✗'):S.exp==='never'?'skipped':'—'],
+    ['Score',S.exp?`${score()} of 2`:'—'],
+    ['Level',S.exp?BANDS[band()]:'—'],
+    ['Artifact built',S.art?ATITLE[S.art]+(S.art==='check'?` (${S.ticks.length} ticked)`:''):'—'],
+    ['Certificate',certDate()],
+    ['Email',S.email||'—'],
+    ['Tips opt-in',S.tips?'Yes':'No'],
+    ['Plan',(S.offer?'Last-chance offer':PLANS[S.plan].n)+(S.paid?' · paid (demo)':'')],
+    ['Offer',S.offer?'Accepted':S.offerSeen?'Declined':S.offerViewed?'Shown':'—'],
+    ['Agreed terms',S.agree?'Yes':'No']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+
+/* ---------- events ---------- */
+const tapNext=(scr)=>{render();setTimeout(()=>{if(S.i===scr)next()},260)};
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':next();break;
+    case 'back':back();break;
+    case 'legal':toast('Demo only — legal page would open');break;
+    case 'exp':S.exp=v;S.c1='';S.c2='';tapNext(1);break;
+    case 'use':S.use=v;render();break;
+    case 'industry':S.industry=v;if(v==='other')render();else tapNext(4);break;
+    case 'tool':if(v==='none')S.tools=S.tools.includes('none')?[]:['none'];else{const s=S.tools.filter(x=>x!=='none');S.tools=s.includes(v)?s.filter(x=>x!==v):[...s,v]}render();break;
+    case 'skill':if(S.skills.includes(v)){S.skills=S.skills.filter(x=>x!==v);S.err=''}else if(S.skills.length<3){S.skills=[...S.skills,v];S.err=''}else S.err='Up to three — tap one to swap it out.';S.tip='';render();break;
+    case 'tip':S.tip=S.tip===v?'':v;render();break;
+    case 'cuse':S.cuse=v;render();break;
+    case 'minutes':S.minutes=+v;render();break;
+    case 'name':if(!S.name.trim()){S.err='Please enter your name to continue';render();document.getElementById('nm')?.focus()}else{S.name=S.name.trim();next()}break;
+    case 'c1':if(!S.c1){S.c1=v;render()}break;
+    case 'c2':if(!S.c2){S.c2=v;render()}break;
+    case 'req':if(!S.art){S.art=v;S.lph=1;S.ticks=[];render()}break;
+    case 'tick':{const i=+v;S.ticks=S.ticks.includes(i)?S.ticks.filter(x=>x!==i):[...S.ticks,i];syncTick(i);renderPanel();break}
+    case 'email':{const em=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){S.err='invalid';render()}else if(/taken/i.test(em)){S.err='taken';render()}else{S.email=em;next()}break}
+    case 'sugg':S.email=typo(S.email)||S.email;S.err='';render();break;
+    case 'login':toast('Demo only — login would open');break;
+    case 'tips':S.tips=!S.tips;render();break;
+    case 'plan':S.plan=v;render();break;
+    case 'agree':S.agree=!S.agree;render();break;
+    case 'buy':go(23);break;
+    case 'dismiss':{const show=offerOpen();emit('paywall_close',{plan:S.plan,offerShown:show});if(show)go(OFFER_N);else back()}break;
+    case 'offerbuy':S.offerSeen=true;S.offer=true;clearInterval(window.__oiv);offerCheckout();S.paid=true;go(24);toast('Demo only — offer checkout, no charge made');break;
+    case 'offerno':S.offerSeen=true;emit('offer_decline',{price:CONFIG.offer.price});offerExit();break;
+    case 'nothanks':S.sheet=null;render();break;
+    case 'pay':S.paid=true;go(24);toast('Demo only — no charge made');break;
+    case 'store':toast('Demo only — store link would open');break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f)return;
+  S[f]=e.target.value;
+  if(S.err&&(f==='name'||f==='email')){S.err='';const bx=e.target.closest('.box');bx&&bx.classList.remove('bad');const er=bx&&bx.parentElement.querySelector('.err');er&&er.remove()}
+  if(f==='email'){const sg=document.getElementById('sugg');if(sg)sg.innerHTML=suggHTML()}
+  if(f==='name'){const c=cur().querySelector('.cert .nm');if(c){c.textContent=S.name.trim()||' ';c.classList.toggle('blank',!S.name.trim())}}
+  const btn=cur().querySelector('.foot .btn.main');if(btn&&OK[S.i])btn.disabled=!ok(S.i);
+  renderPanel();
+});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=cur().querySelector('.foot .btn.main');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);
+  if(n===11){S.c1='';S.c2=''}if(n===12)S.c2='';if(n===14){S.art='';S.lph=0;S.ticks=[]}go(n)});
+const setV=v=>{S.v=v;document.getElementById('vA').classList.toggle('on',v==='A');document.getElementById('vB').classList.toggle('on',v==='B');
+  if(S.i===16){const h=document.getElementById('lh');if(h)h.innerHTML=t(`Building ${nm()}'s Claude plan...`,'Crafting your 28-day Claude path...')}
+  else if(S.i===14&&S.art&&S.lph<4){const h=cur().querySelector('.display'),p=cur().querySelector('.lead');if(h)h.innerHTML=S.v==='A'?`${nm()}, build your first Artifact`:'Watch Claude build a tool';if(p)p.innerHTML=t('Tap a request. See it become a tool.','60 seconds, one tap, a real Claude skill.')}
+  else render()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{try{sessionStorage.removeItem(OKEY)}catch(e){}clearT();const v=S.v;S=INIT();S.v=v;render('b')};
+
+/* scale the 390x812 phone down on narrow viewports (16px gutters) */
+const box=document.getElementById('phonebox');
+function fit(){const w=document.documentElement.clientWidth;box.style.setProperty('--k',Math.min(1,(w-32)/412).toFixed(4))}
+fit();addEventListener('resize',fit);
+
+{const h=decodeURIComponent(location.hash);const m=h.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}
+ const am=h.match(/a=(check|chart|brief)/);if(am&&S.i===14){S.art=am[1];S.lph=1}
+ const vm=h.match(/v=?([AB])/);if(vm){S.v=vm[1];document.getElementById("vA").classList.toggle("on",S.v==="A");document.getElementById("vB").classList.toggle("on",S.v==="B")}}
+render();
+</script>

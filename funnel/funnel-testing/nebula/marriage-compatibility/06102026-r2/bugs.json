@@ -1,0 +1,127 @@
+[
+  {
+    "screen": "Intro 1",
+    "title": "[UI][Intro 1] Hero art chưa đúng visual spec: thiếu 2 nhẫn vàng (Intro 1) và vòm sáng (Intro 20)",
+    "severity": "Medium",
+    "actual": "- [Lượt 2] Đã có: 2 nhẫn vàng giữa 2 wheel ở hero Intro 1 và vòm sáng ở hero Intro 20 (đều là lớp vẽ chồng lên ảnh). Chưa: hero Paywall 1 và cover Upsale 1 vẫn là ảnh 2 wheel trơn, giống hệt funnel ex-compatibility (file img/hook-rings.jpg, result-window.jpg, paywall-hero.jpg trùng byte với ảnh của ex-compatibility; spec Notes ghi là placeholder chờ gen ảnh). Đồng ý với dev (Partly fixed).",
+    "expected": "- Theo spec #1 Visual: wheels \"with two small gold rings between them\" (`img/hook-rings.jpg`); #20: \"Wheels over a soft arch of light\" (`img/result-window.jpg`). Spec Notes ghi ảnh hiện tại là placeholder – cần PM/Designer confirm thời điểm thay ảnh thật.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/20-window_teaser-large.png, screens/22-paywall-small-p1.png, screens/23-report_upsell-small-p1.png",
+    "retest": "Partly fixed"
+  },
+  {
+    "screen": "Intro 2",
+    "title": "[UI][Intro 2] Counter \"n/13\" lệch ra ngoài mép phải progress bar mới, progress bar sát headline",
+    "severity": "Low",
+    "actual": "- Trên header các màn câu hỏi (Intro 2, 3, 5–14, 16, 17), counter \"1/13\"…\"13/13\" có mép phải lệch ra ngoài mép phải của progress bar mới khoảng 7–8pt (progress bar và nội dung căn lề 20pt, counter chỉ cách mép màn ~12pt); progress bar cũng nằm khá sát headline bên dưới (~12pt), cả small và large.",
+    "expected": "- Counter và progress bar cần căn cùng lề phải, có khoảng cách rõ giữa progress bar và headline – Cần đối chiếu Figma (giá trị spacing).",
+    "attachment": "Screenshot/Video: screens/02-status-small.png, screens/02-status-large.png, screens/13-money-small.png, screens/17-timeline-small.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 20",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 21",
+    "no_bug": true
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Footer thiếu tên pháp nhân (entity) theo spec",
+    "severity": "High",
+    "actual": "- [Lượt 2] Footer vẫn chỉ có \"Terms of Use\" · \"Privacy Policy\" · \"Subscription terms\" và \"For entertainment purposes only.\", chưa có tên pháp nhân. Đúng như dev báo, chờ PM cung cấp entity.",
+    "expected": "- Theo spec mục 22 – section 9 \"Footer: legal links, entity, entertainment disclaimer\": footer cần hiển thị tên pháp nhân bên cạnh legal links và disclaimer.",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p4.png, screens/22-paywall-large-p4.png",
+    "retest": "Cần PM"
+  },
+  {
+    "screen": "Paywall 1",
+    "title": "[UI][Paywall 1] Ảnh hero hiển thị thành dải chữ nhật cắt cứng, wheel bị cắt phẳng ở đáy",
+    "severity": "Low",
+    "actual": "- Ảnh hero Paywall 1 hiển thị thành một dải chữ nhật full-width ngay dưới subtitle: cạnh trên có đường nối màu nền rõ (nền khối headline tối hơn nền ảnh) và cạnh dưới cắt phẳng ngang qua vạch chia của 2 wheel; tương tự ở hero Intro 20 (dưới header, đáy cắt phẳng qua wheel và vòm sáng), cả small và large. Có thể đã tồn tại từ lượt 1 nhưng chưa được log.",
+    "expected": "- Spec #22 Hero: \"the wheels (`img/paywall-hero.jpg`)\" – ảnh hero cần fade mềm vào nền, không thấy cạnh cắt cứng/wheel bị cắt – Cần đối chiếu Figma (crop/fade của hero).",
+    "attachment": "Screenshot/Video: screens/22-paywall-small-p1.png, screens/22-paywall-large-p1.png, screens/20-window_teaser-small-p1.png, screens/20-window_teaser-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App",
+    "title": "[UI][Download App] Badge Google Play dùng logo Play outline đơn sắc, không phải badge chính thức",
+    "severity": "Low",
+    "actual": "- [Lượt 2] Badge \"Download on the App Store\" đã đúng dạng badge chính thức. Badge \"GET IT ON Google Play\" có layout giống badge chính thức nhưng logo Play là tam giác outline trắng đơn sắc, không phải logo Google Play nhiều màu như artwork chính thức (hạ từ Medium xuống Low vì phần còn lại chỉ là chi tiết logo).",
+    "expected": "- Spec mục 24 yêu cầu \"App Store and Google Play badges\"; cần dùng badge chính thức theo brand guideline của Apple/Google – cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/24-get_app-small.png, screens/24-get_app-large.png",
+    "retest": "Partly fixed"
+  }
+]

@@ -1,0 +1,144 @@
+[
+  {
+    "prev": 1,
+    "title": "[UI][Intro 1] Silhouette trong hero nằm đè lên vòng era, che chấm era phía dưới",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Silhouette nằm gọn trong vòng trong, không còn che chấm era; vòng era ở Intro 16/Paywall 1/Upsale 1 cũng không còn bị che.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/01-hook-large.png"
+  },
+  {
+    "prev": 2,
+    "title": "[UI/UX][Intro 1] Text \"Terms of Use\" và \"Privacy Policy\" không hiển thị dạng link",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "\"Terms of Use\" và \"Privacy Policy\" đã có gạch chân ở Intro 1 và Intro 17, đồng nhất với footer Paywall 1.",
+    "attachment": "Screenshot/Video: screens/01-hook-small.png, screens/17-email-small.png, screens/18-paywall-small-p4.png"
+  },
+  {
+    "prev": 3,
+    "title": "[UI][Intro 2] Option selected có một vệt viền sáng mảnh ở mép phải",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Option selected không còn vệt sáng ở mép phải trên các màn chọn option (small và large).",
+    "attachment": "Screenshot/Video: screens/02-era-small.png, screens/02-era-large.png, screens/04-deja_vu-small.png"
+  },
+  {
+    "prev": 4,
+    "title": "[UI][Intro 2] Không có vòng era ở background sáng lên theo era đã chọn",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Đã có vòng era ở cuối màn, chấm Medieval (era đã chọn) sáng gold.",
+    "attachment": "Screenshot/Video: screens/02-era-small.png, screens/02-era-large.png"
+  },
+  {
+    "prev": 5,
+    "title": "[UI][Intro 7] Statement không hiển thị dạng statement card lớn",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Statement hiển thị trong card lớn có eyebrow \"STATEMENT\", phía dưới 3 pill option.",
+    "attachment": "Screenshot/Video: screens/07-statement_friends-small.png, screens/08-statement_old_things-large.png, screens/09-statement_fears-small.png"
+  },
+  {
+    "prev": 6,
+    "title": "[UI/UX][Intro 14] Ô Month/Day/Year không có icon dropdown",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "3 ô Month/Day/Year đã có chevron.",
+    "attachment": "Screenshot/Video: screens/14-birth_date-small.png, screens/14-birth_date-large.png"
+  },
+  {
+    "prev": 7,
+    "title": "[UI][Intro 15] Icon era trên cùng của vòng era bị cắt mất nửa trên",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Icon era trên cùng hiển thị đầy đủ, cách headline \"Finding your past life\" một khoảng.",
+    "attachment": "Screenshot/Video: screens/15-loader-small.png, screens/15-loader-large.png"
+  },
+  {
+    "prev": 8,
+    "title": "[UI][Intro 15] Loader hiển thị số phần trăm \"15%\" trong progress ring",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Progress ring chỉ còn icon đồng hồ cát, không còn số %.",
+    "attachment": "Screenshot/Video: screens/15-loader-small.png, screens/15-loader-large.png"
+  },
+  {
+    "prev": 9,
+    "title": "[UI][Intro 16] Role chip hiển thị màu xanh lá, không đồng bộ với era chip",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Era chip \"Medieval\" và role chip \"village herbalist\" cùng màu gold, cùng chiều cao.",
+    "attachment": "Screenshot/Video: screens/16-past_life_teaser-small-p1.png, screens/16-past_life_teaser-large.png"
+  },
+  {
+    "prev": 10,
+    "title": "[UI][Intro 16] Hero không phải medallion tròn, ảnh chữ nhật lộ cạnh trên",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Hero là medallion tròn (vòng gold bao ngoài vòng era), không còn ảnh chữ nhật lộ cạnh trên.",
+    "attachment": "Screenshot/Video: screens/16-past_life_teaser-small-p1.png, screens/16-past_life_teaser-large.png"
+  },
+  {
+    "prev": 11,
+    "title": "[UI][Paywall 1] Ảnh hero bị cắt phần trên vòng era ngay dưới khối headline",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Medallion hero hiển thị đầy đủ, không còn bị cắt mép trên.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p1.png, screens/18-paywall-large-p1.png"
+  },
+  {
+    "prev": 12,
+    "title": "[UI][Paywall 1] Nội dung cuộn hiện xuyên qua sticky header",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "Sticky header đã che kín nội dung phía sau khi cuộn, không còn chữ xuyên qua vùng logo.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p2.png, screens/18-paywall-small-p3.png, screens/18-paywall-large-p2.png, screens/18-paywall-large-p4.png"
+  },
+  {
+    "prev": 13,
+    "title": "[UI][Paywall 1] Footer thiếu thông tin entity",
+    "severity": "High",
+    "status": "Cần PM",
+    "note": "Vẫn chưa có tên entity ở footer (chỉ có Terms of Use / Privacy Policy / Subscription terms + disclaimer). Đúng như dev ghi \"Cần PM\", chờ PM cung cấp tên pháp nhân.",
+    "attachment": "Screenshot/Video: screens/18-paywall-small-p4.png, screens/18-paywall-large-p4.png"
+  },
+  {
+    "prev": 14,
+    "title": "[UI][Upsale 1] Ảnh cover report bị cắt phần trên vòng era",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Ảnh cover không còn bị cắt mép trên (vòng era hiển thị đủ). Tuy nhiên label/tên report giờ đè lên nửa dưới medallion, log thành bug mới N1.",
+    "attachment": "Screenshot/Video: screens/19-report_upsell-small-p1.png, screens/19-report_upsell-large.png"
+  },
+  {
+    "prev": 15,
+    "title": "[UI][Download App] Icon trên badge App Store không giống logo Apple",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "Badge App Store đã dùng logo Apple chính thức.",
+    "attachment": "Screenshot/Video: screens/20-get_app-small.png, screens/20-get_app-large.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "id": "N1",
+    "screen": "Upsale 1",
+    "title": "[UI][Upsale 1] Label \"STARLYN REPORT\" và tên report đè lên nửa dưới medallion trong cover card",
+    "severity": "Low",
+    "actual": "- Sau khi fix crop, medallion trong cover card \"Karmic Lessons Report\" được thu nhỏ đặt giữa card, nên label \"STARLYN REPORT\" và tên \"Karmic Lessons Report\" nằm đè lên nửa dưới vòng era, che 2 chấm era dưới cùng (small và large).",
+    "expected": "- Cần đối chiếu Figma: brief chỉ ghi ảnh dưới dark fade kèm label và tên report; chủ thể ảnh và text cần bố trí để không chồng lên nhau.",
+    "attachment": "Screenshot/Video: screens/19-report_upsell-small-p1.png, screens/19-report_upsell-large.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "id": "N2",
+    "screen": "Download App",
+    "title": "[UI][Download App] Icon trên badge Google Play là outline trắng đơn sắc, không phải logo chính thức",
+    "severity": "Low",
+    "actual": "- Badge \"GET IT ON Google Play\" dùng icon tam giác Play dạng outline trắng đơn sắc, trong khi badge App Store đã đổi sang logo Apple chính thức ở lượt fix này; lượt 1 không log điểm này nên có thể đã tồn tại từ trước.",
+    "expected": "- Cần đối chiếu Figma: badge store cần dùng đúng asset badge chính thức của Google Play (logo Play nhiều màu).",
+    "attachment": "Screenshot/Video: screens/20-get_app-small.png, screens/20-get_app-large.png"
+  }
+]

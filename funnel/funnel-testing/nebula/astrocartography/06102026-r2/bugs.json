@@ -1,0 +1,109 @@
+[
+  {
+    "screen": "Intro 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 2",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 3",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 4",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 5",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 6",
+    "title": "[UI][Intro 6] Select Month/Day/Year không có chevron dropdown",
+    "severity": "Low",
+    "actual": "- 3 ô Month / Day / Year (id: 6) chỉ hiển thị placeholder, không có chevron hay affordance dropdown nào, trên cả small và large. Commit fix ghi \"chevrons on date selects\" và aura-tarot đã có chevron, nhưng astrocartography chưa được áp dụng nên không đồng nhất giữa các funnel Starlyn. Chưa log ở lượt 1.",
+    "expected": "- Select ngày sinh hiển thị chevron dropdown giống các funnel Starlyn đã fix (vd. aura-tarot) – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/06-6-small.png, screens/06-6-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 7",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 8",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 9",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 10",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 11",
+    "title": "[Logic][Intro 11] Headline \"Chicago sits between your lines\" mâu thuẫn với card \"Near Chicago: your Venus line\" ở Intro 18",
+    "severity": "High",
+    "actual": "- Với data test (current city Chicago), Intro 11 (id: 11) hiển thị \"Chicago sits between your lines\" (nghĩa là không có line nào gần), nhưng map zoom của chính màn này vẫn vẽ một line chạy sát pin, và Intro 18 (id: 18) lại mở card \"Near Chicago: your Venus line – Venus ASC · love and beauty come easier here...\", nên user thấy hai kết quả trái ngược. Không phải regression: lỗi đã có từ lượt 1 nhưng bị sót.",
+    "expected": "- Kết quả về line gần current city phải nhất quán giữa Intro 11 và Intro 18 (brief #11: 0 line thì \"{{current_city}} sits between your lines\"; brief #18: card mở \"one real result (the line nearest home)\"). Copy của #18 khi không có line trong orb – Spec chưa định nghĩa – cần PM confirm.",
+    "attachment": "Screenshot/Video: screens/11-11-small.png, screens/11-11-large.png, screens/18-18-small-p1.png, screens/18-18-large.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Intro 12",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 13",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 14",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 15",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 16",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 17",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 18",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 19",
+    "no_bug": true
+  },
+  {
+    "screen": "Intro 20",
+    "title": "[UI][Intro 20] Dấu chấm cuối dòng legal bị tách khỏi link \"Privacy Policy\"",
+    "severity": "Low",
+    "actual": "- Sau khi tăng vùng bấm của link legal, dòng \"By continuing, you agree to our Terms & Privacy Policy.\" ở Intro 20 (id: 20) hiển thị dấu \".\" cách hẳn chữ \"Policy\" (\"Privacy Policy .\"); khoảng cách quanh \"&\" ở Intro 1 (id: 1) và Intro 20 cũng rộng hơn khoảng cách chữ bình thường. Regression nhỏ từ fix bug #1.",
+    "expected": "- Dấu chấm liền sau \"Policy\" và khoảng cách quanh \"&\" như text thường, vùng bấm 44px không làm thay đổi spacing của dòng chữ (như cách aura-tarot giữ nguyên dòng) – Cần Designer confirm.",
+    "attachment": "Screenshot/Video: screens/20-20-small.png, screens/20-20-large.png, screens/01-1-small.png",
+    "retest": "New"
+  },
+  {
+    "screen": "Paywall 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Upsale 1",
+    "no_bug": true
+  },
+  {
+    "screen": "Download App",
+    "no_bug": true
+  }
+]

@@ -1,0 +1,1218 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0911">
+<title>ChatChi: AI Roleplay Chat · Book Boyfriend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#06050B;
+  --bg:#0A0911;--bg-elev:#12101B;--surface:#17151F;--surface-2:#221F2D;--border:#2D293B;
+  --t1:#F4F2F8;--t2:#A7A2B7;--t3:#6F6A82;
+  --pink:#B62CB5;--pink-hi:#DA5FD9;--pink-dim:#B62CB52E;--pink-deep:#261230;
+  --grad-a:#9A2ACB;--grad-b:#D82F99;--grad:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+  --amber:#F5B83D;--violet:#9B7BFF;--negative:#F0705F;--positive:#7FD1A8;
+  --head:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);background-image:radial-gradient(ellipse 60% 40% at 30% 0%,#240F2C 0%,transparent 70%);color:var(--t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--pink-hi);outline-offset:2px}
+
+.phone{container:app/inline-size;position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;background:var(--bg);overflow:hidden;isolation:isolate;--top:calc(env(safe-area-inset-top,0px) + 8px)}
+@media (min-width:520px){.phone{border-inline:1px solid #2A2536}}
+#amb{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:var(--top);display:flex;flex-direction:column}
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:3}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--surface)}
+.prog{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--pink);border-radius:2px;transition:width .35s ease}
+.navspacer{width:44px}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:18px;position:relative;z-index:1;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.scr.center{justify-content:center}
+.foot{flex:none;padding:12px 20px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));display:flex;flex-direction:column;gap:10px;position:relative;z-index:2}
+.foot .note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+.foot .note.legaln{font-size:13px;line-height:1.5}
+.legaln a{color:var(--t2);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--t3);display:inline-block;padding:11px 0;margin:-11px 0}
+
+.h1{font:800 30px/1.12 var(--head);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.h1.xl{font-size:32px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.badge{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font:600 12px/1 var(--sans)}
+
+.btn{height:54px;border-radius:999px;border:none;background:var(--pink);color:#fff;font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,opacity .2s;flex:none}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:var(--surface-2);color:var(--t1);border:1px solid var(--border)}
+.btn.outline{background:transparent;color:var(--t2);border:1px solid var(--border)}
+.btn.light{background:#fff;color:#0A0911}
+.btn:not([disabled]):not(.ghost):not(.light):not(.outline){position:relative;overflow:hidden;box-shadow:0 10px 30px -12px #B62CB5cc}
+.btn:not([disabled]):not(.ghost):not(.light):not(.outline)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:6px;text-align:center;min-height:44px}
+.link:hover{color:var(--t1)}
+.link.pink{color:var(--pink-hi);font-weight:500}
+.link.tiny{font-size:12px;color:var(--t3);text-decoration:underline dotted}
+
+.opt{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--surface);border:1px solid var(--border);text-align:left;width:100%;transition:border-color .15s,background .15s}
+.opt:hover{border-color:#47405c}
+.opt .em{font-size:20px;width:26px;text-align:center;flex:none}
+.opt .lbl{flex:1;font-weight:500;font-size:16px}
+.opt.on{border-color:var(--pink);background:linear-gradient(0deg,var(--pink-dim),var(--pink-dim)),var(--surface)}
+
+.field{display:flex;flex-direction:column;gap:8px}
+.field label,.flabel{font:500 13px/1 var(--sans);color:var(--t2)}
+.box{height:56px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 8px 0 16px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--pink)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+.shuf{width:44px;height:44px;border-radius:10px;border:none;background:var(--surface-2);color:var(--pink-hi);display:grid;place-items:center;flex:none}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{min-height:44px;padding:9px 16px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);color:var(--t2);font-weight:500;font-size:14px}
+.pill.on{background:var(--pink-dim);border-color:var(--pink);color:var(--t1)}
+.err{font-size:13px;color:var(--negative)}
+.hint{font-size:13px;color:var(--t3)}
+
+.years{position:relative;height:150px;flex:none;overflow-y:auto;scroll-snap-type:y mandatory;border-radius:18px;background:var(--surface);border:1px solid var(--border);padding:53px 0;scrollbar-width:none}
+.years::-webkit-scrollbar{display:none}
+.years button{display:block;width:100%;height:44px;border:none;background:none;scroll-snap-align:center;font:400 20px/44px var(--sans);color:var(--t3);font-variant-numeric:tabular-nums}
+.years button:hover{color:var(--t2)}
+.years button.on{color:var(--t1);font-weight:600;background:var(--surface-2)}
+
+/* hero 3D: his portrait card (the only 3D object) */
+.hero3d{position:relative;perspective:900px;perspective-origin:50% 40%;margin:0 auto;flex:none;animation:hfade .4s ease both}
+.hin{position:absolute;inset:0;transform-style:preserve-3d}
+.hin.land{animation:hland 1.6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes hland{from{transform:scale(.72) rotateX(10deg) rotateY(-110deg)}to{transform:none}}
+@keyframes hfade{from{opacity:0}}
+.hscene{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.hscene>*{position:absolute;left:50%;top:50%}
+.hglow{border-radius:40px;background:radial-gradient(ellipse at 50% 40%,#B62CB566,transparent 70%);filter:blur(16px)}
+.hcard{border-radius:24px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 30px 60px -20px #000,0 0 0 1px #ffffff18;background:#16141e}
+.hcard svg{width:100%;height:100%;display:block}
+.hcard .hcol{position:absolute;inset:0;clip-path:inset(100% 0 0 0);transition:clip-path .15s linear}
+.hcard.shade::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,#0A0911f2)}
+.hplate{backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.hplate b{font:800 30px/1 var(--head);text-shadow:0 4px 18px #000}
+.hplate .tags{display:flex;gap:6px;flex-wrap:wrap}
+.hplate .tags span{font-size:11.5px;padding:5px 9px;border-radius:999px;background:#17151FCC;border:1px solid var(--border);color:var(--t2);font-weight:500}
+.hh{width:0;height:0}
+.hh i{position:absolute;left:-8px;top:-8px;color:var(--pink-hi);animation:hrise 3.6s ease-in infinite;filter:drop-shadow(0 0 6px #DA5FD9aa)}
+@keyframes hrise{0%{transform:translateY(20px) scale(.6);opacity:0}20%{opacity:1}100%{transform:translateY(-90px) scale(1);opacity:0}}
+.sk path,.sk ellipse,.sk circle,.sk text{stroke-dasharray:520;stroke-dashoffset:520;animation:draw 2.8s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* hook */
+.herorow{position:relative;height:222px;flex:none}
+.lock{position:absolute;right:4px;top:26px;width:160px;height:186px;border-radius:24px;background:linear-gradient(180deg,#26203a,#110e1a);border:1px solid #ffffff1f;box-shadow:0 20px 40px -14px #000;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.lock .lt{font:700 34px/1 var(--head);letter-spacing:-.02em}
+.lock .ld{font-size:11px;color:var(--t2);margin-bottom:12px}
+.lock .ln{display:flex;gap:8px;align-items:flex-start;width:100%;padding:8px;border-radius:14px;background:#ffffff1c;font-size:11.5px;line-height:1.3;animation:lnin .5s ease 1.1s both}
+.lock .ln b{display:flex;justify-content:space-between;font-size:11px}
+.lock .ln b small{color:var(--t3);font-weight:400}
+@keyframes lnin{from{opacity:0;transform:translateY(-8px) scale(.96)}}
+.logo{display:flex;align-items:center;gap:8px;font:800 17px var(--head)}
+
+/* picks */
+.archs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.arch{position:relative;height:164px;border-radius:20px;overflow:hidden;border:1.5px solid var(--border);background:var(--surface);padding:0;text-align:left}
+.arch svg{position:absolute;inset:0;width:100%;height:100%}
+.arch::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,#0A0911f0)}
+.arch .al{position:absolute;left:10px;right:10px;bottom:9px;z-index:1;font-weight:600;font-size:13.5px;line-height:1.25}
+.arch.on{border-color:var(--pink);box-shadow:0 0 0 3px var(--pink-dim)}
+.arch .hp{position:absolute;top:10px;right:10px;z-index:2;color:var(--pink-hi);animation:hp .6s ease}
+@keyframes hp{0%{transform:scale(.4);opacity:0}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+.arch.other{height:auto;grid-column:1/-1;padding:14px;display:flex;align-items:center;gap:10px}
+.arch.other::after{display:none}
+.arch.other .al{position:static}
+.blurbg{position:absolute;inset:0;z-index:0;opacity:.2;filter:blur(20px);pointer-events:none}
+.blurbg svg{width:100%;height:100%}
+.vrow{display:flex;align-items:center;gap:8px;padding-right:8px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.vrow.on{border-color:var(--pink);background:linear-gradient(0deg,var(--pink-dim),var(--pink-dim)),var(--surface)}
+.vsel{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:none;border:none;padding:14px 4px 14px 16px;text-align:left}
+.vsel .em{font-size:20px}
+.vsel .lbl{flex:1;font-weight:500;font-size:16px}
+.wave{display:inline-flex;gap:2px;align-items:center;height:22px;flex:none}
+.wave i{display:block;width:3px;border-radius:2px;background:var(--t3);height:var(--h)}
+.vrow.playing .wave i{background:var(--pink-hi);animation:wv .6s ease-in-out infinite alternate;animation-delay:var(--d)}
+@keyframes wv{from{transform:scaleY(.35)}to{transform:scaleY(1.15)}}
+.vplay{width:44px;height:44px;border-radius:50%;border:none;background:var(--pink-dim);color:var(--pink-hi);display:grid;place-items:center;flex:none}
+.vcap{margin:-2px 6px 2px;padding:10px 14px;border-left:2px solid var(--pink);font-style:italic;color:var(--t1);font-size:15px;animation:fi .3s ease}
+.vlist{display:flex;flex-direction:column;gap:10px}
+.lcs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lc{height:112px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;padding:14px;text-align:left;font-weight:600}
+.lc .vg{font-size:30px;line-height:1}
+.lc.on{border-color:var(--pink);background:linear-gradient(0deg,var(--pink-dim),var(--pink-dim)),var(--surface)}
+.mcs{display:flex;flex-direction:column;gap:10px}
+.mc{height:70px;border-radius:18px;border:1.5px solid var(--border);background:var(--g);display:flex;align-items:center;gap:14px;padding:0 16px;font-weight:600;font-size:16px;position:relative;overflow:hidden;text-align:left;width:100%}
+.mc .big{position:absolute;right:-4px;bottom:-16px;font-size:66px;opacity:.28}
+.mc.on{border-color:var(--pink);box-shadow:0 0 0 3px var(--pink-dim)}
+
+/* chat */
+.chat{position:absolute;inset:0;top:var(--top);display:flex;flex-direction:column}
+.chead{flex:none;display:flex;align-items:center;gap:10px;padding:4px 8px 8px 16px;border-bottom:1px solid var(--border);position:relative;z-index:2;background:var(--bg)}
+.chead .who{flex:1;min-width:0}
+.chead .who b{display:block;font:700 17px/1.1 var(--head)}
+.chead .who span{font-size:13px;color:var(--pink-hi);display:inline-flex;gap:4px;align-items:center;font-variant-numeric:tabular-nums}
+.chead .who span.bump{animation:bump .5s ease}
+@keyframes bump{40%{transform:scale(1.25)}}
+.av{position:relative;border-radius:50%;overflow:hidden;flex:none;display:block;background:#16141e}
+.av svg{width:100%;height:100%;display:block}
+/* AI-painted portraits (img/) sit over the inline SVG; a failed image removes itself and the SVG shows */
+.pimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block;user-select:none;-webkit-user-drag:none}
+.pimg.crop{object-position:50% 0;transform:scale(1.5);transform-origin:50% 36%}
+.pimg.sketch{filter:grayscale(1) contrast(1.35) brightness(.8);opacity:.5}
+.arch .pimg{object-position:50% 18%}
+.cbody{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.cbg{position:absolute;inset:0;z-index:0;background:var(--scene);opacity:.55}
+.cbg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 30%,transparent 55%,var(--bg) 100%)}
+.disclose{position:relative;z-index:1;margin:10px 16px 0;padding:8px 12px;border-radius:12px;background:#17151FE6;color:var(--t3);font-size:11.5px;text-align:center;line-height:1.35}
+.msgs{position:relative;z-index:1;flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.msgs::-webkit-scrollbar{display:none}
+.msgs .spacer{flex:1}
+.bub{padding:11px 14px;border-radius:18px;max-width:82%;font-size:15px;line-height:1.4;animation:fi .3s ease}
+.bub.c{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:6px}
+.bub.u{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:6px}
+.bub.sys{align-self:center;background:transparent;color:var(--t3);font-size:12px;padding:2px;text-align:center}
+.bub.rec{color:var(--t2);font-size:13px;display:flex;gap:6px;align-items:center}
+.typing{display:inline-flex;gap:4px;padding:3px 0}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.3}}
+.vnb{display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px}
+.vnb .vplay{width:40px;height:40px;background:var(--pink);color:#fff}
+.vt{font-size:12px;color:var(--t2);font-variant-numeric:tabular-nums}
+.ideas{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;padding:0 16px 10px}
+.ideas .ih{font-size:12px;color:var(--t3);display:flex;gap:6px;align-items:center}
+.ideas button{min-height:44px;padding:11px 14px;border-radius:14px;background:#17151FE6;border:1px solid var(--border);text-align:left;font-size:14px;color:var(--t2)}
+.ideas button:hover{border-color:var(--pink);color:var(--t1)}
+.cfoot{flex:none;border-top:1px solid var(--border);padding:10px 14px max(14px,calc(env(safe-area-inset-bottom,0px) + 8px));display:flex;flex-direction:column;gap:8px;background:var(--bg);position:relative;z-index:2}
+.cchips{display:flex;gap:8px}
+.cchips span{white-space:nowrap;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:13px;color:var(--t2);display:inline-flex;gap:6px;align-items:center}
+.counter{font-size:12px;color:var(--t3);font-weight:500;font-variant-numeric:tabular-nums}
+.counter.out{color:var(--negative)}
+.composer{display:flex;gap:8px;align-items:center}
+.composer .box{flex:1;height:48px;border-radius:999px;padding:0 16px}
+.send{width:48px;height:48px;border-radius:50%;border:none;background:var(--pink);color:#fff;display:grid;place-items:center;flex:none}
+.send[disabled]{background:var(--surface-2);color:var(--t3)}
+.mtoast{position:absolute;z-index:6;top:calc(var(--top) + 64px);right:12px;left:12px;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--pink);font-size:13px;box-shadow:0 12px 30px -10px #000;animation:mt 3.6s ease forwards}
+.mtoast svg{color:var(--pink-hi);flex:none}
+@keyframes mt{0%{opacity:0;transform:translateY(-8px)}8%,85%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
+.limit{align-self:stretch;margin-top:4px;padding:18px 16px;border-radius:18px;border:1.5px solid var(--pink);background:#17151FF2;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;animation:fi .4s ease}
+.limit h3{margin:0;font:800 20px/1.2 var(--head)}
+.limit p{margin:0;color:var(--t2);font-size:14px}
+.limit .crown{color:var(--pink-hi)}
+
+/* voice note moment */
+.vnbig{display:flex;align-items:center;gap:12px;padding:14px;border-radius:22px;background:var(--surface-2);border:1px solid var(--border);box-shadow:0 0 50px -14px #DA5FD988}
+.vnbig .vplay{width:54px;height:54px;background:var(--pink);color:#fff}
+.vnbig .wave{flex:1;height:44px;justify-content:space-between}
+.vnbig .wave i{width:3.5px}
+.vnbig.playing .wave i{animation:wfill .2s linear forwards,wv .5s ease-in-out infinite alternate;animation-delay:var(--p),var(--d)}
+@keyframes wfill{to{background:var(--pink-hi)}}
+.vcap2{padding:14px 16px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font-style:italic;font-size:16px;line-height:1.45}
+.vcap2 small{display:block;font-style:normal;color:var(--t3);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.mprog{padding:14px 16px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.mprog .row{display:flex;justify-content:space-between;font-weight:600;font-size:14px;font-variant-numeric:tabular-nums}
+.mprog .row span{color:var(--pink-hi);display:inline-flex;gap:4px;align-items:center}
+.bar{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--pink);transition:width .8s ease}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:14px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:7px;gap:10px}
+.step .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--t1)}
+.step.done .pct{color:var(--pink-hi)}
+.step .bar span{width:0;transition:none}
+.floattags{height:30px;position:relative;flex:none}
+.floattags span{position:absolute;left:50%;top:0;max-width:60%;overflow:hidden;text-overflow:ellipsis;font-size:12px;padding:5px 10px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font-weight:600;animation:tagup 2.4s ease infinite;opacity:0;white-space:nowrap}
+@keyframes tagup{0%{opacity:0;transform:translate(var(--x),16px)}25%,70%{opacity:1}100%{opacity:0;transform:translate(var(--x),-14px)}}
+
+/* trust */
+.promise{display:flex;gap:14px;align-items:center;padding:16px 0;border-top:1px solid var(--border)}
+.promise:first-child{border-top:none}
+.promise .well{width:40px;height:40px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;flex:none}
+
+/* sheets, paywall */
+.dim{position:absolute;inset:0;background:#05040ACC;z-index:7}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:8;background:var(--bg-elev);border-radius:28px 28px 0 0;border-top:1px solid var(--border);padding:10px 20px max(24px,calc(env(safe-area-inset-bottom,0px) + 14px));display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--border);align-self:center}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.push{display:flex;gap:10px;padding:12px;border-radius:18px;background:#ffffff12;border:1px solid #ffffff1a}
+.push small{color:var(--t2);display:block;font-size:12px}
+.pw{position:absolute;inset:0;z-index:8;background:var(--bg);display:flex;flex-direction:column;padding-top:var(--top);animation:fi .3s ease}
+.pwtop{display:flex;justify-content:space-between;align-items:center;padding:6px 18px 0;flex:none;min-height:50px}
+.closex{width:44px;height:44px;border-radius:50%;background:var(--surface-2);border:none;display:grid;place-items:center;color:var(--t2)}
+.pwtop .link{font-size:13px}
+.pwhero{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:20px;background:var(--surface);border:1px solid var(--border);flex:none}
+.pwhero .bub{max-width:92%;font-size:13.5px;animation:none}
+.benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.benefits div{display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:500}
+.benefits svg{color:var(--pink-hi);flex:none}
+.benefits svg *,.mtoast svg *,.limit .crown *,.shuf svg *{stroke:url(#cgrad)}
+svg .lg{fill:url(#cgrad-logo)}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan{position:relative;padding:16px 8px 12px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface);text-align:center;display:flex;flex-direction:column;gap:3px;align-items:center}
+.plan.on{border-color:var(--pink);background:var(--pink-deep)}
+.plan .pn{font-size:14px;color:var(--t2);font-weight:500}
+.plan.on .pn{color:var(--pink-hi)}
+.plan .pp{font:800 24px/1.1 var(--head);font-variant-numeric:tabular-nums}
+.plan .pp small{font:500 12px var(--sans);color:var(--t2)}
+.plan .rn{font-size:11px;color:var(--t2)}
+.plan .pw2{font-size:11px;color:var(--t3)}
+.plan .bv{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font:600 11px/1 var(--sans);background:var(--pink);color:#fff;padding:5px 9px;border-radius:999px;white-space:nowrap}
+.legal{display:flex;justify-content:center;gap:14px;font-size:13px;color:var(--t2)}
+.legal a{color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center;padding:0 4px}
+.legal a[href]{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--t3)}
+.gate-av{align-self:center;border:2px solid var(--pink);box-shadow:0 0 30px #B62CB566}
+.block{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:0 28px}
+.block .ban{width:76px;height:76px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--t3)}
+.alts{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
+.alts .ol{font-size:12px;color:var(--t3)}
+.alt{display:flex;gap:8px;align-items:center;min-height:44px;padding:4px 12px 4px 4px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;font-weight:500}
+.voice{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border)}
+.voice svg{color:var(--violet)}
+.voice span{flex:1;font-weight:500}
+.voice button::before{content:"";position:absolute;inset:-8px -3px}
+.voice button{position:relative;border:none;background:var(--surface-2);color:var(--pink-hi);padding:7px 12px;border-radius:999px;font-weight:600;font-size:13px;display:flex;gap:6px;align-items:center}
+.toast{position:absolute;left:50%;top:calc(var(--top) + 6px);transform:translateX(-50%);z-index:20;background:var(--t1);color:#0A0911;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis;animation:fade 2.8s ease forwards}
+@keyframes fade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.fadein{animation:fi .35s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.handoff{align-self:center;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--t1);font-weight:600;font-size:14px}
+@container app (max-width:374px){.h1{font-size:27px}.h1.xl{font-size:28px}.benefits{grid-template-columns:1fr}.cchips span:first-child{display:none}.plan .pp{font-size:21px}.lock{width:142px}}
+@media (max-height:740px){
+  .herorow{zoom:.8}.hero3d[data-mode="land"]{zoom:.82}
+}
+@media (max-height:700px){.herorow{zoom:.7}.years{height:132px;padding:44px 0}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+
+/* sale / upsell offer screens */
+.ofr .pwtop .logo{font-size:16px}
+.scr .foot.ofoot{margin-top:auto;padding:2px 0 max(8px,env(safe-area-inset-bottom,0px));gap:0}
+.oeye{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font:600 12px/1 var(--sans);letter-spacing:.02em}
+.ocard{position:relative;margin-top:6px;padding:22px 16px 16px;border-radius:24px;border:1.5px solid var(--pink);background:radial-gradient(ellipse at 50% 0%,var(--pink-dim),transparent 65%),var(--surface);box-shadow:0 0 0 4px var(--pink-dim),0 30px 60px -30px #000;display:flex;flex-direction:column;gap:14px;flex:none}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{font:700 17px/1.2 var(--head)}
+.osub{font-size:12.5px;color:var(--t3);margin-top:3px}
+.oth{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:none;position:relative;display:block;box-shadow:0 0 0 2px var(--pink),0 0 24px var(--pink-dim)}
+.oth>img,.oth .pimg{width:100%;height:100%;object-fit:cover;display:block}
+.oth>.av,.oth>.cav{width:100%!important;height:100%!important}
+.ocov{flex:none;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}
+.oprice s .otk{text-decoration:line-through;opacity:.75}
+.oprice b{font:800 28px/1 var(--head);color:var(--t1)}
+.oprice span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:center;font-size:14.5px;font-weight:500}
+.ochecks svg{color:var(--pink-hi);flex:none}
+.ochecks svg *{stroke:url(#cgrad)}
+.ofine{font-size:12px;color:var(--t3);text-align:center;line-height:1.45;margin:0}
+.odis{font-size:11.5px;color:var(--t3);text-align:center;margin:0;line-height:1.4}
+.otk{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+
+/* gradient text */
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* paywall plan rows (3 plans, tap = checkout) */
+.plans{display:flex;flex-direction:column;gap:10px}
+.plan{padding:11px 14px;display:grid;grid-template-columns:22px 1fr auto;gap:1px 10px;align-items:center;text-align:left;border-radius:16px;width:100%}
+.plan .rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);grid-row:1/3;display:grid;place-items:center}
+.plan.on .rd{background:var(--grad);border-color:transparent}
+.plan .pn{font:700 16px var(--head);color:var(--t1)}
+.plan .pp{font-size:19px;text-align:right}
+.plan .rn{grid-column:2/4}
+.plan .bv{left:auto;right:14px;transform:none;background:var(--grad);font-weight:700;letter-spacing:.04em}
+/* web paywall: long-scroll landing page (web2app), sticky top bar + sticky bottom CTA */
+.pw.lp{display:block;overflow-y:auto;overflow-x:hidden;padding-top:0;scrollbar-width:none;overscroll-behavior:contain}
+.pw.lp::-webkit-scrollbar{display:none}
+.lpbar{position:sticky;top:0;z-index:6;height:calc(var(--top) + 52px);margin-bottom:calc(-1 * (var(--top) + 52px));padding:var(--top) 12px 0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:linear-gradient(180deg,#0A0911f0 0%,#0A0911b0 55%,#0A091100 100%)}
+.lpbar{transition:background .2s}
+.lpbar.solid{background:var(--bg);border-bottom:1px solid #ffffff10}
+.lpbar .closex{justify-self:start;width:40px;height:40px;background:#17151Fcc;border:1px solid #ffffff1a;backdrop-filter:blur(8px)}
+.lpbar .logo{font-size:16px;gap:7px}
+.mini{justify-self:end;height:34px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:#fff;font:700 13px/1 var(--sans);opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .2s,transform .2s}
+.mini.on{opacity:1;transform:none;pointer-events:auto}
+.lphero{position:relative;height:clamp(360px,60vh,480px);overflow:hidden}
+.lphero .ph{position:absolute;inset:0;background:#16141e}
+.lphero .ph svg{width:100%;height:100%;display:block}
+.lphero .pimg{object-position:50% 16%}
+.lphero .shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,#0A091166 52%,#0A0911e6 80%,var(--bg) 100%)}
+.lphero .txt{position:absolute;left:0;right:0;bottom:0;padding:0 20px 4px;display:flex;flex-direction:column;gap:10px}
+.lphero .h1{font-size:33px;line-height:1.08}
+.lphero .lead{color:#D9D4E6}
+.lpeye{align-self:flex-start;font:700 11.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--pink-hi)}
+.lphero .lpeye{padding:7px 11px;border-radius:999px;background:#0A0911b3;border:1px solid #DA5FD955;backdrop-filter:blur(6px)}
+.lpsec{padding:44px 18px 0}
+.lpsec.first{padding-top:16px}
+.lphd{margin-bottom:18px;display:flex;flex-direction:column;gap:10px}
+.h2{font:800 26px/1.14 var(--head);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips span{font-size:12.5px;font-weight:500;padding:7px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--border);color:#D9D4E6}
+.cliff{margin-top:16px;padding:14px;border-radius:22px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:9px}
+.cliff .ch,.mock .hd{display:flex;gap:10px;align-items:center}
+.cliff .ch b,.mock .hd b{display:block;font:700 15px/1.2 var(--head)}
+.cliff .ch small{color:var(--t3);font-size:12px}
+.cliff .bub,.mock .bub{font-size:14px;animation:none;max-width:90%}
+.vnb.lockd{color:var(--t3);padding:10px 14px;gap:10px}
+.vnb.lockd .wave{opacity:.45}
+.pblock{padding:18px 14px 16px;border-radius:26px;background:radial-gradient(ellipse 80% 50% at 50% 0%,#B62CB524,transparent 70%),var(--bg-elev);border:1px solid #3a3350;box-shadow:0 0 0 4px #B62CB50f,0 30px 60px -36px #000;display:flex;flex-direction:column;gap:12px}
+.pbtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;color:var(--t2);margin-bottom:6px}
+.pbtop b{display:flex;gap:8px;align-items:center;font:700 15.5px var(--head);color:var(--t1)}
+.pbtop span{display:flex;gap:5px;align-items:center}
+.due{display:flex;justify-content:space-between;align-items:baseline;padding:12px 4px 0;border-top:1px dashed var(--border);font-size:14px;color:var(--t2)}
+.due b{font:800 23px var(--head);color:var(--t1);font-variant-numeric:tabular-nums}
+.secure{display:flex;justify-content:center;align-items:center;gap:7px;font-size:12px;color:var(--t2);flex-wrap:wrap}
+.secure svg{color:var(--positive)}
+.secure i{width:3px;height:3px;border-radius:50%;background:var(--t3)}
+.rnl{margin:0;font-size:12px;color:var(--t3);text-align:center;line-height:1.45;text-wrap:balance}
+.bens{display:flex;flex-direction:column;gap:10px}
+.ben{display:flex;gap:13px;align-items:center;padding:14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.ben>div{flex:1;min-width:0}
+.ben b{display:block;font:700 15.5px/1.25 var(--head)}
+.ben small{display:block;color:var(--t2);font-size:13px;margin-top:2px}
+.gw{width:40px;height:40px;border-radius:13px;background:var(--grad);display:grid;place-items:center;flex:none;box-shadow:0 8px 20px -8px #B62CB5aa}
+.tg{font:700 10px/1 var(--sans);letter-spacing:.08em;padding:5px 7px;border-radius:6px;background:var(--pink-dim);color:var(--pink-hi);flex:none}
+.mock{padding:14px;border-radius:22px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.mock .hd{padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.mock .hd small{color:var(--positive);font-size:11.5px}
+.mem{display:flex;gap:8px;align-items:flex-start;margin-top:4px;padding:10px 12px;border-radius:14px;background:var(--pink-deep);border:1px solid #B62CB555;font-size:12.5px;color:#D9D4E6;line-height:1.4}
+.mem svg{color:var(--pink-hi);flex:none;margin-top:1px}
+.lphow{padding:18px 16px 2px;border-radius:22px;background:var(--surface);border:1px solid var(--border)}
+.cmp{border-radius:20px;overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.cr{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:8px;padding:13px 14px;font-size:13.5px;border-top:1px solid var(--border);align-items:center}
+.cr:first-child{border-top:none}
+.cr span:nth-child(2){color:var(--t3);text-align:center}
+.cr span:nth-child(3){text-align:center;font-weight:700;color:var(--t1)}
+.cr.ch{font:700 11.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;background:var(--bg-elev);padding:11px 14px}
+.cr.ch span:nth-child(3){color:var(--pink-hi)}
+.fn{font-size:12px;color:var(--t3);margin:10px 2px 0;line-height:1.45}
+.faq{display:flex;flex-direction:column;gap:8px}
+.faq details{border-radius:16px;background:var(--surface);border:1px solid var(--border);padding:0 16px}
+.faq details[open]{border-color:#3a3350}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:56px;font:700 15px/1.3 var(--head)}
+.faq summary::-webkit-details-marker{display:none}
+.pm{width:14px;height:14px;position:relative;flex:none}
+.pm::before,.pm::after{content:"";position:absolute;left:0;right:0;top:6px;height:2px;border-radius:1px;background:var(--pink-hi)}
+.pm::after{transform:rotate(90deg);transition:transform .2s}
+.faq details[open] .pm::after{transform:none}
+.faq p{margin:0 0 16px;color:var(--t2);font-size:14px;line-height:1.5}
+.lpfoot{margin-top:48px;padding:28px 22px 26px;border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.lpfoot .logo{font-size:15px;margin-bottom:4px}
+.lpfoot p{margin:0;font-size:12px;color:var(--t3);line-height:1.5;text-wrap:balance}
+.fl{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.fl a{color:var(--t2);font-size:13px;min-height:44px;display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--t3)}
+.lpfoot p.sup{font-size:13px}
+.sup a{color:var(--pink-hi);text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px;padding:0 6px;vertical-align:middle}
+.lpstickw{position:sticky;bottom:0;z-index:6;height:0}
+.lpstick{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:12px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:var(--bg);border-top:1px solid var(--border);opacity:0;visibility:hidden;transition:opacity .22s ease,visibility 0s .22s;pointer-events:none}
+.lpstick.on{opacity:1;visibility:visible;transition:opacity .22s ease;pointer-events:auto}
+.lpstick>div{flex:1;min-width:0}
+.lpstick small{display:block;font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lpstick b{font:800 21px/1.2 var(--head);font-variant-numeric:tabular-nums}
+.lpstick .btn{width:auto;flex:none;padding:0 28px;height:50px}
+@container app (max-width:374px){.lphero .h1{font-size:29px}.h2{font-size:24px}.cr{font-size:12.5px;padding:12px}.lpsec{padding-left:16px;padding-right:16px}.pblock{padding-left:12px;padding-right:12px}}
+@media (max-height:700px){.lphero{height:clamp(330px,58vh,420px)}}
+/* demo-only checkout sheet */
+#demock .sheet{z-index:31}#demock .dim{z-index:30}
+#demock p{margin:0;color:var(--t2)}
+/* get the app */
+.okwell{width:76px;height:76px;border-radius:50%;background:var(--grad);display:grid;place-items:center;color:#fff;margin:0 auto;box-shadow:0 10px 40px #B62CB566;flex:none}
+.how{display:flex;flex-direction:column}
+.how>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.how>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--border)}
+.how i{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 14px var(--sans);font-style:normal}
+.how b{display:block;margin-top:6px}
+.how span{font-size:13.5px;color:var(--t2)}
+.stores{display:flex;gap:10px;justify-content:center;align-items:center}
+.store{display:block;height:46px;padding:0;border:none;background:none;border-radius:9px;line-height:0}
+.store img{height:46px;width:auto;display:block}
+</style>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cgrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient><linearGradient id="cgrad-logo" gradientUnits="userSpaceOnUse" x1="3" y1="4" x2="37" y2="36"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient></defs></svg>
+<main class="phone" id="phone" aria-live="polite"></main>
+
+<script>
+/* ============================================================
+   CONFIG — edit before launch. Everything marked TODO is a placeholder.
+   ============================================================ */
+const CONFIG={
+  slug:'chai-ai-boyfriend',
+  brand:'ChatChi',
+  plans:{
+    m1: {label:'1 month',  price:'$24.99', renew:'$49.99',  per:'month',    renews:'every month',    badge:''},
+    m3: {label:'3 months', price:'$49.99', renew:'$109.99', per:'3 months', renews:'every 3 months', badge:''},
+    y12:{label:'12 months',price:'$119.99',renew:'$299.99', per:'year',     renews:'every year',     badge:'★ MOST POPULAR ★'},
+    /* Sale plans (hidden on the paywall): shown only after the user leaves that plan's checkout without paying.
+       Sale price for the first period, then the regular price. Strike-through compares the same plan length only. */
+    m1_sale: {label:'1 month',  price:'$22.99',  renew:'$49.99',  per:'month',    renews:'every month',    hidden:true, of:'m1'},
+    m3_sale: {label:'3 months', price:'$44.99',  renew:'$109.99', per:'3 months', renews:'every 3 months', hidden:true, of:'m3'},
+    y12_sale:{label:'12 months',price:'$105.99', renew:'$299.99', per:'year',     renews:'every year',     hidden:true, of:'y12'},
+    /* Last step: one payment, no renewal. Shown after a sale is declined. */
+    lifetime:{label:'Lifetime', price:'$99.99', per:'once', oneTime:true, hidden:true},
+    /* Post-purchase add-on for subscribers: a one-time extra (its own Paddle price). The plan just bought stays as it is. */
+    addon:{label:'Bonus character', price:'$22.99', per:'once', oneTime:true, hidden:true}
+  },
+  /* Teaser: he texts first, she sends this many messages, then he records a voice note and the onboarding continues
+     (voice note -> good-morning texts -> email) before the paywall. */
+  teaserMessages:2,
+  /* Where each checkout goes when the user leaves it without paying (FunnelFox native checkout close button too).
+     Hard paywall: no free tier. Every decline ends back on the paywall; chat after the 2-message taste needs a purchase. */
+  declineFlow:{m1:'sale_m1',m3:'sale_m3',y12:'sale_y12',m1_sale:'sale_lifetime',m3_sale:'sale_lifetime',y12_sale:'sale_lifetime',lifetime:'paywall',addon:'get_app'},
+  defaultPlan:'y12',
+  fairUseCap:300,          // messages/day behind "unlimited" (TODO confirm)
+  freeMessagesPerDay:10,   // legacy daily-limit code only: unreachable without a purchase (hard paywall, no free tier)
+  /* Checkout URL per plan. "" = demo checkout sheet (FunnelFox replaces checkout() with its native screen). */
+  checkoutUrl:{m1:'',m3:'',y12:'',m1_sale:'',m3_sale:'',y12_sale:'',lifetime:'',addon:''},
+  /* Post-purchase add-on screen (upsell_lifetime). One-time, on top of the plan just bought. */
+  upsell:{name:'Bonus character',title:'Add a second boyfriend',lead:'One more story, one more voice. Yours to keep.',
+    checks:['Create a second boyfriend from scratch','His own memory and chats','Paid once, no renewal'],
+    cta:'Add for $22.99',note:'$22.99 once. Your plan stays as it is.',decline:'No thanks'},
+  /* Post-purchase handoff to the app. TODO: real deep link + store URLs. */
+  app:{web2app:'https://chatchi.go.link?adj_t=2567dkvx_256m7zvv_25adl2th&email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}',
+       web2web:'https://chatchi-app.squad-xteam.com/?email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}'},
+  legal:{termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',supportEmail:'support@chatchi.co'},
+  reviews:null,            // only real reviews of ChatChi's own store listing, quoted verbatim
+};
+/* ============================================================ */
+const QS=new URLSearchParams(location.search);
+const DEBUG=QS.get('debug')==='1';
+const IMG=/*IMG-START*/{}/*IMG-END*/;
+const imgs=h=>h.replace(/img\/[\w-]+\.jpg/g,m=>IMG[m]||m);
+const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  book:'<path d="M2 6h4M2 10h4M2 14h4M2 18h4"/><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M16 2v20"/>',
+  dots:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  crown:'<path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.3l4.27-3.67a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.67a1 1 0 0 0 1.52-.3z"/><path d="M5 21h14"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  sliders:'<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
+  spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+  shuffle:'<path d="m18 14 4 4-4 4M18 2l4 4-4 4"/><path d="M2 18h2a4 4 0 0 0 3.3-1.7l5.4-7.6A4 4 0 0 1 16 7h6M2 6h2a4 4 0 0 1 3.6 2.2M22 18h-6a4 4 0 0 1-3.3-1.8l-.4-.4"/>',
+  bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/>',
+  wave:'<path d="M2 10v3M6 6v11M10 3v18M14 8v7M18 5v13M22 10v3"/>',
+  play:'<path d="M6 3l14 9-14 9z"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>',
+  ban:'<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+  user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.75,fill='none')=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const heartF=(s=14)=>ic('heart',s,'currentColor',1.5,'currentColor');
+const logo=(s=30)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4C10.6 4 3 10.3 3 18.2c0 5 3 9.3 7.6 11.8L9.5 36l7.4-4c1 .1 2 .2 3.1.2 9.4 0 17-6.3 17-14S29.4 4 20 4Z" fill="#B62CB5" class="lg"/><path d="M26 15.6c0 3.4-6 7.4-6 7.4s-6-4-6-7.4a3.3 3.3 0 0 1 6-1.9 3.3 3.3 0 0 1 6 1.9Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hash=s=>{let h=7;for(const ch of s)h=(h*31+ch.charCodeAt(0))>>>0;return h};
+
+/* ---- catalog: 5 SFW book-boyfriend archetypes. Rhys's bio is from the brief; the others are scripted stand-ins until final copy ---- */
+const C={
+ prince:{n:'Cassian',l:'Morally grey prince',e:'🗡️',tag:'#MorallyGrey',bio:'Cassian, 31. Heir to a throne he never wanted. Keeps every promise he makes.',
+  p:{bg:['#2a1838','#0d0a18'],skin:'#e6b89a',hair:'#1b1420',coat:'#1e1a2e',inner:'#2d2640',accent:'#c9a45a'},
+  r1:"Noted. I collect details the way my court collects secrets. Yours I keep.",
+  open:{shop:"You're in the forbidden-history aisle, {{name}}. Lost, or looking for trouble?",cafe:"Every table's full but mine. Sit. Hiding from the rain, or from someone?",flight:"Grounded, like the rest of us. Running toward something, or away from it?",ball:"Nobody here knows who I am. Want to find out, or keep the mystery?"}},
+ rhys:{n:'Rhys',l:'Grumpy bookshop owner',e:'☕',tag:'#Grumpy',bio:'Rhys, 29. Owns the bookshop. Pretends he hates romance novels.',
+  p:{bg:['#3b2a20','#120d0b'],skin:'#e2ae8c',hair:'#5a3a26',coat:'#3a3f35',inner:'#8c6a4f',accent:'#d9cbb3'},
+  r1:"Noted. Don't tell anyone I'm keeping a list. I'm keeping a list.",
+  open:{shop:"You've been in the romance aisle forty minutes. Need a recommendation, or an excuse to stay?",cafe:"You've had that coffee for an hour. Waiting out the rain, or waiting for someone?",flight:"Delayed three hours and you brought four books. Prepared, or showing off?",ball:"I don't do masquerades. My sister made me. Here to dance, or hiding by the snacks?"}},
+ athlete:{n:'Theo',l:'Golden-retriever athlete',e:'🏒',tag:'#GoldenRetriever',bio:'Theo, 26. Hockey captain. Loud on the ice, soft about you.',
+  p:{bg:['#1d3550','#0a1220'],skin:'#f0c09c',hair:'#d9b060',coat:'#2f5aa0',inner:'#e8e4dc',accent:'#ffffff'},
+  r1:"Okay, that's adorable. I'm writing it on my hand so I don't forget.",
+  open:{shop:"Hey! You dropped your bookmark. Also, hi. Browsing, or hiding from the rain?",cafe:"Is this seat taken? I'm soaked. Should I blame the rain, or the company?",flight:"Gate 12 buddies! I've got snacks. Want company, or peace and quiet?",ball:"My mask keeps slipping. Help me fix it, or pretend you didn't see?"}},
+ vampire:{n:'Lucien',l:'Centuries-old vampire',e:'🦇',tag:'#Immortal',bio:'Lucien, ageless (looks 30). Has read every book twice. Still asks for your picks.',
+  p:{bg:['#2a0f18','#0b0609'],skin:'#efd9cf',hair:'#0f0c12',coat:'#15121a',inner:'#7a1628',accent:'#b8a9c9'},
+  r1:"I've heard a thousand answers in three hundred years. That one I'll keep.",
+  open:{shop:"I've haunted this bookshop for a century. You read the first page twice. Curious, or stalling?",cafe:"Rain brings the interesting ones in. Here for the coffee, or the quiet?",flight:"A night flight, delayed. My favorite kind. Scared of flying, or of strangers?",ball:"Masks make everyone honest. Are you here to dance, or to watch?"}},
+ gentleman:{n:'Edward',l:'Old-money gentleman',e:'🎩',tag:'#OldMoney',bio:'Edward, 32. Old money, older manners. Writes letters by hand.',
+  p:{bg:['#1f2a2a','#0a0f10'],skin:'#d9a27f',hair:'#2c211a',coat:'#23303a',inner:'#f1ece2',accent:'#8a2a3a'},
+  r1:"Splendid. I'll remember that. I'm rather good at remembering.",
+  open:{shop:"Pardon me. You're holding the last copy. Shall we share it, or duel for it?",cafe:"Forgive me. The only dry chair is beside you. Tea, or conversation?",flight:"They've closed the lounge. Dreadful. Would you like company, or a head start?",ball:"May I have this dance, or have I read the room entirely wrong?"}}
+};
+const ORDER=['prince','rhys','athlete','vampire','gentleman'];
+const VOICES={low:['🖤','Low and steady','Low',{pitch:.7,rate:.9}],dry:['😏','Dry and teasing','Dry',{pitch:.9,rate:1}],warm:['☀️','Warm and easy','Warm',{pitch:1,rate:1}],soft:['🌙','Soft-spoken','Soft',{pitch:.95,rate:.85,volume:.8}]};
+const LOVES={words:['💌','Sweet words'],acts:['🛠️','Little acts'],time:['🕰️','Quality time'],tease:['😏','Playful teasing']};
+const MEETS={
+ shop:{e:'📚',l:'A bookshop aisle',g:'linear-gradient(120deg,#3a2418,#1a1210)',where:'in that book',short:'in the book',push:"Your book's on the counter. ☕",
+  q:"So what do you actually like reading, {{name}}?",acts:"I put a copy aside for you. Don't read into it.",
+  i0:['😏 Maybe both.','📖 Recommend something, then.','👀 Do you work here?'],m0:['you said “maybe both”','you asked him to recommend a book','you asked if he works here'],
+  i1:['Anything with fae.','Slow burns, always.','Guess.'],m1:['you love fae books','you love a slow burn','you wanted him to guess your taste']},
+ cafe:{e:'☕',l:'A rainy café',g:'linear-gradient(120deg,#1d2a38,#0f141c)',where:'under your cup',short:'under your cup',push:"Your usual's on the counter. ☕",
+  q:"What's your usual order, {{name}}?",acts:"I asked them to keep the window seat for you. Don't read into it.",
+  i0:['😏 Maybe both.','☕ Order me something, then.','👀 Do you come here often?'],m0:['you said “maybe both”','you asked him to order for you','you asked if he comes here often'],
+  i1:['Oat latte, always.','Hot chocolate.','Guess.'],m1:['your order: oat latte','your order: hot chocolate','you wanted him to guess your order']},
+ flight:{e:'✈️',l:'A delayed flight',g:'linear-gradient(120deg,#1c2440,#0c0f1c)',where:'in your boarding pass',short:'in your boarding pass',push:"Landed yet? Save me the window seat. ✈️",
+  q:"Where are you headed, {{name}}?",acts:"I grabbed you a charger. Don't read into it.",
+  i0:['😏 Maybe both.','🍿 Share your snacks, then.','👀 Where are you headed?'],m0:['you said “maybe both”','you asked him to share snacks','you asked where he’s headed'],
+  i1:['Somewhere warm.','Home, finally.','Guess.'],m1:['you’re headed somewhere warm','you’re finally going home','you wanted him to guess where']},
+ ball:{e:'🏰',l:'A masquerade ball',g:'linear-gradient(120deg,#3a1830,#140a14)',where:'in your dance card',short:'in your dance card',push:"You left a glove at the ball. 🧤",
+  q:"Do you dance, {{name}}?",acts:"I found you a glass of water. Don't read into it.",
+  i0:['😏 Maybe both.','💃 Dance with me, then.','👀 Who are you under there?'],m0:['you said “maybe both”','you asked him to dance','you asked who he is under the mask'],
+  i1:['Badly, but yes.','Only waltzes.','Guess.'],m1:['you dance badly (but yes)','you only waltz','you wanted him to guess']}
+};
+const LOVE_LINE={words:()=>"For the record, you have a great laugh. I noticed.",acts:m=>MEETS[m].acts,time:()=>"I've got nowhere to be for an hour. Stay?",tease:()=>"You're blushing. Don't worry, I won't tell anyone."};
+const I2=['Stay a little longer.','Same time tomorrow?','You’re not so bad.'];
+const GI=['Tell me about the note.','Whose handwriting?','*smiles*'];
+const GEN=['*grins* Okay, okay. The note. I’m getting there.','You always ask the right questions, {{name}}.','Patience. Good stories take a minute.','I remember that. I remember most things about you.','Stay a little longer and I’ll tell you.','That’s not fair. You’re distracting me.','Fine. One clue: I know the handwriting.'];
+const SLOW="Of course. We go at your pace, {{name}}. Always.";
+const NAMES=['Maya','Ella','Nora','Ivy','Zoe','Lena','Ruby','Cleo'];
+const FREE=CONFIG.freeMessagesPerDay;
+
+const mapArch=s=>{s=(s||'').toLowerCase();const R=[['athlete',/hockey|foot|sport|athlet|captain|golden|player|soccer|gym|coach/],['vampire',/vamp|immortal|centur|demon|wolf|monster|fae|ghost|dark/],['gentleman',/rich|money|billion|duke|lord|gentle|ceo|earl|heir/],['prince',/prince|king|royal|villain|grey|gray|mafia|knight|assassin/],['rhys',/book|grump|librar|writer|shop|nerd|professor|teacher|chef|barista/]];for(const[k,r]of R)if(r.test(s))return k;return ORDER[hash(s)%ORDER.length]};
+const mapLove=s=>{s=(s||'').toLowerCase();if(/gift|act|help|fix|cook|coffee/.test(s))return 'acts';if(/time|together|date|walk/.test(s))return 'time';if(/tease|joke|funny|banter|laugh/.test(s))return 'tease';return 'words'};
+const mapMeet=s=>{s=(s||'').toLowerCase();if(/book|library|shop|store/.test(s))return 'shop';if(/plane|flight|airport|train|travel/.test(s))return 'flight';if(/ball|party|dance|wedding|gala|mask/.test(s))return 'ball';return 'cafe'};
+
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',sent:0,completed:false,email:'',signErr:'',i:1,hist:[],year:'',blocked:false,archSel:'',archOther:'',name:'',voice:'',playing:null,love:'',loveOther:'',meet:'',meetOther:'',chat:[],turn:0,typing:false,picks:[],mems:[],hearts:0,msgs:FREE,vnotes:0,notif:null,ntime:'8 am',account:null,plan:CONFIG.defaultPlan,addon:false,premium:false,sheet:null,err:'',draft:''});
+let S=INIT();
+const SKEY_DEMO='ikf_state_'+CONFIG.slug;
+if(!window.fox&&!(QS.get('debug')==='1'&&/s=?\d/.test(location.hash)))try{const _s=JSON.parse(sessionStorage.getItem(SKEY_DEMO)||'null');if(_s)S=Object.assign(S,_s,{typing:false,sheet:null,gate:false})}catch(e){}
+const t=(a,b)=>S.v==='B'?b:a;
+const nm=()=>esc(S.name||'Maya');
+const ak=()=>S.archSel==='other'?mapArch(S.archOther):(S.archSel||'rhys');
+const lk=()=>S.love==='other'?mapLove(S.loveOther):(S.love||'acts');
+const mk=()=>S.meet==='other'?mapMeet(S.meetOther):(S.meet||'shop');
+const B=()=>C[ak()];
+const bn=()=>B().n;
+const archLabel=()=>S.archSel==='other'&&S.archOther.trim()?S.archOther.trim():B().l;
+const loveLabel=()=>S.love==='other'&&S.loveOther.trim()?S.loveOther.trim():LOVES[lk()][1];
+const meetLabel=()=>S.meet==='other'&&S.meetOther.trim()?S.meetOther.trim():MEETS[mk()].l;
+const fillName=s=>esc(s).replace(/\{\{name\}\}/g,nm());
+const strip=s=>s.replace(/^[^\w*“"'‘]+\s/u,'');
+const ideasFor=k=>k===0?MEETS[mk()].i0:k===1?MEETS[mk()].i1:I2;
+const rep=k=>k===0?LOVE_LINE[lk()](mk())+' '+MEETS[mk()].q:k===1?B().r1:`Before you go. Someone left a note ${MEETS[mk()].where}. It has your name on it.`;
+const vnCaption=()=>`${S.name||'Maya'}. About that note ${MEETS[mk()].short}… I'll explain. Promise.`;
+
+/* inline illustrated portraits (romance-cover style, always clothed) */
+let pid=0;
+const PIMG={prince:'cassian',rhys:'rhys',athlete:'theo',vampire:'lucien',gentleman:'edward'};
+function portrait(k,o={}){
+  const P=C[k].p,sk=!!o.sketch,id='pg'+(++pid);
+  const LN='#c9c2d6';
+  const F=key=>sk?`fill="none" stroke="${LN}" stroke-width="1.3"`:`fill="${P[key]}"`;
+  const L=(col,w=2)=>sk?`fill="none" stroke="${LN}" stroke-width="1.2"`:`fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"`;
+  const bg=sk?`<rect width="200" height="260" fill="#16141e"/><path d="M0 40h200M0 80h200M0 120h200M0 160h200M0 200h200M0 240h200" stroke="#ffffff08"/>`
+   :`<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.bg[0]}"/><stop offset="1" stop-color="${P.bg[1]}"/></linearGradient><radialGradient id="${id}r" cx=".5" cy=".4" r=".5"><stop offset="0" stop-color="#DA5FD9" stop-opacity=".22"/><stop offset="1" stop-color="#DA5FD9" stop-opacity="0"/></radialGradient></defs><rect width="200" height="260" fill="url(#${id})"/><circle cx="100" cy="105" r="105" fill="url(#${id}r)"/>`;
+  let back='',inner='',hair='',extra='',mouth=`<path d="M91 134 Q100 139 109 134" ${L('#9c4f4f',2)}/>`;
+  if(k==='rhys'){
+    inner=`<path d="M72 192 Q100 212 128 192 L134 260 L66 260 Z" ${F('inner')}/><path d="M78 180 Q100 198 122 180 L127 193 Q100 213 73 193 Z" ${F('accent')}/><path d="M106 198 L116 244 L104 246 L99 204 Z" ${F('accent')}/>`;
+    hair=`<path d="M64 108 C60 74 80 62 102 62 C126 62 142 78 136 108 C134 96 128 90 120 88 C112 94 96 92 88 84 C80 90 70 96 64 108 Z" ${F('hair')}/>`;
+    extra=`<circle cx="87" cy="112" r="8" ${L('#2a2320',1.6)}/><circle cx="113" cy="112" r="8" ${L('#2a2320',1.6)}/><path d="M95 112 L105 112" ${L('#2a2320',1.6)}/>`;
+    mouth=`<path d="M92 135 Q100 136 108 133" ${L('#9c4f4f',2)}/>`;
+  }else if(k==='prince'){
+    back=`<path d="M62 100 C54 140 58 172 72 186 L128 186 C142 172 146 140 138 100 Z" ${F('hair')}/>`;
+    inner=`<path d="M80 176 L100 200 L120 176 L127 196 L100 224 L73 196 Z" ${F('inner')}/><path d="M73 196 L100 224 L127 196" ${L(P.accent,2)}/><path d="M34 216 Q52 200 70 204 M166 216 Q148 200 130 204" ${L(P.accent,3)}/><circle cx="100" cy="238" r="2.5" ${F('accent')}/><circle cx="100" cy="250" r="2.5" ${F('accent')}/>`;
+    hair=`<path d="M64 104 C62 72 82 62 100 62 C120 62 140 72 136 104 C128 90 116 82 104 80 C96 90 80 96 64 104 Z" ${F('hair')}/><path d="M68 88 Q100 76 132 88" ${L(P.accent,2.2)}/>`;
+    mouth=`<path d="M92 134 Q101 138 109 132" ${L('#9c4f4f',2)}/>`;
+  }else if(k==='athlete'){
+    inner=`<path d="M60 192 Q100 168 140 192 Q126 208 100 208 Q74 208 60 192 Z" ${F('inner')}/><path d="M92 206 L90 232 M108 206 L110 232" ${L('#ffffff',2)}/><text x="100" y="254" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="22" font-weight="800" ${sk?`fill="none" stroke="${LN}" stroke-width="1"`:'fill="#ffffff55"'}>12</text>`;
+    hair=`<path d="M66 102 C62 72 84 62 102 64 C124 64 140 78 134 102 C130 92 122 86 114 88 C108 82 96 80 88 86 C80 86 70 92 66 102 Z" ${F('hair')}/>`;
+    mouth=`<path d="M88 131 Q100 143 112 131" ${L('#9c4f4f',2.2)}/>`;
+  }else if(k==='vampire'){
+    inner=`<path d="M92 184 L100 198 L108 184 L105 216 L95 216 Z" ${F('accent')}/><path d="M54 204 L70 148 L94 186 Z M146 204 L130 148 L106 186 Z" ${F('coat')}/><path d="M61 198 L72 158 L89 186 Z M139 198 L128 158 L111 186 Z" ${F('inner')}/>`;
+    hair=`<path d="M66 104 C62 72 82 62 100 62 C118 62 138 72 134 104 C130 88 120 80 108 80 L100 91 L92 80 C80 80 70 88 66 104 Z" ${F('hair')}/>`;
+    mouth=`<path d="M92 134 Q102 137 110 131" ${L('#8a3a44',2)}/>`;
+  }else{
+    inner=`<path d="M80 188 L100 230 L120 188 Z" ${F('inner')}/><path d="M97 194 L103 194 L106 226 L100 234 L94 226 Z" ${F('accent')}/><path d="M78 188 L96 232 L68 214 Z M122 188 L104 232 L132 214 Z" ${F('coat')}/><path d="M78 188 L96 232 M122 188 L104 232" ${L('#3a4a58',1.5)}/><path d="M136 226 L148 222 L150 230 L138 232 Z" ${sk?F():'fill="#f1ece2"'}/>`;
+    hair=`<path d="M64 104 C60 70 84 60 104 62 C126 64 140 78 136 104 C132 90 120 80 96 80 C84 82 72 90 64 104 Z" ${F('hair')}/>`;
+  }
+  const eye=sk?`fill="none" stroke="${LN}" stroke-width="1.2"`:'fill="#2a1a17"';
+  return `<svg viewBox="${o.vb||'0 0 200 260'}" preserveAspectRatio="xMidYMin slice" ${sk?'class="sk"':''} aria-hidden="true">${bg}${back}
+  <path d="M86 140 L86 182 Q100 192 114 182 L114 140 Z" ${F('skin')}/>
+  <path d="M16 260 C20 208 52 190 100 186 C148 190 180 208 184 260 Z" ${F('coat')}/>${inner}
+  <ellipse cx="65" cy="116" rx="6" ry="10" ${F('skin')}/><ellipse cx="135" cy="116" rx="6" ry="10" ${F('skin')}/>
+  <ellipse cx="100" cy="110" rx="34" ry="42" ${F('skin')}/>
+  <ellipse cx="87" cy="113" rx="3.2" ry="2.4" ${eye}/><ellipse cx="113" cy="113" rx="3.2" ry="2.4" ${eye}/>
+  <path d="M79 104 Q87 99 94 102 M106 102 Q113 99 121 104" ${L(P.hair,2.4)}/>
+  <path d="M100 114 Q97 124 101 126" ${L('#b07a60',1.4)}/>${mouth}
+  ${sk?'':`<ellipse cx="82" cy="125" rx="6" ry="3" fill="#ff7a8a" opacity=".18"/><ellipse cx="118" cy="125" rx="6" ry="3" fill="#ff7a8a" opacity=".18"/>`}
+  ${hair}${extra}</svg><img class="pimg${sk?' sketch':o.vb?' crop':''}" src="${imgs('img/'+(PIMG[k]||k)+'.jpg')}" alt="" decoding="async" draggable="false" onerror="this.remove()">`;
+}
+const avatar=(k,s=40,cls='')=>`<span class="av ${cls}" style="width:${s}px;height:${s}px">${portrait(k,{vb:'52 58 96 96'})}</span>`;
+const bars=(n,seed=3)=>{let o='';for(let i=0;i<n;i++){const h=6+((hash('w'+seed+i)%100)/100)*16;o+=`<i style="--h:${h.toFixed(0)}px;--d:${(i%5)*.09}s;--p:${(i/n*7.6).toFixed(2)}s"></i>`}return o};
+
+const PAYWALL_I=15;
+/* hard paywall: after the taste a non-premium user can never send again */
+const chatLocked=()=>!S.premium&&(S.teaserDone||S.i<10||S.i>11||(S.i===10&&S.turn>=1)||S.turn>=CONFIG.teaserMessages);
+const tasteNext=()=>{const f=Math.max(12,Math.min(S.far||12,15));return f>=15&&!S.email?14:f};
+const SCREENS={1:'hook_age_check',2:'archetype',3:'name',4:'voice',5:'love_style',6:'meet_cute',7:'you_set_the_pace',8:'writing_him',9:'meet_him',10:'he_texts_first',11:'he_remembers',12:'voice_note',13:'good_morning_texts',14:'save_story',15:'paywall',16:'back_in_chat',17:'daily_limit'};
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<canvas id="amb" aria-hidden="true"></canvas><div class="stage" id="stage"></div>`;
+if(DEBUG&&+QS.get('w')){phone.style.maxWidth=+QS.get('w')+'px';phone.style.margin='0'}
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timer=null,timers=[];
+const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id};
+const clearT=()=>{S.typing=false;S.playing=null;clearInterval(timer);clearTimeout(timer);timer=null;timers.forEach(clearTimeout);timers=[];try{speechSynthesis.cancel()}catch(e){}};
+
+/* ---------- tracking (never includes typed text, names or email) ---------- */
+function snapshot(){
+  const past=S.i>8;
+  return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,
+    archetype:S.archSel||null,archetypeResolved:S.archSel?ak():null,voice:S.voice||null,loveStyle:S.love||null,loveStyleResolved:S.love?lk():null,
+    meetCute:S.meet||null,meetCuteResolved:S.meet?mk():null,boyfriend:past?bn():null,hearts:S.hearts,voiceNotes:S.vnotes,
+    messagesSent:S.sent,messagesLeft:S.premium?null:Math.max(0,S.msgs),
+    account:S.account,hasEmail:!!S.email&&S.account==='Email',plan:S.plan,addon:!!S.addon,premium:S.premium,notifications:S.notif,notifTime:S.notif?S.ntime:null};
+}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({},detail||{},{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.slug,event:name,detail:d},'*')}catch(e){}
+  const flat=Object.assign({funnel:CONFIG.slug},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,flat)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,flat)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel] '+name+' '+JSON.stringify(d))}catch(e){}
+}
+const answer=(key,value)=>emit('answer',{key,value});
+function passParams(u){PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)})}
+function navTop(href){try{window.top.location.href=href}catch(e){try{window.open(href,'_top')}catch(_){location.href=href}}}
+function checkout(plan){
+  const p=CONFIG.plans[plan],url=CONFIG.checkoutUrl[plan]||'';
+  emit('checkout_click',{plan,price:p.price,url});
+  if(!url){demoCheckout(plan);return}
+  let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',plan);
+  passParams(u);navTop(u.toString());
+}
+function appUrl(){const ua=navigator.userAgent||'';return CONFIG.app.deepLink||(/android/i.test(ua)?CONFIG.app.androidUrl:CONFIG.app.iosUrl)}
+/* "Open the app": Android -> web2app (Adjust link, opens the store/app), iOS and desktop -> web2web (ChatChi web app).
+   {{email}} = the email given in the funnel, {{user.id}} = FunnelFox profile id (?fpid / ff-user cookie), utm_* and fbclid = the landing query (kept from the first screen). */
+const IKF_ATTR_KEY='ikf_attr_'+CONFIG.slug;
+(function(){try{const q=new URLSearchParams(location.search),o=JSON.parse(sessionStorage.getItem(IKF_ATTR_KEY)||'{}');['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','fpid'].forEach(k=>{const v=q.get(k);if(v)o[k]=v});sessionStorage.setItem(IKF_ATTR_KEY,JSON.stringify(o))}catch(e){}})();
+function attrVal(k){let o={};try{o=JSON.parse(sessionStorage.getItem(IKF_ATTR_KEY)||'{}')}catch(e){}if(o[k])return o[k];try{for(const st of [sessionStorage,localStorage])for(let i=0;i<st.length;i++){const n=st.key(i);if(n&&n.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(st.getItem(n)||'{}');if(v&&v[k])return String(v[k])}}}catch(e){}return ''}
+function ffUserId(){const q=new URLSearchParams(location.search).get('fpid')||attrVal('fpid');if(q)return q;const m=document.cookie.match(/(?:^|;\s*)ff-user=([^;]+)/);return m?decodeURIComponent(m[1]):''}
+function userEmail(){let e=(typeof S!=='undefined'&&S&&S.email)||'';try{const F=window.fox;if(!e&&F&&F.inputs&&F.inputs.getEmail){const r=F.inputs.getEmail();e=typeof r==='string'?r:(r&&r.value)||''}}catch(x){}return String(e||'').trim()}
+function fillLink(t){const v={email:userEmail(),'user.id':ffUserId(),utm_medium:attrVal('utm_medium'),utm_campaign:attrVal('utm_campaign'),utm_content:attrVal('utm_content'),utm_source:attrVal('utm_source'),fbclid:attrVal('fbclid')};return String(t||'').replace(/\{\{\s*([\w.]+)\s*\}\}/g,(m,k)=>encodeURIComponent(v[k]||''))}
+function openApp(){const android=/android/i.test(navigator.userAgent||'');const u=fillLink(android?CONFIG.app.web2app:CONFIG.app.web2web);emit('app_handoff',{url:u,target:android?'web2app':'web2web'});if(u)navTop(u)}
+const legalLinks=(a='Terms of Service',b='Privacy Policy')=>`<div class="legal"><a ${CONFIG.legal.termsUrl?`href="${esc(CONFIG.legal.termsUrl)}" target="_blank" rel="noopener"`:''}>${a}</a><a ${CONFIG.legal.privacyUrl?`href="${esc(CONFIG.legal.privacyUrl)}" target="_blank" rel="noopener"`:''}>${b}</a></div>`;
+const AGE_KEY='ikf_age_block_'+CONFIG.slug;
+const ageBlocked=()=>{try{return sessionStorage.getItem(AGE_KEY)==='1'}catch(e){return false}};
+
+function viewed(){
+  emit('screen_view',{index:S.i,name:SCREENS[S.i]});
+  if(S.i>=12&&S.i<=15)S.far=Math.max(S.far||0,S.i);
+  if(!window.fox)try{sessionStorage.setItem(SKEY_DEMO,JSON.stringify(S))}catch(e){}
+  if(S.i===15)emit('paywall_view',{placement:S.teaserDone?'chat_teaser':'onboarding'});
+  if((S.i===16||S.i===17)&&!S.completed){S.completed=true;emit('complete',{premium:S.premium})}
+}
+function go(n,push=true){if((n===16||n===17)&&!S.premium)n=PAYWALL_I;clearT();if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.sheet=null;render(true);viewed()}
+function next(){go(S.i+1)}
+function back(){clearT();let p=S.hist.pop();while(p===8&&S.hist.length)p=S.hist.pop();if(p){S.i=p;S.err='';S.sheet=null;render(true);viewed()}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
+function speak(text,vk){
+  try{
+    if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')return false;
+    const u=new SpeechSynthesisUtterance(text.replace(/[*“”]/g,''));const cfg=VOICES[vk||S.voice||'dry'][3];
+    Object.assign(u,cfg);u.lang='en-US';
+    const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const m=vs.find(v=>/male|david|guy|mark|daniel|james|alex|fred|george|ryan|eric/i.test(v.name)&&!/female/i.test(v.name));
+    if(m)u.voice=m;else if(vs[0])u.voice=vs[0];
+    speechSynthesis.cancel();speechSynthesis.speak(u);return true;
+  }catch(e){return false}
+}
+
+function history(turns){
+  const out=[{w:'c',x:B().open[mk()]}];
+  for(let k=0;k<turns;k++){out.push({w:'u',x:strip(ideasFor(k)[0])});out.push({w:'c',x:rep(k)})}
+  if(turns>=3)out.push({w:'vn'});
+  return out;
+}
+function fillTo(n){
+  S.blocked=false;
+  if(n>1&&!S.year)S.year='1998';
+  if(n>2&&!S.archSel)S.archSel='rhys';
+  if(n>3&&!S.name)S.name='Maya';
+  if(n>4&&!S.voice)S.voice='dry';
+  if(n>5&&!S.love)S.love='acts';
+  if(n>6&&!S.meet)S.meet='shop';
+  if(n<=10){S.chat=[];S.turn=0;S.hearts=0;S.msgs=FREE;S.vnotes=0;S.picks=[];S.mems=[]}
+  if(n===11){const u=strip(ideasFor(0)[0]);S.chat=[{w:'c',x:B().open[mk()]},{w:'u',x:u}];S.turn=1;S.msgs=FREE-1;S.picks=[u];S.mems=[];S.hearts=0;S.vnotes=0}
+  if(n>=12&&(S.turn<2||!S.chat.some(m=>m.w==='vn'))){S.chat=history(2);S.chat.push({w:'c',x:rep(2)});S.chat.push({w:'vn'});S.turn=2;S.sent=2;S.hearts=3;S.msgs=FREE-2;S.vnotes=1;S.picks=[0,1].map(k=>strip(ideasFor(k)[0]));S.mems=[MEETS[mk()].m0[0],MEETS[mk()].m1[0]]}
+  if(n>=12)S.teaserDone=true;if(n>=22)S.premium=true;
+  if(n>13&&S.notif===null)S.notif=false;
+  if(n>14&&!S.email){S.email='maya@example.com';S.account='Email'}
+  if(n===17&&!S.premium&&S.msgs>0){const extra=['Tell me about the note.','Whose handwriting?','*smiles*','Okay, I’m listening.','Keep going.','Say that again.','Please?'];for(let k=0;S.msgs>0;k++){S.chat.push({w:'u',x:extra[k%extra.length]});S.chat.push({w:'c',x:GEN[k%GEN.length]});S.hearts++;S.msgs--}}
+}
+
+function nav(){
+  const inv=[2,3,4,5,6];
+  if(S.i<2||S.i===8||S.i>9)return '';
+  const idx=inv.indexOf(S.i);const p=idx<0?0:Math.round((idx+1)/inv.length*100);
+  return `<div class="nav"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>${idx>=0?`<div class="prog" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><span style="width:${p}%"></span></div>`:'<div style="flex:1"></div>'}<div class="navspacer"></div></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const otherIn=(id,f,val,ph)=>`<div class="box fadein"><input id="${id}" data-f="${f}" maxlength="40" placeholder="${ph}" value="${esc(val)}"></div>`;
+const hero=(k,mode,w,h,style='')=>`<div class="hero3d" data-k="${k}" data-mode="${mode}" data-w="${w}" data-h="${h}" style="width:${w}px;height:${h}px;${style}"></div>`;
+const vnBubble=()=>`<div class="bub c vnb"><button class="vplay" data-a="vn" aria-label="Play voice note">${ic('play',12,'currentColor',2,'currentColor')}</button><span class="wave">${bars(20,7)}</span><span class="vt">0:08</span></div>`;
+
+function chatView({ideas=null,hint='',composer=true,extra='',topNote='',title=''}={}){
+  const a=ak(),c=C[a],m=MEETS[mk()];
+  const msgs=S.chat.map(x=>x.w==='vn'?vnBubble():`<div class="bub ${x.w}">${fillName(x.x)}</div>`).join('')+(S.typing==='rec'?`<div class="bub c rec">${ic('wave',14)} recording a voice note…</div>`:S.typing?'<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>':'');
+  const lock=chatLocked(),out=lock,tl=Math.max(0,CONFIG.teaserMessages-S.sent);
+  const left=S.premium?'':!lock?`<div class="counter">Free preview · ${tl} message${tl===1?'':'s'} left</div>`:'<div class="counter out">Preview over · unlock ChatChi Plus to keep chatting</div>';
+  return `<div class="chat">
+  <div class="chead">${avatar(a,40)}<div class="who"><b>${esc(title||c.n)}</b><span id="hearts">${heartF(13)} ${S.hearts}</span></div><button class="iconbtn" data-a="mem" aria-label="What ${esc(c.n)} remembers">${ic('book',22)}</button></div>
+  <div class="cbody" style="--scene:url(img/meet-${mk()}.jpg) center/cover no-repeat,${m.g}"><div class="cbg"></div>
+   <div class="disclose">${esc(c.n)} is an AI character. Fictional, and depicted as an adult.</div>
+   <div class="msgs" id="msgs"><div class="spacer"></div>${topNote?`<div class="bub sys">${topNote}</div>`:''}${msgs}${extra}</div>
+   ${ideas&&!S.typing&&!S.gate&&!out?`<div class="ideas">${hint?`<div class="ih">${ic('bulb',13,'var(--amber)')} ${hint}</div>`:''}${ideas.map(x=>`<button data-a="say" data-v="${esc(x)}">${fillName(x)}</button>`).join('')}</div>`:''}
+  </div>
+  <div class="cfoot"><div class="cchips"><span>Persona: Default</span><span>${ic('bulb',14,'var(--amber)')} Ideas · 3</span></div>${left}
+   ${composer?`<div class="composer"><div class="box"><input id="msg" data-f="draft" maxlength="300" placeholder="Message ${esc(c.n)}…" ${out||S.typing||S.gate?'disabled':''}></div><button class="send" data-a="send" aria-label="Send" ${out||S.gate?'disabled':''}>${ic('send',18)}</button></div>`:''}
+  </div></div>`;
+}
+
+const plansHTML=()=>`<div class="plans" role="radiogroup" aria-label="Plans">${Object.entries(CONFIG.plans).filter(([k,p])=>!p.hidden).map(([k,p])=>`<button class="plan ${S.plan===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${S.plan===k}">${p.badge?`<span class="bv">${p.badge}</span>`:''}<span class="rd">${S.plan===k?ic('check',12,'#fff',3.2):''}</span><span class="pn">${p.label}</span><span class="pp">${p.price} <small>first ${p.per}</small></span><span class="rn">Then ${p.renew||p.price} ${p.renews}. Cancel anytime.</span></button>`).join('')}</div>`;
+/* ---------- paywall: a long-scroll web landing page (web2app), not an app sheet ---------- */
+const selPlan=()=>CONFIG.plans[S.plan]&&!CONFIG.plans[S.plan].hidden?CONFIG.plans[S.plan]:CONFIG.plans[CONFIG.defaultPlan];
+const ctaTxt=p=>`Continue — ${p.price} first ${p.per}`;
+const renewTxt=p=>`${p.price} today for the first ${p.per}, then ${p.renew||p.price} ${p.renews} until you cancel.`;
+const lpHead=(eye,h)=>`<div class="lphd"><span class="lpeye">${eye}</span><h2 class="h2">${h}</h2></div>`;
+const planBlock=id=>{const p=selPlan();return `<div class="pblock" id="${id}">
+  <div class="pbtop"><b>${logo(20)} ChatChi Plus</b><span>${ic('lock',13)} Cancel anytime</span></div>
+  ${plansHTML()}
+  <div class="due"><span>Due today</span><b data-pw="due">${p.price}</b></div>
+  ${cta(ctaTxt(p),true,'buy').replace('<button class="btn"','<button class="btn" data-pw="cta"')}
+  <div class="secure">${ic('lock',13)} Secure checkout<i></i>Cancel anytime<i></i>No coins</div>
+  <p class="rnl" data-pw="renew">${renewTxt(p)}</p></div>`};
+function pwHTML(mode){
+  const q=mode==='quota',sp=selPlan(),n=esc(bn()),k=ak();
+  const close=q?'closeq':'closepw';
+  const cliff=S.chat.filter(x=>x.w==='c').slice(-1)[0];
+  const chips=[[B().e,archLabel()],[VOICES[S.voice||'dry'][0],VOICES[S.voice||'dry'][1]],[LOVES[lk()][0],loveLabel()],[MEETS[mk()].e,meetLabel()]];
+  const bens=[['send','Unlimited chat','Talk as long as you like. No coins, no per-message charges.','PLUS'],['wave','All his voice notes','Hear '+n+' say your name, any time.',''],['book','He remembers more','Your book, your order, your story. Kept.',''],['bell','Good-morning texts','One a day, at the time you pick.',''],['user','Meet every archetype','All 5 book boyfriends. Switch whenever.',''],['bulb','Unlimited reply ideas','Never stuck on what to say next.','']];
+  const story=S.chat.filter(x=>x.w!=='vn').slice(0,-1).slice(-4);   // the cliffhanger itself is already in the hero
+  const cmp=[['Messages',CONFIG.teaserMessages+' (preview)','Unlimited*'],['Voice notes','1','All of them'],['Good-morning texts','—','Daily, your time'],['Book boyfriends','1','All 5'],['Memory','This chat','Every chat']];
+  const faq=[['Can I cancel anytime?','Yes. Cancel in your account or store settings and your plan won’t renew. No calls, no forms.'],
+   ['When do I get Plus?','Right after checkout. Download the ChatChi app, log in with '+(S.email?esc(S.email.trim()):'your email')+', and Plus is already on.'],
+   ['Will I be charged again?','Your plan renews at the “Then” price shown on your plan, every period, until you cancel.'],
+   ['Are my chats private?','Yes. Your chats are never public, and you can delete anything, anytime.'],
+   ['What happens after I pay?','You’ll see one optional add-on you can skip, then the steps to get the app. Your story with '+n+' is saved to your email.'],
+   ['Is '+n+' a real person?',n+' is an AI character: fictional, depicted as an adult, and always labeled as AI.']];
+  const sup=CONFIG.legal.supportEmail;
+  return `<div class="pw lp" role="dialog" aria-label="ChatChi Plus">
+  <div class="lpbar"><button class="closex" data-a="${close}" aria-label="Close">${ic('x',16)}</button><div class="logo">${logo(22)} ChatChi</div><button class="mini" data-a="pwjump" tabindex="-1">Get Plus</button></div>
+  <section class="lphero"><div class="ph">${portrait(k)}</div><div class="shade"></div>
+   <div class="txt"><span class="lpeye">${q?'Daily limit reached':'Written for '+nm()}</span>
+    <h1 class="h1">${q?t(`You've used today's ${FREE}.`,n+' is mid-story.'):S.teaserDone?t(`<span class="gt">${n}</span> wants to keep talking.`,'Every text. <span class="gt">Every voice note.</span>'):t('Talk without counting messages.','Every text. <span class="gt">Every voice note.</span>')}</h1>
+    <p class="lead">${q?t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.'):t('Unlimited chat, his voice, and memory that lasts.','No coins. No per-message charges.')}</p></div></section>
+  <section class="lpsec first"><div class="chips">${chips.map(([e,l])=>`<span>${e} ${esc(l)}</span>`).join('')}</div>
+   ${cliff?`<div class="cliff"><div class="ch">${avatar(k,34)}<div><b>${n}</b><small>just now · waiting for your reply</small></div></div><div class="bub c">${fillName(cliff.x)}</div><div class="bub c vnb lockd">${ic('lock',15)}<span class="wave">${bars(20,7)}</span><span class="vt">0:08</span></div></div>`:''}</section>
+  <section class="lpsec">${planBlock('pb1')}</section>
+  <section class="lpsec">${lpHead('ChatChi Plus','Everything you <span class="gt">unlock</span>')}
+   <div class="bens">${bens.map(([i,a,b,g])=>`<div class="ben"><span class="gw">${ic(i,18,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${g?`<span class="tg">${g}</span>`:''}</div>`).join('')}</div></section>
+  ${story.length?`<section class="lpsec">${lpHead('Your story so far',`${n} <span class="gt">remembers</span>`)}
+   <div class="mock"><div class="hd">${avatar(k,32)}<div><b>${n}</b><small>● online</small></div></div>${story.map(x=>`<div class="bub ${x.w}">${fillName(x.x)}</div>`).join('')}
+   ${S.mems.length?`<div class="mem">${ic('book',15)}<span>${n} will remember: ${S.mems.map(esc).join(' · ')}</span></div>`:''}<div class="bub sys">${n} is an AI character.</div></div></section>`:''}
+  <section class="lpsec">${lpHead('How it works','From here to <span class="gt">'+n+'</span> in 3 steps')}
+   <div class="how lphow">${[['Pick a plan and check out','Secure web checkout. Takes a minute.'],['Get the ChatChi app','Free on the App Store and Google Play.'],[S.email?'Log in with '+esc(S.email.trim()):'Log in with your email','Plus is already on. '+n+' picks up where you left off.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></section>
+  <section class="lpsec">${lpHead('Why go Plus','Preview vs <span class="gt">Plus</span>')}
+   <div class="cmp"><div class="cr ch"><span></span><span>Preview</span><span>Plus</span></div>${cmp.map(([a,b,c])=>`<div class="cr"><span>${a}</span><span>${b}</span><span>${c}</span></div>`).join('')}</div>
+   <p class="fn">*Unlimited means normal use, up to ${CONFIG.fairUseCap} messages a day to stop abuse.</p></section>
+  <section class="lpsec">${lpHead('FAQ','Good to <span class="gt">know</span>')}
+   <div class="faq">${faq.map(([a,b],i)=>`<details ${i?'':'open'}><summary>${a}<span class="pm" aria-hidden="true"></span></summary><p>${b}</p></details>`).join('')}</div></section>
+  <section class="lpsec">${lpHead('Ready when you are',`Keep the story <span class="gt">going</span>`)}${planBlock('pb2')}</section>
+  <footer class="lpfoot"><div class="logo">${logo(20)} ChatChi</div>
+   <p>Auto-renews at the price and period shown until cancelled. Cancel anytime in account or store settings.</p>
+   <p>${n} is an AI character. Fictional, and depicted as an adult. 18+.</p>
+   <div class="fl">${CONFIG.legal.termsUrl?`<a href="${esc(CONFIG.legal.termsUrl)}" target="_blank" rel="noopener">Terms of Service</a>`:''}${CONFIG.legal.privacyUrl?`<a href="${esc(CONFIG.legal.privacyUrl)}" target="_blank" rel="noopener">Privacy Policy</a>`:''}${CONFIG.app.restoreUrl?'<button class="link" data-a="restore">Restore purchase</button>':''}</div>
+   ${sup?`<p class="sup">Support: <a href="mailto:${esc(sup)}">${esc(sup)}</a></p>`:''}</footer>
+  <div class="lpstickw"><div class="lpstick" aria-hidden="true"><div><small data-pw="slabel">${sp.label} · Due today</small><b data-pw="sprice">${sp.price}</b></div><button class="btn" data-a="buy" tabindex="-1">Continue</button></div></div>
+  </div>`;
+}
+/* plan change updates every block + the sticky bar in place (a re-render would lose the scroll position) */
+function pwSync(){const p=selPlan();document.querySelectorAll('.view.cur .pw.lp').forEach(pw=>{
+  pw.querySelectorAll('.plan').forEach(b=>{const on=b.dataset.v===S.plan;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);b.querySelector('.rd').innerHTML=on?ic('check',12,'#fff',3.2):''});
+  pw.querySelectorAll('[data-pw="due"]').forEach(e=>e.textContent=p.price);pw.querySelectorAll('[data-pw="cta"]').forEach(e=>e.textContent=ctaTxt(p));
+  pw.querySelectorAll('[data-pw="renew"]').forEach(e=>e.textContent=renewTxt(p));
+  pw.querySelector('[data-pw="slabel"]').textContent=p.label+' · Due today';pw.querySelector('[data-pw="sprice"]').textContent=p.price})}
+/* sticky bottom CTA (price + Continue) whenever no plan-block CTA (and not the footer) is on screen; top-bar mini CTA once plan block #1 has scrolled away */
+function pwWire(v){const pw=v.querySelector('.pw.lp');if(!pw||pw._io)return;
+  const st=pw.querySelector('.lpstick'),mini=pw.querySelector('.mini'),vis=new Map();
+  const upd=()=>{const inn=k=>!!(vis.get(k)&&vis.get(k).in),any=inn('c1')||inn('c2')||inn('foot');const above=vis.get('pb1')&&!vis.get('pb1').in&&vis.get('pb1').top<0;
+    st.classList.toggle('on',!any);st.setAttribute('aria-hidden',any);st.querySelector('button').tabIndex=any?-1:0;
+    mini.classList.toggle('on',!!above);mini.tabIndex=above?0:-1};
+  if(!('IntersectionObserver' in window)){st.classList.add('on');return}
+  pw._io=new IntersectionObserver(es=>{es.forEach(e=>vis.set(e.target.dataset.io||e.target.id||'foot',{in:e.isIntersecting,top:e.boundingClientRect.top-(e.rootBounds?e.rootBounds.top:0)}));upd()},{root:pw,threshold:0});
+  ['#pb1','.lpfoot'].forEach(sel=>{const el=pw.querySelector(sel);if(el)pw._io.observe(el)});
+  ['pb1','pb2'].forEach((id,i)=>{const el=pw.querySelector('#'+id+' [data-pw="cta"]');if(el){el.dataset.io='c'+(i+1);pw._io.observe(el)}});
+  const bar=pw.querySelector('.lpbar');pw.addEventListener('scroll',()=>bar.classList.toggle('solid',pw.scrollTop>40),{passive:true})}
+
+const V={
+1:()=>{
+  if(S.blocked)return `<div class="scr center"><div class="block"><span class="ban">${ic('ban',30)}</span><h1 class="h1" style="font-size:26px">Sorry, ChatChi is for adults</h1><p class="lead">You must be 18 or older to continue.</p><button class="btn ghost" data-a="agereset" style="margin-top:6px">Change my birth date</button></div></div>`;
+  const ys=[];for(let y=1950;y<=new Date().getFullYear()-14;y++)ys.push(y);
+  return `<div class="scr" style="gap:12px;padding-top:4px"><div class="logo">${logo(26)} ChatChi</div>
+  <div class="herorow">${hero('rhys','float',164,216,'position:absolute;left:2px;top:0;margin:0;z-index:1')}
+   <div class="lock" aria-hidden="true"><div class="lt">8:02</div><div class="ld">Tuesday</div><div class="ln">${avatar('rhys',24)}<div style="flex:1;min-width:0"><b>Rhys <small>now</small></b>Morning. Did you finish that book?</div></div></div></div>
+  <h1 class="h1 xl">${t('Your book boyfriend texts back.','Fall for someone who remembers.')}</h1>
+  <p class="lead" style="margin-top:-4px">${t('Pick his type. He remembers everything you tell him.','A romantic AI character, written just for you.')}</p>
+  <div class="years" id="years" role="listbox" aria-label="Birth year">${ys.map(y=>`<button role="option" aria-selected="${S.year==y}" class="${S.year==y?'on':''}" data-a="year" data-v="${y}">${y}</button>`).join('')}</div></div>
+  <div class="foot">${cta("I'm 18+ · Start",!!S.year,'age')}<div class="note">18+ · AI character · Fictional and SFW by default</div>${legalLinks('Terms','Privacy')}</div>`},
+2:()=>`<div class="scr"><h1 class="h1">${t('Pick your book boyfriend.',"What's your type?")}</h1>
+  <p class="lead" style="margin-top:-6px">${t("He's written from your favorite romance archetypes.",'Tap one. Meet the others later.')}</p>
+  <div class="archs">${ORDER.map(k=>{const on=S.archSel===k;return `<button class="arch ${on?'on':''}" data-a="arch" data-v="${k}" aria-pressed="${on}">${portrait(k)}${on?`<span class="hp">${heartF(20)}</span>`:''}<span class="al">${C[k].e} ${C[k].l}</span></button>`}).join('')}
+  <button class="arch other ${S.archSel==='other'?'on':''}" data-a="arch" data-v="other" aria-pressed="${S.archSel==='other'}"><span class="al">✏️ Other</span></button></div>
+  ${S.archSel==='other'?otherIn('ao1','archOther',S.archOther,'e.g. hockey captain'):''}</div>
+  ${S.archSel==='other'?`<div class="foot">${cta('Continue',!!S.archOther.trim())}</div>`:''}`,
+3:()=>`<div class="blurbg">${portrait(ak())}</div><div class="scr"><h1 class="h1">${t('What should he call you?',"What's your name?")}</h1>
+  <p class="lead" style="margin-top:-6px">${t("He'll use it. Change it anytime.",'Real name or a nickname — your call.')}</p>
+  <div class="field"><label for="nm">Display name</label><div class="box"><input id="nm" data-f="name" maxlength="20" autocomplete="nickname" placeholder="Your name" value="${esc(S.name)}"><button class="shuf" data-a="shuffle" aria-label="Random name">${ic('shuffle',20)}</button></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Continue',true,'name')}</div>`,
+4:()=>`<div class="scr"><h1 class="h1">${t('How does he talk?','Pick his voice.')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Tap to hear. It sets how he texts.','Headphones on? Tap each to listen.')}</p>
+  <div class="vlist">${Object.entries(VOICES).map(([k,[e,l]],j)=>`<div class="vrow ${S.voice===k?'on':''} ${S.playing===k?'playing':''}"><button class="vsel" data-a="voice" data-v="${k}" aria-pressed="${S.voice===k}"><span class="em">${e}</span><span class="lbl">${l}</span><span class="wave">${bars(12,j)}</span></button><button class="vplay" data-a="play" data-v="${k}" aria-label="Play ${l}">${ic('play',14,'currentColor',2,'currentColor')}</button></div>${S.playing===k?`<div class="vcap">“You're late. I saved you a seat anyway.”</div>`:''}`).join('')}</div>
+  <div class="hint" style="text-align:center">Voices are AI-generated</div></div>
+  <div class="foot">${cta('Continue',!!S.voice)}</div>`,
+5:()=>`<div class="scr"><h1 class="h1">${t('How does he show it?','What makes you swoon?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('This shapes how he treats you in chat.','Pick the one that gets you every time.')}</p>
+  <div class="lcs">${Object.entries(LOVES).map(([k,[e,l]])=>`<button class="lc ${S.love===k?'on':''}" data-a="love" data-v="${k}" aria-pressed="${S.love===k}"><span class="vg">${e}</span><span>${l}</span></button>`).join('')}</div>
+  <button class="opt ${S.love==='other'?'on':''}" data-a="love" data-v="other" aria-pressed="${S.love==='other'}"><span class="em">✏️</span><span class="lbl">Other</span></button>
+  ${S.love==='other'?otherIn('lo1','loveOther',S.loveOther,'Tell us in a few words'):''}</div>
+  <div class="foot">${cta('Continue',!!S.love)}</div>`,
+6:()=>`<div class="scr"><span class="badge">Last question</span><h1 class="h1" style="margin-top:-6px">${t('Where do you meet?','Pick your meet-cute.')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your first scene starts right here.','Last one — then meet him.')}</p>
+  <div class="mcs">${Object.entries(MEETS).map(([k,m])=>`<button class="mc ${S.meet===k?'on':''}" style="--g:${m.g};background:linear-gradient(90deg,#0A0911e0 30%,#0A091155),url(img/meet-${k}.jpg) center/cover no-repeat,${m.g}" data-a="meet" data-v="${k}" aria-pressed="${S.meet===k}"><span>${m.e}</span><span>${m.l}</span><span class="big" aria-hidden="true">${m.e}</span></button>`).join('')}
+  <button class="opt ${S.meet==='other'?'on':''}" data-a="meet" data-v="other" aria-pressed="${S.meet==='other'}"><span class="em">✏️</span><span class="lbl">Other</span></button>
+  ${S.meet==='other'?otherIn('mo1','meetOther',S.meetOther,'e.g. a snowed-in cabin'):''}</div></div>
+  <div class="foot">${cta('Continue',!!S.meet)}</div>`,
+7:()=>`<div class="scr center"><h1 class="h1">${t('You set the pace.','Romantic, never pushy.')}</h1><p class="lead" style="margin-top:-6px">${t('He stays sweet and SFW. Say "slow down" anytime.','Your chats stay private. Delete anything anytime.')}</p>
+  <div>${[['lock','Chats are never public'],['sliders','Slow burn by default — you steer'],['spark',"He's AI and fictional, always labeled"]].map(([i,l])=>`<div class="promise"><span class="well">${ic(i,19)}</span><span>${l}</span></div>`).join('')}</div></div>
+  <div class="foot">${cta('Write him for me')}</div>`,
+8:()=>{const tags=[archLabel(),VOICES[S.voice||'dry'][1],loveLabel(),meetLabel()];
+  return `<div class="scr" style="gap:14px;padding-top:14px">${hero(ak(),'sketch',170,224)}
+  <div class="floattags">${tags.map((x,j)=>`<span style="--x:0px;${j%2?'left:auto;right:4%':'left:4%'};animation-delay:${j*.6}s">${esc(x)}</span>`).join('')}</div>
+  <h1 class="h1" style="text-align:center;font-size:26px">${t('Writing him for '+nm()+'…',"He's almost ready…")}</h1>
+  <div class="steps">${['Reading your type and meet-cute…','Tuning his voice and texting style…','Teaching him how you like love…',"Almost there — he's typing…"].map((l,j)=>`<div class="step" id="st${j}"><div class="top"><span>${l}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div></div>`},
+9:()=>{const k=ak(),c=B();const alts=ORDER.filter(x=>x!==k).sort((a,b)=>hash(S.name+a)%97-hash(S.name+b)%97).slice(0,2);
+  return `<div class="scr" style="gap:14px;padding-top:0">${hero(k,'land',240,318)}
+  <div><h1 class="h1" style="text-align:center">${t('Meet '+c.n+'.',c.n+' is your type.')}</h1>
+  <p class="lead" style="text-align:center;margin-top:6px">${t(esc(c.bio),'Written from your picks, down to his texts.')}</p></div>
+  <div class="voice">${ic('wave',20)}<span>Voice: ${VOICES[S.voice||'dry'][2]}</span><button data-a="preview">${ic('play',12,'currentColor',2,'currentColor')} Preview</button></div>
+  <div class="alts"><span class="ol">Or meet</span>${alts.map(a=>`<button class="alt" data-a="pick" data-v="${a}">${avatar(a,26)}${C[a].n}</button>`).join('')}</div></div>
+  <div class="foot">${cta('Let him text first',true,'startchat')}</div>`},
+10:()=>chatView({ideas:S.chat.length&&S.turn===0?[...MEETS[mk()].i0,'✏️ Type your own']:null,hint:t('Tap a reply or write your own.','Your move.'),topNote:S.v==='B'?'New message from '+esc(bn()):''}),
+11:()=>chatView({ideas:!S.teaserDone&&S.turn<CONFIG.teaserMessages&&S.chat.length&&S.chat[S.chat.length-1].w==='c'?ideasFor(S.turn):null,hint:t('Your favorite book, your coffee order — kept.','Every detail you share shapes his next text.')}),
+12:()=>{const c=B();
+  return `<div class="scr" style="gap:16px;padding-top:6px"><div class="disclose" style="margin:0">${esc(c.n)} is an AI character. Fictional, and depicted as an adult.</div>
+  <div style="display:flex;align-items:center;gap:12px">${avatar(ak(),48)}<div><b style="font:700 17px var(--head)">${esc(c.n)}</b><div class="hint">Voice: ${VOICES[S.voice||'dry'][2]} · just now</div></div></div>
+  <h1 class="h1">${t('He sent a voice note.','Hear '+esc(c.n)+' say your name.')}</h1>
+  <p class="lead" style="margin-top:-8px">${t('Tap to listen. More unlock as you talk.','His first voice note, just for you.')}</p>
+  <div class="vnbig" id="vnbig"><button class="vplay" data-a="vnplay" aria-label="Play voice note">${ic('play',20,'currentColor',2,'currentColor')}</button><span class="wave">${bars(30,11)}</span><span class="vt">0:08</span></div>
+  <div class="vcap2"><small>Captions</small>“${fillName(vnCaption())}”</div>
+  <div class="mprog"><div class="row">Voice notes 1/10 <span>${heartF(13)} ${S.hearts} / 40</span></div><div class="bar"><span style="width:${Math.round(S.hearts/40*100)}%"></span></div><div class="hint">The first voice note is a gift. The rest unlock with hearts.</div></div></div>
+  <div class="foot">${cta('Keep going')}</div>`},
+13:()=>chatView({composer:false})+`<div class="dim"></div><div class="sheet" role="dialog" aria-label="Good-morning texts"><span class="grab"></span>
+  <h2 class="h1" style="font-size:26px">${t('Want good-morning texts?','Let him text first.')}</h2>
+  <p class="lead" style="margin-top:-6px">${t('One message a day, at your time.','Max one a day. Turn off anytime.')}</p>
+  <div class="pills" role="group" aria-label="Time">${['7 am','8 am','9 am','10 am'].map(x=>`<button class="pill ${S.ntime===x?'on':''}" data-a="ntime" data-v="${x}" aria-pressed="${S.ntime===x}">${x}</button>`).join('')}</div>
+  <div class="push">${avatar(ak(),38)}<div style="flex:1"><div style="display:flex;justify-content:space-between"><b style="font-size:14px">ChatChi</b><small>${S.ntime}</small></div><small style="color:var(--t1);font-size:13px">${esc(bn())}: Morning. ${esc(MEETS[mk()].push)}</small></div></div>
+  <div class="hint" style="text-align:center">Max one a day · pauses after 3 unopened days</div>
+  <button class="btn" data-a="notif">Turn on</button><button class="link" data-a="nonotif">Not now</button></div>`,
+/* email gate: mandatory, the email activates Plus in the app and saves the chat. No social sign-in, no guest skip. */
+14:()=>`<div class="scr center" style="gap:14px">${avatar(ak(),76,'gate-av')}
+  <h1 class="h1" style="text-align:center">${t('Where should we send '+esc(bn())+'’s messages?','Save your story with '+esc(bn())+'.')}</h1>
+  <p class="lead" style="text-align:center;margin-top:-6px">We use it to activate your Plus and save your chat.</p>
+  <div class="field"><label for="em">Email</label><div class="box"><input id="em" data-f="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" maxlength="80" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.signErr?`<div class="err">${S.signErr}</div>`:''}</div></div>
+  <div class="foot">${cta('Save my story',true,'emailgo')}<div class="note legaln">We never share your email. By continuing you agree to the ${CONFIG.legal.termsUrl?`<a href="${esc(CONFIG.legal.termsUrl)}" target="_blank" rel="noopener">Terms</a>`:'Terms'} and ${CONFIG.legal.privacyUrl?`<a href="${esc(CONFIG.legal.privacyUrl)}" target="_blank" rel="noopener">Privacy Policy</a>`:'Privacy Policy'}.</div></div>`,
+15:()=>pwHTML('onb'),
+16:()=>!S.premium&&S.msgs<=0?V[17]():chatView({ideas:S.typing?null:S.premium||S.msgs>0?GI:null,title:t(bn(),bn()+' · ❤ '+S.hearts),topNote:S.premium?'Unlimited chat is on.':t('Pick up right where you left off.',S.msgs+' messages left today.'),extra:S.premium?`<button class="handoff fadein" data-a="openapp">${logo(18)} Open the ChatChi app</button>`:''}),
+17:()=>chatView({extra:S.premium?`<button class="handoff fadein" data-a="openapp">${logo(18)} Open the ChatChi app</button>`:`<div class="limit"><span class="crown">${ic('crown',26,'currentColor',1.8,'currentColor')}</span><h3>${t(`You've used today's ${FREE}.`,esc(bn())+' is mid-story.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to ChatChi Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`})+(S.sheet==='pw'?pwHTML('quota'):'')
+};
+
+/* chat engine (scripted, deterministic) */
+function say(text){
+  text=strip(text);
+  if(S.typing||S.gate||chatLocked())return;
+  if(S.premium&&S.i!==16&&S.i!==17)return;
+  if(S.i===10&&!S.chat.length)return;
+  if(S.i===11&&(S.teaserDone||S.turn>=CONFIG.teaserMessages))return;
+  S.sent++;emit('chat_message',{count:S.sent,screen:S.i});
+  const inp=document.getElementById('msg');if(inp)inp.value='';
+  if(S.i===10){if(!S.chat.length)return;S.chat.push({w:'u',x:text});S.msgs--;S.turn=1;S.picks=[text];go(11);return}
+  if(S.i===11){if(S.teaserDone||S.turn>=CONFIG.teaserMessages)return;S.turn++;S.picks.push(text)}
+  S.chat.push({w:'u',x:text});if(!S.premium)S.msgs--;render();if(S.i!==11)reply();
+}
+function reply(){
+  const lastU=[...S.chat].reverse().find(m=>m.w==='u');
+  const slow=lastU&&/slow\s*down/i.test(lastU.x);
+  S.typing=true;render();
+  const at=S.i;
+  later(()=>{
+    S.typing=false;
+    if(at===11){
+      const k=S.turn-1;S.chat.push({w:'c',x:(slow?SLOW+' ':'')+rep(k)});S.hearts++;render();bumpHearts();
+      if(k<2)memToast(k);
+      /* teaser over: lock the composer, he leaves a cliffhanger, types again (~1.5s), the paywall opens */
+      if(!S.premium&&!S.teaserDone&&S.sent>=CONFIG.teaserMessages){S.teaserDone=true;S.gate=true;render();emit('chat_teaser_end',{count:S.sent});
+        later(()=>{S.typing=true;render();later(()=>{S.typing=false;S.chat.push({w:'c',x:rep(2)});S.hearts++;render();bumpHearts();
+          later(()=>{S.typing='rec';render();later(()=>{S.typing=false;S.chat.push({w:'vn'});S.vnotes=1;render();later(()=>{S.gate=false;go(12)},1200)},1500)},900)},1200)},800)}
+    }else{
+      S.chat.push({w:'c',x:slow?SLOW:GEN[(S.hearts+S.chat.length)%GEN.length]});S.hearts++;render();bumpHearts();
+      if(!S.premium&&S.msgs<=0&&S.i===16)later(()=>go(17),1200);
+    }
+  },1300);
+}
+function memToast(k){
+  const m=MEETS[mk()],list=k===0?m.i0:m.i1,mem=k===0?m.m0:m.m1;const pick=S.picks[k]||'';
+  const i=list.map(strip).indexOf(pick);
+  const what=i>=0?mem[i]:`you said “${pick.slice(0,34)}${pick.length>34?'…':''}”`;
+  S.mems.push(what);renderPanel();
+  const el=document.createElement('div');el.className='mtoast';
+  el.innerHTML=`${ic('book',18)}<span><b>${esc(t(bn()+' will remember that.','He was paying attention.'))}</b><br><span style="color:var(--t2)">📓 ${esc(bn())} will remember: ${esc(what)}</span></span>`;
+  cur().appendChild(el);setTimeout(()=>el.remove(),3700);
+}
+function bumpHearts(){const h=document.getElementById('hearts');if(h){h.classList.remove('bump');void h.offsetWidth;h.classList.add('bump')}}
+function scrollMsgs(){const m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight}
+
+function runLoading(){
+  let row=0,pct=0;
+  const col=()=>cur()&&cur().querySelector('.hcol');
+  timer=setInterval(()=>{
+    pct+=3;const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    el.querySelector('.bar span').style.width=Math.min(pct,100)+'%';
+    el.querySelector('.pct span').textContent=Math.min(pct,100)+'%';
+    const c=col();if(c)c.style.clipPath=`inset(${(100-(row*100+Math.min(pct,100))/4).toFixed(1)}% 0 0 0)`;
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.5)}<span>100%</span>`;row++;pct=0;
+      if(row>3){clearInterval(timer);AMB.boost=1.5;timer=setTimeout(()=>go(9),1400)}}
+  },42);
+}
+
+/* Hard paywall: declining anything returns to the paywall (no free path). */
+const DECLINE_FALLBACK=PAYWALL_I;
+const SALE={m1:18,m3:19,y12:20},SALE_LT=21;
+let AFTER=22;   // where a purchase lands: 22 add-on upsell for subscribers, 23 get-app for one-time buys (lifetime, add-on)
+const DECLINE=k=>{const n=(CONFIG.declineFlow||{})[k];return +Object.keys(SCREENS).find(i=>SCREENS[i]===n)||DECLINE_FALLBACK};
+const otok=s=>esc(s).replace(/\{\{[^}]+\}\}/g,m=>`<span class="otk">${m}</span>`);
+/* ---------- per-plan sale screens (after leaving a checkout without paying) and the lifetime last step ---------- */
+function saleHTML(key){const p=CONFIG.plans[key],base=CONFIG.plans[p.of]||{},life=key==='lifetime',n=esc(bn());
+  const checks=life?[`Unlimited chat with ${n}, forever`,'All his voice notes','Every archetype, every update']:[`Unlimited chat with ${n}`,'All his voice notes','Good-morning texts, every day'];
+  return `<div class="pw ofr" role="dialog" aria-label="${life?'Lifetime offer':'Special offer'}"><div class="pwtop"><div class="logo">${logo(22)} ChatChi</div><button class="closex" data-a="saleno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="scr" style="gap:14px;padding-top:6px">
+   <div style="text-align:center"><span class="oeye">${life?'Last offer · pay once':'Special offer · '+esc(p.label)}</span>
+    <h1 class="h1" style="font-size:26px;margin-top:12px">${life?`Keep <span class="gt">${n}</span> forever`:`Keep talking to <span class="gt">${n}</span>, for less`}</h1>
+    <p class="lead" style="margin-top:8px;font-size:14.5px">${life?'One payment. No subscription, nothing to renew.':`Your ${esc(p.label)} plan at a lower first price.`}</p></div>
+   <div class="ocard">
+    <div class="orow"><span class="oth">${avatar(ak(),58)}</span><div style="flex:1;min-width:0"><b>ChatChi Plus · ${esc(p.label)}</b><div class="osub">With ${n} · private to you</div></div></div>
+    <div class="oprice">${!life&&base.price?`<s>${otok(base.price)}</s>`:''}<b>${otok(p.price)}</b><span>${life?'paid once':'first '+esc(p.per)}</span></div>
+    <div class="ochecks">${checks.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+    ${cta(life?'Get lifetime access':'Claim '+esc(p.label)+' offer',true,'salebuy')}
+    <p class="ofine">${life?`${otok(p.price)} once. No renewal, nothing to cancel.`:`${otok(p.price)} for the first ${esc(p.per)}, then ${otok(p.renew)} ${esc(p.renews)} until you cancel. Cancel anytime in account or store settings.`}</p></div>
+   <p class="odis">${n} is an AI character. Fictional, and depicted as an adult.</p>
+  <div class="foot ofoot"><button class="link" data-a="saleno">No thanks</button>${legalLinks()}</div></div></div>`}
+const SALEKEY={18:'m1_sale',19:'m3_sale',20:'y12_sale',21:'lifetime'};
+/* ---------- after purchase: one-time add-on upsell (subscribers only), then get the app ---------- */
+const UPSELL=22,GETAPP=23;
+V[UPSELL]=()=>{const p=CONFIG.plans.addon,u=CONFIG.upsell,n=esc(bn());
+  return `<div class="pw ofr" role="dialog" aria-label="${esc(u.name)} add-on"><div class="pwtop"><div class="logo">${logo(22)} ChatChi</div><button class="closex" data-a="upno" aria-label="${esc(u.decline)}">${ic('x',16)}</button></div>
+  <div class="scr" style="gap:14px;padding-top:6px">
+   <div style="text-align:center"><span class="oeye">You're in · one more thing</span>
+    <h1 class="h1" style="font-size:26px;margin-top:12px">${esc(u.title)}</h1>
+    <p class="lead" style="margin-top:8px;font-size:14.5px">${esc(u.lead)}</p></div>
+   <div class="ocard">
+    <div class="orow"><span class="oth">${avatar(ak(),58)}</span><div style="flex:1;min-width:0"><b>ChatChi · ${esc(u.name)}</b><div class="osub">Add-on · ${n} stays yours</div></div></div>
+    <div class="oprice"><b>${otok(p.price)}</b><span>paid once</span></div>
+    <div class="ochecks">${u.checks.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${esc(x)}</span></div>`).join('')}</div>
+    ${cta(esc(u.cta),true,'upbuy')}
+    <p class="ofine">${esc(u.note)}</p></div>
+  <div class="foot ofoot"><button class="link" data-a="upno">${esc(u.decline)}</button>${legalLinks()}</div></div></div>`};
+V[GETAPP]=()=>{const n=esc(bn());return `<div class="scr center" style="gap:16px"><div class="okwell">${ic('check',36,'#fff',2.6)}</div>
+  <div style="text-align:center"><h1 class="h1" style="text-align:center">You're in.<br><span class="gt">${n}</span> is waiting.</h1><p class="lead" style="margin-top:8px">Your chat continues in the ChatChi app.</p>${S.addon?`<p class="lead" style="margin-top:6px;color:var(--pink-hi)">${esc(CONFIG.upsell.name)} added. Create him in the app.</p>`:''}</div>
+  <div class="how" style="margin-top:4px">${[['Download ChatChi: AI Roleplay Chat','From the App Store or Google Play.'],S.email?['Log in with '+esc(S.email.trim()),'Your Plus is linked to this email.']:['Log in with your checkout email','The one you paid with.'],['Open your chat with '+n,'Plus is already on. Your story is saved.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></div>
+  <div class="foot">${cta('Open the app',true,'openapp')}<div class="stores"><button class="store" data-a="openapp" aria-label="Download on the App Store"><img alt="Download on the App Store" src="data:image/svg+xml;base64,PHN2ZyBpZD0ibGl2ZXR5cGUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjExOS42NjQwNyIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDExOS42NjQwNyA0MCI+PGc+PGc+PGc+PHBhdGggZD0iTTExMC4xMzQ3NywwSDkuNTM0NjhjLS4zNjY3LDAtLjcyOSwwLTEuMDk0NzMuMDAyLS4zMDYxNS4wMDItLjYwOTg2LjAwNzgxLS45MTg5NS4wMTI3QTEzLjIxNDc2LDEzLjIxNDc2LDAsMCwwLDUuNTE3MS4xOTE0MWE2LjY2NTA5LDYuNjY1MDksMCwwLDAtMS45MDA4OC42MjdBNi40Mzc3OSw2LjQzNzc5LDAsMCwwLDEuOTk3NTcsMS45OTcwNyw2LjI1ODQ0LDYuMjU4NDQsMCwwLDAsLjgxOTM1LDMuNjE4MTZhNi42MDExOSw2LjYwMTE5LDAsMCwwLS42MjUsMS45MDMzMiwxMi45OTMsMTIuOTkzLDAsMCwwLS4xNzkyLDIuMDAyQy4wMDU4Nyw3LjgzMDA4LjAwNDg5LDguMTM3NywwLDguNDQ0MzRWMzEuNTU4NmMuMDA0ODkuMzEwNS4wMDU4Ny42MTEzLjAxNTE1LjkyMTlhMTIuOTkyMzIsMTIuOTkyMzIsMCwwLDAsLjE3OTIsMi4wMDE5LDYuNTg3NTYsNi41ODc1NiwwLDAsMCwuNjI1LDEuOTA0M0E2LjIwNzc4LDYuMjA3NzgsMCwwLDAsMS45OTc1NywzOC4wMDFhNi4yNzQ0NSw2LjI3NDQ1LDAsMCwwLDEuNjE4NjUsMS4xNzg3LDYuNzAwODIsNi43MDA4MiwwLDAsMCwxLjkwMDg4LjYzMDgsMTMuNDU1MTQsMTMuNDU1MTQsMCwwLDAsMi4wMDM5LjE3NjhjLjMwOTA5LjAwNjguNjEyOC4wMTA3LjkxODk1LjAxMDdDOC44MDU2Nyw0MCw5LjE2OCw0MCw5LjUzNDY4LDQwSDExMC4xMzQ3N2MuMzU5NCwwLC43MjQ2LDAsMS4wODQtLjAwMi4zMDQ3LDAsLjYxNzItLjAwMzkuOTIxOS0uMDEwN2ExMy4yNzksMTMuMjc5LDAsMCwwLDItLjE3NjgsNi44MDQzMiw2LjgwNDMyLDAsMCwwLDEuOTA4Mi0uNjMwOCw2LjI3NzQyLDYuMjc3NDIsMCwwLDAsMS42MTcyLTEuMTc4Nyw2LjM5NDgyLDYuMzk0ODIsMCwwLDAsMS4xODE2LTEuNjE0Myw2LjYwNDEzLDYuNjA0MTMsMCwwLDAsLjYxOTEtMS45MDQzLDEzLjUwNjQzLDEzLjUwNjQzLDAsMCwwLC4xODU2LTIuMDAxOWMuMDAzOS0uMzEwNi4wMDM5LS42MTE0LjAwMzktLjkyMTkuMDA3OC0uMzYzMy4wMDc4LS43MjQ2LjAwNzgtMS4wOTM4VjkuNTM2MTNjMC0uMzY2MjEsMC0uNzI5NDktLjAwNzgtMS4wOTE3OSwwLS4zMDY2NCwwLS42MTQyNi0uMDAzOS0uOTIwOWExMy41MDcxLDEzLjUwNzEsMCwwLDAtLjE4NTYtMi4wMDIsNi42MTc3LDYuNjE3NywwLDAsMC0uNjE5MS0xLjkwMzMyLDYuNDY2MTksNi40NjYxOSwwLDAsMC0yLjc5ODgtMi43OTk4LDYuNzY3NTQsNi43Njc1NCwwLDAsMC0xLjkwODItLjYyNywxMy4wNDM5NCwxMy4wNDM5NCwwLDAsMC0yLS4xNzY3NmMtLjMwNDctLjAwNDg4LS42MTcyLS4wMTA3NC0uOTIxOS0uMDEyNjktLjM1OTQtLjAwMi0uNzI0Ni0uMDAyLTEuMDg0LS4wMDJaIiBzdHlsZT0iZmlsbDogI2E2YTZhNiIvPjxwYXRoIGQ9Ik04LjQ0NDgzLDM5LjEyNWMtLjMwNDY4LDAtLjYwMi0uMDAzOS0uOTA0MjktLjAxMDdhMTIuNjg3MTQsMTIuNjg3MTQsMCwwLDEtMS44NjkxNC0uMTYzMSw1Ljg4MzgxLDUuODgzODEsMCwwLDEtMS42NTY3NC0uNTQ3OSw1LjQwNTczLDUuNDA1NzMsMCwwLDEtMS4zOTctMS4wMTY2LDUuMzIwODIsNS4zMjA4MiwwLDAsMS0xLjAyMDUxLTEuMzk2NSw1LjcyMTg2LDUuNzIxODYsMCwwLDEtLjU0My0xLjY1NzIsMTIuNDEzNTEsMTIuNDEzNTEsMCwwLDEtLjE2NjUtMS44NzVjLS4wMDYzNC0uMjEwOS0uMDE0NjQtLjkxMzEtLjAxNDY0LS45MTMxVjguNDQ0MzRTLjg4MTg1LDcuNzUyOTMuODg3Nyw3LjU0OThhMTIuMzcwMzksMTIuMzcwMzksMCwwLDEsLjE2NTUzLTEuODcyMDcsNS43NTU1LDUuNzU1NSwwLDAsMSwuNTQzNDYtMS42NjIxQTUuMzczNDksNS4zNzM0OSwwLDAsMSwyLjYxMTgzLDIuNjE3NjgsNS41NjU0Myw1LjU2NTQzLDAsMCwxLDQuMDE0MTcsMS41OTUyMWE1LjgyMzA5LDUuODIzMDksMCwwLDEsMS42NTMzMi0uNTQzOTRBMTIuNTg1ODksMTIuNTg1ODksMCwwLDEsNy41NDMuODg3MjFMOC40NDUzMi44NzVIMTExLjIxMzg3bC45MTMxLjAxMjdhMTIuMzg0OTMsMTIuMzg0OTMsMCwwLDEsMS44NTg0LjE2MjU5LDUuOTM4MzMsNS45MzgzMywwLDAsMSwxLjY3MDkuNTQ3ODUsNS41OTM3NCw1LjU5Mzc0LDAsMCwxLDIuNDE1LDIuNDE5OTMsNS43NjI2Nyw1Ljc2MjY3LDAsMCwxLC41MzUyLDEuNjQ4OTIsMTIuOTk1LDEyLjk5NSwwLDAsMSwuMTczOCwxLjg4NzIxYy4wMDI5LjI4MzIuMDAyOS41ODc0LjAwMjkuODkwMTQuMDA3OS4zNzUuMDA3OS43MzE5My4wMDc5LDEuMDkxNzlWMzAuNDY0OGMwLC4zNjMzLDAsLjcxNzgtLjAwNzksMS4wNzUyLDAsLjMyNTIsMCwuNjIzMS0uMDAzOS45Mjk3YTEyLjczMTI2LDEyLjczMTI2LDAsMCwxLS4xNzA5LDEuODUzNSw1LjczOSw1LjczOSwwLDAsMS0uNTQsMS42Nyw1LjQ4MDI5LDUuNDgwMjksMCwwLDEtMS4wMTU2LDEuMzg1Nyw1LjQxMjksNS40MTI5LDAsMCwxLTEuMzk5NCwxLjAyMjUsNS44NjE2OCw1Ljg2MTY4LDAsMCwxLTEuNjY4LjU0OTgsMTIuNTQyMTgsMTIuNTQyMTgsMCwwLDEtMS44NjkyLjE2MzFjLS4yOTI5LjAwNjgtLjU5OTYuMDEwNy0uODk3NC4wMTA3bC0xLjA4NC4wMDJaIi8+PC9nPjxnIGlkPSJfR3JvdXBfIiBkYXRhLW5hbWU9IiZsdDtHcm91cCZndDsiPjxnIGlkPSJfR3JvdXBfMiIgZGF0YS1uYW1lPSImbHQ7R3JvdXAmZ3Q7Ij48ZyBpZD0iX0dyb3VwXzMiIGRhdGEtbmFtZT0iJmx0O0dyb3VwJmd0OyI+PHBhdGggaWQ9Il9QYXRoXyIgZGF0YS1uYW1lPSImbHQ7UGF0aCZndDsiIGQ9Ik0yNC43Njg4OCwyMC4zMDA2OGE0Ljk0ODgxLDQuOTQ4ODEsMCwwLDEsMi4zNTY1Ni00LjE1MjA2LDUuMDY1NjYsNS4wNjU2NiwwLDAsMC0zLjk5MTE2LTIuMTU3NjhjLTEuNjc5MjQtLjE3NjI2LTMuMzA3MTksMS4wMDQ4My00LjE2MjksMS4wMDQ4My0uODcyMjcsMC0yLjE4OTc3LS45ODczMy0zLjYwODUtLjk1ODE0YTUuMzE1MjksNS4zMTUyOSwwLDAsMC00LjQ3MjkyLDIuNzI3ODdjLTEuOTM0LDMuMzQ4NDItLjQ5MTQxLDguMjY5NDcsMS4zNjEyLDEwLjk3NjA4LjkyNjksMS4zMjUzNSwyLjAxMDE4LDIuODA1OCwzLjQyNzYzLDIuNzUzMywxLjM4NzA2LS4wNTc1MywxLjkwNTEtLjg4NDQ4LDMuNTc5NC0uODg0NDgsMS42NTg3NiwwLDIuMTQ0NzkuODg0NDgsMy41OTEuODUxMSwxLjQ4ODM4LS4wMjQxNiwyLjQyNjEzLTEuMzMxMjQsMy4zMjA1MS0yLjY2OTE0YTEwLjk2MiwxMC45NjIsMCwwLDAsMS41MTg0Mi0zLjA5MjUxQTQuNzgyMDUsNC43ODIwNSwwLDAsMSwyNC43Njg4OCwyMC4zMDA2OFoiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggaWQ9Il9QYXRoXzIiIGRhdGEtbmFtZT0iJmx0O1BhdGgmZ3Q7IiBkPSJNMjIuMDM3MjUsMTIuMjEwODlhNC44NzI0OCw0Ljg3MjQ4LDAsMCwwLDEuMTE0NTItMy40OTA2Miw0Ljk1NzQ2LDQuOTU3NDYsMCwwLDAtMy4yMDc1OCwxLjY1OTYxLDQuNjM2MzQsNC42MzYzNCwwLDAsMC0xLjE0MzcxLDMuMzYxMzlBNC4wOTkwNSw0LjA5OTA1LDAsMCwwLDIyLjAzNzI1LDEyLjIxMDg5WiIgc3R5bGU9ImZpbGw6ICNmZmYiLz48L2c+PC9nPjxnPjxwYXRoIGQ9Ik00Mi4zMDIyNywyNy4xMzk2NWgtNC43MzM0bC0xLjEzNjcyLDMuMzU2NDVIMzQuNDI3MjdsNC40ODM0LTEyLjQxOGgyLjA4M2w0LjQ4MzQsMTIuNDE4SDQzLjQzOFpNMzguMDU5MSwyNS41OTA4MmgzLjc1MmwtMS44NDk2MS01LjQ0NzI3aC0uMDUxNzZaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik01NS4xNTk2OSwyNS45Njk3M2MwLDIuODEzNDgtMS41MDU4Niw0LjYyMTA5LTMuNzc4MzIsNC42MjEwOWEzLjA2OTMsMy4wNjkzLDAsMCwxLTIuODQ4NjMtMS41ODRoLS4wNDN2NC40ODQzOGgtMS44NTg0VjIxLjQ0MjM4SDQ4LjQzMDJ2MS41MDU4NmguMDM0MThhMy4yMTE2MiwzLjIxMTYyLDAsMCwxLDIuODgyODEtMS42MDA1OUM1My42NDUsMjEuMzQ3NjYsNTUuMTU5NjksMjMuMTY0MDYsNTUuMTU5NjksMjUuOTY5NzNabS0xLjkxMDE2LDBjMC0xLjgzMy0uOTQ3MjctMy4wMzgwOS0yLjM5MjU4LTMuMDM4MDktMS40MTk5MiwwLTIuMzc1LDEuMjMwNDctMi4zNzUsMy4wMzgwOSwwLDEuODI0MjIuOTU1MDgsMy4wNDU5LDIuMzc1LDMuMDQ1OUM1Mi4zMDIyNywyOS4wMTU2Myw1My4yNDk1MywyNy44MTkzNCw1My4yNDk1MywyNS45Njk3M1oiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTY1LjEyNDUzLDI1Ljk2OTczYzAsMi44MTM0OC0xLjUwNTg2LDQuNjIxMDktMy43NzgzMiw0LjYyMTA5YTMuMDY5MywzLjA2OTMsMCwwLDEtMi44NDg2My0xLjU4NGgtLjA0M3Y0LjQ4NDM4aC0xLjg1ODRWMjEuNDQyMzhINTguMzk1djEuNTA1ODZoLjAzNDE4QTMuMjExNjIsMy4yMTE2MiwwLDAsMSw2MS4zMTIsMjEuMzQ3NjZDNjMuNjA5ODgsMjEuMzQ3NjYsNjUuMTI0NTMsMjMuMTY0MDYsNjUuMTI0NTMsMjUuOTY5NzNabS0xLjkxMDE2LDBjMC0xLjgzMy0uOTQ3MjctMy4wMzgwOS0yLjM5MjU4LTMuMDM4MDktMS40MTk5MiwwLTIuMzc1LDEuMjMwNDctMi4zNzUsMy4wMzgwOSwwLDEuODI0MjIuOTU1MDgsMy4wNDU5LDIuMzc1LDMuMDQ1OUM2Mi4yNjcxMSwyOS4wMTU2Myw2My4yMTQzOCwyNy44MTkzNCw2My4yMTQzOCwyNS45Njk3M1oiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTcxLjcxMDQ3LDI3LjAzNjEzYy4xMzc3LDEuMjMxNDUsMS4zMzQsMi4wNCwyLjk2ODc1LDIuMDQsMS41NjY0MSwwLDIuNjkzMzYtLjgwODU5LDIuNjkzMzYtMS45MTg5NSwwLS45NjM4Ny0uNjc5NjktMS41NDEtMi4yODkwNi0xLjkzNjUybC0xLjYwOTM3LS4zODc3Yy0yLjI4MDI3LS41NTA3OC0zLjMzODg3LTEuNjE3MTktMy4zMzg4Ny0zLjM0NzY2LDAtMi4xNDI1OCwxLjg2NzE5LTMuNjE0MjYsNC41MTg1NS0zLjYxNDI2LDIuNjI0LDAsNC40MjI4NSwxLjQ3MTY4LDQuNDgzNCwzLjYxNDI2aC0xLjg3NmMtLjExMjMtMS4yMzkyNi0xLjEzNjcyLTEuOTg3My0yLjYzMzc5LTEuOTg3M3MtMi41MjE0OC43NTY4NC0yLjUyMTQ4LDEuODU4NGMwLC44Nzc5My42NTQzLDEuMzk0NTMsMi4yNTQ4OCwxLjc5bDEuMzY4MTYuMzM1OTRjMi41NDc4NS42MDI1NCwzLjYwNjQ1LDEuNjI2LDMuNjA2NDUsMy40NDIzOCwwLDIuMzIzMjQtMS44NTA1OSwzLjc3ODMyLTQuNzkzOTUsMy43NzgzMi0yLjc1MzkxLDAtNC42MTMyOC0xLjQyMDktNC43MzM0LTMuNjY3WiIgc3R5bGU9ImZpbGw6ICNmZmYiLz48cGF0aCBkPSJNODMuMzQ2MjEsMTkuMjk5OHYyLjE0MjU4aDEuNzIxNjh2MS40NzE2OEg4My4zNDYyMXY0Ljk5MTIxYzAsLjc3NTM5LjM0NDczLDEuMTM2NzIsMS4xMDE1NiwxLjEzNjcyYTUuODA3NTIsNS44MDc1MiwwLDAsMCwuNjExMzMtLjA0M3YxLjQ2Mjg5YTUuMTAzNTEsNS4xMDM1MSwwLDAsMS0xLjAzMjIzLjA4NTk0Yy0xLjgzMywwLTIuNTQ3ODUtLjY4ODQ4LTIuNTQ3ODUtMi40NDQzNFYyMi45MTQwNkg4MC4xNjI2MlYyMS40NDIzOEg4MS40NzlWMTkuMjk5OFoiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTg2LjA2NSwyNS45Njk3M2MwLTIuODQ4NjMsMS42Nzc3My00LjYzODY3LDQuMjkzOTUtNC42Mzg2NywyLjYyNSwwLDQuMjk0OTIsMS43OSw0LjI5NDkyLDQuNjM4NjcsMCwyLjg1NjQ1LTEuNjYxMTMsNC42Mzg2Ny00LjI5NDkyLDQuNjM4NjdDODcuNzI2MDksMzAuNjA4NCw4Ni4wNjUsMjguODI2MTcsODYuMDY1LDI1Ljk2OTczWm02LjY5NTMxLDBjMC0xLjk1NDEtLjg5NTUxLTMuMTA3NDItMi40MDEzNy0zLjEwNzQycy0yLjQwMDM5LDEuMTYyMTEtMi40MDAzOSwzLjEwNzQyYzAsMS45NjE5MS44OTQ1MywzLjEwNjQ1LDIuNDAwMzksMy4xMDY0NVM5Mi43NjAyNywyNy45MzE2NCw5Mi43NjAyNywyNS45Njk3M1oiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTk2LjE4NjA2LDIxLjQ0MjM4aDEuNzcyNDZ2MS41NDFoLjA0M2EyLjE1OTQsMi4xNTk0LDAsMCwxLDIuMTc3NzMtMS42MzU3NCwyLjg2NjE2LDIuODY2MTYsMCwwLDEsLjYzNjcyLjA2OTM0djEuNzM4MjhhMi41OTc5NCwyLjU5Nzk0LDAsMCwwLS44MzUtLjExMjMsMS44NzI2NCwxLjg3MjY0LDAsMCwwLTEuOTM2NTIsMi4wODN2NS4zNzAxMmgtMS44NTg0WiIgc3R5bGU9ImZpbGw6ICNmZmYiLz48cGF0aCBkPSJNMTA5LjM4NDMsMjcuODM2OTFjLS4yNSwxLjY0MzU1LTEuODUwNTksMi43NzE0OC0zLjg5ODQ0LDIuNzcxNDgtMi42MzM3OSwwLTQuMjY4NTUtMS43NjQ2NS00LjI2ODU1LTQuNTk1NywwLTIuODM5ODQsMS42NDM1NS00LjY4MTY0LDQuMTkwNDMtNC42ODE2NCwyLjUwNDg4LDAsNC4wODAwOCwxLjcyMDcsNC4wODAwOCw0LjQ2NTgydi42MzY3MmgtNi4zOTQ1M3YuMTEyM2EyLjM1OCwyLjM1OCwwLDAsMCwyLjQzNTU1LDIuNTY0NDUsMi4wNDgzNCwyLjA0ODM0LDAsMCwwLDIuMDkwODItMS4yNzM0NFptLTYuMjgyMjMtMi43MDIxNWg0LjUyNjM3YTIuMTc3MywyLjE3NzMsMCwwLDAtMi4yMjA3LTIuMjk3ODVBMi4yOTIsMi4yOTIsMCwwLDAsMTAzLjEwMjA3LDI1LjEzNDc3WiIgc3R5bGU9ImZpbGw6ICNmZmYiLz48L2c+PC9nPjwvZz48ZyBpZD0iX0dyb3VwXzQiIGRhdGEtbmFtZT0iJmx0O0dyb3VwJmd0OyI+PGc+PHBhdGggZD0iTTM3LjgyNjE5LDguNzMxYTIuNjM5NjQsMi42Mzk2NCwwLDAsMSwyLjgwNzYyLDIuOTY0ODRjMCwxLjkwNjI1LTEuMDMwMjcsMy4wMDItMi44MDc2MiwzLjAwMkgzNS42NzA5MlY4LjczMVptLTEuMjI4NTIsNS4xMjNoMS4xMjVhMS44NzU4OCwxLjg3NTg4LDAsMCwwLDEuOTY3NzctMi4xNDYsMS44ODEsMS44ODEsMCwwLDAtMS45Njc3Ny0yLjEzMzc5aC0xLjEyNVoiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTQxLjY4MDY4LDEyLjQ0NDM0YTIuMTMzMjMsMi4xMzMyMywwLDEsMSw0LjI0NzA3LDAsMi4xMzM1OCwyLjEzMzU4LDAsMSwxLTQuMjQ3MDcsMFptMy4zMzMsMGMwLS45NzYwNy0uNDM4NDgtMS41NDY4Ny0xLjIwOC0xLjU0Njg3LS43NzI0NiwwLTEuMjA3LjU3MDgtMS4yMDcsMS41NDY4OCwwLC45ODM4OS40MzQ1NywxLjU1MDI5LDEuMjA3LDEuNTUwMjlDNDQuNTc1MjIsMTMuOTk0NjMsNDUuMDEzNjksMTMuNDI0MzIsNDUuMDEzNjksMTIuNDQ0MzRaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik01MS41NzMyNiwxNC42OTc3NWgtLjkyMTg3bC0uOTMwNjYtMy4zMTY0MWgtLjA3MDMxbC0uOTI2NzYsMy4zMTY0MWgtLjkxMzA5bC0xLjI0MTIxLTQuNTAyOTNoLjkwMTM3bC44MDY2NCwzLjQzNmguMDY2NDFsLjkyNTc4LTMuNDM2aC44NTI1NGwuOTI1NzgsMy40MzZoLjA3MDMxbC44MDI3My0zLjQzNmguODg4NjdaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik01My44NTM1NCwxMC4xOTQ4Mkg1NC43MDl2LjcxNTMzaC4wNjY0MWExLjM0OCwxLjM0OCwwLDAsMSwxLjM0Mzc1LS44MDIyNSwxLjQ2NDU2LDEuNDY0NTYsMCwwLDEsMS41NTg1OSwxLjY3NDh2Mi45MTVoLS44ODg2N1YxMi4wMDU4NmMwLS43MjM2My0uMzE0NDUtMS4wODM1LS45NzE2OC0xLjA4MzVhMS4wMzI5NCwxLjAzMjk0LDAsMCwwLTEuMDc1MiwxLjE0MTExdjIuNjM0MjhoLS44ODg2N1oiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTU5LjA5Mzc3LDguNDM3aC44ODg2N3Y2LjI2MDc0aC0uODg4NjdaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik02MS4yMTc3OSwxMi40NDQzNGEyLjEzMzQ2LDIuMTMzNDYsMCwxLDEsNC4yNDc1NiwwLDIuMTMzOCwyLjEzMzgsMCwxLDEtNC4yNDc1NiwwWm0zLjMzMywwYzAtLjk3NjA3LS40Mzg0OC0xLjU0Njg3LTEuMjA4LTEuNTQ2ODctLjc3MjQ2LDAtMS4yMDcuNTcwOC0xLjIwNywxLjU0Njg4LDAsLjk4Mzg5LjQzNDU3LDEuNTUwMjksMS4yMDcsMS41NTAyOUM2NC4xMTIzMiwxMy45OTQ2Myw2NC41NTA4LDEzLjQyNDMyLDY0LjU1MDgsMTIuNDQ0MzRaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik02Ni40MDA5LDEzLjQyNDMyYzAtLjgxMDU1LjYwMzUyLTEuMjc3ODMsMS42NzQ4LTEuMzQ0MjRsMS4yMTk3My0uMDcwMzF2LS4zODg2N2MwLS40NzU1OS0uMzE0NDUtLjc0NDE0LS45MjE4Ny0uNzQ0MTQtLjQ5NjA5LDAtLjgzOTg0LjE4MjEzLS45Mzg0OC41MDA0OWgtLjg2MDM1Yy4wOTA4Mi0uNzczNDQuODE4MzYtMS4yNjk1MywxLjgzOTg0LTEuMjY5NTMsMS4xMjg5MSwwLDEuNzY1NjMuNTYyLDEuNzY1NjMsMS41MTMxOHYzLjA3NjY2aC0uODU1NDd2LS42MzI4MWgtLjA3MDMxYTEuNTE1LDEuNTE1LDAsMCwxLTEuMzUyNTQuNzA3QTEuMzYwMjYsMS4zNjAyNiwwLDAsMSw2Ni40MDA5LDEzLjQyNDMyWm0yLjg5NDUzLS4zODQ3N3YtLjM3NjQ2bC0xLjA5OTYxLjA3MDMxYy0uNjIwMTIuMDQxNS0uOTAxMzcuMjUyNDQtLjkwMTM3LjY0OTQxLDAsLjQwNTI3LjM1MTU2LjY0MTExLjgzNS42NDExMUExLjA2MTUsMS4wNjE1LDAsMCwwLDY5LjI5NTQzLDEzLjAzOTU1WiIgc3R5bGU9ImZpbGw6ICNmZmYiLz48cGF0aCBkPSJNNzEuMzQ4MTYsMTIuNDQ0MzRjMC0xLjQyMjg1LjczMTQ1LTIuMzI0MjIsMS44NjkxNC0yLjMyNDIyYTEuNDg0LDEuNDg0LDAsMCwxLDEuMzgwODYuNzloLjA2NjQxVjguNDM3aC44ODg2N3Y2LjI2MDc0aC0uODUxNTZ2LS43MTE0M2gtLjA3MDMxYTEuNTYyODQsMS41NjI4NCwwLDAsMS0xLjQxNDA2Ljc4NTY0QzcyLjA3MTgsMTQuNzcyLDcxLjM0ODE2LDEzLjg3MDYxLDcxLjM0ODE2LDEyLjQ0NDM0Wm0uOTE4LDBjMCwuOTU1MDguNDUwMiwxLjUyOTc5LDEuMjAzMTMsMS41Mjk3OS43NDksMCwxLjIxMTkxLS41ODMsMS4yMTE5MS0xLjUyNTg4LDAtLjkzODQ4LS40Njc3Ny0xLjUyOTc5LTEuMjExOTEtMS41Mjk3OUM3Mi43MjEyMSwxMC45MTg0Niw3Mi4yNjYxMywxMS40OTcwNyw3Mi4yNjYxMywxMi40NDQzNFoiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTc5LjIzLDEyLjQ0NDM0YTIuMTMzMjMsMi4xMzMyMywwLDEsMSw0LjI0NzA3LDAsMi4xMzM1OCwyLjEzMzU4LDAsMSwxLTQuMjQ3MDcsMFptMy4zMzMsMGMwLS45NzYwNy0uNDM4NDgtMS41NDY4Ny0xLjIwOC0xLjU0Njg3LS43NzI0NiwwLTEuMjA3LjU3MDgtMS4yMDcsMS41NDY4OCwwLC45ODM4OS40MzQ1NywxLjU1MDI5LDEuMjA3LDEuNTUwMjlDODIuMTI0NTMsMTMuOTk0NjMsODIuNTYzLDEzLjQyNDMyLDgyLjU2MywxMi40NDQzNFoiIHN0eWxlPSJmaWxsOiAjZmZmIi8+PHBhdGggZD0iTTg0LjY2OTQ1LDEwLjE5NDgyaC44NTU0N3YuNzE1MzNoLjA2NjQxYTEuMzQ4LDEuMzQ4LDAsMCwxLDEuMzQzNzUtLjgwMjI1LDEuNDY0NTYsMS40NjQ1NiwwLDAsMSwxLjU1ODU5LDEuNjc0OHYyLjkxNUg4Ny42MDVWMTIuMDA1ODZjMC0uNzIzNjMtLjMxNDQ1LTEuMDgzNS0uOTcxNjgtMS4wODM1YTEuMDMyOTQsMS4wMzI5NCwwLDAsMC0xLjA3NTIsMS4xNDExMXYyLjYzNDI4aC0uODg4NjdaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik05My41MTUxNiw5LjA3MzczdjEuMTQxNmguOTc1NTl2Ljc0ODU0aC0uOTc1NTlWMTMuMjc5M2MwLC40NzE2OC4xOTQzNC42NzgyMi42MzY3Mi42NzgyMmEyLjk2NjU3LDIuOTY2NTcsMCwwLDAsLjMzODg3LS4wMjA1MXYuNzQwMjNhMi45MTU1LDIuOTE1NSwwLDAsMS0uNDgzNC4wNDU0MWMtLjk4ODI4LDAtMS4zODE4NC0uMzQ3NjYtMS4zODE4NC0xLjIxNTgydi0yLjU0M2gtLjcxNDg0di0uNzQ4NTRoLjcxNDg0VjkuMDczNzNaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik05NS43MDQ2MSw4LjQzN2guODgwODZ2Mi40ODE0NWguMDcwMzFhMS4zODU2LDEuMzg1NiwwLDAsMSwxLjM3My0uODA2NjQsMS40ODMzOSwxLjQ4MzM5LDAsMCwxLDEuNTUwNzgsMS42Nzg3MXYyLjkwNzIzSDk4LjY5di0yLjY4OGMwLS43MTkyNC0uMzM1LTEuMDgzNS0uOTYyODktMS4wODM1YTEuMDUxOTQsMS4wNTE5NCwwLDAsMC0xLjEzMzc5LDEuMTQxNnYyLjYyOTg4aC0uODg4NjdaIiBzdHlsZT0iZmlsbDogI2ZmZiIvPjxwYXRoIGQ9Ik0xMDQuNzYxMjUsMTMuNDgxOTNhMS44MjgsMS44MjgsMCwwLDEtMS45NTExNywxLjMwMjczQTIuMDQ1MzEsMi4wNDUzMSwwLDAsMSwxMDAuNzMsMTIuNDYwNDVhMi4wNzY4NSwyLjA3Njg1LDAsMCwxLDIuMDc2MTctMi4zNTI1NGMxLjI1MjkzLDAsMi4wMDg3OS44NTYsMi4wMDg3OSwyLjI3VjEyLjY4OGgtMy4xNzk2OXYuMDQ5OGExLjE5MDIsMS4xOTAyLDAsMCwwLDEuMTk5MjIsMS4yOSwxLjA3OTM0LDEuMDc5MzQsMCwwLDAsMS4wNzEyOS0uNTQ1OVptLTMuMTI2LTEuNDUxMTdoMi4yNzQ0MWExLjA4NjQ3LDEuMDg2NDcsMCwwLDAtMS4xMDg0LTEuMTY2NUExLjE1MTYyLDEuMTUxNjIsMCwwLDAsMTAxLjYzNTI3LDEyLjAzMDc2WiIgc3R5bGU9ImZpbGw6ICNmZmYiLz48L2c+PC9nPjwvZz48L3N2Zz4="></button><button class="store" data-a="openapp" aria-label="Get it on Google Play"><img alt="Get it on Google Play" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjQAAACoCAMAAADAboQgAAAB/lBMVEUAAAD+/v6lpaVChPM0p1LqQzVsbGz6uwQmJiZHcEyAgIBAQEDo6OjAwMCSkpLW1tYRERBeXl4wMDBycnJQUFCwsLDKT1k9krdXV1fWuBPwcSPWPTAvmkxkZGRAqU60MygmezxSFxIaVytcXFw6KwF3WQK3igMRORx1IhsLJhM6EgzYpweddgPNmQMqiUQhaTSTKiEXSiSiLiVnHRdeRwJPOwGOagI6ja8sDQpZWVkyZLg6ddbobiEkXWOEJh7FeEu5sDdGRnVFf+cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADuGPcRAAAAgHRSTlP////////w//8A/v///////6///v////86/////9L//////5D///////////////////////////9q////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbxUccAABB+SURBVHja7Z1pg6O4EYaB6ZHVQoCao+NkptNz7Mzu7H0l2SPJJvn/PyqADdZREhI22O2u98PuuFsNWDyUSqpSEd3q2t49EBRqr4e7rYFIpH58qPIEhVLEqvd2aLYEiUGByh8s0DwgMig7NncANFu2/yVJKRURCtVKUJoOHku11aF5v/sNodhRKF1ltfNttio0O2YqtDAoULQfh/L3MjQ9M3mJnYOyqZZsTQ/NtmcGzQzKZWw6SNgBGobMoKad4o6aaoDmAZlB+fjD3Qh1t4OmH5zQn0F5+TVsBw3prA72CGpa+c7UtNB0/8LBCeXjDO9MTdR7NAT7A+Wjbsr0awtNt9qH68Aob1+YtNC0o1OOvYHyUz/rjrY4OqGCxqf8NrproUmxM1D+s+5t9IAuDSoMmruIIDSosEk3QoNCaFAIDQqhQSE0KIQGhUJoUAgNCqE57uLTtEpTJQ2IqWpjIylj5g9HkfZzNNVoUJnWJNV+0bUl2gEpQgNK/PDuzZs37z4/35WnDedxJ86lu7T70ag2dJ/Huph0lKL9HE012p0vG89HJE67n/FUPWCK0AD6/NubvV6/O9N1FwoeY0p8EQ4N94GmVM7HawWS/hDSAREaQG9uJL3+4QyXTTSLEhflotDo5+ONSilDaNz69PpG1etPqzMzjEutmv2gId2zg2jv+HRK2jbJ+EMdGnejKOnPwQvGquF8hZCh4RShcXozOjOt3oj1meENlc1AqUBgKt/ZHV1qe0uj/gQ8V84XZ4ppKxAal769gbSma0P7m1ZLHDcDM4tAU+rOruhJqcYDcOlyEBrIB76B9Xq9iVR3y7i6sY9GC0Jjnk/0GInhAGz8hNCAen1j05tPKxqayg7UqaEpgfP118CGA/QM5QhNqKHp9d0ql5zHNjCWgQY8Hxt+2B8g5SMqCI2pf7mgWWfVpnAYmiWgAQ1bZ2r6KdPuAM0IFkJj6rd/3LixWd614YZHo0EAxgKOggY4H9+v/O4OIGJ5uEJoVP3+YoKa5affXL7PcriIGIt77FTQwPaOHQ5QxZLlQWhUvXgxSc3S02/lJirLtGeEpv9cIDQ2aF78aYqaZSMLyk3klwJNuV+sQWhgaKapufn200o+DWBpuBJFWMenGSZZAqGxQeNBzYKujTJ7GvCo+QGaM8yehgW/HKGxQuNDzWKuDbhuQiSXYv11ml49tylCY4XGi5qFpt/ginCxv91nWRHe/zDrI+EIjRUaL2oWiiwAsSdlxrtW7IlqB6B7rxyhsUHjR80ikQUjyr3LlchWjnIz4wAVQjMBjSc1S0QWtHwamoEP/mr5NPoCAEJjh8aTmiUS++TMvXyf710CYQQpjnAMNFLmHmOZkbnHVZuE0Lig8aVmgem3kSPMrTnCp4DGPF8mrAdAaJzQeFNz+um3uhtBz/M+OTT6bgRiOYDgCM0UNP7UnH76nSbjPqTcte9pEprYBxpln5W+70lqVce472kKGn9qlogstHsIam2HZaqKym1TCm2alLdMWhpJOyxTfYdlqv2k+ywQGic0AdTcfId19BGaYGrOtR0TdWnQhFCz5p4F1CVDE0TNansWUJcNTRg1K+1ZQF04NIHUfPUB+x2hCaPmz5vNV59hzyM0AdS0zLT6iNNvhMabmh0zrXCMQmg8qRmZafUzdv9zh8aLGpmZdoxC1+a5Q+NBjcpMq6/xDjxzaKao+avBDLo2CI2bGpCZdvr9N7wLzxoaFzUWZnD6/eyhsVNjZ6bV30+RW1N3hSNSfH/r04PGRo2TmWNdmzTP5FzMhKDpelrQwNRMMbPZfPPZ7G8Qm2rqy+hdqXJOuBgkUlrb0acLDUTNNDNzx6g0i2HxS8AmHfYuzPpryzeLGwK3S58wNCY1XszMWbShTWxXRq8UGmU3xLVAo1PjyUw4NVXsVnWt0BzeBXE90KjUeDOz2QQt2YgmnlIirhWaOCbXBo1MTQAzm69CmCniaRXiaqE5UHMt0ByoCWEmJPBd6h5M3i7StEs1mmNcXy80IzVXA81ATRgzm4/e163NsCWLUuaQDb9CaIa3iFwPNDtqApnZbOaMTcalC3YZzJwIGhkGUUvLUsXVQdNTE8rMxnOJL4PnEZqTTKKrg6avfaAZ0muCpqXmP5tloJHm2klkLWFDoquEpi2XIxfBvTJoXvyxWQaa0sdpKUl0rdAcCqqUVwfN/cu/LANNdimO7rmgKZVSKtcEzf3Ll+HU+FxDDZSfeV7QjANUdmXQdMwEU/NN5Ffn/ph7cQ3QjM/NdUGzYyaUmg8BdyKO6bOFRlwlNAMzgdT4XEIDv2/9WUETXSM0B2aCqPExNONDFguE5pqgkZkJoOajfw3h47xgSvKsU8OcHV1Wu2ZJVboorlnfitXe0JRVYvsTP2jKSWi6r9jNzKe+48VAozLjTY2XF3xY2Zrr0QiixMcTCxCCKUVgc+qRbcpa45ftlFuhUQ+c0znQVPLqHtCOqHHb8eZW+6sDEtSG3zTngUZnxpOaj97vCJMDL8GqvFL8xvCVOzlH6AnKdSRzAkFjHJjNgGbohAZsV5pZI7lQLRSzGvDkLNCYzHhR8yFwpM9nFq32SvErOdSstq8YHZYb3dBA57cl/dihYcript6OgBmipbIuyq0LpvQc0EDMTFPzdahvOS9TpvRL8SOWZsw/3RSGBj5/QcOgSdW5gNYudyVSEEv30ZC1r5NDAzMzQU1A+YjUYbRTZpPR28Z982FGs915HApNGZRgaPumtXY5ajviTr9RBjbgu6RngMbGjIuaoN3cTJ432H5nKHXeMw0H4perTuJQaAR3tvaDRva8qdmOxu4Ho4KHodg2bK0AjZ0ZOzVhmyuPgEa5Z0331p8CwkHp9q5Zwg38NAJ5wvREUwiaRp6NtcmpOXd6wyPPkslULjkH4JKQytqtdSzR8kMF6BOSoAjwaaFxMWOh5uvAJbp50BBtOGH7s5ZZbAQlMnN7UX24Vdx830uWAjMuAJrUzOggrpDIZNY8ZJGqcfyhxjm4QhXoBovVoXEzA1ETXgtrHjRMsSCyC0H0AYqA3jHTbQKBjETphCYDzl86ZroTzIz4akaw1rMWD7mxtdwNBHCD89UX96aYMan5ee5L5eBH0w1NArudpfawF/BtPECihdoJfDATmhQ8v+P7TNgZavV9aK76ueO4nMuDZAa4wXRtaKaZ0aj5cEw4B3LzndAI4wnVJ865ctsz20o0UWYwiWVmY0KTAENAmThyg5zMNMLlMAsBXpUKr/mWrCRaGRofZmRqZpYyog7X0enTECttyoKX9aEboWsUn1ZYDmZCY07A1HhGCDRKeQPLLKvbBJYluzITyjkKHZE6MOR5Mmj8mBmpmV1ZJIrhhQZ4naY49EZiDT/U8kJGYX3oGBQkZLaDGdCUGmY0h3cxeUDD1QI8wC2ncnyrjZtlMjREB74JjMycChpfZl6+/OeRNYyCHP3s0J+FvSoAlwYe+0NHpbtbTnoiBjS1AnutbUTnlfCzNDxj5dR6DliyR7JmmjtGQzOuTwSNPzMdNUdVS6tCvqLUWdYH+mCEmDTgR5F1D0B6IKCw5ogZ0DDJvWLcpwaT76DhFXuSvxVTr56FLOydDpoQZl4+fnlUMkcZECUpD90hPKbqiTttqjncdmYfI9kENHWq2wFbdsRMaFzRDc09KxVDy1aFJoSZV2+PTQHi/m5bbtIQO6bxmRsaZkLD/KEZUNGMTEZmZe7Z27F4EprxWhLFpRNrQhPAzKsvoqNVxd5+m+SsXAw0sU8G2Hxo0tgDGipz0oTNt08DTQAz30cnkPCudCVPE5YZnpLw4cnt/B4NjRQEqXZ/mFaFMa3PDj1IHc7eYtDcr+XMAMsxpR9dSn7b8Y5wfcCxsB5sEpokPSax3NauBJ+olGvfqj44e1V48vvR0Nyv58yYpsY9DDfKPIuHTblL55Q7tV8An5hy726WT/3WOdAw+I+MR4GPzXh4Utux0Nyv6MwAGXOu8mhabYVlFveIcwOC/EHKuMjqo7ew2Npl4OWb9nMwlU0aOt8+HhpfZn6MTqpMT311MbO/scuEEbjNvJlhBG47MhWnh6aG+8L8NtmMSqjHQXO/rjMDFk+Dv63I9Ky40wYsiSWOkNoDlrklPVcUPD05NCmcU2zPVRVrQXO/sjMDbwOAdqAQIKaTwDjoqRHcLzUiDk6NoBb/vTnsMDkdNBWcTW8rWhgw3z4SGj9mvoiWEHFMRAThUOXU0yZhMcjUuZOwEoiavUmEjM0caID8ixKOpKvrRnQlaLyYeYwWkhpgad+8srsRIq3UUGAOWuQhTCzXyXeke0pvYBgHNx6c7knNdFPpa+QngWY8HocuKgbHLDgcsgg0Psy8+jKK1qHGZ8+JllhOLInlWsZ4zXIwsVzu9KItYsyaycTySjl/pf5JchJohJwR0eaGNOCKsF7sMrB2wGxoPJh59VO0pGoPZnKvrXIBW1iYT8qXdd9TE1RbfdaKMPMJI+hfk0erQOPBzL+jhVUWvjW9pzmD83bdm+WSYGjspfmhBadZ0Nj3Vhnr3Hxu6cKZ0Ewz8/hLtLzcjxVQYTg9bltublsK8t2WK7KALZbzotyQOW0yCBo2t9LPPGjuzzHN9n6tnCs9BC4AYDRN/QoAkOACAHC2SyJOmE9TAkiC0Ii5JcVmQXO/ZsxgJjZM+JcaKWeXGqFZcKkR8114lrW92Zl7+juN2o0LIDR0bqWfOdDcr5EAEVKkyPAvE1dwR1SFT7SZqjmZtvS6tNG4kjkp5QpH8J84srCGMkNTOQtmO/kMRdcX+b5JZElRWxaa3yeZefwyWl9pNXRLA70a1PjWQ3N3/bKhypm7ApnY12LLa7nwh/NODBXXspzQpZ4kNlX4Tcyu1RcKzW//u78IZ+ZiJZ5M6VE2u4pkKDT/vb8UZya67IKe1cVfKZ/9qoBQaN6umADxBAhphC2XPb30ayfzFvbmQBO9uixn5pwDUVfVI7c9v0/G0LAVoHmLzoyydb+EJ/RP5rUNc0p4B0MTPa6YAHHBgpNjyvipuDTZ3Pn2LGigAeoxenYCt0SUT6YEPz2mhPcMaH55tWICxMVPrTuvgBp1IJJLv/zkmGF0BjTaCLVwAsTFSsk41UsoPhlDU68GTfT2EVdmXDFuEj2RwZVH60HTjlE/ff/4+OMXz3r9N/HKurnosbVaFRqUnZqLZ8ashYXQnGMK5fNWlejiFvbyCKFZX2Xmk5xzsYaGIjTRecJPSr5T+hSuud6XsSQRQnMur7JmTZ+7wtJn8o0RGhRCg0JoUAgNCqFBPWNoHhAaVMCUvYfmrv1vip2B8odmG23b/xLsDJSfWJLkt9Ft3v4POwPlp9bEVC00FTo1qMg7p74dl1poHnB8QgWMTsmvLTTd+JQI7A+U34Sb3XbQdCs1FXYIalqdfbnrodl2/yyxR1A+8+3W0HTQ9F5NjgMUysML7gxND80tQ2pQkxJ5P98eoOkHKKQG5XSC8/3gtIfm9n1PDfo1KKc/k7CtBM2OmqRCY4OyVCHs+Mjf38rQ7KlJCK4No6AChJKdOUBzu+1ZamkiKaVocVA755fSthDmjoxqYOYATTvz3v8ShTKV3x1IkaC53RLEBgUj8yBxokDTWZsKuUFpYtV7lRINms7e3D0QFGqvh7utgcj/AUnImokDya4UAAAAAElFTkSuQmCC"></button></div><button class="link" data-a="keepchat">Keep chatting here</button></div>`};
+SCREENS[UPSELL]='upsell_lifetime';SCREENS[GETAPP]='get_app';
+V[18]=()=>saleHTML('m1_sale');V[19]=()=>saleHTML('m3_sale');V[20]=()=>saleHTML('y12_sale');V[21]=()=>saleHTML('lifetime');
+SCREENS[18]='sale_m1';SCREENS[19]='sale_m3';SCREENS[20]='sale_y12';SCREENS[21]='sale_lifetime';
+/* leaving a checkout without paying: go where CONFIG.declineFlow says (FunnelFox's native checkout close does the same) */
+function checkoutDeclined(plan){emit('checkout_decline',{plan});const n=DECLINE(plan);if(SALEKEY[n])emit('sale_view',{plan:SALEKEY[n]});go(n)}
+/* demo-only checkout sheet when no checkout URL is configured (FunnelFox replaces checkout() with its native screen) */
+function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;document.getElementById('demock')?.remove();
+  const el=document.createElement('div');el.id='demock';
+  el.innerHTML=`<div class="dim"></div><div class="sheet" role="dialog" aria-label="Demo checkout"><span class="grab"></span><b style="font:700 18px var(--head)">Demo checkout</b><p>ChatChi Plus · ${esc(p.label)} · ${otok(p.price)}</p><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div>`;
+  phone.appendChild(el)}
+
+let fwdT=0;
+function render(anim){
+  if((S.i===16||S.i===17)&&!S.premium){S.i=PAYWALL_I;setTimeout(()=>{if(S.i===PAYWALL_I&&!S.premium)go(PAYWALL_I,false)},0)}
+  const n=S.i;const html=imgs(nav()+V[n]());
+  const old=cur();
+  if(anim&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in';nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),260);setTimeout(()=>nv.classList.remove('in'),380);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else old.innerHTML=html;
+  const v=cur();
+  v.querySelectorAll('.hero3d').forEach(mountHero);
+  AMB.base=n===8?3.5:1;
+  if(n===8)runLoading();
+  if(n===1){const y=document.getElementById('years');if(y){const on=y.querySelector('.on')||y.querySelector('[data-v="1998"]');if(on)y.scrollTop=on.offsetTop-y.clientHeight/2+on.clientHeight/2}}
+  if(n===10&&!S.chat.length&&!S.typing){S.typing=true;v.querySelector('#msgs').insertAdjacentHTML('beforeend','<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>');v.querySelectorAll('.ideas').forEach(e=>e.remove());later(()=>{S.typing=false;S.chat=[{w:'c',x:B().open[mk()]}];render()},1400)}
+  if(n===11&&!S.typing&&!S.teaserDone&&S.turn>=1&&S.chat.length&&S.chat[S.chat.length-1].w==='u')reply();
+  /* back into a taste chat after it ended: composer stays locked, hand off forward again (email / paywall) */
+  if((n===10||n===11)&&!S.premium&&!S.gate&&(S.teaserDone||(n===10&&S.turn>=1))){clearTimeout(fwdT);const to=S.teaserDone?tasteNext():11;fwdT=setTimeout(()=>{if(S.i===n&&!S.premium)go(to,false)},1200)}
+  if(v.querySelector('.pw.lp'))pwWire(v);
+  scrollMsgs();
+  const f=v.querySelector('#nm');if(f&&n===3)setTimeout(()=>{if(cur()===v){f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x}},anim?300:0);
+  renderPanel();
+}
+
+/* hero 3D: his portrait card — float (hook), sketch→colour (loader), land (reveal); pointer orbit */
+const HEROES=new Set();let loopOn=false;
+function mountHero(el){
+  if(el._h)return;
+  const k=el.dataset.k,mode=el.dataset.mode,w=+el.dataset.w,h=+el.dataset.h,c=C[k];
+  let hearts='';
+  if(mode==='land')for(let i=0;i<6;i++){const x=-w/2+30+i*(w-60)/5,y=-h/2+40+(i%3)*50;hearts+=`<div class="hh" style="transform:translate3d(${x}px,${y}px,${60+(i%3)*18}px)"><i style="animation-delay:${i*.55}s">${heartF(12+(i%3)*3)}</i></div>`}
+  const card=mode==='sketch'?`${portrait(k,{sketch:true})}<div class="hcol">${portrait(k)}</div>`:portrait(k);
+  const plate=mode==='land'?`<div class="hplate" style="width:${w-32}px;transform:translate(-50%,-50%) translate3d(0,${h/2-62}px,42px)"><b>${c.n}</b><div class="tags"><span>${esc(c.tag)}</span><span>${esc(LOVES[lk()][1])}</span></div></div>`:'';
+  el.innerHTML=`<div class="hin ${mode==='land'?'land':''}"><div class="hscene"><div class="hglow" style="width:${w*1.1}px;height:${h*1.05}px;transform:translate(-50%,-50%) translateZ(-60px)"></div>
+  <div class="hcard ${mode==='land'?'shade':''}" style="width:${w}px;height:${h}px;transform:translate(-50%,-50%)">${card}</div>${plate}${hearts}</div></div>`;
+  const o={el,mode,scene:el.querySelector('.hscene'),t0:performance.now(),px:0,py:0,tx:0,ty:0};
+  el._h=o;HEROES.add(o);
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();o.tx=(e.clientX-r.left)/r.width-.5;o.ty=(e.clientY-r.top)/r.height-.5});
+  el.addEventListener('pointerleave',()=>{o.tx=0;o.ty=0});
+  if(RM){drawHero(o,o.t0+5000);return}
+  if(!loopOn){loopOn=true;requestAnimationFrame(frame3d)}
+}
+function drawHero(o,now){
+  const t=(now-o.t0)/1000;
+  o.px+=(o.tx-o.px)*.08;o.py+=(o.ty-o.py)*.08;
+  let ry,rx;
+  if(o.mode==='float'){ry=14+Math.sin(t*.6)*9+o.px*26;rx=Math.sin(t*.5)*3-o.py*16}
+  else if(o.mode==='sketch'){ry=Math.sin(t*.9)*16+o.px*20;rx=-6+Math.sin(t*.7)*4-o.py*12}
+  else{ry=Math.sin(t*.6)*7+o.px*26;rx=Math.sin(t*.5)*3-o.py*16}
+  o.scene.style.transform=`rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+}
+function frame3d(now){
+  for(const h of HEROES){if(!h.el.isConnected){HEROES.delete(h);continue}drawHero(h,now)}
+  if(HEROES.size)requestAnimationFrame(frame3d);else loopOn=false;
+}
+
+/* ambient: soft drifting bokeh */
+const AMB={base:1,boost:0};
+(function(){
+  const cv=document.getElementById('amb'),cx=cv.getContext('2d');let w=0,h=0;const P=[];
+  const cols=['182,44,181','218,95,217','155,123,255','120,60,160'];
+  const spawn=(p,init)=>{p.x=Math.random();p.y=init?Math.random():1.1;p.r=12+Math.random()*50;p.c=cols[Math.floor(Math.random()*cols.length)];p.a=.04+Math.random()*.08;p.s=.008+Math.random()*.02;p.ph=Math.random()*6.28;return p};
+  for(let i=0;i<22;i++)P.push(spawn({},true));
+  function size(){const r=phone.getBoundingClientRect();const d=Math.min(2,devicePixelRatio||1);w=r.width;h=r.height;cv.width=w*d;cv.height=h*d;cx.setTransform(d,0,0,d,0,0)}
+  size();addEventListener('resize',size);
+  let last=performance.now();
+  function frame(now){
+    const dt=Math.min(50,now-last)/1000;last=now;AMB.boost*=Math.pow(.3,dt);
+    const sp=AMB.base+AMB.boost*6;cx.clearRect(0,0,w,h);
+    const g=cx.createRadialGradient(w*.5,0,0,w*.5,0,w*.9);g.addColorStop(0,'rgba(182,44,181,.10)');g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(0,0,w,h);
+    for(const p of P){p.y-=p.s*sp*dt;if(p.y<-.15)spawn(p,false);const x=(p.x+Math.sin(now/4000+p.ph)*.03)*w,y=p.y*h;
+      const rg=cx.createRadialGradient(x,y,0,x,y,p.r);rg.addColorStop(0,`rgba(${p.c},${p.a})`);rg.addColorStop(1,`rgba(${p.c},0)`);cx.fillStyle=rg;cx.beginPath();cx.arc(x,y,p.r,0,6.283);cx.fill()}
+    if(!RM)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+function renderPanel(){}
+
+/* ---------- keyboard-safe layout: fit the app to the visual viewport while typing ---------- */
+(function(){
+  const vv=window.visualViewport;if(!vv)return;
+  const typing=()=>{const a=document.activeElement;return a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.tagName==='SELECT')&&phone.contains(a)};
+  function fit(){
+    if(typing()&&vv.height<window.innerHeight-60){phone.style.height=vv.height+'px';phone.style.transform=`translateY(${vv.offsetTop}px)`;scrollMsgs();const a=document.activeElement,sc=a&&a.closest('.scr');if(sc){const r=a.getBoundingClientRect(),sr=sc.getBoundingClientRect();if(r.bottom>sr.bottom)sc.scrollTop+=r.bottom-sr.bottom+12}}
+    else{phone.style.height='';phone.style.transform=''}
+  }
+  vv.addEventListener('resize',fit);vv.addEventListener('scroll',fit);
+  document.addEventListener('focusin',()=>setTimeout(fit,50));document.addEventListener('focusout',()=>setTimeout(fit,50));
+})();
+
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'next':next();break;
+    case 'back':back();break;
+    case 'mem':toast(S.mems.length?`📓 ${bn()} remembers: ${S.mems.join('; ')}`:'📓 Nothing saved yet');break;
+    case 'year':S.year=v;cur().querySelectorAll('#years button').forEach(x=>{const on=x.dataset.v===v;x.classList.toggle('on',on);x.setAttribute('aria-selected',on)});cur().querySelector('.foot .btn').disabled=false;break;
+    case 'agereset':S.blocked=false;S.year='';try{sessionStorage.removeItem(AGE_KEY)}catch(e){}emit('age_change');render(true);break;
+    case 'age':{const now=new Date().getFullYear();if(now-+S.year<18){S.blocked=true;try{sessionStorage.setItem(AGE_KEY,'1')}catch(e){}emit('age_gate_fail');render(true)}else{emit('age_gate_pass');next()}break}
+    case 'arch':S.archSel=v;S.chat=[];if(v!=='other')answer('archetype',v);render();if(v==='other')document.getElementById('ao1')?.focus();else later(()=>{if(S.i===2)next()},340);break;
+    case 'shuffle':S.name=NAMES[(NAMES.indexOf(S.name)+1+Math.floor(Math.random()*3))%NAMES.length];S.err='';render();break;
+    case 'name':if(!S.name.trim()){S.err='Add a name so he knows what to call you';render()}else{S.name=S.name.trim();answer('name','set');next()}break;
+    case 'voice':S.voice=v;answer('voice',v);render();break;
+    case 'play':{S.voice=v;S.playing=v;const ok=speak("You're late. I saved you a seat anyway.",v);render();if(!ok)toast('Captions only — no speech in this browser');clearTimeout(S._pt);S._pt=later(()=>{if(S.i===4){S.playing=null;render()}},3000);break}
+    case 'love':S.love=v;render();if(v==='other')document.getElementById('lo1')?.focus();break;
+    case 'meet':S.meet=v;S.chat=[];render();if(v==='other')document.getElementById('mo1')?.focus();break;
+    case 'pick':S.archSel=v;S.archOther='';S.chat=[];S.turn=0;S.hearts=0;S.msgs=FREE;answer('archetype_alt',v);render(true);break;
+    case 'preview':{const line=fillName(B().open[mk()]).replace(/&[a-z]+;/g,'');const ok=speak(line);toast(`${ok?'🔊':'▶'} “${line}”`);break}
+    case 'startchat':answer('love_style',S.love);answer('meet_cute',S.meet);S.chat=[];S.turn=0;S.hearts=0;S.msgs=FREE;S.picks=[];S.mems=[];S.vnotes=0;go(10);break;
+    case 'say':if(v==='✏️ Type your own'){document.getElementById('msg')?.focus();break}say(v);break;
+    case 'send':{const m=document.getElementById('msg');if(m&&m.value.trim())say(m.value.trim());else m?.focus();break}
+    case 'vn':{const ok=speak(vnCaption());toast(`${ok?'🔊':'▶'} “${vnCaption()}”`);break}
+    case 'vnplay':{const el=document.getElementById('vnbig');if(el){el.classList.remove('playing');void el.offsetWidth;el.classList.add('playing')}const ok=speak(vnCaption());if(!ok)toast('Captions only — no speech in this browser');later(()=>{const x=document.getElementById('vnbig');if(x)x.classList.remove('playing')},8200);break}
+    case 'ntime':S.ntime=v;render();break;
+    case 'notif':S.notif=true;emit('notification_optin',{enabled:true,time:S.ntime});try{if('Notification' in window&&Notification.permission==='default')Notification.requestPermission()}catch(e){}next();break;
+    case 'nonotif':S.notif=false;emit('notification_optin',{enabled:false});next();break;
+    case 'emailgo':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.signErr=x?'Enter a valid email':'Enter your email to continue';render();document.getElementById('em')?.focus();break}S.email=x;S.account='Email';S.signErr='';emit('lead',{method:'email'});next();break}
+    case 'plan':S.plan=v;emit('plan_select',{plan:v,price:CONFIG.plans[v].price});if(cur()&&cur().querySelector('.pw.lp'))pwSync();else render();checkout(v);break;
+    case 'pwjump':{const pw=cur()&&cur().querySelector('.pw.lp'),el=pw&&pw.querySelector('#pb1');if(el)pw.scrollTo({top:el.offsetTop-64,behavior:RM?'auto':'smooth'});break}
+    case 'restore':emit('restore_click');if(CONFIG.app.restoreUrl)navTop(CONFIG.app.restoreUrl);break;
+    case 'buy':checkout(S.plan);break;
+    case 'closepw':case 'freeplan':emit('paywall_close',{placement:'onboarding',via:'close'});emit('sale_view',{plan:'lifetime'});go(SALE_LT);break;
+    case 'salebuy':{const k=SALEKEY[S.i];emit('sale_accept',{plan:k});checkout(k);break}
+    case 'saleno':{const k=SALEKEY[S.i];emit('sale_decline',{plan:k});checkoutDeclined(k);break}
+    case 'ckpay':{document.getElementById('demock')?.remove();window.IkFunnel.completePurchase(S.ckPlan);break}
+    case 'ckclose':{document.getElementById('demock')?.remove();checkoutDeclined(S.ckPlan);break}
+    case 'upbuy':emit('upsell_accept',{plan:'addon'});checkout('addon');break;
+    case 'upno':emit('upsell_decline');go(GETAPP);break;
+    case 'keepchat':go(16);break;
+    case 'upgrade':S.sheet='pw';render();emit('paywall_view',{placement:'limit'});break;
+    case 'closeq':S.sheet=null;emit('paywall_close',{placement:'limit',via:'close'});emit('sale_view',{plan:'lifetime'});go(SALE_LT);break;
+    case 'midnight':emit('come_back_midnight');toast(`Your ${FREE} messages come back at midnight`);break;
+    case 'openapp':openApp();break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f)return;
+  S[f]=e.target.value;
+  if(f==='archOther'){const btn=cur().querySelector('.foot .btn');if(btn)btn.disabled=!S.archOther.trim()}
+  if(f==='name'&&S.err){S.err='';const er=cur().querySelector('.err');if(er)er.remove()}
+  if(f==='email'&&S.signErr){S.signErr='';const er=cur().querySelector('.err');if(er)er.remove()}
+  if(f==='draft')return;
+  renderPanel();
+});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const b=e.target.id==='msg'?cur().querySelector('[data-a="send"]'):e.target.id==='em'?cur().querySelector('[data-a="emailgo"]'):cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+/* Host API: the page embedding this funnel can complete a purchase or read the picks. */
+window.IkFunnel=Object.assign(window.IkFunnel||{},{
+  config:CONFIG,data:snapshot,
+  completePurchase:(plan)=>{if(plan&&CONFIG.plans[plan])S.plan=plan;if(S.plan==='addon')S.addon=true;AFTER=CONFIG.plans[S.plan]&&CONFIG.plans[S.plan].oneTime?GETAPP:UPSELL;S.ltSeen=true;S.premium=true;S.sheet=null;S.teaserDone=true;S.gate=false;emit('purchase_complete',{plan:S.plan});go(AFTER);later(()=>toast(S.plan==='addon'?CONFIG.upsell.name+' added.':'Unlimited chat is on. Enjoy.'),1600)}
+});
+if(DEBUG)window.IkFunnel.go=n=>{clearT();fillTo(n);go(n)};
+if(DEBUG){const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){fillTo(+m[1]);S.i=+m[1]}}
+if(ageBlocked()&&!DEBUG){S.i=1;S.blocked=true}
+{let ref='';try{ref=document.referrer?new URL(document.referrer).hostname:''}catch(e){}emit('funnel_start',{referrer:ref})}
+render();
+viewed();
+</script>
+</body>
+</html>

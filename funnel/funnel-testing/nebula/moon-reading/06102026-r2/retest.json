@@ -1,0 +1,116 @@
+[
+  {
+    "prev": 1,
+    "title": "[UI/UX][Intro 1] Link \"Terms\" và \"Privacy Policy\" có tap target quá nhỏ",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "- Auto-check trong capture.json không còn báo tap target nhỏ cho link \"Terms\"/\"Privacy Policy\" ở Intro 1 và Intro 20 (cả 2 viewport); vùng bấm đã được nới (text link nhìn tách xa hơn, xem bug mới N1).",
+    "attachment": "Screenshot/Video: screens/01-1-small.png, screens/01-1-large.png, screens/20-20-small.png, screens/20-20-large.png"
+  },
+  {
+    "prev": 2,
+    "title": "[UI][Responsive][Intro 1] Ảnh background không phủ hết màn hình trên viewport large",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Trên 430x932 ảnh nền đã phủ full chiều ngang, không còn dải tối bên phải, headline không còn đè lên mặt nhân vật. Khoảng 1/3 dưới vẫn là gradient tối mờ dần từ ảnh (nhìn như fade chủ đích) – độ tin cậy trung bình, Designer có thể muốn confirm lại.",
+    "attachment": "Screenshot/Video: screens/01-1-large.png, screens/01-1-small.png"
+  },
+  {
+    "prev": 3,
+    "title": "[UI][Intro 1] Mặt trăng hero đè lên mặt trăng có sẵn trong ảnh nền",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Chỉ còn 1 mặt trăng hero (có halo), không còn thấy mặt trăng vẽ sẵn trong ảnh nền chồng lên trên cả 2 viewport.",
+    "attachment": "Screenshot/Video: screens/01-1-small.png, screens/01-1-large.png"
+  },
+  {
+    "prev": 4,
+    "title": "[UI][Responsive][Intro 2] List bị cắt ngang bởi vùng CTA ở first view trên màn nhỏ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Intro 2 small: card 3 dòng hiển thị trọn vẹn (\"A ritual that fits your day\" thấy đủ) trên CTA. Intro 14 small: option \"Just me\" hiển thị đủ, không còn bị \"Tap one to continue\" cắt.",
+    "attachment": "Screenshot/Video: screens/02-2-small.png, screens/14-14-small.png"
+  },
+  {
+    "prev": 5,
+    "title": "[UI][Intro 7] Ô \"Time of birth\" hiển thị 2 icon đồng hồ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Ô \"Time of birth\" chỉ còn 1 icon đồng hồ bên trái, không còn icon picker của trình duyệt bên phải.",
+    "attachment": "Screenshot/Video: screens/07-7-small.png, screens/07-7-large.png"
+  },
+  {
+    "prev": 6,
+    "title": "[UI][Intro 8] Bản đồ chấm bị cắt ở viền trên card, icon mặt trăng đè lên bản đồ",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Bản đồ chấm nằm gọn trong card (có khoảng đệm trên), crescent đã đưa ra phía trên card, không đè lên bản đồ; có pin vị trí trên bản đồ.",
+    "attachment": "Screenshot/Video: screens/08-8-small.png, screens/08-8-large.png"
+  },
+  {
+    "prev": 7,
+    "title": "[UI][Responsive][Intro 16] Màn nhỏ không hiển thị sample push trên lock-screen mock",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Trên 375x667 lock-screen mock đã hiển thị sample push \"STARLYN · now – Full Moon in Taurus tonight, test. Your 5-minute release ritual is ready.\"",
+    "attachment": "Screenshot/Video: screens/16-16-small.png, screens/16-16-large.png"
+  },
+  {
+    "prev": 8,
+    "title": "[UI][Intro 18] Headline sát mép trên màn hình, không có khoảng cách top",
+    "severity": "Low",
+    "status": "Fixed",
+    "note": "- Headline Intro 18 \"test, your Moon is Libra\" và Intro 19 \"Your moon month, mapped\" đã có khoảng cách top tương đương vị trí headline ở các màn quiz.",
+    "attachment": "Screenshot/Video: screens/18-18-small.png, screens/18-18-large.png, screens/19-19-small-p1.png, screens/19-19-large.png"
+  },
+  {
+    "prev": 9,
+    "title": "[UI/UX][Intro 18] Câu \"you feel through the people around you\" bị lặp 3 lần",
+    "severity": "Low",
+    "status": "Partly fixed",
+    "note": "- Đã bỏ subtitle lặp trong card và lỗi chữ thường đầu câu; card giờ là \"Moon in Libra\" + 3 dòng Feel/Soothe/Drain. Nhưng câu dưới card \"Moon in Libra — you feel through the people around you.\" vẫn lặp nguyên dòng Feel \"through the people around you\" (3 lần còn 2). Spec có cả card 3 dòng lẫn câu mẫu nên phần còn lại là copy – cần PM/Designer confirm có chấp nhận lặp hay đổi câu mẫu. Hạ Severity từ Medium xuống Low. Khớp với status Partly fixed dev báo.",
+    "attachment": "Screenshot/Video: screens/18-18-small.png, screens/18-18-large.png"
+  },
+  {
+    "prev": 10,
+    "title": "[Logic][Intro 18] Birth phase hiển thị khác với Intro 6 cho cùng ngày sinh",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "- Intro 6 và Intro 18 cùng hiển thị \"Born under a Waxing Crescent\" cho \"August 12, 1994\"; ảnh mặt trăng ở Intro 6 cũng khớp crescent.",
+    "attachment": "Screenshot/Video: screens/06-6-small.png, screens/18-18-small.png"
+  },
+  {
+    "prev": 11,
+    "title": "[UI/UX][Responsive][Paywall 1] Màn nhỏ không thấy CTA nào ở first view",
+    "severity": "High",
+    "status": "Fixed",
+    "note": "- Trên 375x667 first view đã có sticky bottom bar \"1 week, then monthly – $13.67 today\" + button \"Unlock my rituals\" ngay khi plan block chỉ lộ một phần.",
+    "attachment": "Screenshot/Video: screens/21-21-small-p1.png, screens/21-21-large-p1.png"
+  },
+  {
+    "prev": 12,
+    "title": "[UI][Paywall 1] Sticky bar trong suốt, text bên dưới lộ ra/chồng lên nội dung",
+    "severity": "Medium",
+    "status": "Fixed",
+    "note": "- Sticky bottom bar đã có nền đặc, FAQ \"Do I need candles or supplies?\" không còn chồng chữ; brand bar cũng có nền đặc, nội dung phía sau chỉ bị che (không lộ mờ).",
+    "attachment": "Screenshot/Video: screens/21-21-small-p2.png, screens/21-21-small-p3.png, screens/21-21-large-p2.png"
+  },
+  {
+    "prev": 13,
+    "title": "[UI][Download App] Badge \"Download on the App Store\" dùng icon không phải logo Apple",
+    "severity": "Low",
+    "status": "Partly fixed",
+    "note": "- Badge App Store đã dùng logo Apple chính thức. Badge Google Play vẫn là icon tam giác play outline trắng (đơn sắc), không phải logo Google Play nhiều màu như badge chính thức – bug cũ có nêu cả phần này. Dev báo Fixed, QA đánh Partly fixed (độ tin cậy trung bình, cần Designer confirm có chấp nhận badge đơn sắc). Hạ Severity xuống Low.",
+    "attachment": "Screenshot/Video: screens/23-23-small.png, screens/23-23-large.png"
+  },
+  {
+    "prev": null,
+    "status": "New",
+    "screen": "Intro 20",
+    "title": "[UI][Intro 20] Dòng legal bị giãn khoảng: dấu \".\" tách rời khỏi \"Privacy Policy\", khoảng trắng quanh \"&\" rộng bất thường",
+    "severity": "Low",
+    "actual": "- Sau khi nới vùng bấm link, dòng \"By continuing, you agree to our Terms & Privacy Policy.\" hiển thị khoảng trắng rộng trước/sau \"Terms\", quanh \"&\" và dấu chấm cuối câu đứng tách riêng (\"Privacy Policy .\"), underline của \"Privacy Policy\" bị ngắt ở giữa; ở Intro 1 (không có dấu chấm) khoảng quanh \"&\" cũng rộng hơn khoảng chữ thường. Lặp ở cả 2 viewport.",
+    "expected": "- Giữ vùng bấm lớn nhưng khoảng cách chữ trong câu legal bình thường, dấu chấm liền sau \"Privacy Policy\" – Cần đối chiếu Figma.",
+    "attachment": "Screenshot/Video: screens/20-20-small.png, screens/20-20-large.png, screens/01-1-small.png"
+  }
+]

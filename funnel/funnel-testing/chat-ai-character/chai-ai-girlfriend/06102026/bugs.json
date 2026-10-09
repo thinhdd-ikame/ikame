@@ -1,0 +1,166 @@
+[
+ {
+  "screen": "Intro 1",
+  "title": "[UI][Intro 1] Year wheel bị cắt mép dưới bởi vùng CTA ở first view màn nhỏ",
+  "severity": "Low",
+  "actual": "- Màn 375×667, first view (hook_age_check): box year wheel chỉ hiện 2 dòng (2004, 2005), mép dưới box bị cắt ngang bởi vùng button \"I'm 18+ · Start\", không có fade; phải cuộn mới thấy đủ 3 dòng. Màn 430×932 hiển thị đủ.",
+  "expected": "- Spec: \"Year wheel in a rounded surface box below, pink CTA pinned at the bottom\" – box wheel cần hiển thị trọn vẹn ở first view hoặc có cue cuộn rõ ràng; cách xử lý cụ thể cần Designer confirm (Cần đối chiếu Figma).",
+  "attachment": "Screenshot/Video: 01-hook_age_check-small-p1.png, 01-hook_age_check-small-p2.png, 01-hook_age_check-large.png"
+ },
+ {
+  "screen": "Intro 2",
+  "title": "[UI][Intro 2] Text \"Tap a hair colour\" bị nét vẽ placeholder đè lên trong preview card",
+  "severity": "Medium",
+  "actual": "- Trước khi chọn màu tóc (hair_colour), preview card hiển thị hình sketch placeholder với dấu \"?\" hồng; text \"Tap a hair colour\" nằm đè lên các nét vẽ (cổ, tóc) nên bị gạch ngang, khó đọc. Lỗi giống nhau ở cả 375×667 và 430×932.",
+  "expected": "- Text hướng dẫn cần đọc rõ, không bị nét vẽ đè (spec: preview card là hero object của funnel). Cách hiển thị placeholder: Spec chưa định nghĩa – cần PM/Designer confirm.",
+  "attachment": "Screenshot/Video: 02-hair_colour-small.png, 02-hair_colour-large.png"
+ },
+ {
+  "screen": "Intro 3",
+  "title": "[UI][Intro 3] Option tuổi hiển thị dạng grid 2×2 thay vì stacked pills theo spec",
+  "severity": "Low",
+  "actual": "- Màn her_age hiển thị 4 option (21-24, 25-29, 30-35, 36+) dạng grid 2 cột × 2 hàng ở cả 2 viewport.",
+  "expected": "- Spec #3 Visual: \"Four stacked pills\". Cần PM/Designer confirm giữ grid hay đổi sang stacked (Cần đối chiếu Figma).",
+  "attachment": "Screenshot/Video: 03-her_age-small.png, 03-her_age-large.png"
+ },
+ {
+  "screen": "Intro 4",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 5",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 6",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 7",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 8",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 9",
+  "title": "[UI][Intro 9] Chip thông tin phủ kín portrait trong preview card nhỏ",
+  "severity": "Medium",
+  "actual": "- Ở names, preview card thu nhỏ: 5 chip (Cozy, Long waves, Green, 25-29, Freckles) xếp dọc phủ gần hết ảnh portrait, che mặt nhân vật; ảnh gần như không nhìn thấy. Lặp lại ở cả 375×667 và 430×932.",
+  "expected": "- Portrait cần nhìn thấy được trong preview card (spec #9: \"Preview card small at top\"); bố cục chip khi card thu nhỏ: Spec chưa định nghĩa – cần PM/Designer confirm.",
+  "attachment": "Screenshot/Video: 09-names-small.png, 09-names-large.png"
+ },
+ {
+  "screen": "Intro 9",
+  "title": "[UI][Intro 9] Field \"Her name\" để trống trong khi preview card đã hiện tên \"Ivy\"",
+  "severity": "Low",
+  "actual": "- Mở names: field \"Her name\" chỉ hiện placeholder \"Her name\" (trống) nhưng tiêu đề preview card đã hiển thị \"Ivy\"; 2 vị trí không khớp. (Cần verify trên luồng đi thật – ảnh chụp bằng deep-jump.)",
+  "expected": "- Spec #9: \"Her name\" prefilled with a suggestion from her hair colour (e.g. Chloe for blonde) with a shuffle button – field cần hiển thị sẵn tên gợi ý trùng với tên trên preview card.",
+  "attachment": "Screenshot/Video: 09-names-small.png, 09-names-large.png"
+ },
+ {
+  "screen": "Intro 10",
+  "title": "[UI][Intro 10] Avatar preview nằm bên trái thay vì top-right theo spec",
+  "severity": "Low",
+  "actual": "- Màn looking_for hiển thị avatar tròn + \"Ivy · Cozy\" ở góc trên bên trái, phía trên headline.",
+  "expected": "- Spec #10 Visual: \"Stacked pills, small preview avatar top-right\". Cần PM/Designer confirm vị trí (Cần đối chiếu Figma).",
+  "attachment": "Screenshot/Video: 10-looking_for-small-p1.png, 10-looking_for-large.png"
+ },
+ {
+  "screen": "Intro 11",
+  "title": "[UI][Intro 11] Chip \"Cozy\" bị chip \"Long waves\" đè và cắt chữ trên preview card",
+  "severity": "Medium",
+  "actual": "- Ở personality, preview card nhỏ: chip hồng \"Cozy\" bị chip \"Long waves\" đè lên, chỉ còn thấy viền hồng và một phần chữ; các chip còn lại phủ kín portrait. Lặp lại ở cả 375×667 và 430×932.",
+  "expected": "- Các chip không được chồng lên nhau, chữ đọc trọn vẹn; portrait cần nhìn thấy (spec #11: preview card small at top với trait line). Bố cục chip khi card nhỏ: Spec chưa định nghĩa – cần PM/Designer confirm.",
+  "attachment": "Screenshot/Video: 11-personality-small-p1.png, 11-personality-large.png"
+ },
+ {
+  "screen": "Intro 12",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 13",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 14",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 15",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 16",
+  "no_bug": true
+ },
+ {
+  "screen": "Intro 17",
+  "no_bug": true
+ },
+ {
+  "screen": "Paywall 1",
+  "title": "[UI/UX][Paywall 1] First view màn lớn không thấy CTA và gói 12 months được chọn sẵn",
+  "severity": "High",
+  "actual": "- Màn 430×932, first view paywall: thấy hero, chip và 2 card 1 month/3 months; card 12 months (pre-selected, \"Best value\") chỉ lộ badge ở mép dưới, không có button Continue nào trong khung hình và sticky bottom bar không hiện (vì plan block đang trên màn). Màn 375×667 thì có sticky bar \"$119.99 today\" + Continue ngay first view.",
+  "expected": "- CTA (và gói đang chọn) cần thấy được ngay first view ở mọi kích thước theo chuẩn team. Spec #18 chỉ định nghĩa sticky bar ẩn khi plan block hiển thị, chưa định nghĩa trường hợp plan block chỉ lộ một phần – cần PM/Designer confirm cách xử lý.",
+  "attachment": "Screenshot/Video: 18-paywall-large-p1.png, 18-paywall-small-p1.png"
+ },
+ {
+  "screen": "Paywall 1",
+  "title": "[UI/UX][Paywall 1] Link \"support@chatchi.co\" có vùng bấm nhỏ",
+  "severity": "Low",
+  "actual": "- Link \"support@chatchi.co\" ở footer (Support:) có tap target khoảng 124×16 (auto-check capture.json), thấp hơn chiều cao các link khác; cả 2 viewport.",
+  "expected": "- Link email support cần có vùng bấm đủ lớn để dễ chạm; kích thước cụ thể: Spec chưa định nghĩa – cần PM/Designer confirm.",
+  "attachment": "Screenshot/Video: 18-paywall-small-p7.png, 18-paywall-large-p7.png"
+ },
+ {
+  "screen": "Paywall 1",
+  "title": "[UI][Paywall 1] Payment badges hiển thị dạng pill chữ, không dùng logo chính thức",
+  "severity": "Low",
+  "actual": "- Hàng payment badges (Apple Pay · G Pay · VISA · Mastercard · PayPal) ở cả 2 plan block là pill nền trắng/đen chỉ có chữ, không phải artwork logo chính thức của từng phương thức.",
+  "expected": "- Spec #18 yêu cầu payment badges (Apple Pay · G Pay · VISA · Mastercard · PayPal); artwork cụ thể Cần đối chiếu Figma / brand guideline của từng bên.",
+  "attachment": "Screenshot/Video: 18-paywall-small-p2.png, 18-paywall-large-p2.png"
+ },
+ {
+  "screen": "Paywall 2 (sale)",
+  "title": "[UI][Paywall 2] Renewal line trong offer card bị footer cố định che ở first view màn nhỏ",
+  "severity": "Medium",
+  "actual": "- Màn 375×667, first view sale_m1: card offer bị cắt ngang ngay dưới button \"Claim 1 month offer\", dòng renewal \"$22.99 for the first month, then $49.99 every month until you cancel...\" chỉ hiện ~2 dòng rồi bị khối \"No thanks\" + Terms/Privacy cố định che; viền card bị cắt, không có fade. Lặp lại ở Paywall 3 (sale_m3), Paywall 4 (sale_y12) và Paywall 6 (legacy). Màn 430×932 và Paywall 5 (sale_lifetime) hiển thị đủ.",
+  "expected": "- Spec #19-#21: renewal line là một phần của card offer, cần đọc trọn vẹn cùng CTA (không bị footer che); cách bố trí khi màn ngắn Cần đối chiếu Figma.",
+  "attachment": "Screenshot/Video: 23-sale_m1-small-p1.png, 24-sale_m3-small-p1.png, 25-sale_y12-small-p1.png, 22-last_chance_offer-small-p1.png, 23-sale_m1-small-p2.png"
+ },
+ {
+  "screen": "Paywall 3 (sale)",
+  "no_bug": true
+ },
+ {
+  "screen": "Paywall 4 (sale)",
+  "no_bug": true
+ },
+ {
+  "screen": "Paywall 5 (sale)",
+  "no_bug": true
+ },
+ {
+  "screen": "Paywall 6 (legacy)",
+  "title": "[UI][Paywall 6] Màn last_chance_offer (đã tắt) hiển thị raw token {{offer_*}}",
+  "severity": "Low",
+  "actual": "- Mở last_chance_offer bằng debug deep-jump: badge hiện \"{{offer_badge}}\", giá hiện \"{{offer_price}}\", dòng renewal hiện \"{{offer_price}} today, then {{offer_renews}}\". Màn này chỉ vào được qua deep-jump (offer đã retired).",
+  "expected": "- Spec #22: old one-size last-chance offer is off (CONFIG.offer.enabled = false); màn không được hiển thị cho user, hoặc nếu còn trong build thì không được lộ token thô.",
+  "attachment": "Screenshot/Video: 22-last_chance_offer-small-p1.png, 22-last_chance_offer-large.png"
+ },
+ {
+  "screen": "Upsale 1",
+  "no_bug": true
+ },
+ {
+  "screen": "Download App",
+  "title": "[UI][Download App] Badge App Store / Google Play không dùng artwork chính thức",
+  "severity": "Low",
+  "actual": "- Hai badge \"Download on the App Store\" / \"Get it on Google Play\" dùng icon outline tự vẽ (quả táo, tam giác play) trên nền đen, không phải badge artwork chính thức của Apple/Google; cả 2 viewport.",
+  "expected": "- Spec #24: App Store and Google Play badges – cần dùng badge artwork chính thức theo guideline của Apple/Google (Cần đối chiếu Figma).",
+  "attachment": "Screenshot/Video: 28-get_app-small.png, 28-get_app-large.png"
+ }
+]

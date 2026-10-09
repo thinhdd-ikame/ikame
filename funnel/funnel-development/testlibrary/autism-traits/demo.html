@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Traits Self-Check Funnel Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* page (control panel) tokens */
+:root{
+  color-scheme:light;
+  --page:#ECEFF4;--pt1:#15233F;--pt2:#4B5875;--pt3:#77829A;
+  --psurf:#FFFFFF;--psurf2:#E1E6EE;--pborder:#D2D9E3;--pacc:#A8650A;--pacc-ink:#FFFFFF;
+  --k:1;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+    --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0E131C;--pt1:#E7EBF2;--pt2:#A7B1C3;--pt3:#77829A;
+  --psurf:#171E2A;--psurf2:#232C3B;--pborder:#2D3748;--pacc:#F0B04A;--pacc-ink:#1B1406;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--pt1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+code{font-size:.92em;overflow-wrap:anywhere}
+
+.wrap{display:flex;gap:48px;justify-content:center;align-items:flex-start;padding:32px 16px 48px}
+.phonebox{width:calc(390px * var(--k));height:calc(812px * var(--k));flex:none}
+
+/* phone: app brand tokens, fixed in both page themes */
+.phone{
+  --bg:#FFFFFF;--paper:#F6F7F9;--ink:#15233F;--ink-2:#243557;--t2:#4B5875;--t3:#838DA3;
+  --line:#DCE1E9;--line2:#EDF0F4;--acc:#E39B2D;--acc-dim:#E39B2D1F;--acc-ink:#9A5F0C;--err:#C23B22;--ok:#2F7D5B;
+  color-scheme:light;
+  width:390px;height:812px;border-radius:52px;overflow:hidden;position:relative;isolation:isolate;
+  transform:scale(var(--k));transform-origin:0 0;
+  background:#fff linear-gradient(#F1F4F8 1px,transparent 1px) 0 18px/100% 32px;
+  color:var(--ink);border:1px solid #C9D0DB;
+  box-shadow:0 0 0 10px #1A2230,0 0 0 11px #3A4456,0 40px 80px -24px #0A1020aa;
+}
+.phone button:focus-visible,.phone input:focus-visible,.phone summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.stage{position:absolute;inset:0;z-index:1;overflow:hidden}
+.view{position:absolute;inset:0;padding-top:50px;display:flex;flex-direction:column}
+.status{height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0;font-weight:600;font-size:15px;position:absolute;top:0;left:0;right:0;z-index:10;pointer-events:none;color:var(--ink)}
+.status .dots{display:flex;gap:5px;align-items:center}
+.status .dots i{display:block;width:17px;height:10px;border-radius:3px;border:1.5px solid var(--ink)}
+.status .dots b{display:block;width:4px;height:10px;background:var(--ink);border-radius:1px}
+
+/* simple screen change: fade + small slide */
+.view.out{animation:vout .22s ease forwards;pointer-events:none}
+.view.in{animation:vin .32s ease both}
+.view.in.b{animation-name:vinb}
+@keyframes vout{to{opacity:0}}
+@keyframes vin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes vinb{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+
+.nav{height:44px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:3}
+.iconbtn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.iconbtn:hover{background:var(--line2)}
+.navspacer{width:36px;flex:none}
+.navlabel{flex:1;text-align:center;font:600 12px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.segs{flex:1;display:flex;gap:4px}
+.segs span{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.segs span i{display:block;height:100%;background:var(--ink);transition:width .3s ease}
+
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 20px 12px;display:flex;flex-direction:column;gap:16px;position:relative}
+.scr.center{justify-content:center}
+.scr>*{flex-shrink:0}
+.foot{flex:none;padding:10px 20px 28px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;background:linear-gradient(to top,#fff 70%,#ffffff00)}
+.note{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance}
+
+.display{font:700 29px/1.14 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
+.display.sm{font-size:25px}
+.lead{color:var(--t2);margin:0;font-size:15px;text-wrap:pretty}
+.eyebrow{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.ph{font:500 .82em/1.3 ui-monospace,"Cascadia Mono",Consolas,monospace;border:1px dashed #C98A2A;color:#94600F;background:#FFF7EA;border-radius:6px;padding:0 5px;white-space:nowrap;letter-spacing:0;text-transform:none}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--ink);color:#fff;font:600 16px/1 var(--sans);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s ease,background .2s;flex:none}
+.btn:hover{background:var(--ink-2)}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{background:#E4E8EF;color:var(--t3);cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.link{background:none;border:none;color:var(--t2);font-size:14px;padding:4px;text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
+.link:hover{color:var(--ink)}
+
+.wm{display:flex;align-items:center;gap:8px;font:700 17px/1 var(--sans);color:var(--ink);letter-spacing:-.01em}
+.wm i{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 11px/1 var(--sans);font-style:normal}
+.hero1{position:relative;height:172px;border-radius:20px;overflow:hidden;background:#F6F4EF;border:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.hero1>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:18% 45%}
+.hero1 .bell3d{margin:0;z-index:1}
+.banner{display:block;width:100%;height:150px;object-fit:cover;border-radius:18px;background:#F6F4EF;border:1px solid var(--line)}
+.banner.pw{height:118px;object-position:50% 52%}
+.tpop{transform-box:fill-box;transform-origin:center;animation:tpop .4s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes tpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+
+.pills{display:flex;flex-direction:column;gap:8px}
+.pill{height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;border-radius:14px;border:1.5px solid var(--ink);background:#fff;text-align:left;width:100%;font-weight:600;font-size:16px;color:var(--ink);transition:background .15s,color .15s}
+.pill:hover{background:var(--paper)}
+.pill.on{background:var(--ink);color:#fff}
+.pill .em{width:24px;text-align:center;font-size:18px}
+.disc{font-size:15px;color:var(--t2);text-align:center;margin:0}
+.disc b{color:var(--ink);font-weight:600}
+.flinks{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:11.5px;color:var(--t3)}
+.flinks span{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:2px}
+.err{font-size:13px;color:var(--err)}
+.hint{font-size:13px;color:var(--t3)}
+
+.rows{display:flex;flex-direction:column}
+.irow{display:flex;gap:14px;align-items:center;padding:14px 2px;border-top:1px solid var(--line2);font-size:16px;font-weight:500}
+.irow:first-child{border-top:none}
+.irow .em{width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:19px;flex:none}
+.rule{height:1px;background:var(--line)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--t2)}
+.secchip{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font:600 12px/1 var(--sans);color:var(--t2)}
+.box{min-width:0;height:52px;border-radius:14px;background:#fff;border:1.5px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:10px;color:var(--t3)}
+.box:focus-within{border-color:var(--ink)}
+.box input{flex:1;min-width:0;height:100%;background:transparent;border:none;outline:none;color:var(--ink);font:400 16px var(--sans)}
+.box.bad{border-color:var(--err)}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font:500 13px/1 var(--sans);color:var(--t2)}
+
+/* test */
+.pcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;place-items:center;box-shadow:0 1px 0 var(--line),0 10px 24px -18px #15233F66;min-height:120px}
+.seq{font:700 28px/1.2 var(--serif);letter-spacing:.02em;color:var(--ink);text-align:center}
+.seq .gap{display:inline-block;min-width:44px;border-bottom:3px solid var(--acc);color:transparent}
+.wq{font:600 21px/1.35 var(--serif);text-align:center;color:var(--ink);text-wrap:balance}
+.wq b{color:var(--ink);text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:3px;text-underline-offset:4px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.tile{position:relative;border-radius:14px;border:1.5px solid var(--line);background:#fff;display:grid;place-items:center;padding:0;transition:border-color .15s,background .15s}
+.tiles.img .tile{height:84px}
+.tiles.txt .tile{height:60px}
+.tile:hover{border-color:#AEB8C9}
+.tile.on{border:2px solid var(--ink);background:#EEF1F6}
+.tile .tl{position:absolute;left:7px;top:6px;font:600 10px/1 var(--sans);color:var(--t3)}
+.tile .tv{font:600 19px/1 var(--sans);color:var(--ink)}
+.cpring{display:grid;place-items:center;position:relative;margin:4px auto 0}
+.cpring .mid{position:absolute;inset:0;display:grid;place-items:center;color:var(--acc)}
+.cpring .mid span{width:64px;height:64px;border-radius:50%;background:var(--acc-dim);display:grid;place-items:center}
+.minitype{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+.minitype .t{font-size:13px;color:var(--t2)}
+.minitype b{display:block;font-size:14px;color:var(--ink)}
+.tip{padding:12px 14px;border-radius:14px;border-left:3px solid var(--acc);background:#FFF9EF;font-size:14px;color:var(--ink)}
+
+/* trust */
+.bignum{font:700 44px/1 var(--serif);text-align:center;color:var(--ink)}
+.bignum .ph{font-size:24px}
+.stars{display:flex;gap:3px;justify-content:center;color:var(--acc)}
+.quote{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 24px -20px #15233F80}
+.quote q{font:600 17px/1.4 var(--serif);quotes:none;color:var(--ink)}
+.quote .by{font-size:12px;color:var(--t3)}
+.quote.dash{border-style:dashed;background:var(--paper);box-shadow:none}
+.quote.dash q{color:var(--t3);font-weight:500;font-size:15px}
+
+/* loading */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--t2);margin-bottom:6px;gap:10px}
+.step .top .pct{font-variant-numeric:tabular-nums;color:var(--t3);display:flex;gap:6px;align-items:center}
+.step.done .top{color:var(--ink)}
+.step.done .pct{color:var(--ok)}
+.bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ink);width:0}
+.qrot{min-height:92px}
+.qrot .quote{animation:fi .4s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fadein{animation:fi .35s ease}
+
+
+/* gate */
+.sum{padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--t2)}
+.sum .r{display:flex;justify-content:space-between;gap:10px}
+.sum .r b{color:var(--ink);font-weight:600}
+.blurv{filter:blur(6px);user-select:none}
+.soc{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.soc .btn{height:48px;font-size:14px}
+.orline{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t3)}
+.orline::before,.orline::after{content:"";flex:1;height:1px;background:var(--line)}
+.certo{position:relative;border:1.5px dashed #C6CEDA;border-radius:14px;padding:22px 18px 18px;text-align:center;background:#FBFCFD}
+.certo .cl{font:600 10px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.certo .nl{margin:14px auto 6px;min-height:34px;font:700 24px/1.3 var(--serif);color:var(--ink);border-bottom:2px solid var(--acc);max-width:230px;background:var(--acc-dim);border-radius:6px 6px 0 0}
+.certo .nl.empty{color:#C6CEDA}
+.certo .ls{height:8px;border-radius:4px;background:#E9EDF2;margin:8px auto 0;width:60%}
+
+/* preview + result */
+.pv{padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.pv h4{margin:0;font-size:13px;font-weight:600;color:var(--t2);display:flex;justify-content:space-between;align-items:center}
+.flatbell{position:relative}
+.flatbell .lbl{position:absolute;right:6px;top:4px;font:700 18px/1 var(--serif);color:var(--ink)}
+.sbars{display:flex;flex-direction:column;gap:9px}
+.sbar{display:grid;grid-template-columns:74px 1fr 34px;gap:10px;align-items:center;font-size:13px;color:var(--t2);background:none;border:none;padding:2px 0;text-align:left;width:100%}
+.sbar .trk{height:8px;border-radius:4px;background:var(--line2);overflow:hidden}
+.sbar .trk i{display:block;height:100%;border-radius:4px;background:#8E9AB2}
+.sbar.top{color:var(--ink);font-weight:600}
+.sbar.top .trk i{background:var(--acc)}
+.sbar .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.sbar .tag{font-size:10px;color:var(--acc-ink)}
+.sbar.blur .trk,.sbar .val.blur{filter:blur(3px)}
+.bens{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)}
+.bens div{display:flex;gap:10px;align-items:center}
+.minicert{display:flex;gap:12px;align-items:center}
+.minicert .mc{width:92px;height:64px;border-radius:6px;border:2px solid var(--ink);outline:1px solid var(--ink);outline-offset:-5px;display:grid;place-items:center;text-align:center;font:700 10px/1.2 var(--serif);color:var(--ink);background:#fff;flex:none;padding:6px}
+.band{align-self:flex-start;display:inline-flex;gap:6px;align-items:center;padding:6px 11px;border-radius:999px;font:600 13px/1 var(--sans);background:var(--acc-dim);color:var(--acc-ink)}
+.band.b{background:#E9EDF3;color:var(--t2)}
+.method{font-size:12.5px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px solid var(--line)}
+.stip{font-size:13px;color:var(--ink);background:#FFF9EF;border-radius:10px;padding:8px 10px;min-height:34px}
+.goaltips{padding:14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.goaltips h4{margin:0 0 8px;font-size:14px}
+.goaltips ul{margin:0;padding-left:18px;color:var(--t2);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* paywall + checkout */
+.closex{position:absolute;top:56px;right:16px;z-index:3;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--t2)}
+.pstrip{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--paper);border:1px solid var(--line);margin-right:40px}
+.pstrip b{display:block;font-size:14px}
+.plan{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:16px;border:1.5px solid var(--line);background:#fff;text-align:left;width:100%}
+.plan .radio{width:22px;height:22px;border-radius:50%;border:1.5px solid #AEB8C9;display:grid;place-items:center;flex:none;margin-top:1px}
+.plan.on{border:2px solid var(--ink);padding:12.5px 13.5px}
+.plan.on .radio{border:6.5px solid var(--ink)}
+.plan .pn{font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--ink)}
+.plan .pl{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.plan .pl span:nth-child(odd){color:var(--t3)}
+.plan .pd{font-size:12.5px;color:var(--t2);margin-top:5px}
+.badge{font:700 10px/1 var(--sans);letter-spacing:.05em;background:var(--acc);color:#2A1A02;padding:4px 7px;border-radius:6px}
+.stack{display:flex;flex-direction:column;gap:9px}
+.today{font-size:13.5px;color:var(--ink);text-align:center;text-wrap:balance;font-variant-numeric:tabular-nums}
+.pays{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pays span{font:600 11px/1 var(--sans);color:var(--t2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:#fff}
+.checks{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.checks div{display:flex;gap:9px;align-items:flex-start}
+.checks svg{color:var(--ok);flex:none;margin-top:2px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:12px 2px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--t3);font-weight:500}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:0 2px 12px;font-size:13.5px;color:var(--t2)}
+.small{font-size:12px;color:var(--t3);text-align:center;text-wrap:balance;margin:0}
+.ordr{padding:4px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.ordr .r{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px solid var(--line2);font-size:15px;font-variant-numeric:tabular-nums}
+.ordr .r:first-child{border-top:none}
+.ordr .r span{color:var(--t2)}
+.ordr .r b{font-weight:600}
+.consent{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--ink);cursor:pointer;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:#fff}
+.consent.bad{border-color:var(--err)}
+.consent input{width:22px;height:22px;margin:0;flex:none;accent-color:#15233F}
+.pmeth{display:flex;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:3px}
+.pmeth button{flex:1;border:none;background:none;border-radius:9px;padding:9px 0;font-size:13px;font-weight:600;color:var(--t2)}
+.pmeth button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #15233F26}
+.cardrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* certificate */
+.cert{position:relative;padding:22px 18px 16px;border-radius:8px;background:#fff;border:3px double var(--ink);box-shadow:0 18px 30px -20px #15233F80;text-align:center;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.cert::before{content:"";position:absolute;inset:6px;border:1px solid #C6CEDA;border-radius:4px;pointer-events:none}
+.cert .ct{font:600 10px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--t3)}
+.cert .cn{font:700 28px/1.2 var(--serif);color:var(--ink);margin-top:6px}
+.cert .cs{font:700 40px/1 var(--serif);color:var(--ink)}
+.cert .cs small{display:block;font:500 11px/1.4 var(--sans);color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.cert .cb{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px;font-size:11px;color:var(--t2);text-align:left}
+.seal{width:52px;height:52px;border-radius:50%;border:2px solid var(--acc);display:grid;place-items:center;font:700 13px/1 var(--serif);color:var(--acc-ink);background:#FFF9EF;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #E39B2D66}
+.cert .cf{font-size:10.5px;color:var(--t3);margin-top:6px}
+.share{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.share button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:12px;color:var(--t2)}
+.share button:hover{border-color:var(--ink)}
+.sharetxt{font-size:13px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px dashed var(--line)}
+
+/* next tests */
+.lib{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:2px 20px 8px;scroll-snap-type:x mandatory}
+.lcard{flex:none;width:170px;scroll-snap-align:start;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px;text-align:left}
+.lcard .ei{width:40px;height:40px;border-radius:12px;background:var(--paper);display:grid;place-items:center;font-size:20px}
+.lcard .lt{display:block;width:100%;height:96px;object-fit:cover;border-radius:12px;background:#F6F4EF}
+.lcard b{font-size:15px}
+.lcard span{font-size:12px;color:var(--t3)}
+
+.wbar{display:flex;align-items:center;justify-content:space-between;padding:2px 0 4px;margin-right:44px}
+.ocard{position:relative;display:flex;flex-direction:column;gap:14px;padding:22px 16px 16px;border-radius:20px;border:2px solid var(--ink);background:#fff;box-shadow:0 0 0 5px var(--acc-dim),0 22px 36px -24px #15233F66}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 11px;border-radius:999px;background:var(--acc);color:#2A1A02;font:700 10.5px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{display:block;font:700 18px/1.2 var(--serif);color:var(--ink)}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:12px;border-radius:14px;background:var(--paper);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.oprice s{color:var(--t3);font-size:14px}.oprice b{font:700 28px/1 var(--serif);color:var(--ink)}.oprice span{color:var(--t2);font-size:13px}
+.otimer{align-self:center;display:inline-flex;gap:8px;padding:7px 13px;border-radius:999px;background:var(--paper);border:1px solid var(--line);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--acc-ink);font-variant-numeric:tabular-nums}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.toast{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:9;background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:tfade 2.6s ease forwards;pointer-events:none}
+@keyframes tfade{0%{opacity:0;transform:translate(-50%,-6px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* side panel */
+.panel{width:340px;max-width:100%;display:flex;flex-direction:column;gap:24px;padding-top:8px}
+.panel h1{font:700 30px/1.1 var(--serif);margin:0 0 8px}
+.panel .intro{color:var(--pt2);margin:0;font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--pborder);border-radius:999px;padding:3px;background:var(--psurf)}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:999px;font-size:13px;color:var(--pt2);font-weight:500}
+.seg button.on{background:var(--pt1);color:var(--page)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctrls .restart{border:1px solid var(--pborder);background:none;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--pt2)}
+.ctrls .restart:hover{color:var(--pt1)}
+.panel button:focus-visible{outline:2px solid var(--pacc);outline-offset:2px}
+.plabel{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pt3);margin-bottom:10px}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .grp{display:flex;flex-direction:column;gap:2px}
+.flow .gname{font-size:12px;color:var(--pacc);margin-bottom:4px;font-weight:600}
+.flow button{display:flex;gap:10px;align-items:baseline;background:none;border:none;text-align:left;padding:5px 8px;border-radius:8px;color:var(--pt2);font-size:13px;width:100%}
+.flow button:hover{background:var(--psurf);color:var(--pt1)}
+.flow button.on{background:var(--psurf2);color:var(--pt1)}
+.flow button .n{font-variant-numeric:tabular-nums;color:var(--pt3);width:18px;flex:none;text-align:right}
+.flow button .tag{margin-left:auto;font-size:10px;color:var(--pt3);border:1px solid var(--pborder);border-radius:4px;padding:1px 5px;flex:none}
+.data{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.data dt{color:var(--pt3)}
+.data dd{margin:0;color:var(--pt1);overflow-wrap:anywhere}
+.callout{font-size:13px;color:var(--pt2);border:1px solid var(--pborder);background:var(--psurf);border-radius:12px;padding:10px 12px;margin:0}
+.callout b{color:var(--pt1)}
+.foot-note{font-size:12px;color:var(--pt3);margin:0;display:flex;flex-direction:column;gap:6px}
+.foot-note p{margin:0}
+
+@media (max-width:820px){
+  .wrap{flex-direction:column;align-items:center;gap:36px;padding-block:24px 40px}
+  .panel{width:390px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
+}
+/* personality-specific */
+.pills.lk .pill{height:44px;font-size:15px;border-width:1.5px}
+.stmt{font:700 25px/1.25 var(--serif);margin:0;text-wrap:balance;color:var(--ink);min-height:96px;display:flex;align-items:center}
+.letters{display:flex;gap:8px}
+.ltr{flex:1;aspect-ratio:1;max-height:76px;border-radius:16px;border:2px solid var(--ink);background:#fff;display:grid;place-items:center;font:700 34px/1 var(--serif);color:var(--ink);transition:transform .35s,background .25s}
+.ltr.q{border-style:dashed;border-color:#C6CEDA;color:#C6CEDA;background:var(--paper)}
+.ltr.flip{animation:flipin .5s ease both}
+@keyframes flipin{from{transform:rotateX(90deg)}to{transform:none}}
+.ltr.big{max-height:84px;font-size:38px}
+.nick{font:600 15px/1.3 var(--serif);color:var(--acc-ink);text-align:center}
+.tbars{display:flex;flex-direction:column;gap:12px}
+.tb .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--t2);margin-bottom:5px;gap:8px}
+.tb .top b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.tb .trk{height:10px;border-radius:5px;background:var(--line2);overflow:hidden}
+.tb .trk i{display:block;height:100%;border-radius:5px;background:var(--ink);transition:width .5s ease}
+.tb.hot .trk i{background:var(--acc)}
+.tb.blur .trk,.tb.blur .top b{filter:blur(4px)}
+.tb .ends{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-top:3px}
+.lockrow{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;border:1px dashed #C6CEDA;background:var(--paper);font-size:14px;color:var(--t2)}
+.lockrow svg{flex:none;color:var(--t3)}
+.str{display:flex;gap:10px;align-items:center;padding:11px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:500}
+.str i{width:26px;height:26px;border-radius:50%;background:var(--acc-dim);color:var(--acc-ink);display:grid;place-items:center;font:700 12px var(--sans);font-style:normal;flex:none}
+.sec{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.sec h4{margin:0;font:700 17px/1.2 var(--serif)}
+.sec p{margin:0;font-size:14px;color:var(--t2)}
+.sec ul{margin:0;padding-left:18px;font-size:14px;color:var(--t2);display:flex;flex-direction:column;gap:4px}
+/* long-scroll paywall */
+.pwbar{display:flex;align-items:center;justify-content:space-between;margin-right:44px;padding-bottom:2px}
+.pwhero{padding:16px;border-radius:20px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;box-shadow:0 12px 26px -20px #15233F80}
+.pwsec{display:flex;flex-direction:column;gap:10px;padding-top:6px}
+.pwsec>h2{margin:0;font:700 21px/1.2 var(--serif);color:var(--ink)}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.how b{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px;flex:none}
+.guar{padding:14px;border-radius:16px;background:#F3F8F5;border:1px solid #CFE3D8;font-size:14px;color:var(--ink);display:flex;gap:10px}
+.guar svg{color:var(--ok);flex:none;margin-top:2px}
+.mcard{width:150px;height:96px;border-radius:12px;background:#fff;border:2px solid var(--ink);padding:8px;display:flex;flex-direction:column;gap:6px;flex:none}
+.mcard .ml{display:flex;gap:3px}.mcard .ml i{flex:1;height:22px;border-radius:5px;background:#EEF1F6;border:1px solid var(--line);font:400 11px/20px var(--sans);text-align:center;font-style:normal}
+.mcard .mb{height:6px;border-radius:3px;background:var(--line)}.mcard .mb.b{filter:blur(2px)}
+.phimg{display:block;width:100%;height:120px;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#F6F4EF}
+.demo-skip{align-self:center;font-size:12px}
+/* autism-traits specific */
+.atiles{display:flex;gap:6px}
+.atile{flex:1;min-width:0;min-height:68px;border-radius:14px;border:2px solid var(--ink);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink)}
+.atile .te{font-size:22px;line-height:1}.atile .tn{font:600 10px/1 var(--sans);color:var(--t2)}
+.atile.q{border-style:dashed;border-color:#C6CEDA;color:#C6CEDA;background:var(--paper);font:700 26px var(--serif)}
+.atile.flip{animation:flipin .5s ease both}
+.atile.big{min-height:78px}
+.helpbar{flex:none;height:30px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--t3);background:#fff;border-top:1px solid var(--line2);position:relative;z-index:3}
+.helpbar button{background:none;border:none;padding:4px 2px;font:600 12px var(--sans);color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sheet{position:absolute;inset:0;z-index:30;background:#15233F99;display:flex;align-items:flex-end}
+.sheet .sc{background:#fff;border-radius:24px 24px 0 0;padding:22px 20px 28px;width:100%;display:flex;flex-direction:column;gap:12px}
+.sheet h2{margin:0;font:700 22px/1.2 var(--serif)}
+.sheet p{margin:0;font-size:15px;color:var(--t2)}
+.supbox{padding:14px;border-radius:16px;background:#F3F8F5;border:1px solid #CFE3D8;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)}
+.supbox b{font-size:15px}
+.notinc{font-size:13px;color:var(--t2);padding:10px 12px;border-radius:12px;background:var(--paper);border:1px dashed #C6CEDA}.notinc b{display:block;color:var(--ink);margin-bottom:2px}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="phonebox"><div class="phone" id="phone" aria-live="polite"></div></div>
+  <aside class="panel">
+    <div>
+      <h1>Traits self-check funnel</h1>
+      <p class="intro">An ikame prototype of the 16-screen funnel in <code>testlibrary/autism-traits/funnel-content.md</code>, in the sibling briefs' light "exam paper" look. Health niche: a self-check, not a diagnosis, with a support link on every screen. Tap through the phone, or jump to any screen below.</p>
+    </div>
+    <div class="ctrls">
+      <div class="seg" role="group" aria-label="Copy variant">
+        <button id="vA" class="on" aria-pressed="true">Copy A</button><button id="vB" aria-pressed="false">Copy B</button>
+      </div>
+      <button class="restart" id="restart">Restart</button>
+    </div>
+    <p class="callout"><b>Full-length check.</b> All 30 statements are here (6 per area, interleaved). Use "Demo: fill the rest" under a statement to skip ahead; checkpoints appear at 10, 20 and 27 answers. Tap "Need help now?" on any screen to see the support sheet.</p>
+    <div>
+      <div class="plabel">Flow</div>
+      <div class="flow" id="flow"></div>
+    </div>
+    <div>
+      <div class="plabel">Collected so far</div>
+      <dl class="data" id="data"></dl>
+    </div>
+    <div class="foot-note">
+      <p><b>Faked:</b> the bands are a simple per-area sum of fit scores (no norms, no cut-off, no total), the loading steps, Google/Apple sign-in, checkout, PDF and email buttons are simulated, and no charge is made.</p>
+      <p><b>Real:</b> the plan structure only. Every price is a token ({{price_*}}, {{renewal_*}}). Review text and the refund window on the paywall are placeholders (dashed). Fill them from real data only. The 6-minute estimate and the band thresholds are guesses until measured and reviewed by a clinical advisor.</p>
+      <p><b>Images</b> in <code>img/</code> are placeholder art. Run <code>gen_images.py</code> with <code>IKAME_AI_KEY</code> set to replace them under the same names.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const IMG=/*IMG-START*/{'img/hero.jpg':'img/hero.jpg','img/howto.jpg':'img/howto.jpg','img/report.jpg':'img/report.jpg','img/profile.jpg':'img/profile.jpg','img/next.jpg':'img/next.jpg'}/*IMG-END*/;
+const im=p=>IMG[p]||p;
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-dasharray="2 2"/>',
+  star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  dl:'<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  chat:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  story:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/>',
+  google:'<circle cx="12" cy="12" r="9"/><path d="M12 12h8"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.75)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const starRow=(n=5,s=18)=>`<div class="stars" aria-label="${n} stars">${Array.from({length:n},()=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${IC.star}</svg>`).join('')}</div>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* price/renewal/offer/refund/review tokens keep their {{braces}}; every other placeholder shows as [name] */
+const ph=s=>/price|renew|offer|refund|review/.test(s)?`<span class="ph">{{${s}}}</span>`:`<span class="ph">[${s.replace(/_/g,' ')}]</span>`;
+const tok=v=>esc(v).replace(/\{\{(\w+)\}\}/g,(_,k)=>ph(k));
+
+/* ---------- the check: 30 original statements, 6 per area, interleaved ---------- */
+/* d=+1: agreeing points to the first letter of the pair (E,S,T,J); d=-1: to the second (I,N,F,P) */
+const AX=[
+ {n:'Social',s:'Social',e:'🤝'},
+ {n:'Sensory',s:'Sensory',e:'🎧'},
+ {n:'Routine',s:'Routine',e:'🔁'},
+ {n:'Detail',s:'Detail',e:'🔍'},
+ {n:'Communication',s:'Talk',e:'💬'}];
+/* d=+1: "very much me" points to a stronger area; d=-1: reverse-keyed (answer is flipped). Original wording, not clinically validated. */
+const STM=[
+ [['Group conversations tire me out quickly.',1],['I know easily when to join a chat.',-1],['I rehearse what to say before talking.',1],['Small talk feels like a task.',1],['I read other people’s moods without effort.',-1],['I miss hints others find obvious.',1]],
+ [['Bright lights or loud rooms wear me down.',1],['Some fabrics or textures bother me a lot.',1],['I notice background sounds others ignore.',1],['Busy places rarely bother me.',-1],['Strong smells can overwhelm me.',1],['I need quiet to reset after outings.',1]],
+ [['Plans changing makes me feel unsettled.',1],['I like doing things the same way.',1],['I adapt easily to a sudden new schedule.',-1],['I follow a set order or route.',1],['A surprise can upset my whole day.',1],['I enjoy trying new routines often.',-1]],
+ [['I notice small details others overlook.',1],['I get absorbed in a topic for hours.',1],['I like sorting things into exact groups.',1],['I see the big picture before details.',-1],['I remember facts about my interests.',1],['Tiny errors bother me.',1]],
+ [['I take words more literally than most.',1],['Sarcasm or hints can be hard to catch.',1],['I can tell easily when someone is joking.',-1],['I say exactly what I mean, no more.',1],['Holding eye contact feels uncomfortable.',1],['I pick up tone of voice easily.',-1]]];
+const NA=AX.length;
+const QS=Array.from({length:30},(_,q)=>{const ax=q%NA,[txt,d]=STM[ax][Math.floor(q/NA)];return {ax,txt,d}});
+const N=QS.length,CPS=[10,20,27];
+const SCALE=[['👎','Not me at all'],['🙁','Not really me'],['😐','Sometimes'],['🙂','Mostly me'],['👍','Very much me']];
+const TIPS=['Tip: answer for most days, not your best or worst.','Tip: it’s fine to pause. Your answers stay saved.','Tip: last few. Stop any time if it feels like too much.'];
+/* panel-jump prefill: target fit per area (0-4), varied slightly per statement */
+const TGT=[1,3,4,2,1];
+const PRE=QS.map((x,q)=>{const v=Math.max(0,Math.min(4,TGT[x.ax]+((q%3)-1)));return x.d===1?v:4-v});
+
+/* ---------- scoring: deterministic, from the user's answers only; no cross-area total, no cut-off ---------- */
+const answered=()=>S.ans.filter(a=>a!==null).length;
+const axSum=a=>QS.reduce((s,x,q)=>s+(x.ax===a&&S.ans[q]!==null?(x.d===1?S.ans[q]:4-S.ans[q]):0),0);
+const axCnt=a=>QS.reduce((s,x,q)=>s+(x.ax===a&&S.ans[q]!==null?1:0),0);
+const axPct=a=>axCnt(a)?Math.round(axSum(a)/(axCnt(a)*4)*100):0;
+const band=p=>p<34?'Shows up less':p<67?'In between':'Shows up more';
+const axBand=a=>band(axPct(a));
+const byClarity=()=>[0,1,2,3,4].sort((x,y)=>axPct(y)-axPct(x)||x-y);
+const clearest=()=>AX[byClarity()[0]].n;
+const TXT=[
+ {str:['Thoughtful one-to-one listening','Easy rapport in groups'],day:['Groups and small talk may take extra energy, and one-to-one time can feel easier.','Groups and small talk usually feel natural, and you read moods without much effort.'],idea:['Plan recovery time after social events, and say so kindly.','Check in with quieter people. Not everyone shares your ease.']},
+ {str:['Notices fine sensory details','Comfortable in busy places'],day:['Light, sound, textures or smells may stand out or wear you down.','Busy or noisy places rarely bother you.'],idea:['Keep earplugs, sunglasses or a quiet spot within reach.','Notice when others need a calmer space, and offer one.']},
+ {str:['Steady with structure and habits','Flexible when plans change'],day:['Familiar routines help, and sudden changes can unsettle you.','You adapt to new plans and schedules with ease.'],idea:['Ask for notice of changes, and keep one anchor habit each day.','Keep one fixed routine to protect rest and sleep.']},
+ {str:['Deep focus and accuracy','Sees the big picture'],day:['You notice small details and can lose hours in a favorite topic.','You tend to see the whole before the parts.'],idea:['Use your focus on purpose, with a timer to surface for meals and breaks.','Ask for one example when the details matter.']},
+ {str:['Direct, clear, honest wording','Reads tone and hints easily'],day:['You say what you mean, and hints or sarcasm can be hard to catch.','You pick up tone, hints and jokes easily.'],idea:['Say what you need plainly, and ask "do you mean that literally?"','Say things plainly for people who prefer direct words.']}];
+const pick=(a,k)=>TXT[a][k][axPct(a)<34?1:0];
+const strengths=()=>byClarity().slice(0,3).map(a=>pick(a,'str'));
+const fmtDur=ms=>{const s=Math.max(1,Math.round(ms/1000));return `${Math.floor(s/60)}m ${String(s%60).padStart(2,'0')}s`};
+const dstr=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return dstr(d)};
+const renewal=p=>addDays(p==='t4'?28:7);
+
+const AGES=[['18-24','🌱'],['25-34','🚀'],['35-44','🧭'],['45-59','🌿'],['60+','🦉']];
+const GOALS=[['curious','🔍','Curious about myself'],['work','💼','Work and study'],['love','💞','Relationships'],['prof','🗣️','Prepare for a doctor visit'],['other','✏️','Other']];
+const GPH={curious:'knowing yourself',work:'work and study',love:'your relationships',prof:'your doctor visit'};
+const goalPhrase=()=>S.goal==='other'?(S.goalOther.trim().toLowerCase()||'your day to day'):(GPH[S.goal]||'knowing yourself');
+const goalLabel=()=>{const g=GOALS.find(x=>x[0]===S.goal);return S.goal==='other'?(S.goalOther.trim()||'Other'):g?g[2]:'Curious about myself'};
+const LIB={work:[['💼','Career Test','5 min'],['💪','Strengths Finder','8 min'],['🧩','DISC','7 min']],love:[['🔗','Attachment Style','7 min'],['💞','Love Style','6 min'],['💛','EQ Test','8 min']],curious:[['🌊','Big Five','10 min'],['💛','EQ Test','8 min'],['🕰️','Mental Age','5 min']],prof:[['🌊','Big Five','10 min'],['💛','EQ Test','8 min'],['🕰️','Mental Age','5 min']]};
+const PLANS={
+  one:{n:'One-time report',today:'{{price_report}}',then:'Nothing renews',d:'This profile’s full report. Nothing renews.'},
+  t1:{n:'1-week Full Access',today:'{{price_trial}}',then:'{{renewal_trial}} every 4 weeks',badge:'ALL TESTS'},
+  t4:{n:'4-week Full Access',today:'{{price_4week}}',then:'{{renewal_4week}} every 4 weeks',d:'Renews at {{renewal_4week}} every 4 weeks.'}
+};
+const CONFIG={
+  funnel:'testlibrary-autism',
+  /* non-empty URL per plan key (one, t1, t4) = checkout_click leaves the demo for that hosted checkout (?funnel=&plan= appended) */
+  checkoutUrls:{one:'',t1:'',t4:''},
+  /* true only if the 2-days-before-trial-ends reminder email is really sent; otherwise set false to hide the line */
+  reminder:false,
+  /* Unverified blocks: hidden while unset. proof = real review text; refundDays = the refund window that really exists. */
+  proof:null,refundDays:null,
+  /* Last-chance offer shown ONCE per session when the paywall is closed without paying.
+     Default: this one profile report, no subscription. Prices are tokens: real values come from checkout config.
+     compareAt:null = nothing struck. Strike a price only if it is a real, lower price that checkout charges.
+     renews:null = one payment, nothing renews. expiresMin:null = no timer (the brief promises none). */
+  offer:{enabled:true,name:'Clearest-area summary + talking guide',price:'{{offer_price}}',renews:null,compareAt:null,badge:'{{offer_badge}}',checkoutUrl:'',expiresMin:null}
+};
+PLANS.offer={d:'One area in detail and the talking guide. Nothing renews.',n:esc(CONFIG.offer.name),today:CONFIG.offer.price,then:CONFIG.offer.renews||'Nothing renews',later:CONFIG.offer.renews||''};
+const recurring=p=>p==='offer'?!!CONFIG.offer.renews:p!=='one';
+
+const INIT=()=>({v:'A',i:1,hist:[],age:'',under:false,goal:'',goalOther:'',q:0,ans:Array(N).fill(null),cp:0,t0:null,dur:null,email:'',name:'',plan:'t1',offerSeen:false,offerEnd:null,consent:false,pay:'card',cardNo:'',cardExp:'',cardCvc:'',paid:false,paidPlan:null,upsell:false,err:'',errKind:''});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const nameOk=()=>S.name.trim();
+const nm=()=>esc(nameOk()||'you');
+/* name-led headings fall back cleanly when the name was skipped */
+const lead=txt=>nameOk()?`${esc(S.name.trim())}, ${txt}`:txt.charAt(0).toUpperCase()+txt.slice(1);
+const tail=txt=>nameOk()?`${txt}, ${esc(S.name.trim())}`:txt;
+
+const SCREENS=[
+ {n:1,g:'A. Hook',l:'Lander - self-check'},{n:2,g:'A. Hook',l:'What this is, and isn’t'},
+ {n:3,g:'B. Investment',l:'Why are you testing?'},{n:4,g:'B. Investment',l:'Statement',tag:'×40'},{n:5,g:'B. Investment',l:'Progress checkpoint',tag:'×4'},
+ {n:6,g:'C. Trust',l:'How it’s built'},{n:7,g:'D. Anticipation',l:'Scoring',tag:'auto'},
+ {n:8,g:'E. Gate',l:'Email gate'},{n:9,g:'E. Gate',l:'Name for your profile'},
+ {n:10,g:'D. Anticipation (tease)',l:'Profile preview'},
+ {n:11,g:'F. Monetization',l:'Paywall',tag:'long page'},{n:12,g:'F. Monetization',l:'Last-chance offer',tag:'once'},{n:13,g:'F. Monetization',l:'Order summary + consent',tag:'consent'},
+ {n:14,g:'G. Payoff',l:'Your trait profile'},{n:15,g:'G. Payoff',l:'Visit notes for a professional'},{n:16,g:'G. Payoff',l:'Support and next steps',tag:'2nd layer'}];
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+phone.innerHTML=`<div class="stage" id="stage"></div><div class="status"><span>9:41</span><span class="dots"><b></b><b style="height:8px"></b><i></i></span></div>`;
+const stage=document.getElementById('stage');
+const cur=()=>stage.querySelector('.view.cur');
+let timer=null,timer2=null,pend=null;
+function clearTimers(){clearInterval(timer);clearTimeout(timer);clearInterval(timer2);clearTimeout(pend);timer=timer2=pend=null}
+
+function go(n,push=true){clearTimers();const dir=n<S.i?'b':'f';if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.err='';S.errKind='';render(dir)}
+let backing=false;
+function back(){clearTimers();let p=S.hist.pop();if(p===12&&S.offerSeen)p=S.hist.pop();if(p===12&&S.offerSeen)p=11;if(p){S.i=p;S.err='';S.errKind='';backing=true;try{render('b')}finally{backing=false}}}
+const EVENTS=window.__ikfEvents=[];
+/* ---------- tracking (never the email, typed text or card fields) ---------- */
+function snapshot(){let ans=null;try{ans=typeof answered==='function'?answered():null}catch(e){}
+  return {screen:S.i,screenName:(SCREENS[S.i-1]||{}).l||null,variant:S.v,age:S.age||null,reason:S.goal||S.reason||S.gender||null,answered:ans,email_provided:!!(S.email&&S.email.trim()),name_provided:!!(S.name&&S.name.trim()),plan:S.plan,paid:!!S.paid,paidPlan:S.paidPlan||null}}
+function emit(e,p={}){EVENTS.push({e,...p});console.info('[ikf]',e,p);
+  let data={};try{data=snapshot()}catch(x){}
+  const d=Object.assign({},p,{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+e,{detail:d}))}catch(x){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.funnel,event:e,detail:d},'*')}catch(x){}
+  try{window.dataLayer&&window.dataLayer.push&&window.dataLayer.push(Object.assign({event:'ikf_'+e,funnel:CONFIG.funnel},data,p))}catch(x){}
+  const f=Object.assign({funnel:CONFIG.funnel},data,p);
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',e,f)}catch(x){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(e,f)}catch(x){}
+}
+function navTop(h){try{window.top.location.href=h}catch(e){location.href=h}}
+/* a plan with a non-empty checkout URL leaves the demo; empty = demo behaviour */
+function planCheckoutUrl(pl){const u=(CONFIG.checkoutUrls&&CONFIG.checkoutUrls[pl])||(PLANS[pl]&&PLANS[pl].checkoutUrl)||'';return typeof u==='string'?u.trim():''}
+function leaveToCheckout(u,pl){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan',pl);navTop(x.toString());return true}catch(e){return false}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2700)}
+function startTest(){if(S.t0===null)S.t0=Date.now();if(S.ans.every(a=>a===null))S.q=0;go(4)}
+
+function fillTo(n){
+  if(n>1&&!S.age)S.age='25-34';
+  if(n>3&&!S.goal)S.goal='curious';
+  if(n===4&&S.t0===null)S.t0=Date.now();
+  if(n===5){const cp=Math.max(0,Math.min(2,S.cp||0));S.cp=cp;for(let i=0;i<CPS[cp];i++)if(S.ans[i]===null)S.ans[i]=PRE[i];S.q=CPS[cp]-1;if(S.t0===null)S.t0=Date.now()}
+  if(n>5){S.ans=S.ans.map((a,i)=>a===null?PRE[i]:a);S.q=N-1;if(S.dur===null)S.dur=240000}
+  if(n>8&&!S.email)S.email='maya@example.com';
+  if(n>9&&!S.name)S.name='Maya';
+  if(n>13&&!S.paid){S.paid=true;S.paidPlan=S.plan}
+}
+
+/* ---------- nav bar per screen ---------- */
+function segs(){const a=answered();return `<div class="segs" aria-label="Test progress">${[0,1,2].map(j=>{const f=Math.max(0,Math.min(10,a-j*10));return `<span><i style="width:${f*10}%"></i></span>`}).join('')}</div>`}
+function nav(){
+  const b=`<button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button>`,sp='<div class="navspacer"></div>';
+  switch(S.i){
+    case 2:case 9:case 10:case 13:return `<div class="nav">${b}<div style="flex:1"></div>${sp}</div>`;
+    case 3:return `<div class="nav">${b}<div class="navlabel">Warm-up</div>${sp}</div>`;
+    case 4:return `<div class="nav"><button class="iconbtn" data-a="tback" aria-label="Back">${ic('back',22)}</button>${segs()}${sp}</div>`;
+    case 5:return `<div class="nav">${sp}${segs()}${sp}</div>`;
+  }
+  return '';
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+
+/* ---------- shared pieces ---------- */
+const wordmark=()=>`<div class="wm"><i>${ic('grid',15,'currentColor',2)}</i>TestLibrary</div>`;
+const tileInner=i=>`<span class="te">${AX[i].e}</span><span class="tn">${AX[i].s}</span>`;
+const tilesRow=(o={})=>`<div class="atiles" role="img" aria-label="${o.q?'Five areas, still hidden':'Your five areas'}">${AX.map((x,i)=>`<div class="atile ${o.q?'q':''} ${o.big?'big':''}">${o.q?'?':tileInner(i)}</div>`).join('')}</div>`;
+function tbar(a,{blur=false,hot=false}={}){const X=AX[a],p=axPct(a);
+  return `<div class="tb ${hot?'hot':''} ${blur?'blur':''}"><div class="top"><span>${X.n}</span><b>${axBand(a)} for you</b></div><div class="trk"><i style="width:${Math.max(6,p)}%"></i></div><div class="ends"><span>Less</span><span>More</span></div></div>`}
+const tbars=o=>`<div class="tbars">${byClarity().map((a,i)=>tbar(a,o&&o.teaser?{blur:i>0,hot:i===0}:{hot:i===0})).join('')}</div>`;
+const reviewCard=()=>`<div class="quote">${starRow(5,15).replace('class="stars"','class="stars" style="justify-content:flex-start"')}<q>“${ph('review_quote')}”</q><span class="by">— ${ph('review_first_name')}, ${ph('review_country')} · ${ph('review_platform')}</span></div>`;
+const tokOK=v=>!!v&&!/^\{\{/.test(v);
+const dashQuote=()=>!CONFIG.proof?'':`<div class="quote dash"><q>“Real, current review goes here.”</q><span class="by">— fill from real review data only</span></div>`;
+const miniCard=()=>`<div class="mcard"><div class="ml">${AX.map(x=>`<i>${x.e}</i>`).join('')}</div><div class="mb"></div><div class="mb b" style="width:70%"></div><div class="mb b" style="width:85%"></div></div>`;
+const pays=`<div class="pays"><span>VISA</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>Google Pay</span></div>`;
+const DISC='A self-check for reflection. Not a diagnosis, not medical advice, not a clinical assessment. Talk to a qualified professional about any concerns.';
+const helpbar=()=>`<div class="helpbar"><button data-a="help">Need help now?</button><span>· A self-check, not a diagnosis</span></div>`;
+const SUPPORT=`<h2>Need help now?</h2><p><b>In danger now?</b> Call your local emergency number.</p><p>Call or text <b>988</b> (US). Outside the US: <b>findahelpline.com</b>.</p><p>A doctor or GP can also help. You do not need a result to ask.</p>`;
+const todayLine=p=>p==='one'?`One payment of ${tok(PLANS.one.today)}. Nothing renews.`:`Today: ${tok(PLANS[p].today)}. On ${renewal(p)}: ${tok(p==='t1'?'{{renewal_trial}}':'{{renewal_4week}}')}, then every 4 weeks until you cancel.`;
+function planBlock(tag){const p=S.plan;
+  return `<div class="stack" role="radiogroup" aria-label="Plans ${tag}">${['one','t1','t4'].map(k=>{const P=PLANS[k];return `<button class="plan ${p===k?'on':''}" data-a="plan" data-v="${k}" role="radio" aria-checked="${p===k}"><span class="radio"></span><span style="flex:1"><span class="pn">${P.n}${P.badge?`<span class="badge">${P.badge}</span>`:''}</span><span class="pl"><span>Today</span><b style="font-weight:600">${tok(P.today)}</b><span>Then</span><b style="font-weight:600">${tok(P.then)}</b></span>${P.d?`<span class="pd" style="display:block">${tok(P.d)}</span>`:''}</span></button>`}).join('')}</div>
+  <div class="today">${todayLine(p)}</div>
+  <button class="btn" data-a="checkout">Continue to checkout</button>`}
+
+/* ---------- screens ---------- */
+const V={
+1:()=>`<div class="scr" style="gap:14px">${wordmark()}
+  <img class="banner" src="${im('img/hero.jpg')}" alt="Five soft paper tiles above five half-filled bars" width="720" height="480" fetchpriority="high" style="height:112px">
+  <h1 class="display">${t('Understand your own traits','Adult autism traits self-check')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Pick your age to start. Free to take.','30 statements. Not a diagnosis. About 6 minutes.')}</p>
+  <div class="pills" role="group" aria-label="Your age">${AGES.map(([a,e])=>`<button class="pill ${S.age===a?'on':''}" data-a="age" data-v="${a}" aria-pressed="${S.age===a}"><span class="em">${e}</span>${a}</button>`).join('')}</div>
+  <p class="disc"><b>Free to take · Full report is a paid unlock</b></p>
+  <p class="small" style="margin-top:-8px">A self-check, not a diagnosis. Independent, not clinical.</p>
+  ${S.under?`<div class="err" style="text-align:center">You must be 18 or older to take this check.</div>`:`<button class="link" data-a="under" style="font-size:13px">I’m under 18</button>`}
+  <div class="flinks"><span>Cancel subscription</span><span>Subscription policy</span><span>FAQ</span><span>Terms</span><span>Privacy</span></div></div>`,
+2:()=>`<div class="scr"><img class="banner" src="${im('img/howto.jpg')}" alt="A quiet desk with a notebook and pencil" width="720" height="480" loading="lazy" style="height:110px"><h1 class="display">${t('Before you begin','What this check is')}</h1>
+  <p class="lead">${t('A self-check for reflection. Not a diagnosis or therapy.','Only a qualified clinician can diagnose anything.')}</p>
+  <div class="rows">
+    <div class="irow"><span class="em">🪞</span>A self-check for reflection</div>
+    <div class="irow"><span class="em">🩺</span>Not a diagnosis, not medical advice</div>
+    <div class="irow"><span class="em">⏱</span><span>30 statements · about 6 minutes · pause any time</span></div></div>
+  <div class="chips">${AX.map(x=>`<span class="chip">${x.n}</span>`).join('')}</div>
+  <div class="tip">If any statement feels hard, skip ahead or stop. Your answers are saved.</div></div>
+  <div class="foot">${cta('I understand, start')}<div class="note">Free to take · Full report is a paid unlock</div></div>`,
+3:()=>`<div class="scr"><h1 class="display">${t('What brings you here?','What do you want to learn?')}</h1>
+  <p class="lead">${t('We’ll focus your report on this.','Pick the one that fits best.')}</p>
+  <div class="pills" role="group" aria-label="Reason for testing">${GOALS.map(([k,e,l])=>`<button class="pill ${S.goal===k?'on':''}" data-a="goal" data-v="${k}" aria-pressed="${S.goal===k}"><span class="em">${e}</span>${l}</button>`).join('')}</div>
+  ${S.goal==='other'?`<div class="box fadein"><input id="go" data-f="goalOther" maxlength="40" placeholder="Tell us in a few words" value="${esc(S.goalOther)}" aria-label="Other reason"></div>`:''}</div>
+  <div class="foot">${S.goal==='other'?cta('Continue',!!S.goalOther.trim(),'goalnext'):'<div class="note">Tap one to continue</div>'}</div>`,
+4:()=>{const x=QS[S.q],sel=S.ans[S.q];
+  return `<div class="scr" style="gap:12px"><h1 class="stmt" id="stmt">${esc(x.txt)}</h1>
+  <p class="lead" style="margin-top:-2px">${t(`Statement ${S.q+1} of ${N}`,'How much does this fit you?')}</p>
+  <div class="pills lk" role="group" aria-label="How much do you agree?">${SCALE.map(([e,l],i)=>`<button class="pill ${sel===i?'on':''}" data-a="ans" data-v="${i}" aria-pressed="${sel===i}"><span class="em">${e}</span>${l}</button>`).join('')}</div>
+  <div class="note">No right or wrong answers</div>
+  <button class="link demo-skip" data-a="fill">Demo: fill the rest</button></div>
+  <div class="foot"><div class="note">Tap an answer to continue</div></div>`},
+5:()=>{const cp=Math.max(0,Math.min(2,S.cp)),a=CPS[cp],pc=Math.round(a/N*100),R=42,C=2*Math.PI*R;
+  return `<div class="scr center" style="align-items:stretch"><div class="cpring" style="width:160px;height:160px"><svg viewBox="0 0 100 100" width="160" height="160" aria-hidden="true"><circle cx="50" cy="50" r="${R}" fill="none" stroke="#DCE1E9" stroke-width="8"/><circle cx="50" cy="50" r="${R}" fill="none" stroke="#15233F" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(C*pc/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/></svg><div class="mid" style="color:var(--ink);font:700 30px var(--serif)">${pc}%</div></div>
+  <h1 class="display" style="text-align:center">${t(`You’re ${pc}% done`,`${N-a} statements to go`)}</h1>
+  <p class="lead" style="text-align:center">${t(`${a} of ${N} answered. Your answers are saved.`,'Take a breath, then keep going.')}</p>
+  <div class="chips" style="justify-content:center">${AX.map(x=>`<span class="chip">${x.n}</span>`).join('')}</div>
+  <div class="tip">${TIPS[cp]}</div></div>
+  <div class="foot">${cta('Keep going',true,'nextsec')}</div>`},
+6:()=>`<div class="scr center"><h1 class="display" style="text-align:center">${t('How your check works','How your answers are used')}</h1>
+  <p class="lead" style="text-align:center">${t('Statements in the style of public self-report checks.','Your results are almost ready.')}</p>
+  <div class="rows"><div class="irow"><span class="em">🧮</span>Scored from your answers only</div><div class="irow"><span class="em">🚫</span>No total score, no verdict</div><div class="irow"><span class="em">🩺</span>Not a clinical tool</div></div>
+  ${dashQuote()}</div>
+  <div class="foot">${cta('See my results')}</div>`,
+7:()=>{const rows=['Reading your 30 answers…','Weighing each of the 5 areas…','Finding your clearest areas…','Writing your profile, almost ready…'];
+  return `<div class="scr" style="gap:14px"><h1 class="display" style="text-align:center;margin-top:6px">${t('Scoring your answers…','Building your profile…')}</h1>
+  <p class="lead" style="text-align:center;margin-top:-8px">Scored from your answers only.</p>
+  <div id="ltr">${tilesRow({q:true,big:true})}</div>
+  <div class="steps">${rows.map((r,i)=>`<div class="step" id="st${i}"><div class="top"><span>${r}</span><span class="pct"><span>0%</span></span></div><div class="bar"><span></span></div></div>`).join('')}</div>
+  <div class="qrot" id="qrot">${dashQuote()}</div></div>
+  <div class="foot"><div class="note">Auto-advances in a few seconds</div></div>`},
+8:()=>`<div class="scr"><h1 class="display">${t('Your results are ready','Where should we save them?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Enter your email to save your profile.','Private to you, in your account.')}</p>
+  <div class="sum"><div class="r"><span>Completed in</span><b>${fmtDur(S.dur||0)}</b></div><div class="r"><span>Answered</span><b>${answered()}/${N}</b></div><div class="r"><span>Clearest area</span><b>${clearest()}</b></div><div class="r"><span>Your profile</span><b class="blurv">XXXXXXXX XX</b></div></div>
+  <div class="soc"><button class="btn ghost" data-a="sso" data-v="Google">${ic('google',17)} Google</button><button class="btn ghost" data-a="sso" data-v="Apple">${ic('apple',17)} Apple</button></div>
+  <div class="orline">or</div>
+  <div class="field"><label for="em">Email</label><div class="box ${S.err?'bad':''}">${ic('mail',18)}<input id="em" type="email" inputmode="email" autocomplete="email" data-f="email" placeholder="you@example.com" value="${esc(S.email)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div></div>
+  <div class="foot">${cta('Save my results',true,'email')}<div class="note">Private. We never sell your email. · Terms · Privacy</div></div>`,
+9:()=>`<div class="scr"><h1 class="display">${t('What’s your first name?','Whose profile is this?')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('It appears on your profile and notes.','Printed exactly as you type it.')}</p>
+  <div class="field"><label for="nm">First name</label><div class="box ${S.err?'bad':''}"><input id="nm" data-f="name" maxlength="30" autocomplete="given-name" placeholder="First name" value="${esc(S.name)}"></div>${S.err?`<div class="err">${S.err}</div>`:''}</div>
+  <div class="certo" aria-hidden="true"><div class="cl">TestLibrary · trait profile</div><div class="nl ${nameOk()?'':'empty'}" id="certname">${nameOk()?esc(S.name.trim()):'Your name'}</div><div class="ls"></div><div class="ls" style="width:40%"></div></div></div>
+  <div class="foot">${cta('Continue',true,'name')}<button class="link" data-a="skipname" style="font-size:13px">Skip for now</button></div>`,
+10:()=>{const st=strengths();
+  return `<div class="scr" style="gap:13px"><h1 class="display sm">${t(lead('your profile is ready'),tail('Meet your profile'))}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Your clearest area is free. The rest is locked.','Everything blurred below unlocks with your report.')}</p>
+  <div class="pv">${tilesRow({big:true})}</div>
+  <div class="pv"><h4>Your five areas ${ic('lock',15)}</h4>${tbars({teaser:true})}</div>
+  <p class="small">Bands only group your answers. Not a screening result, not a diagnosis.</p>
+  <div class="lockrow">${ic('lock',18)}<span>Where each area shows up daily</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Everyday ideas for ${esc(goalPhrase())}</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>How to talk to a professional</span></div>
+  <div class="lockrow">${ic('lock',18)}<span>Notes to bring to a visit</span></div></div>
+  <div class="foot">${cta('Unlock my report')}</div>`},
+11:()=>{const hb=S.goal==='prof'?'Get your visit notes ready':lead('read your full profile'),p=S.plan;
+  return `<button class="closex" data-a="exit" aria-label="Close">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:16px">
+  <div class="pwbar">${wordmark()}</div>
+  <div class="pwhero">${tilesRow()}<div class="nick">Clearest area: ${clearest()}</div>
+   <div class="lockrow">${ic('lock',18)}<span>Daily life · Everyday ideas · Talking to a professional</span></div>
+   <p class="small" style="text-align:left">A self-check. Not a diagnosis.</p></div>
+  <h1 class="display sm">${t('Unlock your full report',hb)}</h1>
+  <p class="lead" style="margin-top:-8px">${t('One report, or every test in the library.','Choose one report or full library access.')}</p>
+  ${planBlock('top')}
+  ${CONFIG.reminder?'<p class="small">We’ll email you 2 days before your trial ends.</p>':''}${pays}
+  <div class="pwsec"><h2>What’s inside</h2><div class="checks">${['Where each area shows up daily','Everyday ideas for '+esc(goalPhrase()),'How to talk to a professional','Notes to bring to a visit','All 5 areas in plain words','Full Access plans: every test in the library'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div></div>
+  <div class="pwsec"><h2>How it works</h2><div class="how"><div><b>1</b><span>Unlock your report in one step.</span></div><div><b>2</b><span>Read it any time in your account.</span></div><div><b>3</b><span>Bring your notes to a professional, if you choose.</span></div></div></div>
+  ${tokOK(CONFIG.proof)?`<div class="pwsec"><h2>People like you</h2>${reviewCard()}</div>`:''}
+  ${tokOK(CONFIG.refundDays)?`<div class="guar">${ic('shield',20)}<span><b>Our guarantee.</b> Refund window: ${esc(CONFIG.refundDays)}. Cancel a plan any time in your account.</span></div>`:''}
+  <div class="pwsec"><h2>Questions</h2><div class="faq">${[['Is this a diagnosis?','No. It is a self-check for reflection. Only a qualified clinician can assess whether any condition applies.'],['How is my profile decided?','From your 30 answers: for each of 5 areas we add up how much each statement fits you. There is no total score and no cut-off.'],['When will I be charged?',`1-week plan: ${tok('{{price_trial}}')} today, then ${tok('{{renewal_trial}}')} on ${addDays(7)} and every 4 weeks until you cancel. One-time: ${tok('{{price_report}}')} once.`],['How do I cancel?','In your account, from the account page.']].map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div>
+  <div class="pwsec"><h2>Ready when you are</h2>${planBlock('bottom')}</div>
+  <div class="supbox"><b>Need help now?</b><span>Support is free and never behind a paywall.</span><button class="btn ghost" data-a="help" style="height:44px;font-size:14px">Open support options</button></div>
+  <p class="small">Secure checkout · Cancel anytime in your account</p>
+  <p class="small" style="margin-bottom:8px">${DISC}</p></div>
+  <div class="foot"><div class="today">${todayLine(p)}</div>${cta('Continue to checkout',true,'checkout')}</div>`},
+12:()=>{const o=CONFIG.offer,ca=byClarity()[0];
+  return `<button class="closex" data-a="offerno" aria-label="No thanks">${ic('x',18)}</button><div class="scr" style="padding-top:6px;gap:14px">
+  <div class="wbar">${wordmark()}</div>
+  <div style="text-align:center;display:flex;flex-direction:column;gap:8px"><span class="eyebrow">One-time offer · shown once</span>
+   <h1 class="display sm">${lead('want a smaller option?')}</h1>
+   <p class="lead" style="margin:0">One area in detail, plus a guide for talking to a professional.</p>
+   ${o.expiresMin?`<div class="otimer">Offer ends in <b id="otimer">--:--</b></div>`:''}</div>
+  <div class="ocard">${o.badge?`<span class="obadge">${tok(o.badge)}</span>`:''}
+   <div class="orow"><div class="atile" style="flex:none;width:72px;min-height:72px">${tileInner(ca)}</div><div style="flex:1;min-width:0"><b>${esc(o.name)}</b><span class="hint">One payment · nothing renews</span></div></div>
+   <div class="oprice"><b>${tok(o.price)}</b><span>today</span></div>
+   <div class="checks">${['Your clearest area ('+AX[ca].n+') in detail','How it shows up day to day','How to talk to a professional'].map(x=>`<div>${ic('check',16,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   <div class="notinc"><b>Not included</b>The other four areas in detail · Everyday ideas · Visit notes · Library access. Get these with the full report.</div>
+   ${cta('Claim my offer',true,'offerbuy')}${pays}
+   <p class="small">${o.renews?`${tok(o.price)} today, then ${tok(o.renews)} until you cancel. Cancel anytime in your account.`:`One payment of ${tok(o.price)}. Nothing renews, so there’s nothing to cancel.`}</p></div>
+  <p class="small">${DISC}</p>
+  <button class="link" data-a="offerno" style="margin-bottom:24px">No thanks, back to my free preview</button></div>`},
+13:()=>{const p=S.plan,P=PLANS[p],rec=recurring(p),rd=renewal(p);
+  return `<div class="scr" style="gap:14px"><h1 class="display">${t('Review your order','Confirm your plan')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Here’s exactly what you pay, today and later.','Check the details before you pay.')}</p>
+  <div class="ordr"><div class="r"><span>Plan</span><b>${P.n}</b></div><div class="r"><span>Today</span><b>${tok(P.today)}</b></div>
+  ${rec?`<div class="r"><span>${rd}</span><b>${tok(P.later||P.then)}</b></div><div class="r" style="font-size:13px"><span>Cancel anytime before ${rd} to pay nothing more.</span></div>`:`<div class="r"><span>Later</span><b>Nothing renews</b></div>`}</div>
+  ${rec?`<label class="consent ${S.errKind==='consent'?'bad':''}"><input type="checkbox" id="consent" data-f="consent" ${S.consent?'checked':''}><span>I understand my plan renews at ${tok(P.later||P.then)} until I cancel.</span></label>${S.errKind==='consent'?`<div class="err" style="margin-top:-6px">${S.err}</div>`:''}`:''}
+  <div class="pmeth" role="group" aria-label="Payment method">${[['card','Card'],['apple','Apple Pay'],['google','Google Pay']].map(([k,l])=>`<button class="${S.pay===k?'on':''}" data-a="pay" data-v="${k}" aria-pressed="${S.pay===k}">${l}</button>`).join('')}</div>
+  ${S.pay==='card'?`<div class="box"><input data-f="cardNo" inputmode="numeric" placeholder="Card number" aria-label="Card number" value="${esc(S.cardNo)}"></div><div class="cardrow"><div class="box"><input data-f="cardExp" placeholder="MM / YY" aria-label="Expiry" value="${esc(S.cardExp)}"></div><div class="box"><input data-f="cardCvc" inputmode="numeric" placeholder="CVC" aria-label="CVC" value="${esc(S.cardCvc)}"></div></div>`:`<p class="hint" style="margin:0;text-align:center">${S.pay==='apple'?'Apple Pay':'Google Pay'} sheet opens on pay.</p>`}
+  ${S.errKind==='card'?`<div class="err">${S.err}</div>`:''}
+  <p class="small">Receipt with cancel link sent to ${esc(S.email||'your email')}.</p>
+  <p class="small">Refund terms are in the Subscription policy.</p>
+  <button class="link" data-a="decline" style="font-size:12px">Demo: simulate a declined card</button></div>
+  <div class="foot">${cta('Pay and see profile',true,'paynow')}</div>`},
+14:()=>{const lim=S.paidPlan==='offer',top=byClarity().slice(0,lim?1:2);
+  return `<div class="scr" style="gap:13px"><h1 class="display sm" style="margin-top:4px">${t('Your trait profile',nameOk()?`${nm()}, here’s your profile`:'Here’s your profile')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Five areas, in plain words. Not a diagnosis.','Where each area shows up for you.')}</p>
+  ${lim?'':tilesRow({big:true})}
+  ${lim?`<div class="pv"><h4>Your clearest area</h4>${tbar(byClarity()[0],{hot:true})}</div>`:`<div class="pv"><h4>Your five areas</h4>${tbars()}</div>`}
+  ${lim?`<div class="notinc"><b>Not in your offer</b>The other four areas, everyday ideas and visit notes. Upgrade any time from your account.</div>`:''}
+  ${lim?'':`<div class="pv"><h4>Strengths that show up</h4>${strengths().map((x,i)=>`<div class="str"><i>${i+1}</i>${x}</div>`).join('')}</div>`}
+  <div class="sec"><h4>🧭 Where it shows up day to day</h4>${top.map(a=>`<p><b>${AX[a].n}.</b> ${pick(a,'day')}</p>`).join('')}</div>
+  ${lim?'':`<div class="sec"><h4>💡 Everyday ideas for ${esc(goalPhrase())}</h4><ul>${top.map(a=>`<li>${pick(a,'idea')}</li>`).join('')}</ul></div>`}
+  <div class="sec"><h4>🗣️ Talking to a professional</h4><ul><li>Write down a few real examples. Your notes sheet helps.</li><li>Book a GP or a clinician who sees adults for assessment.</li><li>Bring this profile and your questions.</li></ul><p>Only a qualified clinician can say whether any condition applies. This check cannot.</p></div>
+  <div class="supbox"><b>Need help now?</b><button class="btn ghost" data-a="help" style="height:44px;font-size:14px">Open support options</button></div>
+  <div class="method">Based on 30 statements you rated. Bands only group your answers. They are not a screening result, and not a condition. ${DISC}</div></div>
+  <div class="foot">${lim?cta('See support and next steps',true,'to16'):cta('Get my visit notes')}</div>`},
+15:()=>`<div class="scr" style="gap:14px"><h1 class="display sm" style="margin-top:4px">${t('Your visit notes are ready','Bring this to a professional')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Download your notes, or email them to yourself.','Private by default. Share only if you choose.')}</p>
+  <div class="cert"><div class="ct">TestLibrary · visit notes</div><div class="cn">${nm()}</div>
+  <div style="margin-top:6px">${tbars()}</div>
+  <div style="text-align:left;font-size:12px;color:var(--t2);margin-top:6px"><b>Examples I noticed</b><div class="ls" style="height:1px;background:var(--line);margin:12px 0 0;width:100%"></div><div class="ls" style="height:1px;background:var(--line);margin:12px 0 0;width:100%"></div><div class="ls" style="height:1px;background:var(--line);margin:12px 0 8px;width:100%"></div><b>Questions to ask</b><br>What does an adult assessment involve?<br>How long is the wait?<br>What support exists meanwhile?</div>
+  <div class="cb"><span>${dstr(new Date())}<br>Self-check · ${N} statements</span><span class="seal">${ic('star',20,'currentColor',1.8)}</span></div>
+  <div class="cf">For your own use. Not a clinical report, not a diagnosis.</div></div>
+  <button class="btn ghost" data-a="mailme">${ic('mail',18)} Email me a copy</button></div>
+  <div class="foot">${cta(`${ic('dl',18,'currentColor',2)} Download PDF`,true,'pdf')}</div>`,
+16:()=>{const one=!recurring(S.paidPlan||S.plan),list=LIB[S.goal]||LIB.curious,rd=renewal(S.paidPlan||S.plan);
+  return `<div class="scr"><h1 class="display" style="margin-top:4px">${t(nameOk()?`What’s next, ${nm()}?`:'What’s next?','Support and next steps')}</h1>
+  <p class="lead" style="margin-top:-6px">${t('Real help is one step away. Then explore more.','Pair your profile with other self-checks.')}</p>
+  <div class="supbox"><b>Talk to a professional</b><span>A GP or an adult-assessment clinician is the right next step for any concern.</span><button class="btn ghost" data-a="help" style="height:44px;font-size:14px">Need help now?</button></div>
+  <div class="lib">${list.map(([e,n,m],i)=>`<div class="lcard"><img class="lt" style="object-position:${20+i*30}% 50%" src="${im('img/next.jpg')}" alt="" width="400" height="267" loading="lazy"><b>${e} ${n}</b><span>${m}</span></div>`).join('')}</div>
+  ${one?`<div class="tip">Unlock all tests - ${tok('{{price_trial}}')} for 1 week, then ${tok('{{renewal_trial}}')} every 4 weeks.</div>`:`<div class="sum"><div class="r"><span>Included until ${rd}</span><b style="text-decoration:underline;text-underline-offset:3px">Manage plan</b></div></div>`}
+  <p class="small">Log in anytime with ${esc(S.email||'your email')}. Your report stays in your dashboard.</p></div>
+  <div class="foot">${cta('Start next test',true,'nexttest')}</div>`}
+};
+
+function runLoading(){
+  let row=0,pct=0;
+  timer=setInterval(()=>{
+    pct+=3;const el=document.getElementById('st'+row);if(!el){clearInterval(timer);return}
+    el.querySelector('.bar span').style.width=Math.min(pct,100)+'%';
+    el.querySelector('.pct span').textContent=Math.min(pct,100)+'%';
+    if(pct>=100){el.classList.add('done');el.querySelector('.pct').innerHTML=`${ic('check',14,'currentColor',2.5)}<span>100%</span>`;
+      [row].concat(row===3?[4]:[]).forEach(k=>{const L=document.querySelectorAll('#ltr .atile')[k];if(L){L.classList.remove('q');L.classList.add('flip');L.innerHTML=tileInner(k)}});
+      row++;pct=0;
+      if(row>3){clearInterval(timer);timer=setTimeout(()=>go(8,false),1300)}}
+  },45);
+  let qi=0;const Q=[dashQuote,dashQuote,dashQuote];
+  if(CONFIG.proof)timer2=setInterval(()=>{const q=document.getElementById('qrot');if(!q)return;qi=(qi+1)%Q.length;q.innerHTML=Q[qi]()},2300);
+}
+
+function render(dir){
+  const n=S.i,html=nav()+V[n]()+helpbar(),old=cur();phone.querySelector('#sheet')?.remove();
+  if(dir&&old&&!RM){
+    old.classList.remove('cur');old.setAttribute('inert','');
+    old.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    old.classList.add('out');
+    const nv=document.createElement('div');nv.className='view cur in'+(dir==='b'?' b':'');nv.innerHTML=html;stage.appendChild(nv);
+    setTimeout(()=>old.remove(),240);
+    setTimeout(()=>nv.classList.remove('in','b'),360);
+  }else if(!old){const nv=document.createElement('div');nv.className='view cur';nv.innerHTML=html;stage.appendChild(nv)}
+  else{if(dir)old.scrollTop=0;old.innerHTML=html}
+  const v=cur();
+  if(window.__ikfLast!==n){window.__ikfLast=n;emit('screen_view',{screen:n,name:(SCREENS[n-1]||{}).l||null});if(n===11)emit('paywall_view',{plan:S.plan})}
+  if(n===7)runLoading();
+  if(n===12&&dir&&!backing)runOffer();
+  const f=v.querySelector('#em,#nm,#go');
+  if(f&&dir!==undefined){setTimeout(()=>{if(cur()!==v)return;f.focus({preventScroll:true});const x=f.value;f.value='';f.value=x},dir?300:0)}
+  renderPanel();
+}
+
+function renderPanel(){
+  const groups=[];SCREENS.forEach(s=>{let g=groups.find(x=>x[0]===s.g);if(!g){g=[s.g,[]];groups.push(g)}g[1].push(s)});
+  document.getElementById('flow').innerHTML=groups.map(([g,items])=>`<div class="grp"><div class="gname">${g}</div>${items.map(s=>`<button class="${S.i===s.n?'on':''}" data-j="${s.n}" ${S.i===s.n?'aria-current="step"':''}><span class="n">${s.n}</span><span>${s.l}</span>${s.tag?`<span class="tag">${s.tag}</span>`:''}</button>`).join('')}</div>`).join('');
+  const done=S.ans.every(a=>a!==null);
+  const d=[
+    ['Copy',`Variant ${S.v}`],
+    ['Age',S.age||'—'],
+    ['Reason',S.goal?goalLabel():'—'],
+    ['Test',`${answered()}/${N} answered${S.i===4?` · on #${S.q+1}`:''}`],
+    ['Time',S.dur!==null?fmtDur(S.dur):'—'],
+    ['Profile',done?AX.map((x,a)=>`${x.s}: ${axBand(a)}`).join(' · '):'—'],
+    ['Email',S.email||'—'],
+    ['Name',S.name||'—'],
+    ['Plan',S.i>=11?PLANS[S.plan].n:'—'],
+    ['Consent',!recurring(S.plan)?'n/a (one-time)':S.consent?'Ticked':'Not ticked'],
+    ['Paid',S.paid?`${PLANS[S.paidPlan||S.plan].n} (demo, no charge)`:'—']
+  ];
+  document.getElementById('data').innerHTML=d.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('');
+}
+
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  if(a==='age'||a==='goal'||a==='reason'||a==='gender')emit('answer',{key:a,value:v});
+  else if(a==='ans')emit('answer',{key:'q'+(S.q+1),value:+v});
+  switch(a){
+    case 'next':go(S.i+1);break;
+    case 'back':if(S.i===11)exitPaywall();else back();break;
+    case 'age':S.age=v;S.under=false;b.parentElement.querySelectorAll('.pill').forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===1)go(2)},280);break;
+    case 'under':S.under=true;render();break;
+    case 'goal':S.goal=v;if(v==='other'){render();setTimeout(()=>document.getElementById('go')?.focus(),30)}else{b.parentElement.querySelectorAll('.pill').forEach(p=>{p.classList.toggle('on',p===b);p.setAttribute('aria-pressed',p===b)});renderPanel();clearTimeout(pend);pend=setTimeout(()=>{if(S.i===3)startTest()},280)}break;
+    case 'goalnext':if(S.goalOther.trim())startTest();break;
+    case 'ans':{const q=S.q,i=+v;S.ans[q]=i;cur().querySelectorAll('.pills.lk .pill').forEach((el,k)=>{el.classList.toggle('on',k===i);el.setAttribute('aria-pressed',k===i)});renderPanel();
+      clearTimeout(pend);pend=setTimeout(()=>{if(S.i!==4||S.q!==q)return;
+        if(q===N-1){S.dur=Date.now()-(S.t0||Date.now());go(6,false)}
+        else if(CPS.includes(q+1)){S.cp=CPS.indexOf(q+1);go(5,false)}
+        else{S.q++;render('f')}},350);break}
+    case 'tback':clearTimeout(pend);if(S.q===0)back();else{S.q--;render('b')}break;
+    case 'fill':S.ans=S.ans.map((x,i)=>x===null?PRE[i]:x);S.dur=Date.now()-(S.t0||Date.now());go(6,false);break;
+    case 'nextsec':S.q=CPS[S.cp];go(4,false);break;
+    case 'sso':S.email=`${v} account (demo)`;emit('lead',{email_provided:true,method:v});toast(`Signed in with ${v} (demo)`);go(9);break;
+    case 'email':{const x=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(x)){S.err='Please enter a valid email.';render();document.getElementById('em')?.focus()}else{S.email=x;emit('lead',{email_provided:true,method:'email'});go(9)}break}
+    case 'name':{const x=S.name.trim();if(!x||!/^[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ \-]*$/.test(x)){S.err='Please enter your first name.';render();document.getElementById('nm')?.focus()}else{S.name=x;go(10)}break}
+    case 'skipname':S.name='';go(10);break;
+    case 'plan':{const sc=cur().querySelector('.scr'),y=sc?sc.scrollTop:0;S.plan=v;S.consent=false;emit('plan_select',{plan:v});render();const n2=cur().querySelector('.scr');if(n2)n2.scrollTop=y;break}
+    case 'checkout':{const u=planCheckoutUrl(S.plan);emit('checkout_click',{plan:S.plan,url:u||null});if(u&&leaveToCheckout(u,S.plan))break;go(13);break}
+    case 'exit':exitPaywall();break;
+    case 'offerbuy':{S.offerSeen=true;clearInterval(window.__oiv);const u=CONFIG.offer.checkoutUrl||'';emit('offer_accept',{price:CONFIG.offer.price,url:u});emit('checkout_click',{plan:'offer',url:u});
+      if(u){try{const x=new URL(u,location.href);x.searchParams.set('funnel',CONFIG.funnel);x.searchParams.set('plan','offer');new URLSearchParams(location.search).forEach((val,k)=>{if(!x.searchParams.has(k))x.searchParams.set(k,val)});location.assign(x.toString())}catch(e){}}
+      else{S.plan='offer';S.consent=false;go(13)}break}
+    case 'offerno':S.offerSeen=true;clearInterval(window.__oiv);emit('offer_decline');go(10);break;
+    case 'pay':S.pay=v;render();break;
+    case 'decline':S.err='Card declined. Try another card or PayPal.';S.errKind='card';render();break;
+    case 'paynow':if(recurring(S.plan)&&!S.consent){S.err='Please tick the box to confirm renewal terms.';S.errKind='consent';render();break}
+      S.paid=true;S.paidPlan=S.plan;emit('purchase_complete',{plan:S.plan,demo:true});toast('Demo only — no charge made');{const dest=S.upsell?16:14;S.upsell=false;go(dest)}break;
+    case 'help':{const sh=document.createElement('div');sh.className='sheet';sh.id='sheet';sh.innerHTML=`<div class="sc" role="dialog" aria-label="Support">${SUPPORT}<button class="btn" data-a="helpclose">Close</button></div>`;phone.appendChild(sh);break}
+    case 'to16':go(16);break;
+    case 'helpclose':phone.querySelector('#sheet')?.remove();break;
+    case 'mailme':toast(`Notes would be emailed to ${S.email||'you'} (demo)`);break;
+    
+    case 'pdf':toast('PDF download would start (demo)');clearTimeout(pend);pend=setTimeout(()=>{if(S.i===15)go(16)},1100);break;
+    case 'nexttest':if(!recurring(S.paidPlan||S.plan)){S.plan='t1';S.consent=false;S.upsell=true;go(13)}else toast(`${(LIB[S.goal]||LIB.curious)[0][1]} would open (demo)`);break;
+  }
+});
+/* ---------- last-chance offer (once per session, on paywall close) ---------- */
+const OKEY='ikf_offer_'+CONFIG.funnel;
+const offerOpen=()=>{const o=CONFIG.offer;if(!o||!o.enabled||S.offerSeen)return false;try{if(sessionStorage.getItem(OKEY))return false}catch(e){}
+  if(o.expiresMin&&S.offerEnd&&Date.now()>S.offerEnd)return false;return true};
+function runOffer(){const o=CONFIG.offer;try{sessionStorage.setItem(OKEY,'1')}catch(e){}
+  emit('offer_view',{price:o.price,compareAt:o.compareAt});
+  if(!o.expiresMin)return;if(!S.offerEnd)S.offerEnd=Date.now()+o.expiresMin*60000;
+  clearInterval(window.__oiv);
+  const tick=()=>{const el=document.getElementById('otimer');if(!el||S.i!==12)return clearInterval(window.__oiv);const ms=S.offerEnd-Date.now();
+    if(ms<=0){clearInterval(window.__oiv);S.offerSeen=true;emit('offer_expired');toast('This offer has ended');go(10);return}
+    el.textContent=String(Math.floor(ms/60000)).padStart(2,'0')+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')};
+  tick();window.__oiv=setInterval(tick,1000)}
+/* Every exit from the paywall (close X, nav back) goes to the offer first, once; after that, back to the free preview. */
+function exitPaywall(){emit('paywall_close');if(offerOpen())go(12);else if(S.hist.length)back();else go(10,false)}
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;if(!f||e.target.type==='checkbox')return;
+  S[f]=e.target.value;
+  if(f==='goalOther'){const btn=cur().querySelector('.foot .btn');if(btn)btn.disabled=!S.goalOther.trim()}
+  if(f==='name'){const c=document.getElementById('certname');if(c){const x=S.name.trim();c.textContent=x||'Your name';c.classList.toggle('empty',!x)}}
+  if((f==='email'||f==='name')&&S.err){S.err='';const box=e.target.closest('.box');box.classList.remove('bad');box.parentElement.querySelector('.err')?.remove()}
+  renderPanel();
+});
+phone.addEventListener('change',e=>{if(e.target.dataset.f==='consent'){S.consent=e.target.checked;if(S.consent&&S.errKind==='consent'){S.err='';S.errKind='';render()}else renderPanel()}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){const b=cur().querySelector('.foot .btn');b&&!b.disabled&&b.click()}});
+
+document.getElementById('flow').addEventListener('click',e=>{const b=e.target.closest('[data-j]');if(!b)return;const n=+b.dataset.j;fillTo(n);go(n)});
+const setV=v=>{S.v=v;['A','B'].forEach(x=>{const el=document.getElementById('v'+x);el.classList.toggle('on',v===x);el.setAttribute('aria-pressed',v===x)});if(S.i!==7)render();else renderPanel()};
+document.getElementById('vA').onclick=()=>setV('A');
+document.getElementById('vB').onclick=()=>setV('B');
+document.getElementById('restart').onclick=()=>{clearTimers();const v=S.v;S=INIT();S.v=v;render('b')};
+
+function fit(){const k=Math.min(1,(document.documentElement.clientWidth-32-24)/390);document.documentElement.style.setProperty('--k',k.toFixed(4))}
+fit();addEventListener('resize',fit);
+
+{const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){const n=+m[1];fillTo(n);S.i=n}
+ const vb=location.hash.match(/v=?([AB])/);if(vb){S.v=vb[1];document.getElementById('vA').classList.toggle('on',S.v==='A');document.getElementById('vB').classList.toggle('on',S.v==='B')}}
+/* host API (FunnelFox / parent page) */
+const PLAN_ALIAS={'4w':'t4','4week':'t4','4-week':'t4','1w':'t1','1week':'t1','1-week':'t1','trial':'t1'};
+function applyPaid(plan){const k=PLAN_ALIAS[plan]||plan;if(PLANS[k])S.plan=k;S.consent=true;S.paid=true;S.paidPlan=S.plan;return S.plan}
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
+  completePurchase:plan=>{clearTimers();applyPaid(plan);fillTo(14);emit('purchase_complete',{plan:S.plan});go(14)}});
+{const pq=new URLSearchParams(location.search).get('paid');if(pq){applyPaid(pq);fillTo(14);S.i=14}}
+render();
+emit('funnel_start',{variant:S.v});
+</script>
+</body></html>

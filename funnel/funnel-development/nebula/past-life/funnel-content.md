@@ -1,0 +1,301 @@
+---
+niche: past-life
+display_name: Starlyn - Past Life (Who were you before?)
+archetype: personalization-quiz
+subject: person
+input: era that feels like home, deja vu and recurring-dream signals, a familiar place, 3 agree/disagree statements, early talent, calling, first name, birth date (18+)
+output: a past-life story for reflection - an era and a role (free), a gift you carry (free), then where you lived, your life story, a lesson you carry and who you may have known
+screens: 20
+monetization: hard web paywall after the email gate: one plan, 1-week intro then monthly auto-renew; no sale or last-chance offer; purchase leads to a get-the-app screen; then one optional add-on report ($19.99, paid once through its own Paddle one-time checkout, skippable) before the get-the-app screen
+offer: none
+creative_screens:
+  hook-a: 1
+  hook-b: 2
+  bridge: 10
+  reveal: 15
+  teaser: 16
+motion: >
+  a slow ring of five eras turning in a night sky, a gold light settling on one of them
+  as a hooded silhouette fades in behind it
+---
+
+# Funnel Content - Starlyn: Past Life
+
+A Starlyn web2app funnel (Meta ad, web quiz, web paywall, Starlyn app) for the "who were you before?" niche. The user gives **the era that feels like home, a handful of deja-vu and dream signals, one talent, one calling and their birth date**. They get **a past-life story for reflection**: an era and a role first, then a gift they carry, then the full story. Archetype: **personalization-quiz**; every answer is used in the result, there is no photo or camera step. 20 screens, one flow with three "Other" escape hatches.
+
+**Modeled on:**
+- Nebula past-life funnel (appnebula.co/past-life/prelanding, 3,918 ads in 7 months, 49 screens, crawled via live funnelConfig 2026-10-01) and Astroline past-life (quiz-pp?mode=pastlife, 876 ads, 26 screens, capture stops at palm; paywall not captured), via the AdSpyLab research in `nebula-chai.md` section 3.
+- Sibling funnel `nebula/marriage-compatibility` for structure, palette, web paywall, guarantee and rating gating, and the one-time offer pass.
+- Stages after the quiz in both competitors (palm scan, onboarding, upsells, phone step) are not copied. The exact competitor paywall copy is **unverified**.
+
+**Kept from the references:**
+- An identity hook ("who were you?"), then an era question as the first real tap (Starlyn asks it at screen 26 of 49; here it comes second).
+- Deja vu, recurring dreams and a familiar place as the quiz spine, then three agree/disagree statements, then birth date, then a loader and a teaser of "your era + your role" before the email gate.
+
+**Deliberately changed, and why:**
+- **49 screens down to 20.** Nebula's image test, element, ancestors, 111 signs, nostalgia and self-care rounds are cut; every question left changes the result.
+- **No fake "decoding progress".** Competitors stretch a 22% to 34% to 56% "decoding" bar across the quiz. Here one short bridge counts the user's own signals (real count out of 6) and the loader is one brief screen. No percentage claims.
+- **Honest frame.** Past lives are a belief, not a fact. A reassurance screen (#3), the teaser, the FAQ and the footer say "for reflection, not proof". No claim that the user was a real historical person, no "karma curses", no fear hooks.
+- **No palm scan.** Starlyn and Astroline end the quiz with a palm photo; here nothing is uploaded, so there is no camera step and no deletion promise to write.
+- **No dark patterns.** No $1 hidden-subscription lead-in, no timer reset, no fake code, no ticker. There is no sale and no last-chance offer (Starlyn app policy, 2026-10-05).
+- **Result is one life, not a count.** Competitors tease "how many past lives". A count cannot be derived honestly; we tell one story and do not give a number.
+- **Ad-safe:** the ad hook is "Who were you before?", with no claim about the viewer's traits, health or beliefs.
+- **Palette:** Starlyn navy `#161A27` + gold `#E9C26B`. Hero object is a turning ring of five eras with a hooded silhouette; the gold light rests on the user's era.
+
+---
+
+## A. Hook
+
+### 1. Hook
+**Purpose:** Open a quiet, curious question and promise one specific payoff (an era and a role), before asking for anything.
+**Headline A:** Who were you before?
+**Headline B:** Meet your past self
+**Body A:** A few taps. Find your era and your role.
+**Body B:** A story from your answers, for reflection.
+**Visual:** A ring of five era glyphs turning slowly over a navy star field, a hooded silhouette fading in behind (`img/hook-eras.jpg`; the demo draws the ring in SVG until the image exists). A gold eyebrow rotates Ancient / Medieval / Renaissance / 1800s. Row of 3 chips: 2-min quiz · Your era · Your role.
+**Microcopy:** "By continuing you confirm you're 18+ and agree to our Terms of Use and Privacy Policy. Past lives are a belief, not a fact. For entertainment and reflection only."
+**CTA:** Start reading
+
+---
+
+## B. Your signals
+
+### 2. Era that feels like home
+**Purpose:** First real tap and the main result input: the era the story is set in. Cheap, emotional, one tap.
+**Headline A:** Which era feels like home?
+**Headline B:** Pick your era
+**Body A:** Go with your gut.
+**Body B:** There is no wrong answer.
+**Options:** 🏛️ Ancient · 🏰 Medieval · 🎨 Renaissance · 🎩 1800s · 📻 1900s
+**Visual:** Five pill options, gold fill on tap, auto-advance. The ring in the background lights the picked era.
+**CTA:** (tap, auto-advances)
+
+### 3. Honest frame
+**Purpose:** Set the expectation before personal data: this is a story for reflection, not proof.
+**Headline A:** A story to reflect on
+**Headline B:** For reflection, not proof
+**Body A:** Past lives are a belief, not a fact.
+**Body B:** Read it for insight, not as history.
+**Visual:** Soft gold glow, a line-icon of an hourglass in a round well.
+**CTA:** Next
+
+### 4. Deja vu
+**Purpose:** First signal question, easy to answer and relatable.
+**Headline A:** Deja vu: how often?
+**Headline B:** Deja vu moments
+**Body A:** Think of the last few months.
+**Body B:** Honest answers help.
+**Options:** 🔁 Often · 🌗 Sometimes · 🌱 Rarely · 🚫 Never
+**Visual:** Pill options, auto-advance.
+**CTA:** (tap, auto-advances)
+
+### 5. Recurring dreams
+**Purpose:** Second signal; the dream theme sets the tone of the life story. Free choice, so there is an Other.
+**Headline A:** A dream that keeps returning?
+**Headline B:** Recurring dreams
+**Body A:** Pick the one that fits most.
+**Body B:** Even a faint one counts.
+**Options:** 🏠 Same place · 👤 Same person · 🌊 Water or storms · 🚫 None · ✏️ Other
+**Field:** "✏️ Other" opens a one-line input (max 40 characters). CTA stays disabled until it has text.
+**Visual:** Pill options. Other expands an inline text box under the list.
+**Error state:** CTA disabled while the Other box is empty.
+**CTA:** (tap, auto-advances; Other: Continue)
+
+### 6. A familiar place
+**Purpose:** Third signal; the place picked sets where the story happens. Free choice, so there is an Other.
+**Headline A:** Somewhere new feels familiar?
+**Headline B:** A place you know
+**Body A:** A place you've never been.
+**Body B:** Pick the closest feeling.
+**Options:** 🏰 Old castles · ⚓ Seaside ports · 🏜️ Desert ruins · 🌲 Forest villages · ✏️ Other
+**Field:** "✏️ Other" opens a one-line input (max 40 characters). CTA stays disabled until it has text.
+**Visual:** Pill options. Other expands an inline text box.
+**Error state:** CTA disabled while the Other box is empty.
+**CTA:** (tap, auto-advances; Other: Continue)
+
+### 7. Statement 1 - old friends
+**Purpose:** First of three agree/disagree statements; each answer counts as a signal on the bridge.
+**Headline A:** Strangers feel like old friends
+**Headline B:** Instant connections
+**Body A:** Do you agree?
+**Body B:** Think of the last time.
+**Options:** 👍 Agree · 🤔 Not sure · 👎 Disagree
+**Visual:** Large statement card, three pill options, auto-advance.
+**CTA:** (tap, auto-advances)
+
+### 8. Statement 2 - old things
+**Purpose:** Second statement.
+**Headline A:** Old songs stir you strangely
+**Headline B:** Music and old things
+**Body A:** Songs, antiques, old streets.
+**Body B:** A pull you can't explain.
+**Options:** 👍 Agree · 🤔 Not sure · 👎 Disagree
+**Visual:** Same statement card.
+**CTA:** (tap, auto-advances)
+
+### 9. Statement 3 - fears
+**Purpose:** Third statement; it is the one that most often sounds spooky, so the copy stays gentle.
+**Headline A:** Some fears have no source
+**Headline B:** Fears without a cause
+**Body A:** Do you agree?
+**Body B:** A fear with no story.
+**Options:** 👍 Agree · 🤔 Not sure · 👎 Disagree
+**Visual:** Same statement card.
+**CTA:** (tap, auto-advances)
+
+---
+
+## C. Bridge and calling
+
+### 10. Echoes bridge
+**Purpose:** A short real break after six signals: it counts the user's own answers, with no invented progress or user count.
+**Headline A:** Your answers echo {{era}}
+**Headline B:** Your pattern so far
+**Body A:** {{echoes}} of 6 signals point to an old pull.
+**Body B:** Counted from your own answers.
+**Steps:** Gathering your echoes… · Matching them to your era…
+**Visual:** The era ring turns, the picked era glows gold, six small dots fill one by one up to the real count. No percentage.
+**Microcopy:** Zero signals: Headline stays, Body A reads "Few signals so far. Your story still waits."
+**CTA:** (auto-advances, ~4 seconds)
+
+### 11. Early talent
+**Purpose:** Result input: the talent becomes "the gift you carry". Free choice, so there is an Other.
+**Headline A:** What came easily as a child?
+**Headline B:** An early talent
+**Body A:** It hints at the gift you carry.
+**Body B:** Pick the closest.
+**Options:** 🎶 Music · 🗣️ Words · 🛠️ Making things · 🧭 Leading · ✏️ Other
+**Field:** "✏️ Other" opens a one-line input (max 40 characters). CTA stays disabled until it has text.
+**Visual:** Pill options. Other expands an inline text box.
+**Error state:** CTA disabled while the Other box is empty.
+**CTA:** (tap, auto-advances; Other: Continue)
+
+### 12. Your calling
+**Purpose:** Result input: the calling sets the role in the story. Free choice, so there is an Other.
+**Headline A:** Which role calls to you?
+**Headline B:** Your calling
+**Body A:** Pick the one you'd choose.
+**Body B:** Think of an old story.
+**Options:** 🛡️ Protector · 📜 Scholar · 🎨 Artist · 🌿 Healer · ✏️ Other
+**Field:** "✏️ Other" opens a one-line input (max 40 characters). CTA stays disabled until it has text.
+**Visual:** Pill options. Other expands an inline text box.
+**Error state:** CTA disabled while the Other box is empty.
+**CTA:** (tap, auto-advances; Other: Continue)
+
+### 13. Your name
+**Purpose:** Name capture for personalization; optional so it never blocks.
+**Headline A:** What should we call you?
+**Headline B:** Your first name
+**Body A:** Your reading will use it.
+**Body B:** Optional. Skip any time.
+**Field:** One-line text "First name" (max 24 characters). CTA stays disabled until it has text, plus link "Skip".
+**Visual:** Single light input on the navy field, gold caret.
+**Microcopy:** Skip fallback: later screens say "Your past life", not "{{name}}'s past life".
+**Error state:** CTA disabled while the field is empty.
+**Skip link:** Skip
+**CTA:** Continue
+
+### 14. Your birth date
+**Purpose:** Last input and the 18+ gate; the Sun sign colours the lesson in the story.
+**Headline A:** Your date of birth
+**Headline B:** Born on which day?
+**Body A:** Your Sun sign colours your story.
+**Body B:** Needed for your reading.
+**Field:** Month / Day / Year selects. Years stop at today minus 18. Sun-sign chip appears once complete.
+**Visual:** Three rounded selects in one row, sign chip fades in.
+**Microcopy:** "You must be 18 or older."
+**Error state:** "Pick your full date of birth" · Under 18 (exact age from month, day and year): a blocking notice "Starlyn is for adults 18+." with a "Change my birth date" button that returns to this screen; the block persists for the session (sessionStorage) until the date is changed.
+**CTA:** Continue
+
+---
+
+## D. Wait and result
+
+### 15. Finding your past life (loader)
+**Purpose:** A brief honest wait (about 6 seconds, no inline questions, no percentage claims about "decoding"); the reveal moment for ads.
+**Headline A:** Finding your past life
+**Headline B:** Reading your echoes
+**Steps:** Gathering your echoes… · Placing you in your era… · Shaping your role and gift… · Writing your story…
+**Visual:** The era ring turning slowly, a short progress ring, 4 task rows ticking off.
+**CTA:** (auto-advances, ~6 seconds)
+
+### 16. Past-life teaser
+**Purpose:** The free payoff: the era and the role. Holds back where, the story, the lesson and the people.
+**Headline A:** You were {{role}}
+**Headline B:** Your past life
+**Body A:** Era: {{era}}. The full story is inside.
+**Body B:** A story for reflection, not proof.
+**Visual:** A round medallion (`img/result-life.jpg`) with the era ring and a hooded silhouette, an era chip and a role chip in gold. Below, 4 blurred locked rows: Where you lived · Your life story · The lesson you carry · Who you may have known.
+**Microcopy:** "A story for reflection. Past lives are a belief, not a fact. For entertainment purposes only." Role fallback when "Other" is the calling: "a traveller".
+**CTA:** See full story
+
+### 17. Email
+**Purpose:** Lead capture, also the app login.
+**Headline A:** Where do we send it?
+**Headline B:** Save your reading
+**Body A:** Get your story and log in to the app.
+**Body B:** One email, no spam.
+**Field:** Email only (light field), optional marketing checkbox (unticked by default). No Google or Apple sign-in, no skip or guest path: the email is required, validated, and activates the subscription in the app. Emits `lead` (method `email`); the FunnelFox build passes S.email to the checkout as the customer email.
+**Error state:** "Enter a valid email address"
+**Microcopy:** "By continuing, you agree to our Terms of Use and Privacy Policy."
+**CTA:** Continue
+
+---
+
+## E. Monetization
+
+### 18. Paywall - web landing page
+**Purpose:** Sell the story whose first line the user just saw, as a web sales page that asks twice, not an app sheet.
+**Headline A:** {{name}}, your story is ready
+**Headline B:** See your full past life
+**Body A:** Where you lived, your story, your lesson.
+**Body B:** Who you knew, and what you carry.
+**Plans:** One plan only, pre-selected: 1 week at `$13.67`, then `$49.99` every month until cancelled. No other tiers, no one-time products, no struck prices, no discount badges.
+**Visual:** Long-scroll page with its own sticky bar (brand, mini "Get my reading" CTA after the first plan block, no close X (hard paywall)). Sections:
+1. Hero: eyebrow "Your reading is ready", the medallion (`img/paywall-hero.jpg`), 4 fact chips (your sign, your era, your role, your gift).
+2. Plan block: 3 plans, "Due today", CTA, payment badges, secure/cancel row, renewal line.
+3. "Inside your reading": era and role plus the gift you carry open, then locked rows: Where you lived, Your life story, The lesson you carry, Who you may have known, Daily guide in the app.
+4. "How it works": checkout, read it now, keep going in the app.
+5. Rating and reviews (hidden until real ratings are supplied; placeholder reviews carry no "verified" label).
+6. Money-back seal (rendered only once a real refund policy and period exist; hidden while `{{refund_days}}` is unresolved, also in the offer).
+7. FAQ accordion: When will I get it? · How do I cancel? · Will I be charged again? · Is this real? · How is my story made?
+8. Plan block again.
+9. Footer: legal links, entity, entertainment disclaimer.
+Sticky bottom CTA shows the selected plan and today's charge while no plan block is on screen.
+**Microcopy:** Renewal line under every CTA: "$13.67 today for your first week, then $49.99 every month until you cancel." FAQ "Will I be charged again?": yes, monthly after the first week unless you cancel. Hard paywall: no close X and no free or "continue" exit. Renewal line: "{{price}} today, then {{renewal}} every {{period}} until you cancel." Without a name the headline reads "Your story is ready". FAQ on reality: "Past lives are a belief with no scientific proof. Your story is written from your answers, for reflection and fun."
+**CTA:** Get my reading
+
+### 19. Add-on report (post-purchase upsell)
+**Purpose:** Offer one add-on report while purchase intent is hot, at its listed price, then hand off to the app either way.
+**Headline A:** Add your karmic lessons
+**Headline B:** The pattern you came to break
+**Body A:** Your North Node and the pattern you came to break.
+**Body B:** Read from your birth date, in plain words.
+**Plans:** One add-on, paid once: "Karmic Lessons Report" at `$19.99`. No subscription, no struck price, no countdown, no bundle. The CTA opens a real Paddle one-time checkout for the add-on, the same mechanism as the plan: a hidden one-time plan `addon` in `CONFIG.plans` (`oneTime`, `hidden`, so it never shows on the paywall) opened with `checkout('addon')`. In FunnelFox that is its own native screen `checkout_addon (one-time)`; paying runs `completePurchase('addon')` and lands on the get-the-app screen with the added line. Closing it without paying goes to the get-the-app screen without the add-on (`CONFIG.declineFlow = {addon:'get_app'}`, the checkout's × in FunnelFox). The demo shows a stand-in sheet (Pay / Close without paying) when no checkout URL is set.
+**Visual:** Green pill "Payment complete. Your plan is active." Eyebrow "Add-on · paid once". Report cover card (`img/result-life.jpg` under a dark fade, "Starlyn report" label, the report name), three gold checks (Your North and South Node explained · The pattern you keep repeating · Saved with your past-life story in the app), price row "$19.99 · Paid once · no subscription". No back button, no close X.
+**Microcopy:** Under the card: "One-time payment at a secure checkout. No subscription." Skip link: "No thanks, take me to the app". A closed or failed add-on checkout lands on the get-the-app screen without the report line. Events: `upsell_view`, `upsell_accept` (+ `checkout_click` with plan `addon`), `upsell_decline`, `purchase_complete` with plan `addon`, `checkout_decline` with plan `addon` when the checkout is closed.
+**CTA:** Add for $19.99
+
+## F. Payoff
+
+### 20. Get the app
+**Purpose:** Hand a paying user straight to the Starlyn app, where the full reading lives.
+**Headline A:** You're in, {{name}}
+**Headline B:** Your reading is ready
+**Body A:** Your full reading is waiting in the Starlyn app.
+**Body B:** Download Starlyn: Daily Astrology and log in to open it.
+**Visual:** A success check in a glowing well, three numbered steps (Download Starlyn: Daily Astrology · Log in with {{email}} · Open your reading), App Store and Google Play badges under the CTA. If they bought the add-on, a green line "Karmic Lessons Report added. It opens in the app." sits above the steps.
+**Microcopy:** "For entertainment purposes only. Cancel anytime in your account." Reached only after purchase (or a return with `?paid=`); there is no free path to it.
+**CTA:** Open the app
+
+## Notes
+
+- **Add-on report (2026-10-06):** after the plan purchase, screen 19 offers one add-on, "Karmic Lessons Report", at $19.99 paid once (same price on all 10 Starlyn funnels, one Paddle one-time price). It fits the no-sale policy: listed price, no timer, no struck price, always skippable. Measured on its own (upsell take rate = `purchase_complete` with plan `addon` / `upsell_view`), separate from paywall CVR. The app has to grant the report from the Paddle transaction.
+- **Starlyn app policy (2026-10-05):** no sale and no last-chance offer; one plan (1-week intro, then monthly auto-renew); hard paywall, no free reading path; purchase leads to the get-the-app screen; under-18 shows a notice with a "Change my birth date" button.
+- **Drop-off risk:** #13 (name) and #14 (birth date, the first personal-data ask), plus quiz fatigue around #7-#9. Mitigations: #3 honest frame first, #10 as a break, name has a skip. Measure completion per screen and the skip rate for #13.
+- **Branches:** none by design. "Other" on #5, #6, #11, #12 changes only the wording of the story (a generic place, gift or role) and never blocks. All 19 screens are shown to every user.
+- **Honesty:** past lives are a belief; the frame is stated on #1, #3, #16, the app reading, the FAQ and the footer. The era and role come from the user's own picks (era from #2, role from #12), not from a hidden calculation. Story text in the demo is a deterministic template; production needs the host's text engine. The count on #10 is the real number of signals the user gave.
+- **Policy:** Meta personal-attribute rules. Ad copy: no "Are you cursed?", no "Do you remember dying?", no claim about the viewer. Use "Who were you before?" and the era framing.
+- **Images:** the demo draws the era ring in SVG and ships three generated-style placeholder JPGs. `IKAME_AI_KEY` was not set, so `gen_images.py` was not run; it lists the prompts for `hook-eras`, `result-life`, `paywall-hero` (JPG, 560x840) to drop into `img/` later with the same names.
+- **A/B first:** (1) Hook A vs B. (2) #2 era before vs after the dream and place questions. (3) #16 role first vs era first in the headline.
+- **Demo (private Artifact):** https://claude.ai/artifact/EGSD64gYBD1V7W3uhMLcoF

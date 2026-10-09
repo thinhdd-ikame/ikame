@@ -1,0 +1,56 @@
+[
+ {
+  "id": 1,
+  "title": "[UI][Responsive][Intro 1] Box year wheel bị cắt cứng ở mép trên vùng CTA trên màn nhỏ",
+  "status": "Fixed",
+  "note": "Màn cao <=700px: thu nhỏ herorow (zoom .7) và wheel còn 132px (3 dòng); ở 375x667 box năm hiện trọn trong first view (đáy box 485px < vùng scroll 500px). Màn lớn không đổi."
+ },
+ {
+  "id": 2,
+  "title": "[UI][Intro 9] Tag archetype trên portrait hiển thị rút gọn \"#Grumpy\" thay vì tên archetype",
+  "status": "Not a bug",
+  "note": "Thiết kế cố ý: mỗi archetype có hashtag ngắn riêng (C[k].tag: #MorallyGrey, #Grumpy, #GoldenRetriever...), tên đầy đủ đã hiện ở chip paywall và màn chọn. Spec chỉ ghi 'archetype tag', không bắt buộc tên đầy đủ; tên đầy đủ dài sẽ tràn plate. Giữ nguyên, PM/Designer có thể đổi sau."
+ },
+ {
+  "id": 3,
+  "title": "[UI][Intro 10] Hình 📚 trang trí phóng to bị tràn mép phải, hiện như mảng mờ chồng lên background chat",
+  "status": "Fixed",
+  "note": "Bỏ emoji trang trí 190px trong nền chat (.cbg span); nền chỉ còn ảnh scene mờ. Hết lỗi ở he_texts_first, he_remembers, good_morning_texts (auto-check sạch)."
+ },
+ {
+  "id": 4,
+  "title": "[UI][Intro 14] Text \"Terms\" và \"Privacy Policy\" dưới CTA không được style như link",
+  "status": "Fixed",
+  "note": "'Terms' và 'Privacy Policy' giờ là thẻ <a> thật (CONFIG.legal URL, target=_blank), gạch chân, chữ 13px, vùng bấm cao 42px. Đồng thời nâng legal link chung (Intro 1, sale, upsell) lên 13px, gạch chân rõ hơn, cao 44px."
+ },
+ {
+  "id": 5,
+  "title": "[UI][Paywall 1] Sticky top bar và sticky bottom bar không solid, nội dung cuộn phía sau vẫn lộ ra",
+  "status": "Fixed",
+  "note": "Top bar khi cuộn và sticky bottom bar dùng nền đặc var(--bg), bỏ trong suốt/blur. Thêm: sticky bar giờ hiện bất cứ khi nào CTA của plan block không nằm trong màn hình (trước đây chỉ cần plan block lọt vào là ẩn, nên ở 430x932 first view không thấy CTA)."
+ },
+ {
+  "id": 6,
+  "title": "[UI][Paywall 1] Link \"support@chatchi.co\" ở footer có vùng bấm nhỏ",
+  "status": "Fixed",
+  "note": "Link support gạch chân, chữ 13px, vùng bấm 136x44px (trước 114x15)."
+ },
+ {
+  "id": 7,
+  "title": "[UI][Responsive][Paywall 2] Footer \"No thanks\" + legal che phần dưới offer card ở first view màn nhỏ",
+  "status": "Fixed",
+  "note": "Footer 'No thanks' + Terms/Privacy ở sale_m1/m3/y12, sale_lifetime, upsell_lifetime chuyển vào vùng cuộn, nằm sau card (margin-top:auto nên màn lớn vẫn ở đáy). 375x667: renewal line và AI disclosure hiện đủ ở first view, không bị che."
+ },
+ {
+  "id": 8,
+  "title": "[UI][Paywall 6] Màn last_chance_offer (retired) hiển thị raw token {{offer_badge}} / {{offer_price}}",
+  "status": "Fixed",
+  "note": "Xoá hẳn màn last_chance_offer: view, SCREENS entry, OFFER_ID, hàm offer*, action offerbuy/offerno, CONFIG.offer có {{offer_*}} và CSS liên quan. Decline vẫn về paywall (DECLINE_FALLBACK). ff_engine_build build OK, checkout không đổi; #s=99 không còn màn nào."
+ },
+ {
+  "id": 9,
+  "title": "[UI][Download App] Store badge App Store / Google Play không dùng artwork chính thức",
+  "status": "Fixed",
+  "note": "Thay bằng badge chính thức: SVG 'Download on the App Store' (đen) tải từ developer.apple.com và PNG 'GET IT ON Google Play' từ play.google.com (cắt viền trong suốt), nhúng data URI, cao 46px. Vẫn gọi openApp()."
+ }
+]

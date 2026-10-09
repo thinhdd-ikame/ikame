@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A0911">
+<title>ChatChi: AI Roleplay Chat · Short Drama</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#06050B;
+  --bg:#0A0911;--bg-elev:#12101B;--surface:#17151F;--surface-2:#221F2D;--border:#2D293B;
+  --t1:#F4F2F8;--t2:#A7A2B7;--t3:#6F6A82;
+  --pink:#B62CB5;--pink-hi:#DA5FD9;--pink-dim:#B62CB52E;--pink-deep:#261230;
+  --grad-a:#9A2ACB;--grad-b:#D82F99;--grad:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+  --amber:#F5B83D;--negative:#F0705F;--positive:#7FD1A8;
+  --head:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--t1);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--pink-hi);outline-offset:2px}
+
+.phone{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;margin:0 auto;background:var(--bg);background-image:radial-gradient(ellipse 70% 35% at 50% 0%,#240F2C 0%,transparent 70%);overflow:hidden;isolation:isolate;--top:calc(env(safe-area-inset-top,0px) + 6px)}
+@media (min-width:520px){.phone{border-inline:1px solid #2A2536}}
+.view{position:absolute;inset:0;padding-top:var(--top);display:flex;flex-direction:column}
+.view.in{animation:vin .3s ease both}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Honey-style top bar: back · title · segmented progress */
+.nav{flex:none;padding:0 12px;position:relative;z-index:3}
+.nav .row{height:44px;display:flex;align-items:center}
+.nav .ttl{flex:1;text-align:center;font:700 15px var(--head);margin-right:44px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:none;background:transparent;display:grid;place-items:center;color:var(--t2)}
+.segs{display:flex;gap:4px;padding:0 20px 6px}
+.segs i{flex:1;height:4px;border-radius:2px;background:var(--surface-2)}
+.segs i.on{background:var(--grad)}
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 16px 16px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
+.scr::-webkit-scrollbar{display:none}
+.foot{flex:none;padding:10px 16px max(18px,calc(env(safe-area-inset-bottom,0px) + 10px));display:flex;flex-direction:column;gap:8px;position:relative;z-index:2;background:linear-gradient(180deg,transparent,var(--bg) 30%)}
+.q{font:800 22px/1.2 var(--head);letter-spacing:-.01em;margin:4px 0 0;text-align:center;text-wrap:balance}
+.sub{margin:-6px 0 0;text-align:center;color:var(--t2);font-size:13.5px}
+.h1{font:800 30px/1.1 var(--head);letter-spacing:-.02em;margin:0;text-align:center;text-wrap:balance}
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.btn{height:54px;border-radius:14px;border:none;background:var(--pink);color:#fff;font:700 16px/1 var(--head);width:100%;display:flex;align-items:center;justify-content:center;gap:10px;flex:none;transition:transform .12s,opacity .2s;position:relative;overflow:hidden;box-shadow:0 10px 30px -12px #B62CB5cc}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{background:var(--surface-2);color:var(--t3);box-shadow:none}
+.btn:not([disabled])::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(100deg,transparent,#ffffff45,transparent);transform:translateX(-150%) skewX(-20deg);animation:sheen 4.5s ease-in-out 1.2s infinite}
+@keyframes sheen{0%{transform:translateX(-150%) skewX(-20deg)}28%,100%{transform:translateX(320%) skewX(-20deg)}}
+.btn.ghost{background:var(--surface);border:1px solid var(--border);color:var(--t1);box-shadow:none;height:48px}
+.btn.ghost::after{display:none}
+.link{background:none;border:none;color:var(--t2);font-size:14px;min-height:44px}
+.legal{font-size:11.5px;color:var(--t3);text-align:center;line-height:1.5}
+.legal a{color:var(--t2);text-decoration:underline;text-underline-offset:2px}
+
+/* photo cards (Honey's core element) */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{position:relative;border-radius:16px;overflow:hidden;border:2px solid var(--border);background:var(--surface);padding:0;aspect-ratio:3/3.4;display:block;text-align:left;transition:border-color .15s,box-shadow .2s,transform .12s}
+.card.tall{aspect-ratio:3/4.1}
+.card:active{transform:scale(.97)}
+.card .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;background:var(--fb,linear-gradient(160deg,#2a1838,#0d0a18))}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.card .lb{position:absolute;left:0;right:0;bottom:0;padding:9px 10px;background:#0A0911e0;font:700 14px/1.2 var(--head);text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px}
+.card .ck{width:20px;height:20px;border-radius:6px;border:1.5px solid #ffffff55;flex:none;display:grid;place-items:center;position:absolute;right:9px;bottom:10px}
+.card.multi .lb{justify-content:flex-start;padding-right:36px;text-align:left}
+.card.on{border-color:transparent;box-shadow:0 0 0 2px var(--grad-b),0 0 24px -4px #B62CB5aa}
+.card.on::before{content:"";position:absolute;inset:-2px;border-radius:16px;padding:2px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;z-index:2;pointer-events:none}
+.card.on .ck{background:var(--grad);border-color:transparent}
+.ck svg{opacity:0;transition:opacity .15s}.on .ck svg{opacity:1}
+.collage{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr}
+.collage img{position:static;width:100%;height:100%}
+
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--surface);border:1.5px solid var(--border);text-align:left;width:100%;min-height:54px}
+.opt .em{font-size:19px;width:24px;text-align:center}
+.opt .lbl{flex:1;font-weight:600}
+.opt .ck{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--border);display:grid;place-items:center}
+.opt.on{border-color:var(--pink);background:linear-gradient(0deg,var(--pink-dim),var(--pink-dim)),var(--surface)}
+.opt.on .ck{background:var(--grad);border-color:transparent}
+.box{height:50px;border-radius:14px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 14px}
+.box input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--t1);font:400 16px var(--sans)}
+
+/* sliders */
+.sls{display:flex;flex-direction:column;gap:6px;padding:8px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--border)}
+.sl{padding:12px 0;border-top:1px solid var(--border)}
+.sl:first-child{border-top:none}
+.sl .top{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.sl .top .gi{width:30px;height:30px;border-radius:9px;background:var(--pink-dim);display:grid;place-items:center}
+.sl .top b{margin-left:auto;font:600 13px var(--sans);padding:4px 9px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-variant-numeric:tabular-nums}
+.sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:linear-gradient(90deg,var(--grad-a),var(--grad-b) var(--p,50%),var(--surface-2) var(--p,50%));background-clip:content-box;padding:19px 0;outline:none;margin:0}
+.sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--pink);box-shadow:0 2px 10px #0008}
+.sl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--pink)}
+.hint{font-size:12.5px;color:var(--t3);text-align:center}
+
+/* bridge */
+.bridge{flex:1;position:relative;margin:0 -16px -16px;min-height:0}
+.bridge img,.bridge .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.bridge .ph{display:grid;place-items:center;font-size:80px;background:linear-gradient(160deg,#2a1838,#0d0a18)}
+.bridge::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 18%,transparent 70%,var(--bg) 100%)}
+
+/* loader */
+.ldimg{position:relative;flex:1;min-height:180px;margin:0 -16px;overflow:hidden}
+.ldimg img,.ldimg .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;filter:blur(var(--bl,18px)) saturate(1.1);transform:scale(1.08);transition:filter .3s linear}
+.ldimg .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.ldimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,transparent 25%,transparent 60%,var(--bg) 100%)}
+.steps{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+.step .top{display:flex;justify-content:space-between;font-size:14px;color:var(--t2);margin-bottom:6px}
+.step.done .top{color:var(--t1)}
+.step .top b{font-variant-numeric:tabular-nums;font-weight:600}
+.step.done .top b{color:var(--pink-hi)}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--grad);width:0}
+.iq{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:20px 16px max(20px,calc(env(safe-area-inset-bottom,0px) + 12px));background:linear-gradient(180deg,transparent,var(--bg) 22%);display:flex;flex-direction:column;gap:14px;animation:up .35s cubic-bezier(.2,.8,.2,1)}
+.iq b{font:800 20px/1.25 var(--head);text-align:center}
+.iq .row{display:flex;gap:10px}
+.iq .row .btn{flex:1}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+
+/* paywall (long scroll) */
+.pw{position:absolute;inset:0;z-index:20;overflow-y:auto;scrollbar-width:none;background:var(--bg)}
+.pw::-webkit-scrollbar{display:none}
+.pwx{width:36px;height:36px;border-radius:50%;background:#ffffff0d;border:1px solid #ffffff22;color:var(--t2);display:grid;place-items:center;flex:none}
+.sec{padding:26px 16px 0}
+.pwhero{position:relative;height:430px;overflow:hidden}
+.pwhero img,.pwhero .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 18%}
+.pwhero .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.pwhero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,var(--bg) 96%)}
+.pwhero .txt{position:absolute;left:16px;right:16px;bottom:8px;z-index:1}
+.pwhero .h1{text-align:left;font-size:34px}
+.pwhero p{margin:6px 0 0;color:var(--t2)}
+.plans{display:flex;flex-direction:column;gap:10px}
+.plan{position:relative;padding:14px 16px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);text-align:left;display:grid;grid-template-columns:24px 1fr auto;gap:2px 12px;align-items:center;width:100%}
+.plan .rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);grid-row:1/3;display:grid;place-items:center}
+.plan.on{border-color:var(--pink);background:var(--pink-deep);box-shadow:0 0 20px -8px #B62CB5}
+.plan.on .rd{background:var(--grad);border-color:transparent}
+.plan .pn{font:800 17px var(--head)}
+.plan .pp{font:800 19px/1.1 var(--head);text-align:right}
+.plan .pp small{font:500 11px var(--sans);color:var(--t2)}
+.plan .rn{font-size:11.5px;color:var(--t2);grid-column:2/4}
+.plan .bv{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font:700 11px/1 var(--head);letter-spacing:.06em;background:var(--grad);color:#fff;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.ph2{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+.fine{font-size:11.5px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.45}
+.h2{font:800 26px/1.15 var(--head);margin:0 0 14px;letter-spacing:-.01em}
+.match{display:flex;gap:16px;align-items:center}
+.ring{width:118px;height:118px;flex:none;border-radius:50%;background:conic-gradient(var(--grad-b) calc(var(--m)*1%),var(--grad-a) calc(var(--m)*1%),var(--surface-2) 0);display:grid;place-items:center;position:relative}
+.ring::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--bg)}
+.ring span{position:relative;text-align:center;font:800 26px/1 var(--head)}
+.ring small{display:block;font:500 12px var(--sans);color:var(--t2);margin-top:4px}
+.traits{display:flex;flex-direction:column;gap:10px;font-weight:600}
+.traits div{display:flex;gap:10px;align-items:center}
+.gw{width:32px;height:32px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#fff;flex:none}
+.pcard{margin-top:16px;border-radius:20px;overflow:hidden;position:relative;aspect-ratio:3/3.6;border:1px solid var(--border)}
+.pcard img,.pcard .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.pcard .ph{display:block;background:radial-gradient(circle at 50% 35%,#6a2a6a,#0d0a18 70%)}
+.pcard .cap{position:absolute;left:0;right:0;bottom:0;padding:40px 14px 12px;background:linear-gradient(180deg,transparent,#0A0911f0);display:flex;justify-content:space-between;align-items:flex-end}
+.pcard .cap b{font:800 24px var(--head)}
+.pcard .cap small{font-size:11px;color:var(--t3)}
+.bens{display:flex;flex-direction:column;gap:9px}
+.ben{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.ben b{display:block;font:700 15px var(--head)}
+.ben small{color:var(--t2);font-size:12.5px}
+.ben .tg{margin-left:auto;font:700 10px var(--sans);letter-spacing:.05em;padding:3px 7px;border-radius:6px;background:var(--pink-dim);color:var(--pink-hi)}
+.stats{display:flex;flex-direction:column;gap:10px}
+.stat{display:flex;gap:14px;align-items:center;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);font-size:14px}
+.stat .n{font:800 22px var(--head);flex:none;min-width:64px;text-align:center}
+.mock{border-radius:26px;border:1px solid var(--border);background:var(--bg-elev);padding:12px;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+.mock .hd{display:flex;gap:10px;align-items:center;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.mock .hd b{font:700 15px var(--head)}
+.mock .hd small{display:block;color:var(--positive);font-size:11.5px}
+.rev{padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--t2)}
+.rev .who{display:flex;gap:10px;align-items:center;color:var(--t1)}
+.rev .who i{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font:700 12px var(--head);font-style:normal;color:#fff}
+.rev .st{margin-left:auto;color:var(--amber);letter-spacing:2px;font-size:13px}
+.guar{margin:26px 16px 0;padding:18px;border-radius:18px;border:1.5px solid var(--pink);background:var(--pink-deep);font-size:13.5px;color:var(--t2)}
+.guar b{display:block;font:800 20px var(--head);color:var(--t1);margin-bottom:6px}
+
+/* ===== web paywall (2026-10-06): long-scroll landing page, not an app sheet ===== */
+.pwwrap{position:absolute;inset:0;z-index:20;background:var(--bg)}
+.pw{scroll-behavior:smooth}
+.pwbar{position:sticky;top:0;z-index:7;display:flex;align-items:center;gap:10px;padding:calc(var(--top) + 6px) 14px 10px 16px;background:#0A0911e0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #ffffff10}
+.pwbar .logo{flex:1;justify-content:flex-start;font-size:16px}
+.pwbar .mini{height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--grad);color:#fff;font:700 13px var(--head);opacity:0;transform:translateY(-4px);transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
+.pw.scrolled .pwbar .mini{opacity:1;transform:none;pointer-events:auto}
+.eyebrow{display:block;font:700 11.5px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--gacc,var(--pink-hi));margin-bottom:8px}
+.wsec{padding:34px 16px 0}
+.wsec.tight{padding-top:14px}
+.wh2{font:800 25px/1.18 var(--head);letter-spacing:-.015em;margin:0 0 16px;text-wrap:balance}
+.phero{position:relative;isolation:isolate;height:clamp(300px,52vh,420px);margin-top:calc(-1 * (var(--top) + 52px));overflow:hidden;background:var(--gbg)}
+.phero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.phero .gc{font-size:96px;opacity:.35;z-index:-1}
+.phero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0A091199 0%,transparent 28%,transparent 42%,var(--bg) 97%)}
+.pht{position:absolute;left:16px;right:16px;bottom:6px;z-index:1}
+.pht .h1{text-align:left;font-size:31px;text-shadow:0 2px 18px #000a}
+.pht p{margin:8px 0 0;color:var(--t2);font-size:14.5px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact{padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--border);min-width:0}
+.fact small{display:block;font-size:11.5px;color:var(--t3)}
+.fact b{display:block;font:700 14px/1.3 var(--head);margin-top:2px;overflow-wrap:anywhere}
+.pquote{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--surface-2);border-left:3px solid var(--gacc,var(--pink))}
+.pquote .av2{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:16px;background:var(--gbg);border:1.5px solid var(--gacc);flex:none}
+.pquote p{margin:0;font:italic 15px/1.4 Georgia,serif}
+.pblock{padding:20px 14px 16px;border-radius:24px;background:linear-gradient(180deg,#1D1A28,#141220);border:1px solid #B62CB540;box-shadow:0 30px 60px -30px #000,0 0 0 1px #ffffff06 inset;display:flex;flex-direction:column;gap:12px;scroll-margin-top:70px}
+.pbh{text-align:center}.pbh .wh2{margin:0 0 6px;font-size:22px}
+.pblock .plans{gap:12px}
+.plan .pn small{display:block;font:500 11.5px var(--sans);color:var(--t2);margin-top:3px}
+.plan .rd{grid-column:1;grid-row:1}.plan .pn{grid-column:2;grid-row:1}
+.plan .pp{display:flex;flex-direction:column;align-items:flex-end;grid-column:3;grid-row:1}
+.plan .rn{grid-row:2}
+.plan .pp small{margin-top:3px}
+.plan .rn{padding-top:6px;margin-top:6px;border-top:1px dashed #ffffff14}
+.plan .bv{left:auto;right:14px;transform:none}
+.due{display:flex;justify-content:space-between;align-items:baseline;padding:4px 4px 0;font-size:14px;color:var(--t2)}
+.due b{font:800 18px var(--head);color:var(--t1)}
+.payb{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.payb span{height:24px;min-width:38px;padding:0 7px;border-radius:6px;background:#F4F2F8;color:#14121c;font:700 10px/24px var(--sans);text-align:center;letter-spacing:.02em}
+.secure{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--t2)}
+.secure span{display:flex;gap:5px;align-items:center}.secure svg{color:var(--positive)}
+.pblock .fine{margin:0}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tiles div{padding:14px 8px;border-radius:16px;background:var(--surface);border:1px solid var(--border);text-align:center;display:flex;flex-direction:column;gap:6px}
+.tiles b{font:800 24px/1 var(--head)}
+.tiles span{font-size:11.5px;color:var(--t2);line-height:1.35}
+.wfoot{padding:34px 16px calc(env(safe-area-inset-bottom,0px) + 120px);display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;font-size:11.5px;color:var(--t3);line-height:1.55;border-top:1px solid #ffffff0d;margin-top:34px}
+.wfoot a{color:var(--t2)}
+.pstick{position:absolute;left:0;right:0;bottom:0;z-index:30;padding:14px 16px max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));background:linear-gradient(180deg,transparent,var(--bg) 30%);transform:translateY(115%);transition:transform .3s ease;pointer-events:none}
+.pstick.show{transform:none;pointer-events:auto}
+.pstick .sum{display:flex;justify-content:space-between;font-size:13px;color:var(--t2);margin-bottom:8px;padding:0 4px}
+.pstick .sum b{color:var(--t1)}
+.pw .bens{gap:8px}.pw .ben{padding:13px 14px}
+.pw .faq details{margin-bottom:8px}
+@media (max-height:700px){.phero{height:290px}.pht .h1{font-size:27px}.wsec{padding-top:28px}}
+/* chat */
+.chat{position:absolute;inset:0;top:var(--top);display:flex;flex-direction:column}
+.chead{flex:none;display:flex;align-items:center;gap:10px;padding:4px 12px 8px;border-bottom:1px solid var(--border);background:var(--bg);z-index:2}
+.chead b{font:700 17px/1.1 var(--head);display:block}
+.chead small{font-size:12px;color:var(--positive)}
+.av{position:relative;border-radius:50%;overflow:hidden;flex:none;background:var(--grad);display:grid;place-items:center;font-size:18px}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.cbody{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.cbg{position:absolute;inset:0;background:var(--scene) center/cover no-repeat,linear-gradient(160deg,#2a1838,#0d0a18);opacity:.4}
+.cbg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg),transparent 30%,transparent 55%,var(--bg))}
+.disclose{position:relative;z-index:1;margin:10px 16px 0;padding:8px 12px;border-radius:12px;background:#17151FE6;color:var(--t3);font-size:11.5px;text-align:center}
+.msgs{position:relative;z-index:1;flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.msgs .sp{flex:1}
+.bub{padding:11px 14px;border-radius:18px;max-width:82%;font-size:15px;line-height:1.4;animation:fi .3s ease}
+.bub.c{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:6px}
+.bub.u{align-self:flex-end;background:var(--pink);color:#fff;border-bottom-right-radius:6px}
+.bub.sys{align-self:center;background:none;color:var(--t3);font-size:12px;padding:2px}
+.typing{display:inline-flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.3}}
+.ideas{position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;padding:0 16px 10px}
+.ideas button{min-height:44px;padding:11px 14px;border-radius:14px;background:#17151FE6;border:1px solid var(--border);text-align:left;font-size:14px;color:var(--t2)}
+.cfoot{flex:none;border-top:1px solid var(--border);padding:10px 14px max(14px,calc(env(safe-area-inset-bottom,0px) + 8px));display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.counter{font-size:12px;color:var(--t3);font-variant-numeric:tabular-nums}
+.counter.out{color:var(--negative)}
+.composer{display:flex;gap:8px}
+.composer .box{flex:1;border-radius:999px;height:48px}
+.send{width:48px;height:48px;border-radius:50%;border:none;background:var(--pink);color:#fff;display:grid;place-items:center;flex:none}
+.send[disabled]{background:var(--surface-2);color:var(--t3)}
+.limit{padding:18px 16px;border-radius:18px;border:1.5px solid var(--pink);background:#17151FF2;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;animation:fi .4s ease}
+.limit h3{margin:0;font:800 20px/1.2 var(--head)}
+.limit p{margin:0;color:var(--t2);font-size:14px}
+.limit .crown *{stroke:url(#cgrad)}
+.toast{position:absolute;left:50%;top:calc(var(--top) + 6px);transform:translateX(-50%);z-index:40;background:var(--t1);color:#0A0911;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;white-space:nowrap;animation:fade 2.8s ease forwards}
+@keyframes fade{0%{opacity:0}10%,80%{opacity:1}100%{opacity:0}}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.gicon *{stroke:url(#cgrad)}
+.logo{display:flex;align-items:center;justify-content:center;gap:8px;font:800 17px var(--head)}
+svg .lg{fill:url(#cgrad-logo)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+/* last-chance offer (shown once, after a paywall decline) */
+.ofr .pwtop .logo{font-size:16px}
+.oeye{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--pink-dim);color:var(--pink-hi);font:600 12px/1 var(--sans);letter-spacing:.02em}
+.ocard{position:relative;margin-top:6px;padding:22px 16px 16px;border-radius:24px;border:1.5px solid var(--pink);background:radial-gradient(ellipse at 50% 0%,var(--pink-dim),transparent 65%),var(--surface);box-shadow:0 0 0 4px var(--pink-dim),0 30px 60px -30px #000;display:flex;flex-direction:column;gap:14px;flex:none}
+.obadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:999px;background:var(--grad,var(--pink));color:#fff;font:700 11px/1 var(--sans);letter-spacing:.06em;white-space:nowrap}
+.obadge .otk{color:#fff;border-color:#ffffffaa;background:transparent}
+.orow{display:flex;gap:12px;align-items:center}
+.orow b{font:700 17px/1.2 var(--head)}
+.osub{font-size:12.5px;color:var(--t3);margin-top:3px}
+.oth{width:58px;height:58px;border-radius:50%;overflow:hidden;flex:none;position:relative;display:block;box-shadow:0 0 0 2px var(--pink),0 0 24px var(--pink-dim)}
+.oth>img,.oth .pimg{width:100%;height:100%;object-fit:cover;display:block}
+.oth>.av,.oth>.cav{width:100%!important;height:100%!important}
+.ocov{flex:none;display:block}
+.oprice{display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px;border-radius:16px;background:var(--bg-elev);border:1px solid var(--border)}
+.oprice s{color:var(--t3);font-size:14px}
+.oprice s .otk{text-decoration:line-through;opacity:.75}
+.oprice b{font:800 28px/1 var(--head);color:var(--t1)}
+.oprice span{color:var(--t2);font-size:13px}
+.ochecks{display:flex;flex-direction:column;gap:9px}
+.ochecks div{display:flex;gap:10px;align-items:center;font-size:14.5px;font-weight:500}
+.ochecks svg{color:var(--pink-hi);flex:none}
+.ochecks svg *{stroke:url(#cgrad)}
+.ofine{font-size:12px;color:var(--t3);text-align:center;line-height:1.45;margin:0}
+.odis{font-size:11.5px;color:var(--t3);text-align:center;margin:0;line-height:1.4}
+.otimer{display:inline-flex;gap:8px;margin-top:12px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--border);font-size:13px;color:var(--t2)}
+.otimer b{color:var(--pink-hi);font-variant-numeric:tabular-nums}
+.otk{font-family:ui-monospace,Consolas,monospace;font-size:.82em;font-weight:600;padding:1px 5px;border-radius:6px;border:1px dashed var(--amber);color:var(--amber);background:#F5B83D14;white-space:nowrap}
+.ofr .obar{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:calc(var(--top,8px) + 4px) 16px 10px;background:linear-gradient(180deg,var(--bg) 75%,transparent)}
+.ofr .obx{width:36px;height:36px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);color:var(--t2);display:grid;place-items:center}
+.ofr .olead{color:var(--t2);margin:0;font-size:14.5px;line-height:1.45}
+
+/* chai-roleplay additions */
+.fan{position:relative;height:250px;margin:6px 0 0}
+.fan .fc{position:absolute;left:50%;top:10px;width:116px;height:176px;margin-left:-58px;border-radius:16px;overflow:hidden;border:2px solid var(--border);box-shadow:0 18px 40px -16px #000;transform-origin:50% 120%;display:grid;place-items:center;font-size:40px}
+.fan .fc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fan .fc span{position:relative}
+.gc{position:absolute;inset:0;display:grid;place-items:center;font-size:46px;background:var(--gbg)}
+.card.gen{aspect-ratio:3/3.8}
+.card.dash{border-style:dashed;background:transparent}
+.card.dash .ph{background:transparent}
+.card.wide{aspect-ratio:auto;height:112px;grid-column:1/-1}
+.card.wide .lb{justify-content:space-between;padding:10px 14px;text-align:left;min-height:48px}
+.cardsc{display:grid;grid-template-columns:1fr;gap:10px}
+.comp{display:flex;gap:14px;align-items:center;padding:12px;border-radius:18px;border:2px solid var(--border);background:var(--surface);width:100%;text-align:left}
+.comp.on{border-color:var(--pink);box-shadow:0 0 22px -6px #B62CB5aa}
+.comp .pt{width:68px;height:68px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:30px;background:var(--gbg);border:2px solid var(--gacc)}
+.comp b{font:800 17px var(--head);display:block}
+.comp small{display:block;color:var(--t2);font-size:12.5px}
+.comp i{display:block;color:var(--t1);font-size:13.5px;font-style:italic;margin-top:4px;font-family:Georgia,serif}
+.sel{width:100%;height:54px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--t1);font:600 17px var(--sans);padding:0 14px;appearance:none;-webkit-appearance:none}
+.cover{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--border);aspect-ratio:3/3.9;background:var(--gbg);box-shadow:0 30px 60px -30px #000}
+.cover .gc{position:absolute;inset:0;font-size:90px;opacity:.55}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,#0A0911f2)}
+.cover .ct{position:absolute;left:16px;right:16px;bottom:14px;z-index:1}
+.cover .ct h2{font:700 30px/1.05 Georgia,serif;margin:0 0 8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{font-size:11.5px;padding:5px 9px;border-radius:999px;background:#17151Fcc;border:1px solid var(--border)}
+.cover .pill{position:absolute;top:12px;left:12px;z-index:1;font:600 11px var(--sans);padding:5px 10px;border-radius:999px;background:#0A0911cc;border:1px solid var(--border)}
+.cover .cav{position:absolute;top:12px;right:12px;z-index:1;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--gbg);border:2px solid var(--gacc)}
+.ribbon{position:relative;z-index:1;margin:8px 16px 0;font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:8px}
+.ribbon .rb{flex:1;height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.ribbon .rb span{display:block;height:100%;background:var(--grad)}
+.cbg{background:var(--scene) center/cover no-repeat,var(--gbg)}
+.cbg.tn-playful{filter:saturate(1.3) brightness(1.15)}.cbg.tn-dark{filter:brightness(.7) contrast(1.1)}.cbg.tn-epic{filter:sepia(.25) saturate(1.2)}
+.frozen{font:700 26px/1.3 Georgia,serif;text-align:center;text-wrap:balance;padding:6px 4px}
+.scard{position:relative;height:120px;perspective:600px;margin:4px auto 0;width:200px}
+.scard>div{position:absolute;inset:0;border-radius:16px;display:grid;place-items:center;backface-visibility:hidden;transition:transform 1.1s}
+.scard .bk{background:var(--surface-2);border:1px dashed var(--border);color:var(--t3)}
+.scard .fr{background:var(--gbg);border:2px solid var(--gacc);box-shadow:0 0 26px -6px var(--gacc);transform:rotateY(180deg);font-size:44px}
+.scard.flip .bk{transform:rotateY(-180deg)}.scard.flip .fr{transform:rotateY(0)}
+.err{color:var(--negative);font-size:13px;margin:-4px 2px 0}
+.faq details{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:0 14px;margin-bottom:8px}
+.faq summary{min-height:48px;display:flex;align-items:center;font:700 15px var(--head);cursor:pointer}
+.faq p{margin:0 0 12px;color:var(--t2);font-size:13.5px}
+.how{display:flex;flex-direction:column;gap:10px}
+.how div{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+.how b{display:block;font:700 15px var(--head)}.how small{color:var(--t2);font-size:12.5px}
+.how .nn{width:30px;height:30px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font:800 14px var(--head);flex:none}
+.brandbar{display:flex;justify-content:center;padding:calc(var(--top) + 10px) 0 6px}
+.pwhero.cv{height:auto;padding:0 16px}
+.blocked{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;text-align:center}
+
+/* chai-short-drama additions */
+.fan .fc{width:120px;height:210px;margin-left:-60px;top:6px}
+.fan{height:270px}
+.fan .fc .bars{position:absolute;top:6px;left:6px;right:6px;display:flex;gap:3px;z-index:2}
+.fan .fc .bars i{flex:1;height:3px;border-radius:2px;background:#ffffff55}.fan .fc .bars i:first-child{background:#fff}
+.sposter{position:relative;border-radius:20px;overflow:hidden;border:2px solid var(--border);background:var(--gbg);width:100%;height:150px;display:block;text-align:left;padding:0;transition:border-color .15s,box-shadow .2s,transform .12s}
+.sposter:active{transform:scale(.98)}
+.sposter.on{border-color:var(--gacc);box-shadow:0 0 0 2px var(--gacc),0 0 24px -4px var(--gacc)}
+.sposter .gc{position:absolute;inset:0;display:grid;place-items:center;font-size:64px;opacity:.5;background:var(--gbg)}
+.sposter img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.sposter::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0A0911f2 0%,#0A0911aa 55%,transparent)}
+.sposter .tx{position:absolute;left:16px;top:0;bottom:0;right:40%;z-index:1;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.sposter .tx b{font:700 24px/1.05 Georgia,serif}
+.sposter .tx small{font-size:12.5px;color:var(--t2)}
+.sposter .tx em{font:600 11px var(--sans);font-style:normal;color:var(--gacc);letter-spacing:.04em}
+/* story frame */
+.story{position:absolute;inset:0;background:var(--gbg);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.story .bg{position:absolute;inset:0;transition:object-position .6s}
+.story .bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.25);transition:object-position .8s,transform 4s linear}
+.story .bg .big{position:absolute;inset:0;display:grid;place-items:center;font-size:130px;opacity:.5}
+.story .shade{position:absolute;inset:0;background:linear-gradient(180deg,#0A0911cc 0%,transparent 22%,transparent 40%,#0A0911f5 82%)}
+.story.dk .shade{background:linear-gradient(180deg,#0A0911dd 0%,#0A091160 30%,#0A0911f8 82%)}
+.sbars{position:absolute;top:calc(var(--top) + 4px);left:12px;right:12px;display:flex;gap:4px;z-index:5}
+.sbars i{flex:1;height:3px;border-radius:2px;background:#ffffff40;overflow:hidden}
+.sbars i span{display:block;height:100%;width:0;background:#fff}
+.sbars i.done span{width:100%}
+.sbars i.cur span{animation:sfill 4s linear forwards;animation-play-state:var(--ps,running)}
+@keyframes sfill{to{width:100%}}
+.sbar2{position:absolute;top:calc(var(--top) + 16px);left:12px;right:12px;z-index:5;display:flex;align-items:center;gap:8px}
+.sbar2 .pill{font:600 11px var(--sans);padding:5px 10px;border-radius:999px;background:#0A0911cc;border:1px solid var(--border);color:var(--t2)}
+.sbar2 b{font:700 14px var(--head);margin-left:auto}
+.stap{position:absolute;top:80px;bottom:150px;z-index:4;background:transparent;border:none;width:50%}
+.stap.l{left:0}.stap.r{right:0}
+.scap{position:absolute;left:18px;right:70px;bottom:158px;z-index:5;pointer-events:none}
+.scap p{font:700 25px/1.28 Georgia,serif;margin:0;text-wrap:balance;text-shadow:0 2px 14px #000}
+.scap .ep{font:600 11px var(--sans);letter-spacing:.08em;color:var(--gacc);margin-bottom:8px;text-transform:uppercase}
+.slisten{position:absolute;right:16px;bottom:166px;z-index:6;width:44px;height:44px;border-radius:50%;background:#0A0911cc;border:1px solid var(--border);color:#fff;display:grid;place-items:center}
+.sfoot{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:10px 16px max(18px,calc(env(safe-area-inset-bottom,0px) + 10px));display:flex;flex-direction:column;gap:8px;align-items:center}
+.sfoot .legal{color:var(--t2)}
+.sx{width:36px;height:36px;border-radius:50%;background:#0A0911aa;border:1px solid #ffffff22;color:#fff;display:grid;place-items:center}
+/* locked ep3 */
+.lockbox{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:3/3.7;border:1px solid var(--border);background:var(--gbg)}
+.lockbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(14px) brightness(.6);transform:scale(1.15)}
+.lockbox .gc{position:absolute;inset:0;display:grid;place-items:center;font-size:90px;opacity:.35}
+.lockbox .lk{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;z-index:1}
+.lockbox .lk .ring2{width:64px;height:64px;border-radius:50%;background:#0A0911cc;border:2px solid var(--gacc);display:grid;place-items:center}
+.lockbox .lk .ring2 *{stroke:#fff}
+.lockbox .lk i{font:italic 17px/1.35 Georgia,serif;text-wrap:balance}
+.lockbox .tagk{position:absolute;top:12px;left:12px;z-index:2;font:600 11px var(--sans);padding:5px 10px;border-radius:999px;background:#0A0911cc;border:1px solid var(--border)}
+.mchip{align-self:center;position:relative;z-index:1;margin:8px 16px 0;display:inline-flex;gap:6px;align-items:center;font:600 11.5px var(--sans);padding:5px 11px;border-radius:999px;background:#17151FE6;border:1px solid var(--gacc);color:var(--t1);justify-content:center}
+.lockstrip{position:relative;z-index:1;margin:0 16px 8px;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:#17151FE6;border:1px dashed var(--gacc);font-size:13.5px;text-align:left;width:calc(100% - 32px);min-height:44px}
+.lockstrip b{margin-left:auto;font:700 12px var(--head);color:var(--pink-hi)}
+.nox{opacity:.55}
+.nox svg{color:var(--t3)}
+.ochecks .no{color:var(--t3)}
+.ochecks .no svg *{stroke:var(--t3)}
+.ochecks .no svg{color:var(--t3)}
+/* sale / upsell / get-app (2026-10-06 monetization flow) */
+.oth.sd{display:grid;place-items:center;font-size:26px;background:var(--gbg)}
+.oth.sd>img{position:absolute;inset:0}
+.how2{display:flex;flex-direction:column}
+.how2 b{overflow-wrap:anywhere}
+.how2>div{display:grid;grid-template-columns:34px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.how2>div:not(:last-child)::before{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--border)}
+.how2 i{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 14px var(--sans);font-style:normal}
+.how2 b{display:block;margin-top:6px}
+.how2 span{font-size:13.5px;color:var(--t2)}
+.stores{display:flex;gap:8px;justify-content:center}
+.store{display:flex;align-items:center;gap:7px;height:46px;padding:0 12px;border-radius:10px;background:#000;border:1px solid #444;font-size:11px;line-height:1.1;text-align:left;color:#fff}
+.store b{display:block;font-size:13px}
+.okwell{width:76px;height:76px;border-radius:50%;background:var(--grad);display:grid;place-items:center;color:#fff;margin:0 auto;box-shadow:0 10px 40px #B62CB566}
+.iqc{display:flex;flex-direction:column}
+.iqc p{text-align:center;color:var(--t2)}
+/* QA 2026-10-06: overlays stack above the chat (.chead z2 / .msgs z1); the cliffhanger art is not locked, so not blurred */
+#demock{background:var(--bg-elev);border-top:1px solid var(--border);border-radius:22px 22px 0 0;box-shadow:0 -30px 80px #000d}
+.lockbox.clear img{filter:brightness(.7);transform:none}
+.qmark{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--t2);font-size:13.5px}
+.qmark .av2{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:var(--gbg);border:1.5px solid var(--gacc);flex:none}
+/* short phones (360x640): reply ideas become one swipeable row so the thread keeps room */
+@media (max-height:700px){
+ .ideas{flex-direction:row;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+ .ideas::-webkit-scrollbar{display:none}
+ .ideas button{flex:none;white-space:nowrap;min-height:40px;padding:9px 12px}
+ .disclose{margin-top:6px;padding:6px 10px}
+ .mchip{margin-top:6px}
+}
+/* QA fix 2026-10-07 */
+/* legal + support links: real links, readable (13px), link colour + underline, >= 40px tap target */
+.legal{font-size:13px}
+.legal a,.wfoot a{display:inline-flex;align-items:center;min-height:40px;padding:0 6px;font-size:13px;color:#E58CE4;text-decoration:underline;text-underline-offset:3px}
+.wfoot{font-size:13px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 150px)}
+/* sticky bottom CTA: solid bar, never see-through */
+.pstick{background:#0A0911f5;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--border);padding-top:12px}
+.pwbar{background:#0A0911f5}
+.ofr .obar{background:var(--bg)}
+/* lead portraits */
+.avi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.qmark .av2,.pquote .av2{position:relative;overflow:hidden}
+.pquote .av2{width:40px;height:40px}
+.qmark .av2{width:34px;height:34px}
+/* toast: stays on screen width, below the chat header */
+.toast{top:calc(var(--top) + 64px);max-width:calc(100% - 32px);white-space:normal;text-align:center}
+/* episode 2: same frame, visibly darker / colder grade (brief #6) */
+.story.dk .bg img{filter:brightness(.62) saturate(.7) hue-rotate(-12deg) contrast(1.08)}
+/* official-style store badges */
+.stores{gap:10px}
+.store{height:48px;min-width:150px;padding:0 14px 0 10px;border-radius:9px;background:#000;border:1px solid #A6A6A6;gap:8px;font:500 10px/1.05 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#fff}
+.store b{font:600 19px/1.05 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:-.3px}
+.store.gp span{font-size:9px;letter-spacing:.4px}
+.store.gp b{font-size:17.5px;letter-spacing:0}
+/* short phones: reply ideas wrap so every option stays visible (no hidden off-screen chip) */
+@media (max-height:700px){
+ .ideas{flex-wrap:wrap;overflow-x:visible}
+ .ideas button{white-space:normal;flex:1 1 auto}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="cgrad" gradientUnits="userSpaceOnUse" x1="2" y1="2" x2="22" y2="22"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient><linearGradient id="cgrad-logo" gradientUnits="userSpaceOnUse" x1="3" y1="4" x2="37" y2="36"><stop offset="0" stop-color="#9A2ACB"/><stop offset="1" stop-color="#D82F99"/></linearGradient></defs></svg>
+<main class="phone" id="phone" aria-live="polite"></main>
+
+<script>
+/* ============================================================
+   CONFIG - edit before launch. Everything in {{...}} is a placeholder, never a real price or claim.
+   ============================================================ */
+const CONFIG={
+  slug:'chai-short-drama',
+  brand:'ChatChi',
+  plans:{
+    m1: {label:'1 month',  price:'$24.99', renew:'$49.99',  per:'month',    renews:'every month',    badge:''},
+    m3: {label:'3 months', price:'$49.99', renew:'$109.99', per:'3 months', renews:'every 3 months', badge:''},
+    y12:{label:'12 months',price:'$119.99',renew:'$299.99', per:'year',     renews:'every year',     badge:'BEST VALUE'},
+    /* Sale plans (hidden on the paywall): shown only after the user leaves that plan's checkout without paying.
+       Sale price for the first period, then the regular price. Strike-through compares the same plan length only. */
+    m1_sale: {label:'1 month',  price:'$22.99',  renew:'$49.99',  per:'month',    renews:'every month',    hidden:true, of:'m1'},
+    m3_sale: {label:'3 months', price:'$44.99',  renew:'$109.99', per:'3 months', renews:'every 3 months', hidden:true, of:'m3'},
+    y12_sale:{label:'12 months',price:'$105.99', renew:'$299.99', per:'year',     renews:'every year',     hidden:true, of:'y12'},
+    /* Last step: one payment, no renewal. Shown after a sale is declined, and every time the paywall is closed. */
+    lifetime:{label:'Lifetime', price:'$99.99', per:'once', oneTime:true, hidden:true},
+    /* Post-purchase add-on for subscribers: its own one-time Paddle price. The plan just bought stays as it is. */
+    addon:{label:'Bonus character', price:'$22.99', per:'once', oneTime:true, hidden:true}
+  },
+  /* Teaser: the two scripted chat turns (#8-#9) are the taste; the user sends at most this many messages, then the paywall. */
+  teaserMessages:2,
+  /* Where each checkout goes when the user leaves it without paying (FunnelFox native checkout close button too). */
+  /* Hard paywall: no free tier. Leaving the lifetime checkout returns to the paywall; nothing here leads to the chat without a purchase. */
+  declineFlow:{m1:'sale_m1',m3:'sale_m3',y12:'sale_y12',m1_sale:'sale_lifetime',m3_sale:'sale_lifetime',y12_sale:'sale_lifetime',lifetime:'paywall',addon:'get_app'},
+  defaultPlan:'y12',
+  fairUseCap:300,          // confirm with ChatChi
+  freeMessagesPerDay:10,   // legacy counter seed for the chat thread; there is no free plan (hard paywall)
+  checkoutUrl:{m1:'',m3:'',y12:'',m1_sale:'',m3_sale:'',y12_sale:'',lifetime:'',addon:''},
+  /* Post-purchase add-on screen (upsell_lifetime). Price comes from plans.addon. */
+  upsell:{name:'Bonus character',title:'Add a second story lead',lead:'One more story, one more voice. Yours to keep.',
+    checks:['Create a second lead from scratch','Their own memory and chats','Paid once, no renewal'],
+    cta:'Add for $22.99',note:'$22.99 once. Your plan stays as it is.',decline:'No thanks'},
+  app:{web2app:'https://chatchi.go.link?adj_t=2567dkvx_256m7zvv_25adl2th&email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}',
+       web2web:'https://chatchi-app.squad-xteam.com/?email={{email}}&user_id={{user.id}}&af_adset={{utm_medium}}&c={{utm_campaign}}&af_ad={{utm_content}}&clickid={{fbclid}}&af_channel={{utm_source}}'},
+  legal:{termsUrl:'https://squad-xteam.com/termofuse.html',privacyUrl:'https://squad-xteam.com/policy.html',supportEmail:'support@chatchi.co'},
+  /* No sourced user stats yet, so this block states product facts instead of social proof. */
+  statsTitle:'Why go <span class="gt">Plus</span>',
+  stats:[['24/7','the lead replies, day or night'],['__CAP__','messages a day, fair-use cap'],['0','coins or per-episode charges']],
+  reviews:null,            // only real reviews of ChatChi's own store listing, quoted verbatim
+  refundDays:null,         // guarantee block stays hidden until ChatChi has a real refund policy
+  refundText:''
+};
+/* ============================================================ */
+const QS=new URLSearchParams(location.search);
+const DEBUG=QS.get('debug')==='1';
+const IMG=/*IMG-START*/{'img/lead-romance.jpg':'img/lead-romance.jpg','img/lead-thriller.jpg':'img/lead-thriller.jpg','img/lead-fantasy.jpg':'img/lead-fantasy.jpg','img/hook.jpg':'img/hook.jpg','img/series-romance.jpg':'img/series-romance.jpg','img/series-thriller.jpg':'img/series-thriller.jpg','img/series-fantasy.jpg':'img/series-fantasy.jpg'}/*IMG-END*/;
+const src=p=>IMG[p]||p;
+const PASS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','utm_id','fbclid','ttclid','gclid'];
+const IC={
+  back:'<path d="m15 18-6-6 6-6"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
+  chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 19v3"/>',
+  book:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  crown:'<path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.3l4.27-3.67a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.67a1 1 0 0 0 1.52-.3z"/><path d="M5 21h14"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+  spark:'<path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/>',
+  dice:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/>',
+  layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  note:'<path d="M5 3h14v18l-7-4-7 4z"/>',
+  apple:'<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>',play:'<path d="m5 3 14 9-14 9z"/>',vol:'<path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>'
+};
+const ic=(n,s=20,c='currentColor',w=1.9)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const APPLE_SVG='<svg width="22" height="26" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>';
+const GPLAY_SVG='<svg width="24" height="26" viewBox="0 0 24 26" aria-hidden="true"><path fill="#00D7FE" d="M1.4 1.1 13.2 13 1.4 24.9c-.4-.3-.6-.8-.6-1.4V2.5c0-.6.2-1.1.6-1.4z"/><path fill="#00F076" d="M17.2 9 13.2 13 1.4 1.1c.4-.3 1-.3 1.5 0z"/><path fill="#FF3A44" d="M17.2 17 2.9 24.9c-.5.3-1.1.3-1.5 0L13.2 13z"/><path fill="#FFD400" d="M21.6 11.4c1.1.7 1.1 2.4 0 3.1L17.2 17l-4-4 4-4z"/></svg>';
+const gic=(n,s=20)=>`<span class="gicon">${ic(n,s)}</span>`;
+const logo=(s=26)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4C10.6 4 3 10.3 3 18.2c0 5 3 9.3 7.6 11.8L9.5 36l7.4-4c1 .1 2 .2 3.1.2 9.4 0 17-6.3 17-14S29.4 4 20 4Z" fill="#B62CB5" class="lg"/><path d="M26 15.6c0 3.4-6 7.4-6 7.4s-6-4-6-7.4a3.3 3.3 0 0 1 6-1.9 3.3 3.3 0 0 1 6 1.9Z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ph=s=>/\{\{.*\}\}/.test(s)?`<span class="ph2">${esc(s)}</span>`:esc(s);
+/* lead avatar: portrait over the emoji (the emoji stays as fallback if the image fails) */
+const avI=(g=G())=>`${g.le}${im(g.av,'avi')}`;
+const im=(p,cls='')=>`<img class="${cls}" src="${src(p)}" alt="" decoding="async" draggable="false" onerror="this.remove()">`;
+
+/* ---- series data: three SFW series. {{name}} {{char_name}} {{series}} are filled at render time ---- */
+const SERIES={
+ romance:{t:'The Wrong Date',e:'💍',acc:'#FF5E9E',bg:'linear-gradient(160deg,#5a1535,#14070d)',img:'img/series-romance.jpg',av:'img/lead-romance.jpg',lead:'Leo',le:'🧥',role:'the groom’s brother',log:'A fake date. A real secret.',pos:[15,50,85],
+  eps:[
+   [['Rain on the terrace. Your best friend’s wedding. Your plus-one just cancelled.','🌧️'],['A stranger in a navy suit takes the empty seat. “Pretend I’m yours for one dinner?”','🧥'],['Leo. The groom’s brother. He already knows your name, {{name}}.','💍']],
+   [['One dinner becomes one dance. The whole room is watching.','💃'],['Leo, low: “I lied. I did not come for the wedding.”','🤫'],['He slides a small brass key across the table. “Roof. Midnight.”','🗝️']],
+   [['The roof door sticks. Leo is already there, holding a letter with your name on it.','🚪'],['“Your friend wrote this before the wedding. She knew, {{name}}.”','✉️'],['The last line reads: do not trust the groom.','⚠️']]],
+  tease:'“The letter is real, {{name}}. Ask me what it says.”',
+  cliff:'“Before you go up there, {{name}}, ask me why I really took that seat.”',
+  open:'{{name}}. That key on the table? I did not put it there to impress you.',
+  t1:['😏 Ask about the key','😳 Play it cool','🙃 Blame the wedding'],
+  r1:['Straight to the point. It opens the roof, {{name}}, and only I know why.','Cool. Sure. You did stare at my navy suit for two whole episodes.','The wedding did not make me lie at that table. I chose that seat.'],
+  m:['the navy suit','the brass key'],
+  t2:['🗝️ Take the key','🔍 Ask what he saw','🚪 Walk away'],
+  r2:['Careful. Midnight, the roof, like I said at dinner. Do not be late, {{name}}.','At the altar? The groom checked his phone, not the bride. I saw it, same as you saw my key.','Walk away, then. But you kept the key from the table. I noticed.'],
+  a3:'So now you know about the letter, {{name}}. Ask me anything.'},
+ thriller:{t:'Night Shift',e:'🌙',acc:'#3FC1C9',bg:'linear-gradient(160deg,#0f3a40,#071114)',img:'img/series-thriller.jpg',av:'img/lead-thriller.jpg',lead:'Nora',le:'🕵️',role:'a detective',log:'Third night. One strange call.',pos:[20,50,80],
+  eps:[
+   [['Third night on the late desk. A call comes in at 2:14 a.m.','☎️'],['A voice whispers your name, {{name}}, then hangs up.','🎧'],['Detective Nora Vale walks in. “That call came from inside this building.”','🕵️']],
+   [['Camera 4 shows the stairwell. A red scarf hangs on the rail.','🧣'],['Nora: “Same scarf as the cold case. Case 19.”','📂'],['The elevator opens. Empty. A note inside: “Stop looking.”','🛗']],
+   [['The scarf matches a name on the duty roster: yours.','🧣'],['Nora, quiet: “Someone is using your badge, {{name}}.”','🪪'],['The lights cut out. The phone rings again.','📞']]],
+  tease:'“The badge log does not lie, {{name}}. Ask me what it shows.”',
+  cliff:'“Before you open that note, {{name}}, ask me who else had the stairwell key.”',
+  open:'{{name}}. The red scarf, the note, the 2:14 call. I have been thinking about all three.',
+  t1:['🧣 Ask about the scarf','🤨 Play dumb','📞 Ask about the call'],
+  r1:['The scarf is from Case 19. Same knot, same stairwell, {{name}}.','Dumb does not suit you. You froze when that elevator opened.','The 2:14 call came from the lobby phone. Nobody was near it.'],
+  m:['the red scarf','the 2:14 call'],
+  t2:['📝 Read the note','🪪 Check the badge log','🏃 Leave the building'],
+  r2:['“Stop looking.” The handwriting matches the Case 19 file. Not a coincidence.','Your badge swiped the stairwell at 1:58, same night as that scarf. You were with me, {{name}}.','Leave, and the scarf stays here. Someone wants you gone before sunrise.'],
+  a3:'Now you have seen all three, {{name}}. Ask me about the badge.'},
+ fantasy:{t:'Crown of Ash',e:'👑',acc:'#F5A83D',bg:'linear-gradient(160deg,#5a3410,#150c06)',img:'img/series-fantasy.jpg',av:'img/lead-fantasy.jpg',lead:'Alden',le:'🛡️',role:'a duke',log:'A cracked crown. A hidden heir.',pos:[15,50,85],
+  eps:[
+   [['The old king is dead. His crown lies cracked on the council table.','👑'],['A young duke in dark armour kneels to you: “You are the heir, {{name}}.”','🛡️'],['Duke Alden Voss. “Say yes, and the court follows. Say no, and it burns.”','🔥']],
+   [['The throne hall fills with whispers. Someone keeps glancing at the ash on the crown.','🕯️'],['Alden: “The crown was not broken. It was burned from the inside.”','🌋'],['He presses a black ring into your palm. “Wear it tonight.”','💍']],
+   [['The ring warms. Every candle in the hall leans toward you.','🕯️'],['Alden, quiet: “It chose you, {{name}}. It chose the old king too.”','👑'],['The doors open. The queen regent is not alone.','🚪']]],
+  tease:'“The ring is not a gift, {{name}}. Ask me what it costs.”',
+  cliff:'“Before you put on that ring, {{name}}, ask me who burned the crown.”',
+  open:'{{name}}. The cracked crown, the ash, that black ring in your hand. We need to talk about all three.',
+  t1:['👑 Ask about the crown','😶 Stay silent','⚔️ Question his loyalty'],
+  r1:['The ash was inside the metal, {{name}}. Fire from within. Only one house can do that.','Silence is wise. In this court, the ring in your hand already spoke for you.','Fair. I knelt at the cracked crown, and I will kneel at no other.'],
+  m:['the cracked crown','the black ring'],
+  t2:['💍 Put on the ring','🔥 Ask who burned it','🚪 Leave the hall'],
+  r2:['Then you will feel it warm, as I said in the hall. Do not take it off, {{name}}.','The queen regent’s steward, I think. Ash on his glove after the crown cracked.','Leave, and the ring still follows you. It noticed you in the hall.'],
+  a3:'Now you have seen all three, {{name}}. Ask me about the ring.'}
+};
+const SORDER=['romance','thriller','fantasy'];
+const NAMES=['Wren','Ash','Juno','Sloane','Rowan','Indigo','Marlow','Sage'];
+const FREE=CONFIG.freeMessagesPerDay;
+const THIS_YEAR=new Date().getFullYear();
+const real=v=>!/^\{\{/.test(String(v==null?'':v));
+
+const INIT=()=>({v:QS.get('v')==='B'?'B':'A',i:1,hist:[],year:'',month:'',blocked:(()=>{try{return !!sessionStorage.getItem('ikf_age_block')}catch(e){return false}})(),series:'',name:'',picks:[],chat:[],typing:false,turn:0,msgs:FREE,sent:0,email:'',emailErr:'',plan:CONFIG.defaultPlan,premium:false,sheet:null,completed:false,offerSeen:false,offerRet:12,sl:0,ps:false,ep3done:false,gate:false,teaserDone:false,ltSeen:false,addon:false});
+let S=INIT();
+const t=(a,b)=>S.v==='B'?b:a;
+const SCREENS={1:'hook',2:'age_gate',3:'series_pick',4:'your_name',5:'episode_1',6:'episode_2',7:'cliffhanger',8:'chat_turn_1',9:'chat_turn_2',10:'episode_3_locked',11:'save_progress',12:'paywall',14:'episode_3_and_chat'};
+const sk=()=>SERIES[S.series]?S.series:'romance';
+const G=()=>SERIES[sk()];
+const nm=()=>S.name.trim();
+function fill(s){
+  let x=String(s);const n=nm();
+  if(!n){x=x.replace(/,\s*\{\{name\}\}/g,'').replace(/\{\{name\}\}\.\s*/g,'')}
+  return esc(x).replace(/\{\{name\}\}/g,esc(n||'you')).replace(/\{\{char_name\}\}/g,esc(G().lead)).replace(/\{\{series\}\}/g,esc(G().t));
+}
+const accStyle=()=>`--gbg:${G().bg};--gacc:${G().acc}`;
+
+const phone=document.getElementById('phone');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers=[];
+const later=(fn,ms)=>{const id=setTimeout(fn,ms);timers.push(id);return id};
+const clearT=()=>{timers.forEach(clearTimeout);timers=[];S.typing=false;S.gate=false};
+/* ---------- tracking (no free text) ---------- */
+function snapshot(){return {screen:S.i,screenName:SCREENS[S.i],variant:S.v,series:S.series||null,named:!!S.name.trim(),actions:S.picks.map(p=>p.idx),plan:S.plan,premium:S.premium,messagesSent:S.sent}}
+function emit(name,detail){
+  let data={};try{data=snapshot()}catch(e){}
+  const d=Object.assign({},detail||{},{data});
+  try{window.dispatchEvent(new CustomEvent('ikfunnel:'+name,{detail:d}))}catch(e){}
+  try{window.parent.postMessage({source:'ikame-funnel',funnel:CONFIG.slug,event:name,detail:d},'*')}catch(e){}
+  const flat=Object.assign({funnel:CONFIG.slug},data,detail||{});
+  try{if(typeof window.fbq==='function')window.fbq('trackCustom',name,flat)}catch(e){}
+  try{if(window.ttq&&typeof window.ttq.track==='function')window.ttq.track(name,flat)}catch(e){}
+  if(DEBUG)try{console.log('[ikfunnel] '+name,d)}catch(e){}
+}
+const answer=(key,value)=>emit('answer',{key,value});
+function navTop(href){try{window.top.location.href=href}catch(e){location.href=href}}
+function checkout(plan){
+  const p=CONFIG.plans[plan],url=CONFIG.checkoutUrl[plan]||'';
+  emit('checkout_click',{plan,price:p.price,url});
+  if(!url){demoCheckout(plan);return}
+  let u;try{u=new URL(url,location.href)}catch(e){return}
+  u.searchParams.set('plan',plan);PASS.forEach(k=>{const v=QS.get(k);if(v&&!u.searchParams.has(k))u.searchParams.set(k,v)});
+  navTop(u.toString());
+}
+/* "Open the app": Android -> web2app (Adjust link, opens the store/app), iOS and desktop -> web2web (ChatChi web app).
+   {{email}} = the email given in the funnel, {{user.id}} = FunnelFox profile id (?fpid / ff-user cookie), utm_* and fbclid = the landing query (kept from the first screen). */
+const IKF_ATTR_KEY='ikf_attr_'+CONFIG.slug;
+(function(){try{const q=new URLSearchParams(location.search),o=JSON.parse(sessionStorage.getItem(IKF_ATTR_KEY)||'{}');['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','fpid'].forEach(k=>{const v=q.get(k);if(v)o[k]=v});sessionStorage.setItem(IKF_ATTR_KEY,JSON.stringify(o))}catch(e){}})();
+function attrVal(k){let o={};try{o=JSON.parse(sessionStorage.getItem(IKF_ATTR_KEY)||'{}')}catch(e){}if(o[k])return o[k];try{for(const st of [sessionStorage,localStorage])for(let i=0;i<st.length;i++){const n=st.key(i);if(n&&n.indexOf('ff_variables_query_state_')===0){const v=JSON.parse(st.getItem(n)||'{}');if(v&&v[k])return String(v[k])}}}catch(e){}return ''}
+function ffUserId(){const q=new URLSearchParams(location.search).get('fpid')||attrVal('fpid');if(q)return q;const m=document.cookie.match(/(?:^|;\s*)ff-user=([^;]+)/);return m?decodeURIComponent(m[1]):''}
+function userEmail(){let e=(typeof S!=='undefined'&&S&&S.email)||'';try{const F=window.fox;if(!e&&F&&F.inputs&&F.inputs.getEmail){const r=F.inputs.getEmail();e=typeof r==='string'?r:(r&&r.value)||''}}catch(x){}return String(e||'').trim()}
+function fillLink(t){const v={email:userEmail(),'user.id':ffUserId(),utm_medium:attrVal('utm_medium'),utm_campaign:attrVal('utm_campaign'),utm_content:attrVal('utm_content'),utm_source:attrVal('utm_source'),fbclid:attrVal('fbclid')};return String(t||'').replace(/\{\{\s*([\w.]+)\s*\}\}/g,(m,k)=>encodeURIComponent(v[k]||''))}
+function openApp(){const android=/android/i.test(navigator.userAgent||'');const u=fillLink(android?CONFIG.app.web2app:CONFIG.app.web2web);emit('app_handoff',{url:u,target:android?'web2app':'web2web'});if(u)navTop(u)}
+const lnk=(txt,url)=>url?`<a href="${esc(url)}" target="_blank" rel="noopener">${txt}</a>`:`<a>${txt}</a>`;
+
+const cur=()=>phone.querySelector('.view');
+const stripEmoji=s=>s.replace(/^[^\w*"'‘“{]+\s*/u,'');
+const turnN=()=>S.i===8?0:S.i===9?1:null;
+/* hard paywall: once the 2-message taste is used, a non-buyer can never send again; the free chat screen is buyers-only */
+const tasteLocked=()=>!S.premium&&S.teaserDone&&(S.i===8||S.i===9);
+const chatBlocked=()=>!S.premium&&S.i===14;
+const isStory=()=>S.i===5||S.i===6||(S.i===14&&S.premium&&!S.ep3done);
+const epIdx=()=>S.i===5?0:S.i===6?1:2;
+/* keep the chat thread consistent with the screen (go() may jump or step back) */
+function syncChat(){
+  const g=G();
+  const build=n=>{S.picks=S.picks.slice(0,n);S.chat=[{w:'c',x:g.open}];
+    for(let k=0;k<n;k++){const p=S.picks[k]||{idx:0,text:stripEmoji(g['t'+(k+1)][0])};S.picks[k]=p;S.chat.push({w:'u',x:p.text},{w:'c',x:g['r'+(k+1)][p.idx]})}
+    S.turn=n};
+  if(tasteLocked()){if(S.turn>=2&&S.chat.length>=5)return;build(Math.min(2,S.picks.length||2));return}
+  if(S.i===8){if(S.turn===0&&(S.chat.length||S.typing))return;S.chat=[];S.picks=[];S.turn=0;S.msgs=FREE-S.sent;return}
+  if(S.i===9){if(S.turn===1&&S.chat.length>=3)return;build(1);S.msgs=FREE-1;return}
+  if(S.i===14){if(S.turn>=2&&S.chat.length>=5)return;build(2);S.msgs=S.premium?FREE:FREE-2}
+}
+function go(n,push=true){clearT();phone.querySelectorAll('.toast').forEach(e=>e.remove());if(push&&S.i!==n)S.hist.push(S.i);S.i=n;S.sheet=null;S.sl=0;S.ps=false;syncChat();render(true);viewed();if(n===9)later(memToast,600)}
+const next=()=>go(S.i+1);
+function back(){if(S.blocked)return;clearT();phone.querySelectorAll('.toast').forEach(e=>e.remove());const p=S.hist.pop();if(p){S.i=p;S.sheet=null;S.sl=0;S.ps=false;syncChat();render(true);viewed()}}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.textContent=msg;phone.appendChild(el);setTimeout(()=>el.remove(),2900)}
+function memToast(){if(S.i!==9)return;const m=G().m;toast(`${G().lead} remembers: ${m[0]}, ${m[1]}`)}
+function viewed(){
+  emit('screen_view',{index:S.i,name:SCREENS[S.i]});
+  if(S.i===12)emit('paywall_view',{placement:S.teaserDone?'chat_teaser':'onboarding'});
+  if(S.i===14&&!S.completed){S.completed=true;emit('complete',{premium:S.premium})}
+}
+const more=()=>`Go on. I keep thinking about ${G().m[S.sent%2]}.`;
+
+/* ---------- building blocks ---------- */
+const QN=[3,4];
+function nav(){
+  if(S.blocked||!QN.includes(S.i))return '';
+  const k=QN.indexOf(S.i);
+  return `<div class="nav"><div class="row"><button class="iconbtn" data-a="back" aria-label="Back">${ic('back',22)}</button><div class="ttl">${S.i===4?'Your name':'Your series'}</div></div>
+  <div class="segs" role="progressbar" aria-valuemin="0" aria-valuemax="${QN.length}" aria-valuenow="${k+1}">${QN.map((_,j)=>`<i class="${j<=k?'on':''}"></i>`).join('')}</div></div>`;
+}
+const cta=(label,ok=true,act='next')=>`<button class="btn" data-a="${act}" ${ok?'':'disabled'}>${label}</button>`;
+const q=(a,s)=>`<h1 class="q">${a}</h1>${s?`<p class="sub">${s}</p>`:''}`;
+const lead=()=>esc(G().lead);
+const AIPILL=()=>`${lead()} is an AI character. Fictional, and depicted as an adult.`;
+
+/* ---------- paywall (long-scroll web sales page) ---------- */
+const PLANS=CONFIG.plans;
+const realRefund=()=>/^\d+$/.test(String(CONFIG.refundDays));
+/* plan card: radio, name + per-month equivalent (simple maths on the first period), first-period price, honest renewal line */
+const num=v=>{const m=String(v).match(/^\$(\d+(?:\.\d+)?)$/);return m?+m[1]:null};
+const perMo=p=>{const n=num(p.price),d=p.per==='3 months'?3:p.per==='year'?12:0;return n&&d?`≈ $${(n/d).toFixed(2)}/mo`:''};
+const plansHTML=()=>`<div class="plans">${Object.entries(PLANS).filter(([k,p])=>!p.hidden).map(([k,p])=>`<button class="plan ${visPlan()===k?'on':''}" data-a="plan" data-v="${k}" aria-pressed="${visPlan()===k}">${p.badge?`<span class="bv">${p.badge}</span>`:''}<span class="rd">${visPlan()===k?ic('check',12,'#fff',3.2):''}</span><span class="pn">${p.label}${perMo(p)?`<small>${perMo(p)} first ${p.per==='year'?'year':'3 months'}</small>`:'<small>Try it for a month</small>'}</span><span class="pp">${ph(p.price)}<small>first ${p.per}</small></span><span class="rn">Then ${ph(p.renew||p.price)} ${p.renews}. Cancel anytime.</span></button>`).join('')}</div>`;
+/* the plan the paywall shows as picked: a hidden sale/lifetime key in S.plan (set when its checkout opened) maps back to its base plan */
+const visPlan=()=>{const p=PLANS[S.plan];return p&&!p.hidden?S.plan:p&&p.of&&PLANS[p.of]?p.of:CONFIG.defaultPlan};
+const dueLine=()=>{const p=PLANS[visPlan()];return `${ph(p.price)}`};
+const renewLine=()=>{const p=PLANS[visPlan()];return `${ph(p.price)} today for your first ${p.per}, then ${ph(p.renew)} ${p.renews} until you cancel. Cancel anytime in your account settings.`};
+const PAYB=['Apple Pay','G Pay','VISA','Mastercard','PayPal'];
+/* plan block: one elevated card (plans, due today, CTA, payment badges, secure row, renewal line). It appears twice. */
+const planBlock=id=>`<div class="pblock" id="${id}"><div class="pbh"><span class="eyebrow">Choose your plan</span><h2 class="wh2">Keep watching <span class="gt">${esc(G().t)}</span></h2></div>${plansHTML()}
+  <div class="due"><span>Due today</span><b data-due>${dueLine()}</b></div>
+  <button class="btn" data-a="buy">${ic('play',16,'#fff')} Unlock Episode 3</button>
+  <div class="payb" aria-label="Accepted payment methods">${PAYB.map(x=>`<span>${x}</span>`).join('')}</div>
+  <div class="secure"><span>${ic('lock',13)} Secure checkout</span><span>${ic('check',13,'currentColor',2.6)} Cancel anytime</span></div>
+  <p class="fine" data-renew>${renewLine()}</p></div>`;
+/* change plan in place: every plan block + the sticky bar, without a re-render (keeps the scroll position) */
+function updPlan(){const k=visPlan(),p=PLANS[k];
+  document.querySelectorAll('.plan').forEach(x=>{const on=x.dataset.v===k;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);x.querySelector('.rd').innerHTML=on?ic('check',12,'#fff',3.2):''});
+  document.querySelectorAll('[data-due]').forEach(x=>x.innerHTML=dueLine());document.querySelectorAll('[data-renew]').forEach(x=>x.innerHTML=renewLine());
+  const sl=document.getElementById('stsum');if(sl)sl.innerHTML=`<span>${p.label}</span><b>${ph(p.price)} today</b>`}
+const stickHTML=()=>{const p=PLANS[visPlan()];return `<div class="pstick" id="stick"><div class="sum" id="stsum"><span>${p.label}</span><b>${ph(p.price)} today</b></div><button class="btn" data-a="buy">Unlock Episode 3</button></div>`};
+/* sticky bottom CTA (price + Unlock): shown whenever no plan-block CTA button is fully on screen, so the first view always has a price and a CTA; the top-bar mini CTA appears once plan block #1 scrolls away */
+function pwBind(){const wp=document.getElementById('pw'),st=document.getElementById('stick');if(!wp||!st||wp.__b)return;wp.__b=1;
+  const blocks=[...wp.querySelectorAll('.pblock')];const upd=()=>{wp.classList.toggle('scrolled',wp.scrollTop>(blocks[0]?blocks[0].offsetTop+blocks[0].offsetHeight-60:300))};
+  if(!('IntersectionObserver' in window)){st.classList.add('show');return}
+  const vis=new Set();const io=new IntersectionObserver(es=>{es.forEach(e=>e.isIntersecting?vis.add(e.target):vis.delete(e.target));st.classList.toggle('show',!vis.size)},{root:wp,threshold:.9,rootMargin:'0px 0px -110px 0px'});
+  wp.querySelectorAll('.pblock [data-a="buy"]').forEach(x=>io.observe(x));wp.addEventListener('scroll',upd,{passive:true});upd()}
+function pwHTML(mode){
+  const quota=mode==='quota',g=G(),n=nm();
+  const picks=(S.picks||[]).filter(Boolean).map(x=>x.text).filter(Boolean);
+  const facts=[['Series',esc(g.t)],['Your lead',esc(g.lead)+', '+esc(g.role)],['Watched','Episodes 1-2 of 3'],[picks.length?'You said':'Up next',picks.length?'“'+esc(picks[picks.length-1].length>34?picks[picks.length-1].slice(0,33)+'…':picks[picks.length-1])+'”':'Episode 3']];
+  const bens=[['play','Episode 3 of '+esc(g.t),'Find out what '+esc(g.m[1])+' really means.','NEXT'],['layers','Every episode, every series','Romance, thriller and fantasy. Switch anytime.',''],['chat','Unlimited chat with '+esc(g.lead),'Fair use: up to '+CONFIG.fairUseCap+' messages a day.',''],['note','A lead who remembers','Quotes what you watched and what you said.',''],['vol','Voice lines','Hear the lead speak in the app.','NEW'],['book','Your place is saved','Pick up on any phone with your email.','']];
+  const how=[['Check out here','Secure payment. It takes about a minute.'],['Get the ChatChi app','ChatChi: AI Roleplay Chat on the App Store or Google Play.'],[S.email?'Log in with '+esc(S.email):'Log in with your email','Episode 3 and '+esc(g.lead)+' are waiting, with Plus already on.']];
+  const faq=[['When do I get access?','Right after checkout. Download the ChatChi app and log in with the email you saved here. Episode 3 and Plus are already on.'],['Can I cancel anytime?','Yes. Cancel in your account settings before the next renewal and you will not be charged again.'],['Will I be charged again?','Your first period is charged today. After that the plan renews at the regular price shown on it, until you cancel.'],['Is it private?','Your chats are never public. You can delete your story anytime. Every character is AI and fictional.'],['What happens after I pay?','You get one optional add-on offer, then a page with the app links. Log in with your email and your story picks up at Episode 3.'],['Can I keep chatting for free?','No. The free preview was Episodes 1-2 and two messages. Episode 3 and chat need ChatChi Plus.'],['What does unlimited mean?',`Normal use, capped at ${CONFIG.fairUseCap} messages a day.`],['Is it explicit?','No. ChatChi dramas here are SFW.']];
+  const stats=(CONFIG.stats||[]).map(([x,l])=>[x==='__CAP__'?String(CONFIG.fairUseCap):x,l]).filter(([x])=>real(x)),revs=(CONFIG.reviews||[]).filter(r=>real(r[2]));
+  return `<div class="pwwrap" style="${accStyle()}"><div class="pw" id="pw" role="dialog" aria-label="ChatChi Plus">
+  <div class="pwbar"><div class="logo">${logo(20)} ChatChi</div><button class="mini" data-a="topl" tabindex="-1">Unlock Ep 3</button><button class="pwx" data-a="${quota?'closeq':'closepw'}" aria-label="Close">${ic('x',16)}</button></div>
+  <div class="phero">${im(g.img)}<span class="gc">${g.e}</span><div class="pht"><span class="eyebrow">${n?esc(n)+', your story is waiting':'Your story is waiting'}</span>
+   <h1 class="h1">${t('Unlock the rest of <span class="gt">'+esc(g.t)+'</span>','Keep watching <span class="gt">'+esc(g.t)+'</span>')}</h1>
+   <p>${S.teaserDone?esc(g.lead)+' wants to keep talking. Episode 3 is next.':t('Every episode, plus chat that remembers.','One plan. No coins. No per-episode charges.')}</p></div></div>
+  <div class="wsec tight"><div class="facts">${facts.map(([a,b])=>`<div class="fact"><small>${a}</small><b>${b}</b></div>`).join('')}</div>
+   <div class="pquote"><span class="av2">${avI(g)}</span><p>${fill(g.tease)}</p></div></div>
+  <div class="wsec">${planBlock('plans1')}</div>
+  <div class="wsec"><span class="eyebrow">What you get</span><h2 class="wh2">Everything in <span class="gt">ChatChi Plus</span></h2><div class="bens">${bens.map(([i,a,b,tg])=>`<div class="ben"><span class="gw">${ic(i,17,'#fff')}</span><div><b>${a}</b><small>${b}</small></div>${tg?`<span class="tg">${tg}</span>`:''}</div>`).join('')}</div></div>
+  <div class="wsec"><span class="eyebrow">How it works</span><h2 class="wh2">From checkout to <span class="gt">Episode 3</span></h2><div class="how2">${how.map(([a,b],i)=>`<div><i>${i+1}</i><div><b>${a}</b><span>${b}</span></div></div>`).join('')}</div></div>
+  ${stats.length||revs.length?`<div class="wsec"><span class="eyebrow">Product facts</span><h2 class="wh2">${CONFIG.statsTitle||'Loved by <span class="gt">viewers</span>'}</h2>${stats.length?`<div class="tiles">${stats.map(([x,l])=>`<div><b class="gt">${esc(x)}</b><span>${esc(l)}</span></div>`).join('')}</div>`:''}
+   ${revs.length?`<div class="stats" style="margin-top:10px">${revs.map(([r,cn,x])=>`<div class="rev"><div class="who"><i>${esc(r.slice(0,2).toUpperCase())}</i><div><b>${esc(r)}</b><div style="font-size:11.5px;color:var(--t3)">${esc(cn)}</div></div><span class="st">★★★★★</span></div>${esc(x)}</div>`).join('')}</div>`:''}</div>`:''}
+  ${realRefund()?`<div class="guar"><b>${CONFIG.refundDays}-day money-back guarantee</b>${esc(CONFIG.refundText)}</div>`:''}
+  <div class="wsec faq"><span class="eyebrow">Questions</span><h2 class="wh2">Good to know</h2>${faq.map(([a,b])=>`<details><summary>${a}</summary><p>${esc(b)}</p></details>`).join('')}</div>
+  <div class="wsec">${planBlock('plans2')}</div>
+  <div class="wfoot"><div class="logo" style="font-size:15px">${logo(18)} ChatChi: AI Roleplay Chat</div>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
+   <div>Questions? <a href="mailto:${esc(CONFIG.legal.supportEmail)}">${esc(CONFIG.legal.supportEmail)}</a></div>
+   <div>Subscriptions renew at the price and period shown until cancelled.<br>${AIPILL()}</div></div>
+  </div>${stickHTML()}</div>`;
+}
+
+/* ---------- story player (vertical frames) ---------- */
+let SLT=0;
+function storySchedule(){
+  clearT();
+  if(!isStory()||S.ps||S.sl>=2)return;
+  SLT=Date.now();
+  later(()=>{if(isStory()&&!S.ps&&S.sl<2){S.sl++;S.rem=4000;render()}},S.rem||4000);
+}
+function storyPause(){if(!isStory()||S.ps)return;S.ps=true;S.rem=Math.max(300,(S.rem||4000)-(Date.now()-SLT));clearT();const e=phone.querySelector('.story');if(e)e.style.setProperty('--ps','paused')}
+function storyResume(){if(!S.ps)return;S.ps=false;const e=phone.querySelector('.story');if(e)e.style.setProperty('--ps','running');if(isStory()&&S.sl<2){SLT=Date.now();later(()=>{if(isStory()&&!S.ps&&S.sl<2){S.sl++;S.rem=4000;render()}},S.rem||4000)}}
+function storyHTML(){
+  const g=G(),ep=epIdx(),slides=g.eps[ep],sl=Math.min(S.sl,2),c=slides[sl],paid=ep===2;
+  const lab=paid?'Episode 3 · ChatChi Plus':`Episode ${ep+1} of 3 · free`;
+  const lastCta=S.i===5?'Next episode':S.i===6?'See what happens':'Back to chat';
+  return `<div class="story ${ep>0?'dk':''}" style="${accStyle()}">
+   <div class="bg"><span class="big">${c[1]}</span>${im(g.img).replace('<img ','<img style="object-position:'+g.pos[sl]+'% 30%" ')}</div><div class="shade"></div>
+   <div class="sbars" aria-label="Slide ${sl+1} of 3">${slides.map((_,j)=>`<i class="${j<sl?'done':j===sl?'cur':''}"><span></span></i>`).join('')}</div>
+   <div class="sbar2" style="top:calc(var(--top) + 14px)"><button class="sx" data-a="back" aria-label="Back">${ic('back',18,'#fff')}</button><span class="pill">${lab}</span><b>${esc(g.t)}</b></div>
+   <button class="stap l" data-a="sp" aria-label="Previous slide"></button><button class="stap r" data-a="sn" aria-label="Next slide"></button>
+   <div class="scap"><div class="ep">${lead()} · ${sl+1}/3</div><p>${fill(c[0])}</p></div>
+   <button class="slisten" data-a="listen" aria-label="Voice line">${ic('vol',20,'#fff')}</button>
+   <div class="sfoot">${cta(lastCta,true,paid?'ep3done':'next')}<p class="legal">AI-generated story. Fictional. Tap to continue, hold to pause.</p></div></div>`;
+}
+
+/* ---------- chat ---------- */
+function chatView(){
+  const g=G(),n=turnN(),lk=tasteLocked()||(!S.premium&&S.sent>=CONFIG.teaserMessages),out=!S.premium&&(S.msgs<=0||lk),last=S.chat[S.chat.length-1];
+  let chips=null;
+  if(!S.typing&&!S.gate&&!lk&&last&&last.w==='c'&&!out){
+    if(n!==null&&S.turn===n)chips=g['t'+(n+1)];
+    else if(S.i===14)chips=['💬 Keep going','🤔 Say that again','👀 What happens next?'];
+  }
+  const hl=[t(g.lead+' speaks first.','They were there too.'),t(g.lead+' remembers.','They quoted the show.')];
+  const bd=[t('Pick a reply, or type your own.','Three ways to answer.'),t('Every detail you watched is in their memory.','Reply once more. Episode 3 is next.')];
+  const lim=!S.premium&&S.msgs<=0&&S.i===14?`<div class="limit"><span class="crown">${ic('crown',26)}</span><h3>${t(`You've used today's ${FREE}.`,'Your chat is paused.')}</h3><p>${t('Resets at midnight. Or chat without limits.','Go unlimited, or come back at midnight.')}</p><button class="btn" data-a="upgrade" style="height:48px">Upgrade to ChatChi Plus</button><button class="link" data-a="midnight">Come back at midnight</button></div>`:'';
+  const watched=S.i===14&&S.premium?'Watched Ep 1-3':'Watched Ep 1-2';
+  const memline=S.i===9||S.i===14?` · remembers ${g.m[0]}, ${g.m[1]}`:'';
+  return `<div class="chat" style="${accStyle()}"><div class="chead"><span class="av" style="width:40px;height:40px;background:var(--gbg);border:2px solid var(--gacc)">${avI(g)}</span><div style="flex:1"><b>${lead()}</b><small>● online · ${esc(g.t)}</small></div></div>
+  <div class="cbody"><div class="cbg" style="--scene:url(${src(g.img)})"></div>
+   <div class="disclose">${AIPILL()}</div>
+   <div class="mchip">${ic('note',13)} ${watched}${esc(memline)}</div>
+   ${n!==null?`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${hl[n]}</div><div style="color:var(--t2);font-size:13px">${bd[n]}</div></div>`:`<div style="position:relative;z-index:1;padding:8px 16px 0"><div style="font:800 18px var(--head)">${t('Back with '+g.lead+'.',g.lead+' is waiting.')}</div><div style="color:var(--t2);font-size:13px">${S.premium?'Unlimited chat is on.':t('Episode 3 is still locked.',`Free: ${Math.max(S.msgs,0)} messages left today.`)}</div></div>`}
+   <div class="msgs" id="msgs"><div class="sp"></div>${S.chat.map(m=>`<div class="bub ${m.w}">${fill(m.x)}</div>`).join('')}${S.typing?'<div class="bub c"><span class="typing"><i></i><i></i><i></i></span></div>':''}${lim}</div>
+   ${chips?`<div class="ideas">${chips.map((x,j)=>`<button data-a="say" data-v="${esc(x)}" data-j="${j}">${esc(x)}</button>`).join('')}</div>`:''}
+   ${S.i===14&&!S.premium?`<button class="lockstrip" data-a="upgrade">${ic('lock',16)}<span>Episode 3 · ${esc(g.t)}</span><b>ChatChi Plus</b></button>`:''}</div>
+  <div class="cfoot">${S.premium?`<button class="link" data-a="openapp" style="min-height:32px">${logo(16)} Open the ChatChi app</button>`:`<div class="counter ${out?'out':''}">${lk?'Free preview used · Episode 3 is next':out?'Out of messages · resets at midnight':(()=>{const k=Math.max(CONFIG.teaserMessages-S.sent,0);return 'Free preview · '+k+' message'+(k===1?'':'s')+' left'})()}</div>`}
+   <div class="composer"><div class="box"><input id="msg" maxlength="300" placeholder="Message ${lead()}…" ${out||S.gate?'disabled':''}></div><button class="send" id="sendb" data-a="send" aria-label="Send" disabled>${ic('send',18)}</button></div></div></div>`;
+}
+function say(text,idx){
+  if(S.typing||S.gate||tasteLocked()||chatBlocked()||(!S.premium&&(S.msgs<=0||S.sent>=CONFIG.teaserMessages)))return;
+  const n=turnN(),g=G();
+  S.sent++;emit('chat_message',{count:S.sent});
+  S.chat.push({w:'u',x:text.replace(/\{\{/g,'')});if(!S.premium)S.msgs--;
+  const scripted=n!==null&&S.turn===n;
+  if(scripted){S.picks[n]={idx,text};S.turn++;answer('reply_'+(n+1),idx)}
+  S.typing=true;render();
+  later(()=>{S.typing=false;
+    S.chat.push({w:'c',x:scripted?g['r'+(n+1)][idx]:more()});render();
+    if(!scripted)return;
+    S.gate=true;render();
+    /* taste over: no more replies, a typing bubble, then the paywall */
+    if(n===1||(!S.premium&&!S.teaserDone&&S.sent>=CONFIG.teaserMessages)){S.teaserDone=true;emit('chat_teaser_end',{count:S.sent});
+      later(()=>{S.typing=true;render();later(()=>{S.typing=false;S.gate=false;go(10)},1500)},900);return}
+    later(()=>{S.gate=false;go(9)},1600)},1200);
+}
+
+/* ---------- screens ---------- */
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const months=()=>'<option value="">Month</option>'+MONTHS.map((m,i)=>`<option value="${i+1}" ${String(i+1)===String(S.month)?'selected':''}>${m}</option>`).join('');
+const years=()=>{let o='<option value="">Birth year</option>';for(let y=THIS_YEAR-10;y>=THIS_YEAR-90;y--)o+=`<option value="${y}" ${String(y)===String(S.year)?'selected':''}>${y}</option>`;return o};
+const V={
+1:()=>`<div class="scr" style="padding-top:14px"><div class="logo">${logo()} ChatChi</div>
+  <h1 class="h1">${t('Watch it. <span class="gt">Then talk back.</span>','Short dramas <span class="gt">that answer you</span>')}</h1>
+  <p class="sub" style="margin-top:-4px">${t('Two episodes free. Then the lead chats with you.','They remember what you just watched.')}</p>
+  <div class="fan">${SORDER.map((k,j)=>`<div class="fc" style="--gbg:${SERIES[k].bg};background:var(--gbg);border-color:${SERIES[k].acc}88;transform:translateX(${(j-1)*66}px) rotate(${(j-1)*9}deg);z-index:${3-Math.abs(j-1)}"><span>${SERIES[k].e}</span>${im(SERIES[k].img)}<div class="bars"><i></i><i></i><i></i></div></div>`).join('')}</div></div>
+  <div class="foot">${cta('Start watching')}<p class="legal">18+ · AI-generated · All characters are fictional</p></div>`,
+2:()=>`<div class="scr" style="padding-top:18px"><div class="logo">${logo()} ChatChi</div>${q(t('Adults only. Quick check.','When were you born?'),t('ChatChi dramas are for people 18 and older.','We only use this to confirm your age.'))}
+  <div style="display:flex;gap:10px"><select class="sel" id="month" data-f="month" aria-label="Birth month">${months()}</select><select class="sel" id="year" data-f="year" aria-label="Birth year">${years()}</select></div>
+  <p class="legal">AI-generated stories · All characters are fictional and 18+<br>${lnk('Terms of Service',CONFIG.legal.termsUrl)} | ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Continue',!!(S.year&&S.month),'age')}</div>`,
+3:()=>`<div class="scr">${q(t('Pick your series.','What are you watching?'),t('Each has a different lead to talk to.','Switch series anytime later.'))}
+  <div class="opts" style="gap:12px">${SORDER.map(k=>{const g=SERIES[k],on=S.series===k;return `<button class="sposter ${on?'on':''}" data-a="pick" data-f="series" data-v="${k}" aria-pressed="${on}" style="--gbg:${g.bg};--gacc:${g.acc}"><span class="gc">${g.e}</span>${im(g.img)}<span class="tx"><em>${esc(g.lead.toUpperCase())} · ${esc(g.role)}</em><b>${esc(g.t)}</b><small>${esc(g.log)}</small></span></button>`}).join('')}</div>
+  <p class="hint">Illustrations only. Leads are AI characters.</p></div>`,
+4:()=>`<div class="scr" style="${accStyle()}">${q(t('What should they call you?','Your name in the story.'),t('The lead will use it. Change it anytime.','Real name or a nickname. Your call.'))}
+  <div style="display:flex;justify-content:center"><span style="position:relative;overflow:hidden;width:96px;height:96px;font-size:38px;border-radius:50%;display:grid;place-items:center;background:var(--gbg);border:2px solid var(--gacc)">${avI()}</span></div>
+  <div style="display:flex;gap:8px"><div class="box" style="flex:1"><input id="name" data-f="name" maxlength="20" placeholder="Your name" value="${esc(S.name)}" aria-label="Your name"></div><button class="btn ghost" style="width:54px;height:50px" data-a="shuffle" aria-label="Shuffle name">${gic('dice',20)}</button></div>
+  <div class="err" id="nerr" hidden>Add a name or skip for now</div></div>
+  <div class="foot">${cta('Continue',!!S.name.trim())}<button class="link" data-a="nameskip">Skip for now</button></div>`,
+5:()=>storyHTML(),6:()=>storyHTML(),
+7:()=>{const g=G();return `<div class="scr" style="${accStyle()};padding-top:20px">${q(t('It stops right here.',esc(g.lead)+' wants a word.'),t('Talk to them about what just happened.','They saw the same two episodes you did.'))}
+  <div class="lockbox clear" style="${accStyle()}"><span class="gc">${g.e}</span>${im(g.img).replace('<img ','<img style="object-position:'+g.pos[2]+'% 30%" ')}<span class="tagk">Watched: Ep 1, Ep 2</span>
+   <div class="lk"><i>${fill(g.cliff)}</i></div></div>
+  <div class="qmark"><span class="av2">${avI(g)}</span><span>${esc(g.lead)} is typing…</span></div>
+  <p class="hint">${AIPILL()}</p></div>
+  <div class="foot">${cta('Chat with '+esc(g.lead))}</div>`},
+8:()=>chatView(),9:()=>chatView(),
+10:()=>{const g=G();return `<div class="scr" style="${accStyle()};padding-top:20px">${q(t('Episode 3 is locked.','What happens next?'),t('Unlock it and keep talking to '+esc(g.lead)+'.','Part of ChatChi Plus, with unlimited chat.'))}
+  <div class="lockbox" style="${accStyle()}"><span class="gc">${g.e}</span>${im(g.img)}<span class="tagk">Ep 3 · ChatChi Plus</span>
+   <div class="lk"><span class="ring2">${ic('lock',26,'#fff')}</span><i>${fill(g.tease)}</i></div></div>
+  <p class="hint">Your free preview ends here. Episode 3 and chat continue with ChatChi Plus.</p></div>
+  <div class="foot">${cta('Unlock Episode 3')}</div>`},
+/* email is mandatory: it is how the subscription gets activated in the app (FunnelFox build: emit('lead') -> inputs.setEmail(S.email)) */
+11:()=>`<div class="scr" style="padding-top:22px;${accStyle()}"><div class="logo">${logo()} ChatChi</div>${q(t('Where should we send '+lead()+'’s messages?','Save your progress.'),'We use it to activate your Plus and save your chat.')}
+  <div class="box"><input id="email" data-f="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" value="${esc(S.email)}" aria-label="Email"></div>
+  ${S.emailErr==='email'?'<div class="err">That email doesn’t look right. Check it?</div>':''}
+  <p class="legal">Log in to the ChatChi app with this email to open your Plus. We only email about your account and your story.<br>${lnk('Terms',CONFIG.legal.termsUrl)} | ${lnk('Privacy',CONFIG.legal.privacyUrl)}</p></div>
+  <div class="foot">${cta('Save my story',true,'email')}</div>`,
+12:()=>pwHTML('onb'),
+14:()=>isStory()?storyHTML():chatView()+(S.sheet==='pw'?pwHTML('quota'):'')
+};
+
+/* the old last-chance series pass was retired on 2026-10-06 and its screen removed (QA 2026-10-07): no offer screen in this build */
+const PAYWALL_IDX=12;   /* fallback target of the decline flow: the paywall (hard paywall, no free chat) */
+/* raw {{token}} placeholders in prices (unfilled CONFIG) render as visible chips */
+const otok=s=>esc(s).replace(/\{\{[^}]+\}\}/g,m=>`<span class="otk">${m}</span>`);
+/* ---------- per-plan sale screens (after leaving a checkout without paying) and the lifetime last step ---------- */
+const SALE={m1:15,m3:16,y12:17},SALE_LT=18;
+let AFTER=19;   // where a purchase lands: 19 add-on upsell for subscribers, 20 get-app for lifetime / add-on buyers
+const DECLINE=k=>{const n=(CONFIG.declineFlow||{})[k];return +Object.keys(SCREENS).find(i=>SCREENS[i]===n)||PAYWALL_IDX};
+const othSD=()=>`<span class="oth sd">${G().le}${im(G().av||G().img)}</span>`;
+function saleHTML(key){const p=CONFIG.plans[key],base=CONFIG.plans[p.of]||{},life=key==='lifetime',g=G();
+  const checks=life?[`Every episode of ${esc(g.t)}, forever`,`Unlimited chat with ${esc(g.lead)}`,'Every series, every new episode']:[`Every episode of ${esc(g.t)}`,`Unlimited chat with ${esc(g.lead)}`,'Every series and voice lines'];
+  return `<div class="pw ofr" role="dialog" aria-label="${life?'Lifetime offer':'Special offer'}" style="${accStyle()}">
+  <div class="obar"><div class="logo">${logo(22)} ChatChi</div><button class="obx" data-a="saleno" aria-label="No thanks">${ic('x',16)}</button></div>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">${life?'Last offer · pay once':'Special offer · '+esc(p.label)}</span>
+   <h1 class="h2" style="margin:14px 0 8px">${life?`Keep <span class="gt">${esc(g.t)}</span> forever`:`Keep watching <span class="gt">${esc(g.t)}</span> for less`}</h1>
+   <p class="olead">${life?'One payment. No subscription, nothing to renew.':`Your ${esc(p.label)} plan at a lower first price.`}</p></div>
+  <div class="sec"><div class="ocard">
+   <div class="orow">${othSD()}<div style="flex:1;min-width:0"><b>ChatChi Plus · ${esc(p.label)}</b><div class="osub">${esc(g.t)} · with ${esc(g.lead)}</div></div></div>
+   <div class="oprice">${!life&&base.price?`<s>${otok(base.price)}</s>`:''}<b>${otok(p.price)}</b><span>${life?'paid once':'first '+esc(p.per)}</span></div>
+   <div class="ochecks">${checks.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${x}</span></div>`).join('')}</div>
+   ${cta(life?'Get lifetime access':'Claim '+esc(p.label)+' offer',true,'salebuy')}
+   <p class="ofine">${life?`${otok(p.price)} once. No renewal, nothing to cancel.`:`${otok(p.price)} for the first ${esc(p.per)}, then ${otok(p.renew)} ${esc(p.renews)} until you cancel. Cancel anytime in account or store settings.`}</p></div></div>
+  <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="saleno">No thanks</button>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div>
+   <p class="odis" style="margin-top:10px">${AIPILL()}</p></div></div>`}
+const SALEKEY={15:'m1_sale',16:'m3_sale',17:'y12_sale',18:'lifetime'};
+/* ---------- after purchase: one-time add-on upsell (subscribers only), then get the app ---------- */
+const UPSELL=19,GETAPP=20;
+V[UPSELL]=()=>{const p=CONFIG.plans.addon,u=CONFIG.upsell;
+  return `<div class="pw ofr" role="dialog" aria-label="${esc(u.name)} add-on" style="${accStyle()}">
+  <div class="obar"><div class="logo">${logo(22)} ChatChi</div><button class="obx" data-a="upno" aria-label="${esc(u.decline)}">${ic('x',16)}</button></div>
+  <div class="sec" style="padding-top:6px;text-align:center"><span class="oeye">You're in · one more thing</span>
+   <h1 class="h2" style="margin:14px 0 8px">${esc(u.title)}</h1>
+   <p class="olead">${esc(u.lead)}</p></div>
+  <div class="sec"><div class="ocard">
+   <div class="orow">${othSD()}<div style="flex:1;min-width:0"><b>ChatChi · ${esc(u.name)}</b><div class="osub">One-time add-on · Plan: ${esc((CONFIG.plans[S.plan]||{}).label||'your plan')}</div></div></div>
+   <div class="oprice"><b>${otok(p.price)}</b><span>paid once</span></div>
+   <div class="ochecks">${u.checks.map(x=>`<div>${ic('check',17,'currentColor',2.4)}<span>${esc(x)}</span></div>`).join('')}</div>
+   ${cta(esc(u.cta),true,'upbuy')}
+   <p class="ofine">${esc(u.note)}</p></div></div>
+  <div class="sec" style="padding-bottom:max(28px,env(safe-area-inset-bottom,0px));text-align:center"><button class="link" style="width:100%" data-a="upno">${esc(u.decline)}</button>
+   <div class="legal">${lnk('Terms of Use',CONFIG.legal.termsUrl)} · ${lnk('Privacy Policy',CONFIG.legal.privacyUrl)}</div></div></div>`};
+V[GETAPP]=()=>`<div class="scr" style="gap:16px;padding-top:28px;${accStyle()}"><div class="okwell">${ic('check',36,'#fff',2.6)}</div>
+  <div style="text-align:center"><h1 class="h1" style="text-align:center;font-size:30px">You're in.<br><span class="gt">${lead()}</span> is waiting.</h1><p class="sub" style="margin-top:8px">${esc(G().t)} continues in the ChatChi app.</p>${S.addon?`<p class="sub addon-ok" style="margin-top:8px"><b>${esc(CONFIG.upsell.name)} added.</b> Create them in the app.</p>`:''}</div>
+  <div class="how2" style="margin-top:4px">${[['Download ChatChi: AI Roleplay Chat','From the App Store or Google Play.'],[S.email?'Log in with '+esc(S.email):'Log in with your checkout email',S.email?'The email you saved your story with.':'The one you paid with.'],['Open your chat with '+lead(),'Episode 3 and Plus are already on.']].map(([x,y],i)=>`<div><i>${i+1}</i><div><b>${x}</b><span>${y}</span></div></div>`).join('')}</div></div>
+  <div class="foot">${cta('Open the app',true,'openapp')}<div class="stores"><button class="store" data-a="openapp" aria-label="Download on the App Store">${APPLE_SVG}<span>Download on the<b>App Store</b></span></button><button class="store gp" data-a="openapp" aria-label="Get it on Google Play">${GPLAY_SVG}<span>GET IT ON<b>Google Play</b></span></button></div><button class="link" data-a="keepchat">Keep chatting here</button></div>`;
+SCREENS[UPSELL]='upsell_lifetime';SCREENS[GETAPP]='get_app';
+V[15]=()=>saleHTML('m1_sale');V[16]=()=>saleHTML('m3_sale');V[17]=()=>saleHTML('y12_sale');V[18]=()=>saleHTML('lifetime');
+SCREENS[15]='sale_m1';SCREENS[16]='sale_m3';SCREENS[17]='sale_y12';SCREENS[18]='sale_lifetime';
+/* leaving a checkout without paying: go where CONFIG.declineFlow says (FunnelFox's native checkout close does the same) */
+function checkoutDeclined(plan){emit('checkout_decline',{plan});const n=DECLINE(plan);if(SALEKEY[n])emit('sale_view',{plan:SALEKEY[n]});go(n)}
+/* demo-only checkout sheet when no checkout URL is configured (FunnelFox replaces checkout() with its native screen) */
+function demoCheckout(plan){const p=CONFIG.plans[plan];S.ckPlan=plan;
+  const el=document.createElement('div');el.className='iq';el.id='demock';
+  el.innerHTML=`<div class="iqc"><b>Demo checkout</b><p style="margin:6px 0 14px">ChatChi Plus · ${esc(p.label)} · ${otok(p.price)}</p><div style="display:flex;flex-direction:column;gap:8px"><button class="btn" data-a="ckpay">Pay</button><button class="btn ghost" data-a="ckclose">Close without paying</button></div></div>`;
+  phone.appendChild(el)}
+
+function render(anim){
+  /* hard paywall: a non-buyer never lands in the chat (any route, sessionStorage restore or debug jump) -> paywall */
+  if(!S.blocked&&chatBlocked()){go(12,false);return}
+  const v=document.createElement('div');v.className='view'+(anim&&!RM?' in':'');
+  v.innerHTML=S.blocked?`<div class="blocked"><h1 class="h1">Sorry, ChatChi is for adults</h1><p class="sub">You must be 18 or older to continue.</p><button class="btn ghost" data-a="agereset" style="margin-top:6px">Change my birth date</button></div>`:nav()+V[S.i]();
+  const old=cur();if(old)old.replaceWith(v);else phone.appendChild(v);
+  /* FunnelFox build: keep sessionStorage in step with in-screen changes too (messages left, Ep 3 watched), not only on screen changes */
+  try{if(typeof ikfSave==='function')ikfSave()}catch(e){}
+  if(S.blocked)return;
+  /* taste used: a step back into a taste chat shows the thread read-only and hands off forward again */
+  if(tasteLocked()&&!S.typing&&!S.gate){S.gate=true;later(()=>{S.typing=true;render();later(()=>{S.typing=false;S.gate=false;if(tasteLocked())go(10)},1100)},700)}
+  if(isStory()){if(anim||!S.rem)S.rem=4000;storySchedule()}
+  if(S.i===8&&!S.chat.length&&!S.typing){S.typing=true;render();later(()=>{S.typing=false;S.chat=[{w:'c',x:G().open}];render()},1300);return}
+  const m=document.getElementById('msgs');if(m)m.scrollTop=m.scrollHeight;
+  pwBind();
+}
+let HOLD=0,HELD=false;
+phone.addEventListener('pointerdown',e=>{if(e.target.closest('.stap')){HOLD=Date.now();HELD=false;storyPause()}});
+const endHold=()=>{if(S.ps){HELD=Date.now()-HOLD>300;storyResume()}};
+phone.addEventListener('pointerup',endHold);phone.addEventListener('pointercancel',endHold);
+phone.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v,f=b.dataset.f;
+  switch(a){
+    case 'next':
+      if(S.i===4){answer('name_set',!!S.name.trim());S.name=S.name.trim()}
+      next();break;
+    case 'back':back();break;
+    case 'agereset':S.blocked=false;S.year='';S.month='';try{sessionStorage.removeItem('ikf_age_block')}catch(e){}emit('age_change');go(2,false);break;
+    case 'age':{const now=new Date(),age=THIS_YEAR-(+S.year)-((now.getMonth()+1)<(+S.month)?1:0);if(age<18){S.blocked=true;try{sessionStorage.setItem('ikf_age_block','1')}catch(e){}emit('age_block');render();break}try{sessionStorage.setItem('ikf_age_ok','1')}catch(e){}emit('age_confirm',{method:'month_year'});next();break}
+    case 'pick':
+      if(S.series!==v){S.chat=[];S.picks=[];S.turn=0}
+      S.series=v;answer('series',v);
+      cur().querySelectorAll('[data-f="series"]').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+      later(next,RM?0:300);break;
+    case 'shuffle':{S.name=NAMES[Math.floor(Math.random()*NAMES.length)];const i=document.getElementById('name');if(i)i.value=S.name;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=false;const ne=document.getElementById('nerr');if(ne)ne.hidden=true;break}
+    case 'nameskip':S.name='';answer('name_set',false);next();break;
+    case 'sn':if(HELD){HELD=false;break}if(S.sl<2){S.sl++;S.rem=4000;S.ps=false;render()}else toast('Tap the button to continue');break;
+    case 'sp':if(HELD){HELD=false;break}if(S.sl>0){S.sl--;S.rem=4000;S.ps=false;render()}break;
+    case 'listen':toast('Demo only. Voice lines play in the app');break;
+    case 'email':{const e=S.email.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){S.emailErr='email';render();document.getElementById('email')?.focus();break}S.email=e;S.emailErr='';emit('lead',{method:'email'});go(12);break}
+    case 'ep3done':{S.ep3done=true;clearT();if(S.chat.length<5)syncChat();S.chat.push({w:'c',x:G().a3});render();later(()=>toast('Unlimited chat is on. Enjoy.'),500);break}
+    case 'plan':S.plan=v;emit('plan_select',{plan:v,price:CONFIG.plans[v].price});updPlan();checkout(v);break;
+    case 'topl':document.getElementById('plans1')?.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});break;
+    case 'buy':{const k=visPlan();S.plan=k;checkout(k);break}
+    case 'salebuy':{const k=SALEKEY[S.i];emit('sale_accept',{plan:k});checkout(k);break}
+    case 'saleno':{const k=SALEKEY[S.i];emit('sale_decline',{plan:k});checkoutDeclined(k);break}
+    case 'ckpay':{document.getElementById('demock')?.remove();window.IkFunnel.completePurchase(S.ckPlan);break}
+    case 'ckclose':{document.getElementById('demock')?.remove();checkoutDeclined(S.ckPlan);break}
+    case 'upbuy':emit('upsell_accept',{plan:'addon'});checkout('addon');break;
+    case 'upno':emit('upsell_decline');go(GETAPP);break;
+    case 'keepchat':go(S.premium?14:12);break;
+    /* hard paywall: closing it always opens the lifetime offer; its No thanks / X comes back here (declineFlow.lifetime) */
+    case 'closepw':case 'freeplan':emit('paywall_close',{placement:'onboarding',via:'close'});emit('sale_view',{plan:'lifetime'});go(SALE_LT);break;
+    case 'say':say(stripEmoji(b.dataset.v),+b.dataset.j||0);break;
+    case 'send':{const m=document.getElementById('msg');if(m&&m.value.trim())say(m.value.trim(),1);else m?.focus();break}
+    case 'upgrade':S.sheet='pw';render();emit('paywall_view',{placement:'limit'});break;
+    case 'closeq':S.sheet=null;emit('paywall_close',{placement:'limit',via:'close'});if(S.premium)render();else{emit('sale_view',{plan:'lifetime'});go(SALE_LT)}break;
+    case 'midnight':emit('come_back_midnight');toast(`Your ${FREE} messages come back at midnight`);break;
+    case 'openapp':openApp();break;
+  }
+});
+phone.addEventListener('input',e=>{
+  const f=e.target.dataset.f;
+  if(e.target.id==='msg'){const s=document.getElementById('sendb');if(s)s.disabled=!e.target.value.trim();return}
+  if(!f)return;
+  if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month);return}
+  S[f]=e.target.value;
+  if(f==='name'){const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!S.name.trim();const ne=document.getElementById('nerr');if(ne)ne.hidden=!!S.name.trim()}
+});
+phone.addEventListener('change',e=>{const f=e.target.dataset.f;if(f==='year'||f==='month'){S[f]=e.target.value;const bt=cur().querySelector('.foot .btn');if(bt)bt.disabled=!(S.year&&S.month)}});
+phone.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='msg')cur().querySelector('[data-a="send"]')?.click()});
+
+/* Host API: the page embedding this funnel can complete a purchase or read the picks. */
+window.go=go;
+window.IkFunnel=Object.assign(window.IkFunnel||{},{config:CONFIG,data:snapshot,
+  /* plans.addon (post-purchase add-on) keeps the plan already bought and lands on get-app; lifetime lands on get-app; subscriptions go to the add-on upsell */
+  completePurchase:(plan)=>{const add=plan==='addon';if(add)S.addon=true;else if(plan&&CONFIG.plans[plan])S.plan=plan;AFTER=add||(CONFIG.plans[S.plan]&&CONFIG.plans[S.plan].oneTime)?20:19;S.ltSeen=true;S.premium=true;S.sheet=null;S.ep3done=false;S.teaserDone=true;emit('purchase_complete',{plan:add?'addon':S.plan});go(AFTER)}});
+if(DEBUG){const m=location.hash.match(/s=?([0-9]+)/);if(m&&V[+m[1]]){S.i=+m[1];if(S.i>=10)S.teaserDone=true;syncChat()}}
+{let ref='';try{ref=document.referrer?new URL(document.referrer).hostname:''}catch(e){}emit('funnel_start',{referrer:ref})}
+render();viewed();
+</script>
+</body>
+</html>
