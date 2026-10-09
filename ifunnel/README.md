@@ -24,6 +24,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | [docs/specs/2026-10-08-runtime-sdk-collector-design.md](docs/specs/2026-10-08-runtime-sdk-collector-design.md) | **Spec Runtime SDK + Collector:** `ikf.js` bắt event `ikfunnel:*`, lọc PII, Meta Pixel + consent EEA, `/_ikf/c` → Queue → ClickHouse |
 | [docs/plans/2026-10-08-runtime-sdk-collector.md](docs/plans/2026-10-08-runtime-sdk-collector.md) | **Plan TDD Runtime SDK + Collector** (14 task): event-schema, SDK `ikf.js`, collector `/_ikf/c`, event-consumer → ClickHouse, Pixel, infra |
 | [docs/specs/2026-10-09-billing-paddle-design.md](docs/specs/2026-10-09-billing-paddle-design.md) | **Spec Billing (Paddle):** checkout inline trong funnel, map giá theo funnel, webhook inbox → SQS → đọc lại từ Paddle, state machine + outbox |
+| [docs/plans/2026-10-09-billing-paddle.md](docs/plans/2026-10-09-billing-paddle.md) | **Plan TDD Billing (Paddle)** (13 task + Task 0): `@ikf/paddle`, migration 003, map giá, checkout, webhook, worker `billing-sync`, reconcile, SDK checkout, `/_ikf/pay`, infra, e2e |
 | [docs/checklist-chuan-bi.md](docs/checklist-chuan-bi.md) | Việc cần chuẩn bị: tài khoản, Paddle, pháp lý, Meta, Adjust, nhân sự |
 
 ## Trạng thái
@@ -34,7 +35,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 - [ ] Các plan TDD tiếp theo:
   - edge-router-publisher (spec + plan TDD xong 2026-10-06)
   - runtime-sdk-collector (spec + plan TDD xong 2026-10-08)
-  - billing-paddle (spec xong 2026-10-09, chờ plan TDD)
+  - billing-paddle (spec + plan TDD xong 2026-10-09)
   - entitlement-identity
   - app-sdk-adjust
   - conversions-relay
