@@ -50,6 +50,7 @@ Số test ghi ở mỗi task là số **thật** khi chạy toàn bộ code củ
 | B16 | "cho phép IP Paddle gọi webhook" | Không lọc IP; webhook không bị rate limit, an toàn dựa trên chữ ký | IP Paddle khác nhau giữa sandbox/live và có thể đổi; chữ ký + `ts` đủ chặn giả mạo |
 | B17 | Alarm `paddle_auth_failed` "tối đa 1 lần / 15 phút" | SNS qua `@aws-sdk/client-sns`, chặn tần suất bằng Redis `SET alarm:<kind> NX EX 900`, Redis lỗi thì chặn trong bộ nhớ của task | Nhiều task ECS dùng chung một cửa sổ 15 phút |
 | B18 | `ikf publish` cảnh báo "key trong `CONFIG.plans`" | Lấy key ở cả `plans:{…}` và `checkoutUrl:{…}` (gồm `addon`) | `addon` chỉ có trong `checkoutUrl`, không có trong `plans` |
+| B19 | Mọi env có đủ 3 rule rate limit (chốt sau khi viết plan, 2026-10-09) | Module `edge` thêm biến `ratelimit_full = bool` (mặc định `true`). `false` → ruleset `http_ratelimit` của zone platform chỉ còn **một** rule: `/v1/checkout` (60s / 10). Stack truyền `ratelimit_full = var.env == "prod"`. Rule `/_ikf/c` trên các zone funnel (module `funnel-domains`, mỗi zone 1 rule) giữ nguyên ở mọi env | Zone platform prod dùng gói Business (3 rule); staging giữ gói Free (1 rule) để không tốn thêm. Kiểm tra k6 giới hạn `/_ikf/c` của zone platform làm trên prod lúc pilot |
 
 ## Global Constraints
 
@@ -5570,6 +5571,13 @@ git commit -m "feat(billing): confirm ikf_paid with core, strip ?paid=, __IKF bi
 ---
 
 ### Task 12: Hạ tầng — secret `paddle-client-token`, rate limit `/v1/checkout`, Turnstile cho funnel host, `PADDLE_ENV` + alarm; CI; runbook
+
+> **Điều chỉnh B19 (chốt 2026-10-09, sau khi viết plan): bắt buộc làm trong task này.**
+> - `infra/modules/edge`: thêm `variable "ratelimit_full" { type = bool, default = true }`. Khi `false`, `cloudflare_ruleset.ratelimit` chỉ chứa rule `/v1/checkout` (period 60, 10 request), bỏ rule API và rule `/_ikf/c`.
+> - `infra/stack/main.tf`: truyền `ratelimit_full = var.env == "prod"` vào `module "edge"`.
+> - Test module `edge`: thêm run `ratelimit_full = false` → `length(cloudflare_ruleset.ratelimit.rules) == 1` và expression chứa `"/v1/checkout"`. Giữ các assert cũ cho `ratelimit_full = true` (thứ tự rule giữ nguyên với API là `rules[0]`).
+> - Test stack: env `staging` → 1 rule; env `prod` → 3 rule.
+> - Runbook: ghi rằng staging chỉ rate limit `/v1/checkout`; kiểm tra k6 giới hạn `/_ikf/c` của zone platform làm trên prod khi pilot.
 
 **Files:**
 - Modify: `infra/modules/edge/{main,variables,outputs}.tf`, `infra/modules/edge/tests/edge.tftest.hcl`, `infra/stack/{main,outputs}.tf`, `infra/stack/tests/stack.tftest.hcl`, `infra/envs/{staging,prod}/main.tf`
