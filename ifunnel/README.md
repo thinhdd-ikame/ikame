@@ -11,6 +11,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | Attribution app | **Adjust** (deferred deep link + S2S) |
 | Tracking web | **Meta Pixel** + Conversions API |
 | Cloud | **AWS us-east-1**, Cloudflare ở edge |
+| Cloudflare zone platform (prod) | **Business** (~$200/tháng), đủ 3 rule rate limit (chốt 2026-10-09) |
 | Quy mô khởi đầu | **Tier A** (~100k sessions/ngày), thiết kế sẵn để lên Tier B |
 
 ## Nội dung folder

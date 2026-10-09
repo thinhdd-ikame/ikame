@@ -5,7 +5,7 @@ Cập nhật: 2026-10-05. Đánh dấu `[x]` khi xong, ghi người phụ trách
 ## 1. Cần có để bắt đầu code hạ tầng (Task 0 của plan infra)
 
 - [ ] **AWS account** + quyền admin (SSO hoặc IAM). Ghi Account ID. Đặt cảnh báo billing ở mức ~$1.500/tháng —
-- [ ] **2 domain platform** (prod và staging), add vào Cloudflare (prod gói Pro, staging gói Free), đổi nameserver —
+- [ ] **2 domain platform** (prod và staging), add vào Cloudflare (prod gói **Business** ~$200/tháng vì cần 3 rule rate limit: API, `/_ikf/c`, `/v1/checkout`; staging: xem quyết định ở README), đổi nameserver —
 - [ ] **Cloudflare:** bật Workers Paid ($5) và R2. Ghi Account ID và Zone ID của 2 domain —
 - [ ] **Cloudflare API token** với các quyền:
   - Account: R2, Workers KV, Queues, Turnstile: Edit
