@@ -28,6 +28,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | [docs/plans/2026-10-09-billing-paddle.md](docs/plans/2026-10-09-billing-paddle.md) | **Plan TDD Billing (Paddle)** (13 task + Task 0): `@ikf/paddle`, migration 003, map giá, checkout, webhook, worker `billing-sync`, reconcile, SDK checkout, `/_ikf/pay`, infra, e2e |
 | [docs/specs/2026-10-09-local-demo-design.md](docs/specs/2026-10-09-local-demo-design.md) · [plan](docs/plans/2026-10-09-local-demo.md) | **Demo local:** `npm run demo` chạy funnel thật trên máy (Miniflare + Postgres + ClickHouse), không cần tài khoản |
 | [docs/specs/2026-10-09-entitlement-identity-design.md](docs/specs/2026-10-09-entitlement-identity-design.md) | **Spec Entitlement + Identity:** claim qua Adjust deep link / OTP email, liên kết server-to-server với backend app, tính lại quyền từ outbox, webhook có chữ ký |
+| [docs/plans/2026-10-09-entitlement-identity.md](docs/plans/2026-10-09-entitlement-identity.md) | **Plan TDD Entitlement + Identity** (12 task): migration 004, computeEntitlements, app registry, sync, claim/OTP/magic, webhook-sender, SDK, CLI, infra, tài liệu tích hợp |
 | [docs/checklist-chuan-bi.md](docs/checklist-chuan-bi.md) | Việc cần chuẩn bị: tài khoản, Paddle, pháp lý, Meta, Adjust, nhân sự |
 
 ## Trạng thái
@@ -39,7 +40,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
   - edge-router-publisher (spec + plan TDD xong 2026-10-06)
   - runtime-sdk-collector (spec + plan TDD xong 2026-10-08)
   - billing-paddle (spec + plan TDD xong 2026-10-09)
-  - entitlement-identity (spec xong 2026-10-09, chờ plan TDD)
+  - entitlement-identity (spec + plan TDD xong 2026-10-09)
   - app-sdk-adjust
   - conversions-relay
   - admin-console
