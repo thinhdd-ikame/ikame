@@ -98,9 +98,9 @@ JOBS = {"hook": ("Semi-realistic premium illustration of four original fictional
                  "open-mouthed smiles, like a hype group shot: a glamorous blonde woman in a fitted pink stage jacket, a dark-haired man in a white and gold "
                  "military-style stage jacket worn open at the collar, a Black man in a black leather jacket with chains, and a Latina woman in a sparkly "
                  "black stage outfit reaching out; dynamic foreshortened hands, pure black background, dramatic stage rim light, " + SEXY +
-                 ", horizontal 4:3 composition. " + GUARD, (720, 540)),
+                 ", horizontal 4:3 composition. " + GUARD, (1080, 810)),
         "peek-start": ("A glamorous dark-haired man in a white and gold military-style stage jacket worn open at the collar, white glove touching his collar, "
-                       "premium western webtoon illustration, " + SEXY + ", " + PEEK, (420, 560))}
+                       "premium western webtoon illustration, " + SEXY + ", " + PEEK, (660, 880))}
 PEEKS = {"men": ["a photorealistic Mediterranean man in an unbuttoned black silk shirt", "a webtoon blond man in a fitted black and silver stage jacket",
                  "a photorealistic Black man in a fitted cream knit, warm smile", "a webtoon dark-haired man in an open-collar white stage suit holding a microphone"],
          "women": ["a photorealistic Latina woman in a fitted black satin dress, long dark hair", "a webtoon platinum-blonde woman in an off-shoulder crystal stage dress",
@@ -109,15 +109,15 @@ PEEKS = {"men": ["a photorealistic Mediterranean man in an unbuttoned black silk
                 "a photorealistic androgynous Black person in a fitted white suit", "a webtoon androgynous person with a black wolf cut in a stage jacket"]}
 for g, ps in PEEKS.items():
     for n, d in enumerate(ps, 1):
-        JOBS[f"peek-{g}-{n}"] = (d + ", " + SEXY + ", " + PEEK, (420, 560))
+        JOBS[f"peek-{g}-{n}"] = (d + ", " + SEXY + ", " + PEEK, (660, 880))
 for g, people in ROSTER.items():
     for i, item in enumerate(people):
         name, arch = item.split(":")
         pose = POSE[i % len(POSE)].replace("her ", "his " if g == "men" else "her " if g == "women" else "their ")
         desc = f"a beautiful young {LOOKS[g][i]}, styled like a pop idol, wearing {OUTFIT[g][arch]}, {pose}, softly blurred background hinting {PLACE[arch]}"
-        JOBS[f"ref-{g}-p-{name}"] = (f"{desc}. {REAL}", (360, 444))
+        JOBS[f"ref-{g}-p-{name}"] = (f"{desc}. {REAL}", (720, 888))
         if i < 12:
-            JOBS[f"ref-{g}-a-{name}"] = (f"{desc}. {ANIME}", (360, 444))
+            JOBS[f"ref-{g}-a-{name}"] = (f"{desc}. {ANIME}", (720, 888))
 
 
 def gen(key):
@@ -129,8 +129,11 @@ def gen(key):
         try:
             d = json.load(urllib.request.urlopen(req, timeout=180))["data"][0]
             raw = base64.b64decode(d["b64_json"]) if d.get("b64_json") else urllib.request.urlopen(d["url"], timeout=120).read()
-            im = ImageOps.fit(Image.open(io.BytesIO(raw)).convert("RGB"), size, Image.LANCZOS, centering=(0.5, 0.3))
-            im.save(os.path.join(OUT, key + ".jpg"), "JPEG", quality=84, optimize=True)
+            src = Image.open(io.BytesIO(raw)).convert("RGB")
+            # never upscale: if the source is smaller than the target, keep the target aspect at the source resolution
+            k = min(1.0, src.width / size[0], src.height / size[1])
+            im = ImageOps.fit(src, (round(size[0] * k), round(size[1] * k)), Image.LANCZOS, centering=(0.5, 0.3))
+            im.save(os.path.join(OUT, key + ".jpg"), "JPEG", quality=86, optimize=True, progressive=True)
             return key, "ok"
         except Exception as e:
             err = str(e)[:120]

@@ -47,11 +47,11 @@ LOOK = {
   "nico":   "an androgynous bookworm, wire glasses, soft sweater, holding a book, warm lamp light",
  },
 }
-JOBS = {"hook": ("Semi-realistic premium illustration of four original fictional AI companion characters bursting toward the camera and pointing at the viewer with excited, open-mouthed expressions, like a hype group shot: a cute anime-style girl in a pink frilly jacket pointing up, a fantasy warrior man in dark leather armour, a basketball player man in a plain white jersey with no lettering or numbers reaching out, and a K-pop style idol man in a sparkly black jacket; dynamic foreshortened hands, pure black background, dramatic rim light, everyone clearly adult and fully clothed, horizontal 4:3 composition, no text, no logo, no watermark. ", (720, 540))}
+JOBS = {"hook": ("Semi-realistic premium illustration of four original fictional AI companion characters bursting toward the camera and pointing at the viewer with excited, open-mouthed expressions, like a hype group shot: a cute anime-style girl in a pink frilly jacket pointing up, a fantasy warrior man in dark leather armour, a basketball player man in a plain white jersey with no lettering or numbers reaching out, and a K-pop style idol man in a sparkly black jacket; dynamic foreshortened hands, pure black background, dramatic rim light, everyone clearly adult and fully clothed, horizontal 4:3 composition, no text, no logo, no watermark. ", (1080, 810))}
 for g, people in LOOK.items():
     for name, desc in people.items():
-        JOBS[f"ref-{g}-a-{name}"] = (f"{desc}. {ANIME}", (360, 444))
-        JOBS[f"ref-{g}-p-{name}"] = (f"{desc}. {PHOTO}", (360, 444))
+        JOBS[f"ref-{g}-a-{name}"] = (f"{desc}. {ANIME}", (720, 888))
+        JOBS[f"ref-{g}-p-{name}"] = (f"{desc}. {PHOTO}", (720, 888))
 
 
 def gen(key):
@@ -62,8 +62,11 @@ def gen(key):
         try:
             d = json.load(urllib.request.urlopen(req, timeout=180))["data"][0]
             raw = base64.b64decode(d["b64_json"]) if d.get("b64_json") else urllib.request.urlopen(d["url"], timeout=120).read()
-            im = ImageOps.fit(Image.open(io.BytesIO(raw)).convert("RGB"), size, Image.LANCZOS, centering=(0.5, 0.3))
-            im.save(os.path.join(OUT, key + ".jpg"), "JPEG", quality=84, optimize=True)
+            src = Image.open(io.BytesIO(raw)).convert("RGB")
+            # never upscale: if the source is smaller than the target, keep the target aspect at the source resolution
+            k = min(1.0, src.width / size[0], src.height / size[1])
+            im = ImageOps.fit(src, (round(size[0] * k), round(size[1] * k)), Image.LANCZOS, centering=(0.5, 0.3))
+            im.save(os.path.join(OUT, key + ".jpg"), "JPEG", quality=86, optimize=True, progressive=True)
             return key, "ok"
         except Exception as e:
             err = str(e)[:120]
