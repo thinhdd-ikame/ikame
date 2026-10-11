@@ -32,6 +32,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | [docs/specs/2026-10-11-demo-purchase-design.md](docs/specs/2026-10-11-demo-purchase-design.md) | **Spec Demo Purchase:** `npm run demo:purchase` — tunnel Cloudflare, Paddle giả, app giả, refund → FREE |
 | [docs/specs/2026-10-11-admin-console-p1-design.md](docs/specs/2026-10-11-admin-console-p1-design.md) | **Spec Admin Console đợt 1:** Google login, role, upload/preview/publish/rollback, domain, audit; SPA `apps/admin` |
 | [docs/specs/2026-10-11-admin-console-p2-design.md](docs/specs/2026-10-11-admin-console-p2-design.md) | **Spec Admin Console đợt 2:** giá từ catalog Paddle, app registry + webhook, khách hàng (resend email, cấp lại `user_id`, quyền thủ công), reconcile; role `support` |
+| [docs/specs/2026-10-11-admin-console-p3-design.md](docs/specs/2026-10-11-admin-console-p3-design.md) | **Spec Admin Console đợt 3:** dashboard ClickHouse — MV `funnel_hourly` (`uniqExactState(sid)`), doanh thu từ Postgres, Dashboard + tab Số liệu (SVG inline), breakdown version/nguồn/quốc gia/thiết bị |
 | [docs/plans/2026-10-11-admin-console-p2.md](docs/plans/2026-10-11-admin-console-p2.md) | **Plan TDD Admin Console đợt 2** (15 task): migration 006, role `support`, quyền thủ công, lookup v2, resend/rotate, catalog Paddle, plan_keys, SPA Giá/Apps/Khách/Billing, e2e |
 | [docs/plans/2026-10-11-admin-console-p1.md](docs/plans/2026-10-11-admin-console-p1.md) | **Plan TDD Admin Console đợt 1** (16 task): migration 005, audit, phiên + CSRF, Google OIDC, `@ikf/funnel-lint`, SPA `apps/admin`, demo + e2e, infra |
 | [docs/plans/2026-10-11-web-funnel-compat-and-demo-purchase.md](docs/plans/2026-10-11-web-funnel-compat-and-demo-purchase.md) | **Plan TDD Web Funnel SDK Compat + Demo Purchase** (15 task): `user_id`/`handoff`, check-purchased, Paddle giả, tunnel, app giả |
@@ -53,7 +54,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
   - web-funnel-sdk-compat + demo-purchase (spec + plan TDD + code xong 2026-10-11, PR #5)
   - app-sdk-adjust
   - conversions-relay
-  - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD + code xong 2026-10-11, PR #7) · đợt 3 dashboard
+  - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD + code xong 2026-10-11, PR #7) · đợt 3 dashboard (spec 2026-10-11, chờ duyệt)
 
 ## Code
 
