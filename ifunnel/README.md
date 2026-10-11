@@ -37,6 +37,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | [docs/plans/2026-10-11-web-funnel-compat-and-demo-purchase.md](docs/plans/2026-10-11-web-funnel-compat-and-demo-purchase.md) | **Plan TDD Web Funnel SDK Compat + Demo Purchase** (15 task): `user_id`/`handoff`, check-purchased, Paddle giả, tunnel, app giả |
 | [docs/plans/2026-10-09-entitlement-identity.md](docs/plans/2026-10-09-entitlement-identity.md) | **Plan TDD Entitlement + Identity** (12 task): migration 004, computeEntitlements, app registry, sync, claim/OTP/magic, webhook-sender, SDK, CLI, infra, tài liệu tích hợp |
 | [docs/reviews/2026-10-11-admin-console-p1-final-review.md](docs/reviews/2026-10-11-admin-console-p1-final-review.md) · [re-review](docs/reviews/2026-10-11-admin-console-p1-final-rereview.md) · [ledger](docs/reviews/2026-10-11-admin-console-p1-execution-ledger.md) | **Review Admin Console đợt 1** (PR #6): review toàn nhánh, đợt sửa (tunnel demo, regex validateBundle, cookie `__Host-`), ledger 16 task |
+| [docs/reviews/2026-10-11-admin-console-p2-final-review.md](docs/reviews/2026-10-11-admin-console-p2-final-review.md) · [re-review](docs/reviews/2026-10-11-admin-console-p2-final-rereview.md) · [ledger](docs/reviews/2026-10-11-admin-console-p2-execution-ledger.md) | **Review Admin Console đợt 2** (PR #7): review toàn nhánh, đợt sửa (khoá tạo app, guard nút, runbook rotate), ledger 15 task |
 | [docs/checklist-chuan-bi.md](docs/checklist-chuan-bi.md) | Việc cần chuẩn bị: tài khoản, Paddle, pháp lý, Meta, Adjust, nhân sự |
 
 ## Trạng thái
@@ -52,7 +53,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
   - web-funnel-sdk-compat + demo-purchase (spec + plan TDD + code xong 2026-10-11, PR #5)
   - app-sdk-adjust
   - conversions-relay
-  - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD xong 2026-10-11, đang code) · đợt 3 dashboard
+  - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD + code xong 2026-10-11, PR #7) · đợt 3 dashboard
 
 ## Code
 
