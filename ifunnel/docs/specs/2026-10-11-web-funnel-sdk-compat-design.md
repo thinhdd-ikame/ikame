@@ -61,7 +61,7 @@ Mô hình này là **pull theo `user_id` vĩnh viễn**; thiết kế entitlemen
 
 ## 4. Mode AUTH (backend app tự trả Bool)
 
-`GET /v1/web-funnel/users/:user_id/entitlements` — Bearer API key `ikfa_` của app → `200 { customer_ref, entitlements: [{key, active, expires_at}] }` chỉ của app đó; `user_id` lạ → `200 { customer_ref: null, entitlements: [] }`. Backend app tự quyết `Bool` trả cho SDK. Không cần `app_links`.
+`POST /v1/web-funnel/entitlements {user_id}` (đổi từ `GET …/users/:user_id/…` khi viết plan, C2: `user_id` trên path sẽ vào access log) — Bearer API key `ikfa_` của app → `200 { customer_ref, entitlements: [{key, active, expires_at}] }` chỉ của app đó; `user_id` lạ → `200 { customer_ref: null, entitlements: [] }`. Backend app tự quyết `Bool` trả cho SDK. Không cần `app_links`.
 
 ## 5. CLI, tài liệu, hạ tầng
 
