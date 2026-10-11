@@ -44,7 +44,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
   - runtime-sdk-collector (spec + plan TDD xong 2026-10-08)
   - billing-paddle (spec + plan TDD xong 2026-10-09)
   - entitlement-identity (spec + plan TDD xong 2026-10-09, code PR #4)
-  - web-funnel-sdk-compat + demo-purchase (spec + plan TDD xong 2026-10-11)
+  - web-funnel-sdk-compat + demo-purchase (spec + plan TDD + code xong 2026-10-11, PR #5)
   - app-sdk-adjust
   - conversions-relay
   - admin-console
