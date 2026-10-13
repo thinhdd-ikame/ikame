@@ -56,7 +56,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
   - web-funnel-sdk-compat + demo-purchase (spec + plan TDD + code xong 2026-10-11, PR #5)
   - app-sdk-adjust
   - conversions-relay
-  - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD + code xong 2026-10-11, PR #7) · đợt 3 dashboard ClickHouse (spec + plan TDD + code xong 2026-10-12, PR #8) · restyle giao diện console (PR #9, 2026-10-12, không spec: chỉ CSS/JSX)
+  - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD + code xong 2026-10-11, PR #7) · đợt 3 dashboard ClickHouse (spec + plan TDD + code xong 2026-10-12, PR #8) · restyle giao diện console (PR #9, 2026-10-12, không spec: chỉ CSS/JSX) · đợt 4a app là đơn vị quản lý (spec + plan TDD + code xong 2026-10-13, PR #10; đợt 4b quyền theo app: chưa viết spec)
 
 ## Code
 
