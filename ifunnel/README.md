@@ -30,6 +30,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
 | [docs/specs/2026-10-09-entitlement-identity-design.md](docs/specs/2026-10-09-entitlement-identity-design.md) | **Spec Entitlement + Identity:** claim qua Adjust deep link / OTP email, liên kết server-to-server với backend app, tính lại quyền từ outbox, webhook có chữ ký |
 | [docs/specs/2026-10-11-web-funnel-sdk-compat-design.md](docs/specs/2026-10-11-web-funnel-sdk-compat-design.md) | **Spec Web Funnel SDK Compat:** khớp IKameSDK (pull theo `user_id` UUID), endpoint `POST /v1/payment/check-purchased-web-funnel`, `apps.handoff` |
 | [docs/specs/2026-10-11-demo-purchase-design.md](docs/specs/2026-10-11-demo-purchase-design.md) | **Spec Demo Purchase:** `npm run demo:purchase` — tunnel Cloudflare, Paddle giả, app giả, refund → FREE |
+| [docs/specs/2026-10-16-conversions-relay-capi-design.md](docs/specs/2026-10-16-conversions-relay-capi-design.md) | **Spec Conversions Relay (Meta CAPI):** mọi lần thu tiền → `Purchase` qua CAPI theo pixel của funnel, token theo app (Secrets Manager), bảng `capi_events` + retry/dead, consent EU, IP/UA giữ 30 ngày; Adjust S2S để đợt sau |
 | [docs/specs/2026-10-11-admin-console-p1-design.md](docs/specs/2026-10-11-admin-console-p1-design.md) | **Spec Admin Console đợt 1:** Google login, role, upload/preview/publish/rollback, domain, audit; SPA `apps/admin` |
 | [docs/specs/2026-10-11-admin-console-p2-design.md](docs/specs/2026-10-11-admin-console-p2-design.md) | **Spec Admin Console đợt 2:** giá từ catalog Paddle, app registry + webhook, khách hàng (resend email, cấp lại `user_id`, quyền thủ công), reconcile; role `support` |
 | [docs/specs/2026-10-11-admin-console-p3-design.md](docs/specs/2026-10-11-admin-console-p3-design.md) | **Spec Admin Console đợt 3:** dashboard ClickHouse — MV `funnel_hourly` (`uniqExactState(sid)`), doanh thu từ Postgres, Dashboard + tab Số liệu (SVG inline), breakdown version/nguồn/quốc gia/thiết bị |
@@ -55,7 +56,7 @@ Platform funnel nội bộ thay dần FunnelFox: publish funnel web (quiz → pa
   - entitlement-identity (spec + plan TDD xong 2026-10-09, code PR #4)
   - web-funnel-sdk-compat + demo-purchase (spec + plan TDD + code xong 2026-10-11, PR #5)
   - app-sdk-adjust
-  - conversions-relay
+  - conversions-relay — Meta CAPI (spec 2026-10-16); Adjust S2S để đợt sau
   - admin-console đợt 1 (spec + plan TDD + code xong 2026-10-11, PR #6) · đợt 2 billing+identity (spec + plan TDD + code xong 2026-10-11, PR #7) · đợt 3 dashboard ClickHouse (spec + plan TDD + code xong 2026-10-12, PR #8) · restyle giao diện console (PR #9, 2026-10-12, không spec: chỉ CSS/JSX) · đợt 4a app là đơn vị quản lý (spec + plan TDD + code xong 2026-10-13, PR #10) · đợt 4b quyền theo app (spec + plan TDD + code xong 2026-10-13, PR #11)
 
 ## Code
