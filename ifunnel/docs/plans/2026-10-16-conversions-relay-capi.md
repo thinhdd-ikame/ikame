@@ -44,6 +44,10 @@ Số test ở mỗi task là số **thật** khi chạy code của plan trên b�
 | A12 | Demo: Starlyn mua + gia hạn | e2e làm qua API trên Starlyn; demo tương tác `npm run demo:purchase` bán `witch-power` của app `demo` → xem ở `/apps/demo/conversions`; `run.mjs` in dòng `CAPI:` với link và `http://127.0.0.1:8793/__requests` (Task 9) | Chuyển `witch-power` sang Starlyn làm hỏng test cũ |
 | A13 | Bundle SDK | 8154 → **8183 B** gzip (ngân sách 8192, còn 9 B); hai test `toEqual` attribution thêm `ads_consent: 'granted'` (Task 2) | Trường mới bắt buộc xuất hiện trong object |
 | A14 | `enqueue` | Trả `{created, skipped}` (`created` = mọi dòng tạo, `skipped` ⊂ created); `ON CONFLICT DO NOTHING` không target (chắn cả `event_id`) (Task 4) | Spec không định nghĩa giá trị trả |
+| A15 | Thứ tự skip `no_app, no_pixel, no_token, no_consent, too_old` | Sau review toàn nhánh: `no_app, no_pixel, no_consent, zero_value, no_token, too_old`; giao dịch `value_minor <= 0` (trial) → `skipped zero_value` | Token đến sau không bao giờ gửi giao dịch khách từ chối hoặc 0đ |
+| A16 | `website` khi có `client_url` | `website` chỉ khi có cả `client_url` và `client_ua`; còn lại `system_generated` | Gia hạn sau sweep 30 ngày không còn UA; Meta yêu cầu UA cho `website` |
+| A17 | Lỗi Meta | Mã tạm thời `1, 2, 4, 17, 32, 613, 80004` hoặc `is_transient`, và HTTP 408 → retry (xét trước nhánh token); lúc gửi, event quá 7 ngày → `skipped too_old`; `client_ip` chỉ lưu khi `net.isIP`; payload outbox hỏng bị lọc ở enqueue | Một event xấu không giết cả lô 50; một dòng hỏng không chặn enqueue 7 ngày |
+| A18 | Cache token 10 phút | Cache bị bỏ khi `apps.capi_token_set_at` mới hơn lúc cache; alarm tiền tố `ikf conversions:`; ghi kết quả chỉ khi dòng còn `pending` với đúng `attempts` đã claim; app có `set_at` mà secret mất → backoff `no_token_secret` rồi `dead` | Đổi token có hiệu lực ở mọi task core-api ngay lần gửi sau; không ghi đè kết quả mới hơn |
 
 ## Global Constraints
 

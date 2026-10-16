@@ -21,6 +21,7 @@
 | 5 | Reading the outbox | Anti-join over the last 7 days (`UNIQUE (outbox_id)`), no cursor; entitlement's `published_at` stays untouched |
 | 6 | Consent | Consent required but not granted (EU…) → `skipped no_consent`, nothing sent |
 | 7 | IP/UA | Stored on the checkout for **30 days**, then cleared; later renewals are sent without IP/UA |
+| 8 | Skip order (amended after the final review, 2026-10-16) | `no_app`, `no_pixel`, `no_consent`, `zero_value` ($0 trial transactions), `no_token`, `too_old`: permanent reasons first, so entering a token later never sends a non-consented or $0 purchase. An event is `website` only with both page URL and user-agent, otherwise `system_generated` |
 
 ## 1. Data — migration `009_capi.sql`
 
@@ -45,7 +46,7 @@ CREATE TABLE capi_events (
   status          TEXT NOT NULL DEFAULT 'pending'
                     CONSTRAINT capi_events_status_check CHECK (status IN ('pending', 'sent', 'skipped', 'dead')),
   skip_reason     TEXT NULL
-                    CONSTRAINT capi_events_skip_check CHECK (skip_reason IN ('no_app', 'no_pixel', 'no_token', 'no_consent', 'too_old')),
+                    CONSTRAINT capi_events_skip_check CHECK (skip_reason IN ('no_app', 'no_pixel', 'no_consent', 'zero_value', 'no_token', 'too_old')),
   attempts        INT NOT NULL DEFAULT 0,
   next_attempt_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   last_error      TEXT NULL,                             -- Meta error code/subcode or 'http_<status>' / 'network'; never a message
