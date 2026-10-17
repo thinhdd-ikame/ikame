@@ -28,7 +28,7 @@
 ```sql
 CREATE TABLE experiments (
   id          BIGSERIAL PRIMARY KEY,
-  host        TEXT NOT NULL REFERENCES domains (host),
+  host        TEXT NOT NULL REFERENCES domains (host) ON DELETE CASCADE,  -- a removed domain takes its experiments; audit keeps start/stop
   path_prefix TEXT NOT NULL,
   app_id      TEXT NOT NULL REFERENCES apps (id),
   name        TEXT NOT NULL,                          -- 1..80 chars, free text ("Paywall mới")
@@ -43,7 +43,7 @@ CREATE UNIQUE INDEX experiments_one_running ON experiments (host, path_prefix) W
 CREATE INDEX experiments_by_app ON experiments (app_id, id DESC);
 
 CREATE TABLE experiment_arms (
-  experiment_id BIGINT NOT NULL REFERENCES experiments (id),
+  experiment_id BIGINT NOT NULL REFERENCES experiments (id) ON DELETE CASCADE,
   arm           SMALLINT NOT NULL CHECK (arm BETWEEN 0 AND 3),
   version_id    BIGINT NOT NULL REFERENCES versions (id),
   weight        SMALLINT NOT NULL CHECK (weight BETWEEN 1 AND 99),
