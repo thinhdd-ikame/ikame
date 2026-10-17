@@ -98,3 +98,18 @@ Domains page: **Thêm domain** (global admin, when `GET /v1/domains` answers `cu
 ## 8. Out of scope
 
 App admins adding domains for their own app, buying domains, automatic DNS at registrars (Domain Connect), wildcard hosts, moving a Terraform host to `custom`.
+
+## Amendments (implementation, 2026-10-17)
+
+Rulings recorded during the build (ledger `progress.md`), then the final-review fixes:
+
+- **D5** Active row and the §1 mapping: only hostname `moved` or ssl `deleted`/`expired` sets `dns_status 'moved'`; other non-active states (e.g. certificate `pending_renewal`) leave `dns_status` unchanged.
+- **D6** Check order: `checkDomain` and the loop read Cloudflare **before** locking the domains row, then lock and apply (publish never waits on Cloudflare); the row must still carry the same `cf_hostname_id`, and the loop re-checks "due" under the lock.
+- **D7** Cloudflare 404 on a check (hostname deleted in the dashboard, or a remove that did not commit): a pending row becomes `dns_status 'failed'`, an active row `'moved'` (audited once); Kiểm tra answers 200, the loop logs it as a check, not a failure.
+- **D8** Turnstile widget domains: Turnstile only works on hostnames its widget lists, so core owns the widget's domain list after Terraform creates it (`lifecycle ignore_changes = [domains]`). Core adds every active host (custom and Terraform), removes a custom host on Gỡ, and reconciles every 5 min under a Postgres advisory lock. Same `cf-saas-api-token` with **Account › Turnstile › Edit** added; env `CF_ACCOUNT_ID`, `TURNSTILE_SITEKEY`. Without them the sync is off (logged) and custom hosts cannot pass Turnstile.
+- **D9** Per-widget cap: `TURNSTILE_MAX_DOMAINS` (Terraform `turnstile_max_domains`, default 10, the non-Enterprise limit). `addDomain` answers `409 turnstile_domain_limit` when the widget's list plus custom hosts still waiting for a slot reach the cap; a host already covered by a listed domain takes no slot; widget unreachable at add → `502 cloudflare_unavailable`.
+- **Loop windows**: `checkDue`/`startDomainChecks` take `pendingEveryMs` / `activeEveryMs` (production 5 min / 6 h; the demo 2 s / 10 s). A `failed` pending row waits the active window.
+- **Host validation**: an all-digit last label (IP literals) is `400 invalid_host`.
+- **`*/*` bypass**: `modules/edge` variable `worker_bypass_hosts` gives each proxied platform-zone host that no Worker serves (apex, www, status page) a scriptless route, so the catch-all does not send it to edge-router. Runbook §9 step 0 lists the zone's proxied records before the first apply.
+- **Paddle**: a live checkout needs each funnel host approved as a website in Paddle (Checkout › Website approval). Added to runbook §9 "Add a domain" and to the FunnelFox move (before the CNAME switch), and as a line in the console's "Trỏ DNS" card.
+- **Certificate renewal**: Cloudflare renews a non-wildcard, proxied custom hostname that points at us by HTTP validation regardless of the first method, so an active row shows no new TXT (runbook note; no code).
